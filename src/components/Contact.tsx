@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PersonalInfo } from '../types/index.ts';
-import { MailIcon, MapPinIcon, CopyIcon, CheckIcon, GithubIcon, LinkedinIcon, ExternalLinkIcon } from './Icons.tsx';
+import { MailIcon, MapPinIcon, CopyIcon, CheckIcon, LinkedinIcon, ExternalLinkIcon } from './Icons.tsx';
 
 interface ContactProps {
   data: PersonalInfo;
@@ -121,39 +121,6 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               <span className="badge badge-emerald" style={{ width: '100%', justifyContent: 'center', padding: '8px 12px' }}>
                 {data.availability}
               </span>
-            </div>
-          </div>
-
-          {/* GitHub Profile Card */}
-          <div className="glass-panel contact-card">
-            <div className="contact-card-icon" style={{ background: 'rgba(255, 255, 255, 0.08)', color: 'var(--text-primary)' }}>
-              <GithubIcon size={26} />
-            </div>
-            <div className="contact-card-body">
-              <div className="contact-card-label">GitHub Repository</div>
-              <a
-                href={data.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="contact-card-value"
-              >
-                github.com/ga2631
-              </a>
-              <p className="contact-card-hint">
-                Explore open source repositories, architecture templates & demo systems.
-              </p>
-            </div>
-            <div className="contact-card-actions">
-              <a
-                href={data.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-secondary btn-sm"
-                style={{ width: '100%' }}
-              >
-                <span>Visit GitHub</span>
-                <ExternalLinkIcon size={14} />
-              </a>
             </div>
           </div>
 
