@@ -10,6 +10,7 @@ import { EducationCertifications } from './components/EducationCertifications.ts
 import { BlogSection } from './components/BlogSection.tsx';
 import { Contact } from './components/Contact.tsx';
 import { Footer } from './components/Footer.tsx';
+import { PrintCV } from './components/PrintCV.tsx';
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -29,21 +30,27 @@ export const App: React.FC = () => {
 
   return (
     <div className="app-root">
-      <Header theme={theme} toggleTheme={toggleTheme} />
-      <main>
-        <Hero data={cvData.personalInfo} />
-        <About data={cvData.personalInfo} />
-        <Experience experiences={cvData.experiences} />
-        <Projects projects={cvData.projects} />
-        <Skills categories={cvData.skillCategories} />
-        <EducationCertifications
-          educations={cvData.educations}
-          certifications={cvData.certifications}
-        />
-        <BlogSection posts={cvData.blogPosts} />
-        <Contact data={cvData.personalInfo} />
-      </main>
-      <Footer />
+      {/* Screen Portfolio Web Application */}
+      <div className="web-only">
+        <Header theme={theme} toggleTheme={toggleTheme} />
+        <main>
+          <Hero data={cvData.personalInfo} />
+          <About data={cvData.personalInfo} />
+          <Experience experiences={cvData.experiences} />
+          <Projects projects={cvData.projects} />
+          <Skills categories={cvData.skillCategories} />
+          <EducationCertifications
+            educations={cvData.educations}
+            certifications={cvData.certifications}
+          />
+          <BlogSection posts={cvData.blogPosts} />
+          <Contact data={cvData.personalInfo} />
+        </main>
+        <Footer />
+      </div>
+
+      {/* Dedicated Standard ATS / Executive Print CV Document */}
+      <PrintCV data={cvData} />
     </div>
   );
 };

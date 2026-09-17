@@ -114,10 +114,10 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
               <button
                 onClick={() => window.print()}
                 className="btn btn-outline"
-                title="Export or Print CV"
+                title="Save CV as PDF"
               >
                 <DownloadIcon size={16} />
-                <span>Save CV (PDF)</span>
+                <span>Save CV</span>
               </button>
             </div>
           </div>

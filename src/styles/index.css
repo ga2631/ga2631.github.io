@@ -1511,98 +1511,240 @@ p {
   gap: 20px;
 }
 
+/* Screen View: Hide Print CV Document */
+.print-cv-document {
+  display: none !important;
+}
+
 /* ==========================================================================
-   PRINT STYLESHEET (@media print) - Professional A4 CV Exporter
+   PRINT STYLESHEET (@media print) - Standard ATS & Executive A4 CV Document
    ========================================================================== */
 
 @media print {
-  /* Reset colors for printing on white paper */
-  :root {
-    --bg-primary: #ffffff !important;
-    --bg-secondary: #ffffff !important;
-    --bg-tertiary: #f8fafc !important;
-    --bg-card: #ffffff !important;
-    --text-primary: #0f172a !important;
-    --text-secondary: #334155 !important;
-    --text-muted: #64748b !important;
-    --border-color: #e2e8f0 !important;
+  @page {
+    size: A4 portrait;
+    margin: 8mm 12mm;
   }
 
-  body {
+  html, body {
     background: #ffffff !important;
     color: #0f172a !important;
-    font-size: 10pt;
-    line-height: 1.4;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: 8.5pt !important;
+    line-height: 1.32 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* Hide interactive / non-printable UI */
+  /* Completely hide all interactive web elements */
+  .web-only,
+  .app-header,
   .header,
   .footer,
-  .hero-cta-group,
-  .theme-toggle-btn,
-  .filter-bar,
-  .project-actions,
-  .contact-form,
-  .social-links,
-  .blog-modal-backdrop,
-  .mobile-menu-btn,
+  main,
+  #hero,
+  #about,
+  #experience,
+  #projects,
+  #skills,
+  #education,
   #blog,
+  #contact,
+  .blog-modal-backdrop,
+  .theme-toggle-btn,
+  .mobile-menu-btn,
   body::before {
     display: none !important;
   }
 
-  .container {
-    max-width: 100% !important;
+  /* Show only the dedicated Print CV Document */
+  .print-cv-document {
+    display: block !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
     padding: 0 !important;
+    margin: 0 !important;
   }
 
-  .section {
-    padding: 16px 0 !important;
+  /* Force Page 2 clean break */
+  .print-page-2 {
+    page-break-before: always !important;
+    break-before: page !important;
+    padding-top: 4px;
+  }
+
+  .print-header {
+    text-align: center;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #0f172a;
+  }
+
+  .print-name {
+    font-family: var(--font-heading), -apple-system, sans-serif;
+    font-size: 16pt;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+
+  .print-title {
+    font-size: 9.2pt;
+    font-weight: 700;
+    color: #0284c7;
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+  }
+
+  .print-contact-row {
+    font-size: 8pt;
+    color: #475569;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+
+  .print-section {
+    margin-bottom: 8px;
+  }
+
+  .print-section-heading {
+    font-family: var(--font-heading), -apple-system, sans-serif;
+    font-size: 9.2pt;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 1px;
+    margin-bottom: 4px;
+  }
+
+  .print-summary-text {
+    font-size: 8.2pt;
+    color: #334155;
+    line-height: 1.35;
+    text-align: justify;
+    margin-bottom: 2px;
+  }
+
+  .print-skills-table {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .print-skill-row {
+    font-size: 8pt;
+    line-height: 1.25;
+  }
+
+  .print-skill-category {
+    color: #0f172a;
+    margin-right: 5px;
+  }
+
+  .print-skill-list {
+    color: #334155;
+  }
+
+  .print-experience-list,
+  .print-projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .print-exp-item,
+  .print-proj-item,
+  .print-edu-item {
     page-break-inside: avoid;
   }
 
-  .hero-section {
-    padding-top: 0 !important;
-    min-height: auto !important;
+  .print-exp-header,
+  .print-proj-header,
+  .print-edu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1px;
   }
 
-  .hero-grid {
-    grid-template-columns: 1fr !important;
+  .print-exp-role,
+  .print-proj-title,
+  .print-edu-degree {
+    font-weight: 700;
+    font-size: 8.8pt;
+    color: #0f172a;
   }
 
-  .hero-visual {
-    display: none !important;
+  .print-exp-company,
+  .print-proj-role,
+  .print-edu-inst {
+    font-weight: 600;
+    color: #0284c7;
+    font-size: 8.5pt;
   }
 
-  .glass-panel {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
+  .print-exp-meta,
+  .print-edu-period {
+    font-size: 7.8pt;
+    color: #64748b;
+    font-style: italic;
+    white-space: nowrap;
   }
 
-  .timeline::before {
-    background: #cbd5e1 !important;
+  .print-exp-summary,
+  .print-proj-desc {
+    font-size: 8pt;
+    color: #475569;
+    font-style: italic;
+    margin-bottom: 1px;
   }
 
-  .timeline-dot {
-    border-color: #0284c7 !important;
-    background: #ffffff !important;
+  .print-exp-bullets,
+  .print-proj-highlights {
+    margin: 1px 0 2px 12px;
+    padding: 0;
+    list-style-type: disc;
   }
 
-  .timeline-item {
+  .print-exp-bullets li,
+  .print-proj-highlights li {
+    font-size: 8pt;
+    color: #1e293b;
+    line-height: 1.28;
+    margin-bottom: 1px;
+    text-align: justify;
+  }
+
+  .print-tech-stack {
+    font-size: 7.6pt;
+    color: #475569;
+    margin-top: 1px;
+  }
+
+  .print-edu-highlight {
+    font-size: 8pt;
+    color: #334155;
+    line-height: 1.28;
+    text-align: justify;
+    margin-top: 1px;
+  }
+
+  .print-cert-row {
+    font-size: 8pt;
+    color: #334155;
+    line-height: 1.28;
+  }
+
+  .print-page-break-avoid {
     page-break-inside: avoid;
-    margin-bottom: 20px !important;
-  }
-
-  .projects-grid, .skills-grid, .edu-cert-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 16px !important;
-  }
-
-  .project-card, .skill-category-card, .edu-card {
-    page-break-inside: avoid;
-    padding: 16px !important;
   }
 }
 

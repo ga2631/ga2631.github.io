@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SunIcon, MoonIcon, PrinterIcon, MenuIcon, CloseIcon } from './Icons.tsx';
+import { SunIcon, MoonIcon, DownloadIcon, MenuIcon, CloseIcon } from './Icons.tsx';
 
 interface HeaderProps {
   theme: 'dark' | 'light';
@@ -35,19 +35,15 @@ export const Header: React.FC<HeaderProps> = ({ theme, toggleTheme }) => {
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="container header-container">
-        <a href="#" className="logo">
+        <a href="#hero" className="logo">
           <div className="logo-badge">TN</div>
           <span>Tan Huynh Nhat</span>
         </a>
 
-        <nav className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+        {/* Desktop Navigation Links */}
+        <nav className="nav-links">
           {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="nav-link"
-              onClick={() => setMobileMenuOpen(false)}
-            >
+            <a key={item.href} href={item.href} className="nav-link">
               {item.label}
             </a>
           ))}
@@ -57,11 +53,11 @@ export const Header: React.FC<HeaderProps> = ({ theme, toggleTheme }) => {
           <button
             onClick={handlePrint}
             className="btn btn-secondary btn-sm"
-            title="Export / Print Clean CV as PDF"
+            title="Save / Export Clean CV as PDF"
             id="print-cv-btn"
           >
-            <PrinterIcon size={16} />
-            <span>Print CV</span>
+            <DownloadIcon size={16} />
+            <span>Save CV</span>
           </button>
 
           <button

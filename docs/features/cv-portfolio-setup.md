@@ -17,6 +17,7 @@ Hệ thống CV Portfolio & Blog Engine được thiết kế theo mô hình Sta
      - `EducationCertifications.tsx`: Bằng cấp đại học và chứng chỉ quốc tế (AWS, Docker, PSM).
      - `BlogSection.tsx`: Module hiển thị và đọc bài viết kỹ thuật (HTML Blog Reader) với modal view, sẵn sàng cho việc xuất bản bài viết và mở rộng thành blog độc lập.
      - `Contact.tsx`: Kênh liên hệ, tính năng 1-click Copy Email và form gửi tin nhắn.
+     - `PrintCV.tsx`: Component định dạng CV bản in chuẩn Executive / ATS format, tự động kích hoạt khi nhấn Save CV (PDF) / window.print(), lược bỏ toàn bộ các thành phần web thừa (dark mode, navbar, animation, buttons, blog modals).
      - `Footer.tsx`: Copyright, live status và repository reference.
 
 2. **Containerization & Web Server Layer (Docker + Nginx)**:
