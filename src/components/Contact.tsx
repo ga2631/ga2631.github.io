@@ -113,7 +113,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               </div>
               {data.birthday && (
                 <p className="contact-card-hint" style={{ marginTop: '4px' }}>
-                  Born: {data.birthday} • Relocation / Hybrid / Remote friendly
+                  Born: {data.birthday} • Onsite / Hybrid / Remote friendly
                 </p>
               )}
             </div>
