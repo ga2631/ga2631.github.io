@@ -120,18 +120,18 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                 <span>Save CV (PDF)</span>
               </button>
             </div>
-
-            {/* Quick Stats Grid */}
-            <div className="hero-stats-grid">
-              {data.stats.map((stat, idx) => (
-                <div key={idx} className="stat-item">
-                  <span className="stat-value gradient-text">{stat.value}</span>
-                  <span className="stat-label">{stat.label}</span>
-                  {stat.subtext && <span className="stat-subtext">{stat.subtext}</span>}
-                </div>
-              ))}
-            </div>
           </div>
+        </div>
+
+        {/* Full-width Standalone Hero Stats Banner */}
+        <div className="glass-panel hero-stats-banner">
+          {data.stats.map((stat, idx) => (
+            <div key={idx} className="hero-stat-card">
+              <div className="hero-stat-value gradient-text">{stat.value}</div>
+              <div className="hero-stat-label">{stat.label}</div>
+              {stat.subtext && <div className="hero-stat-subtext">{stat.subtext}</div>}
+            </div>
+          ))}
         </div>
       </div>
     </section>

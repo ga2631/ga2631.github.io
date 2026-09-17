@@ -5,7 +5,7 @@ export const cvData: CVData = {
     fullName: 'Tan Huynh Nhat',
     jobTitle: 'Polyglot Backend & Data Engineer | Technical Team Lead',
     tagline: 'Architecting Scalable Distributed Systems, Medallion Data Warehouses & High-Concurrency Pipelines',
-    bio: 'Polyglot Backend & Data Engineer with 5+ years of experience architecting scalable distributed systems and optimizing high-concurrency applications. Proficient in Golang, Java (Spring Boot), Node.js, Python, and PHP (Laravel), with deep hands-on expertise in PostgreSQL, MySQL, Redis, RabbitMQ, and Docker. Proven track record of taking end-to-end technical ownership, notably migrating a 7-year legacy ERP database to a Medallion Data Warehouse using CDC pipelines with zero data loss. Passionate about bridging software engineering and data analytics to drive business value, reduce complex query times by 70%, and ensure system stability. Currently pursuing the Google Cloud Professional Data Engineer certification.',
+    bio: 'Polyglot Backend & Data Engineer with 5+ years of experience architecting high-concurrency distributed systems and modern Data Warehouses. Strong technical ownership across Golang, Java (Spring Boot), Node.js, and Python — specializing in real-time CDC pipelines, database optimization, and scalable microservices.',
     email: 'tanhuynh2631@gmail.com',
     phone: '+84-963684520',
     location: 'Tan Khanh Ward, Ho Chi Minh City, Vietnam',
@@ -14,10 +14,10 @@ export const cvData: CVData = {
     githubUrl: 'https://github.com/ga2631',
     avatarUrl: 'https://github.com/ga2631.png',
     stats: [
-      { label: 'Years Experience', value: '5+', subtext: 'Distributed Systems & Data' },
+      { label: 'Years Experience', value: '5+', subtext: 'Backend & Data Pipelines' },
       { label: 'Data Reconciliation', value: '96%', subtext: 'Zero Data Loss Migration' },
-      { label: 'Query Optimization', value: '>70%', subtext: 'Execution Time Reduction' },
-      { label: 'Peak Concurrency', value: '1,000+', subtext: 'Active Concurrent Users' },
+      { label: 'Query Performance', value: '70%+', subtext: 'Latency Reduction' },
+      { label: 'Peak Concurrency', value: '1,000+', subtext: 'Concurrent Users' },
     ],
   },
 

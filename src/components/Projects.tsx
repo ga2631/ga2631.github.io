@@ -250,14 +250,13 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                   <div className="project-actions-compact">
                     <button
                       className="btn btn-primary btn-sm"
-                      style={{ width: '100%' }}
                       onClick={(e) => {
                         e.stopPropagation();
                         setActiveProject(project);
                       }}
                     >
+                      <ExternalLinkIcon size={15} />
                       <span>View Architecture</span>
-                      <ExternalLinkIcon size={14} />
                     </button>
                   </div>
                 </div>
@@ -346,8 +345,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                       href={repo.html_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-secondary btn-sm"
-                      style={{ flex: 1 }}
+                      className="btn btn-outline btn-sm"
                     >
                       <GithubIcon size={15} />
                       <span>Source Code</span>
@@ -358,8 +356,9 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                         href={repo.homepage}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-primary btn-sm"
+                        className="btn btn-secondary btn-sm"
                         title="Live Preview"
+                        style={{ flex: '0 0 auto', padding: '0 16px' }}
                       >
                         <ExternalLinkIcon size={14} />
                         <span>Demo</span>
