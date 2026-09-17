@@ -74,7 +74,7 @@ Hệ thống sử dụng Static Structured Data Schema định nghĩa qua TypeSc
 - `src/components/Skills.tsx`: Ma trận kỹ năng phân nhóm.
 - `src/components/EducationCertifications.tsx`: Học vấn và chứng chỉ.
 - `src/components/BlogSection.tsx`: Module bài viết kỹ thuật & HTML Blog Reader mở rộng.
-- `src/components/Contact.tsx`: Kênh liên hệ, Copy Email và message form.
+- `src/components/Contact.tsx`: Kênh liên hệ trực tiếp với 1-Click Copy Email, Phone Call, Location & Birthday, GitHub Action cards.
 - `src/components/Footer.tsx`: Chân trang và repository link.
 - `src/App.tsx`: Component gốc quản lý theme và bố cục.
 - `src/main.tsx`: Entry point khởi tạo React 19.

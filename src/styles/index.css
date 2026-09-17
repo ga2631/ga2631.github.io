@@ -1008,69 +1008,81 @@ img, svg {
    Contact Section
    ========================================================================== */
 
-.contact-grid {
+.contact-cards-grid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
 }
 
-.contact-info-list {
+.contact-card {
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  justify-content: space-between;
+  border-radius: var(--radius-lg);
+  position: relative;
+  transition: all var(--transition-smooth);
 }
 
-.contact-info-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+.contact-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-color-hover);
+  box-shadow: var(--border-glow);
+}
+
+.contact-card-icon {
+  width: 52px;
+  height: 52px;
   border-radius: var(--radius-md);
-}
-
-.contact-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-sm);
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(56, 189, 248, 0.12);
   color: var(--text-accent);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.contact-form {
-  padding: 36px;
-}
-
-.form-group {
   margin-bottom: 20px;
 }
 
-.form-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: var(--text-secondary);
+.contact-card-body {
+  flex: 1;
+  margin-bottom: 20px;
 }
 
-.form-control {
-  width: 100%;
-  padding: 12px 16px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+.contact-card-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.contact-card-value {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
   color: var(--text-primary);
-  font-size: 0.95rem;
-  transition: border-color var(--transition-fast);
+  display: block;
+  word-break: break-all;
+  transition: color var(--transition-fast);
 }
 
-.form-control:focus {
-  border-color: var(--text-accent);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+.contact-card-value:hover {
+  color: var(--text-accent);
+}
+
+.contact-card-hint {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.contact-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
 }
 
 /* ==========================================================================
