@@ -1,12 +1,14 @@
 import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
 import { GithubIcon, LinkedinIcon, MailIcon, DownloadIcon, ExternalLinkIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface HeroProps {
   data: PersonalInfo;
+  t: UITranslation['hero'];
 }
 
-export const Hero: React.FC<HeroProps> = ({ data }) => {
+export const Hero: React.FC<HeroProps> = ({ data, t }) => {
   return (
     <section className="hero-section" id="hero">
       <div className="container">
@@ -40,10 +42,10 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                   <span>git status</span>
                 </div>
                 <div style={{ color: 'var(--accent-emerald)', marginTop: '4px' }}>
-                  ✔ Working tree clean (production ready)
+                  {t.workingTreeClean}
                 </div>
                 <div style={{ color: 'var(--text-secondary)', marginTop: '6px', fontSize: '0.82rem' }}>
-                  <span style={{ color: 'var(--accent-cyan)' }}>$</span> focus = <span style={{ color: 'var(--text-primary)' }}>"Distributed Systems & Data"</span>
+                  {t.focusPrompt}
                   <span className="cursor-blink" />
                 </div>
               </div>
@@ -93,7 +95,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
             </div>
 
             <h1 className="hero-name">
-              Hi, I'm <span className="gradient-text">{data.fullName}</span>
+              {t.greeting} <span className="gradient-text">{data.fullName}</span>
             </h1>
 
             <h2 className="hero-title">{data.jobTitle}</h2>
@@ -102,13 +104,13 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
 
             <div className="hero-cta-group">
               <a href="#projects" className="btn btn-primary">
-                <span>View Featured Projects</span>
+                <span>{t.viewProjects}</span>
                 <ExternalLinkIcon size={16} />
               </a>
 
               <a href="#contact" className="btn btn-secondary">
                 <MailIcon size={16} />
-                <span>Get In Touch</span>
+                <span>{t.getInTouch}</span>
               </a>
 
               <button
@@ -117,7 +119,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                 title="Save CV as PDF"
               >
                 <DownloadIcon size={16} />
-                <span>Save CV</span>
+                <span>{t.saveCv}</span>
               </button>
             </div>
           </div>

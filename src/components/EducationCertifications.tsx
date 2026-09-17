@@ -1,26 +1,29 @@
 import React from 'react';
 import { EducationItem, CertificationItem } from '../types/index.ts';
 import { GraduationCapIcon, AwardIcon, ExternalLinkIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface EducationCertificationsProps {
   educations: EducationItem[];
   certifications: CertificationItem[];
+  t: UITranslation['education'];
 }
 
 export const EducationCertifications: React.FC<EducationCertificationsProps> = ({
   educations,
   certifications,
+  t,
 }) => {
   return (
     <section className="section" id="education">
       <div className="container">
         <div className="section-header">
           <span className="section-badge">
-            <GraduationCapIcon size={14} /> Background
+            <GraduationCapIcon size={14} /> {t.badge}
           </span>
-          <h2 className="section-title">Education & Certifications</h2>
+          <h2 className="section-title">{t.title}</h2>
           <p className="section-subtitle">
-            Formal computer science education and verified industry credentials.
+            {t.subtitle}
           </p>
         </div>
 
@@ -37,7 +40,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
               color: 'var(--text-primary)',
             }}>
               <GraduationCapIcon size={22} style={{ color: 'var(--accent-cyan)' }} />
-              <span>Academic Education</span>
+              <span>{t.academicBg}</span>
             </h3>
 
             {educations.map((edu) => (
@@ -83,7 +86,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
               color: 'var(--text-primary)',
             }}>
               <AwardIcon size={22} style={{ color: 'var(--accent-purple)' }} />
-              <span>Professional Certifications</span>
+              <span>{t.certificationsTitle}</span>
             </h3>
 
             {certifications.map((cert) => (
@@ -115,7 +118,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                       className="btn btn-outline btn-sm"
                       style={{ padding: '4px 10px', fontSize: '0.8rem' }}
                     >
-                      <span>Verify</span>
+                      <span>{t.viewCredential}</span>
                       <ExternalLinkIcon size={12} />
                     </a>
                   )}

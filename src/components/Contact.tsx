@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { PersonalInfo } from '../types/index.ts';
 import { MailIcon, MapPinIcon, CopyIcon, CheckIcon, LinkedinIcon, ExternalLinkIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface ContactProps {
   data: PersonalInfo;
+  t: UITranslation['contact'];
 }
 
-export const Contact: React.FC<ContactProps> = ({ data }) => {
+export const Contact: React.FC<ContactProps> = ({ data, t }) => {
   const [copied, setCopied] = useState(false);
 
   const copyEmailToClipboard = async () => {
@@ -25,11 +27,11 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
       <div className="container">
         <div className="section-header">
           <span className="section-badge">
-            <MailIcon size={14} /> Connect
+            <MailIcon size={14} /> {t.badge}
           </span>
-          <h2 className="section-title">Get In Touch</h2>
+          <h2 className="section-title">{t.title}</h2>
           <p className="section-subtitle">
-            Interested in discussing engineering leadership, distributed systems, data architecture, or collaborating on high-impact projects?
+            {t.subtitle}
           </p>
         </div>
 
@@ -40,12 +42,12 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               <MailIcon size={26} />
             </div>
             <div className="contact-card-body">
-              <div className="contact-card-label">Direct Email</div>
+              <div className="contact-card-label">{t.emailLabel}</div>
               <a href={`mailto:${data.email}`} className="contact-card-value">
                 {data.email}
               </a>
               <p className="contact-card-hint">
-                Best way to reach out for interview invitations & technical discussions.
+                {t.emailHint}
               </p>
             </div>
             <div className="contact-card-actions">
@@ -57,12 +59,12 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                 {copied ? (
                   <>
                     <CheckIcon size={14} style={{ color: 'var(--accent-emerald)' }} />
-                    <span style={{ color: 'var(--accent-emerald)' }}>Copied!</span>
+                    <span style={{ color: 'var(--accent-emerald)' }}>{t.copied}</span>
                   </>
                 ) : (
                   <>
                     <CopyIcon size={14} />
-                    <span>Copy</span>
+                    <span>{t.copyEmail}</span>
                   </>
                 )}
               </button>
@@ -71,7 +73,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                 className="btn btn-primary btn-sm"
               >
                 <MailIcon size={14} />
-                <span>Compose</span>
+                <span>{t.compose}</span>
               </a>
             </div>
           </div>
@@ -85,17 +87,17 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                 </svg>
               </div>
               <div className="contact-card-body">
-                <div className="contact-card-label">Phone & Zalo</div>
+                <div className="contact-card-label">{t.phoneLabel}</div>
                 <a href={`tel:${data.phone}`} className="contact-card-value">
                   {data.phone}
                 </a>
                 <p className="contact-card-hint">
-                  Available for phone screens, recruiters, and quick syncs.
+                  {t.phoneHint}
                 </p>
               </div>
               <div className="contact-card-actions">
                 <a href={`tel:${data.phone}`} className="btn btn-secondary btn-sm" style={{ width: '100%' }}>
-                  <span>Call Directly</span>
+                  <span>{t.callZalo}</span>
                 </a>
               </div>
             </div>
@@ -107,13 +109,13 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
               <MapPinIcon size={26} />
             </div>
             <div className="contact-card-body">
-              <div className="contact-card-label">Location & Status</div>
+              <div className="contact-card-label">{t.locationLabel}</div>
               <div className="contact-card-value" style={{ fontSize: '1.05rem' }}>
                 {data.location}
               </div>
               {data.birthday && (
                 <p className="contact-card-hint" style={{ marginTop: '4px' }}>
-                  Born: {data.birthday} • Onsite / Hybrid / Remote friendly
+                  {t.locationHint}
                 </p>
               )}
             </div>
@@ -131,7 +133,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                 <LinkedinIcon size={26} />
               </div>
               <div className="contact-card-body">
-                <div className="contact-card-label">Professional Network</div>
+                <div className="contact-card-label">{t.linkedinLabel}</div>
                 <a
                   href={data.linkedinUrl}
                   target="_blank"
@@ -141,7 +143,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                   linkedin.com/in/tanhn
                 </a>
                 <p className="contact-card-hint">
-                  Connect on LinkedIn for professional references and endorsements.
+                  {t.linkedinHint}
                 </p>
               </div>
               <div className="contact-card-actions">
@@ -152,7 +154,7 @@ export const Contact: React.FC<ContactProps> = ({ data }) => {
                   className="btn btn-secondary btn-sm"
                   style={{ width: '100%' }}
                 >
-                  <span>Connect on LinkedIn</span>
+                  <span>{t.viewProfile}</span>
                   <ExternalLinkIcon size={14} />
                 </a>
               </div>

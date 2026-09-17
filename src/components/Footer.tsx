@@ -1,14 +1,18 @@
 import React from 'react';
-import { GithubIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  t: UITranslation['footer'];
+}
+
+export const Footer: React.FC<FooterProps> = ({ t }) => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
       <div className="container footer-content">
         <div style={{ width: '100%', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-          © {currentYear} Tan Huynh Nhat. All rights reserved. Hosted on GitHub Pages.
+          © {currentYear} Tan Huynh Nhat. All rights reserved. {t.hostedOn}.
         </div>
       </div>
     </footer>

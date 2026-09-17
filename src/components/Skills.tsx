@@ -1,21 +1,23 @@
 import React from 'react';
 import { SkillCategory } from '../types/index.ts';
 import { CodeIcon, DatabaseIcon, ChartIcon, SparklesIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface SkillsProps {
   categories: SkillCategory[];
+  t: UITranslation['skills'];
 }
 
-export const Skills: React.FC<SkillsProps> = ({ categories }) => {
+export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
   const getCategoryIcon = (title: string) => {
     const lower = title.toLowerCase();
-    if (lower.includes('core') || lower.includes('engineering')) {
+    if (lower.includes('core') || lower.includes('engineering') || lower.includes('cốt lõi')) {
       return <CodeIcon size={18} style={{ color: 'var(--accent-cyan)' }} />;
     }
-    if (lower.includes('database') || lower.includes('infrastructure')) {
+    if (lower.includes('database') || lower.includes('infrastructure') || lower.includes('cơ sở dữ liệu') || lower.includes('hạ tầng')) {
       return <DatabaseIcon size={18} style={{ color: 'var(--accent-indigo)' }} />;
     }
-    if (lower.includes('analytics') || lower.includes('data')) {
+    if (lower.includes('analytics') || lower.includes('data') || lower.includes('dữ liệu lớn')) {
       return <ChartIcon size={18} style={{ color: 'var(--accent-purple)' }} />;
     }
     return <SparklesIcon size={18} style={{ color: 'var(--accent-emerald)' }} />;
@@ -26,11 +28,11 @@ export const Skills: React.FC<SkillsProps> = ({ categories }) => {
       <div className="container">
         <div className="section-header">
           <span className="section-badge">
-            <CodeIcon size={14} /> Technical Arsenal
+            <CodeIcon size={14} /> {t.badge}
           </span>
-          <h2 className="section-title">Skills & Technologies</h2>
+          <h2 className="section-title">{t.title}</h2>
           <p className="section-subtitle">
-            A comprehensive matrix of polyglot programming, distributed data pipelines, and cloud native tools.
+            {t.subtitle}
           </p>
         </div>
 

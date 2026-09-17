@@ -1,22 +1,24 @@
 import React from 'react';
 import { ExperienceItem } from '../types/index.ts';
 import { BriefcaseIcon, ExternalLinkIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface ExperienceProps {
   experiences: ExperienceItem[];
+  t: UITranslation['experience'];
 }
 
-export const Experience: React.FC<ExperienceProps> = ({ experiences }) => {
+export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
   return (
     <section className="section" id="experience">
       <div className="container">
         <div className="section-header">
           <span className="section-badge">
-            <BriefcaseIcon size={14} /> Career Path
+            <BriefcaseIcon size={14} /> {t.badge}
           </span>
-          <h2 className="section-title">Work Experience</h2>
+          <h2 className="section-title">{t.title}</h2>
           <p className="section-subtitle">
-            A track record of engineering leadership, system modernization, and delivering enterprise-grade web platforms.
+            {t.subtitle}
           </p>
         </div>
 

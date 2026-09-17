@@ -1,46 +1,29 @@
 import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
 import { CodeIcon, AwardIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface AboutProps {
   data: PersonalInfo;
+  t: UITranslation['about'];
 }
 
-export const About: React.FC<AboutProps> = ({ data }) => {
-  const principles = [
-    {
-      title: 'Architectural Resilience',
-      description: 'Designing modular microservices and event-driven architectures with high availability, fault tolerance, and low latency.',
-    },
-    {
-      title: 'Type Safety & Clean Code',
-      description: 'Leveraging modern TypeScript, Rust, and domain-driven design to ensure maintainability, maintain high test coverage, and eliminate runtime exceptions.',
-    },
-    {
-      title: 'DevOps & Automation',
-      description: 'Automating multi-stage Docker containerization and GitHub Actions CI/CD workflows for reliable, zero-downtime deployment pipelines.',
-    },
-    {
-      title: 'User-Centric Performance',
-      description: 'Optimizing Core Web Vitals, tree-shaking bundles, and crafting responsive user experiences with minimal latency.',
-    },
-  ];
-
+export const About: React.FC<AboutProps> = ({ data, t }) => {
   return (
     <section className="section" id="about">
       <div className="container">
         <div className="section-header">
           <span className="section-badge">
-            <AwardIcon size={14} /> About Me
+            <AwardIcon size={14} /> {t.badge}
           </span>
-          <h2 className="section-title">Engineering Excellence & Philosophy</h2>
+          <h2 className="section-title">{t.title}</h2>
           <p className="section-subtitle">
             {data.tagline}
           </p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-          {principles.map((item, index) => (
+          {t.principles.map((item, index) => (
             <div key={index} className="glass-panel" style={{ padding: '28px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
                 <div style={{

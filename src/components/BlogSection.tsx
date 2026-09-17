@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { BlogPost } from '../types/index.ts';
 import { BookOpenIcon, CloseIcon, ExternalLinkIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface BlogSectionProps {
   posts: BlogPost[];
+  t: UITranslation['blog'];
 }
 
-export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
+export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t }) => {
   const [activePost, setActivePost] = useState<BlogPost | null>(null);
 
   return (
@@ -14,11 +16,11 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
       <div className="container">
         <div className="section-header">
           <span className="section-badge">
-            <BookOpenIcon size={14} /> Knowledge & Insights
+            <BookOpenIcon size={14} /> {t.badge}
           </span>
-          <h2 className="section-title">Technical Articles & Blog</h2>
+          <h2 className="section-title">{t.title}</h2>
           <p className="section-subtitle">
-            Deep-dives into software architecture, frontend performance, cloud infrastructure, and modern engineering practices.
+            {t.subtitle}
           </p>
         </div>
 
@@ -57,7 +59,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
                     setActivePost(post);
                   }}
                 >
-                  <span>Read Full Article</span>
+                  <span>{t.readArticle}</span>
                   <ExternalLinkIcon size={14} />
                 </button>
               </div>
@@ -111,7 +113,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts }) => {
 
               <div style={{ marginTop: '36px', paddingTop: '20px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end' }}>
                 <button className="btn btn-secondary" onClick={() => setActivePost(null)}>
-                  Close Article
+                  {t.closeArticle}
                 </button>
               </div>
             </div>

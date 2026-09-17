@@ -10,9 +10,11 @@ import {
   GitForkIcon,
   SparklesIcon,
 } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface ProjectsProps {
   projects: ProjectItem[];
+  t: UITranslation['projects'];
 }
 
 interface GitHubRepo {
@@ -75,7 +77,7 @@ const FALLBACK_REPOS: GitHubRepo[] = [
   },
 ];
 
-export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
+export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'case-studies' | 'github'>('all');
   const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
@@ -154,13 +156,13 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
         <div className="section-header">
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
             <span className="section-badge">
-              <CodeIcon size={14} /> Portfolio & Repositories
+              <CodeIcon size={14} /> {t.badge}
             </span>
           </div>
 
-          <h2 className="section-title">Featured Engineering Projects</h2>
+          <h2 className="section-title">{t.title}</h2>
           <p className="section-subtitle">
-            Enterprise architecture deep-dives and public open-source repositories loaded live from GitHub.
+            {t.subtitle}
           </p>
         </div>
 
@@ -170,7 +172,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
             className={`project-view-tab ${activeTab === 'all' ? 'active' : ''}`}
             onClick={() => setActiveTab('all')}
           >
-            <span>All Works</span>
+            <span>{t.allWorks}</span>
             <span className="view-tab-count">{projects.length + (repos.length || 3)}</span>
           </button>
           <button
@@ -178,7 +180,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
             onClick={() => setActiveTab('case-studies')}
           >
             <SparklesIcon size={15} />
-            <span>Architecture Case Studies</span>
+            <span>{t.caseStudies}</span>
             <span className="view-tab-count">{projects.length}</span>
           </button>
           <button
@@ -186,7 +188,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
             onClick={() => setActiveTab('github')}
           >
             <GitRepoIcon size={15} />
-            <span>GitHub Repositories</span>
+            <span>{t.githubRepos}</span>
             <span className="view-tab-count">{repos.length || 'Live'}</span>
           </button>
         </div>
@@ -205,7 +207,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                   <div className="project-meta-row">
                     <span className="badge badge-cyan">{project.category}</span>
                     <span className="badge badge-purple" style={{ fontSize: '0.75rem' }}>
-                      Enterprise System
+                      {t.enterpriseSystem}
                     </span>
                   </div>
 
@@ -235,9 +237,9 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
 
                 <div className="project-card-footer">
                   <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                    {project.tags.slice(0, 4).map((t) => (
-                      <span key={t} className="badge">
-                        {t}
+                    {project.tags.slice(0, 4).map((tech) => (
+                      <span key={tech} className="badge">
+                        {tech}
                       </span>
                     ))}
                     {project.tags.length > 4 && (
@@ -256,7 +258,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                       }}
                     >
                       <ExternalLinkIcon size={15} />
-                      <span>View Architecture</span>
+                      <span>{t.viewArchitecture}</span>
                     </button>
                   </div>
                 </div>
@@ -284,7 +286,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                 <div className="project-card-header">
                   <div className="project-meta-row">
                     <span className="repo-source-badge">
-                      <GitRepoIcon size={14} /> Public Repo
+                      <GitRepoIcon size={14} /> {t.publicRepo}
                     </span>
                     <span className="repo-date">{formatDate(repo.updated_at)}</span>
                   </div>
@@ -348,7 +350,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                       className="btn btn-outline btn-sm"
                     >
                       <GithubIcon size={15} />
-                      <span>Source Code</span>
+                      <span>{t.sourceCode}</span>
                     </a>
 
                     {repo.homepage && (
@@ -361,7 +363,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                         style={{ flex: '0 0 auto', padding: '0 16px' }}
                       >
                         <ExternalLinkIcon size={14} />
-                        <span>Demo</span>
+                        <span>{t.demo}</span>
                       </a>
                     )}
                   </div>
@@ -417,10 +419,10 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
               )}
 
               <div className="article-body" style={{ marginTop: '16px' }}>
-                <h3>🎯 Project Objective</h3>
+                <h3>{t.objective}</h3>
                 <p>{activeProject.description}</p>
 
-                <h3>⚡ Key Engineering Challenges & Technical Solutions</h3>
+                <h3>{t.challenges}</h3>
                 <ul>
                   {activeProject.highlights.map((item, idx) => (
                     <li key={idx} style={{ marginBottom: '10px' }}>
@@ -429,7 +431,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                   ))}
                 </ul>
 
-                <h3>🛠️ Full Technology Stack</h3>
+                <h3>{t.fullStack}</h3>
                 <div className="tech-tags-list" style={{ marginTop: '8px', marginBottom: '24px' }}>
                   {activeProject.tags.map((tag) => (
                     <span key={tag} className="badge badge-cyan">
@@ -460,13 +462,13 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                       className="btn btn-primary btn-sm"
                     >
                       <ExternalLinkIcon size={16} />
-                      <span>Live System</span>
+                      <span>{t.demo}</span>
                     </a>
                   )}
                 </div>
 
                 <button className="btn btn-secondary btn-sm" onClick={() => setActiveProject(null)}>
-                  Close Case Study
+                  {t.closeModal}
                 </button>
               </div>
             </div>
