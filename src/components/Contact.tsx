@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PersonalInfo } from '../types/index.ts';
-import { MailIcon, MapPinIcon, CopyIcon, CheckIcon, LinkedinIcon, ExternalLinkIcon } from './Icons.tsx';
+import { MailIcon, MapPinIcon, CopyIcon, CheckIcon, LinkedinIcon, ExternalLinkIcon, PhoneIcon, ZaloIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
 interface ContactProps {
@@ -82,9 +82,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
           {data.phone && (
             <div className="glass-panel contact-card">
               <div className="contact-card-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                </svg>
+                <PhoneIcon size={26} />
               </div>
               <div className="contact-card-body">
                 <div className="contact-card-label">{t.phoneLabel}</div>
@@ -96,8 +94,23 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
                 </p>
               </div>
               <div className="contact-card-actions">
-                <a href={`tel:${data.phone}`} className="btn btn-secondary btn-sm" style={{ width: '100%' }}>
-                  <span>{t.callZalo}</span>
+                <a
+                  href={`tel:${data.phone}`}
+                  className="btn btn-secondary btn-sm"
+                  title="Direct Phone Call"
+                >
+                  <PhoneIcon size={14} />
+                  <span>{t.call}</span>
+                </a>
+                <a
+                  href={data.zaloUrl || `https://zalo.me/${data.phone.replace(/[^0-9]/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary btn-sm"
+                  title="Chat via Zalo"
+                >
+                  <ZaloIcon size={14} />
+                  <span>{t.zalo}</span>
                 </a>
               </div>
             </div>
@@ -120,7 +133,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
               )}
             </div>
             <div className="contact-card-actions">
-              <span className="badge badge-emerald" style={{ width: '100%', justifyContent: 'center', padding: '8px 12px' }}>
+              <span className="badge badge-emerald">
                 {data.availability}
               </span>
             </div>
@@ -140,7 +153,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
                   rel="noopener noreferrer"
                   className="contact-card-value"
                 >
-                  linkedin.com/in/tanhn
+                  {data.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
                 </a>
                 <p className="contact-card-hint">
                   {t.linkedinHint}
@@ -152,7 +165,6 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-secondary btn-sm"
-                  style={{ width: '100%' }}
                 >
                   <span>{t.viewProfile}</span>
                   <ExternalLinkIcon size={14} />

@@ -1194,6 +1194,63 @@ p {
 }
 
 /* ==========================================================================
+   About Principles Grid
+   ========================================================================== */
+
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.principle-card {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-smooth);
+}
+
+.principle-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-color-hover);
+  box-shadow: var(--border-glow);
+}
+
+.principle-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.principle-icon-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--text-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.principle-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.principle-card-desc {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ==========================================================================
    Experience Timeline
    ========================================================================== */
 
@@ -1468,10 +1525,13 @@ p {
   gap: 10px;
   padding-top: 14px;
   border-top: 1px solid var(--border-color);
+  width: 100%;
 }
 
 .project-actions-compact .btn {
-  width: 100%;
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
   height: 40px;
   display: inline-flex;
   align-items: center;
@@ -1481,6 +1541,8 @@ p {
   font-weight: 600;
   border-radius: var(--radius-sm);
   transition: all var(--transition-normal);
+  white-space: nowrap;
+  padding: 0 12px;
 }
 
 /* GitHub Public Repositories Card */
@@ -1644,7 +1706,7 @@ p {
 
 .skills-compact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
@@ -2116,12 +2178,12 @@ p {
 
 .contact-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
 .contact-card {
-  padding: 28px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -2190,6 +2252,36 @@ p {
   gap: 10px;
   padding-top: 16px;
   border-top: 1px solid var(--border-color);
+  width: 100%;
+}
+
+.contact-card-actions .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.contact-card-actions .badge {
+  width: 100%;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -2513,6 +2605,13 @@ p {
     padding: 24px 20px;
   }
 
+  .principles-grid,
+  .skills-compact-grid,
+  .contact-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
   .hero-stat-card:nth-child(2)::after {
     display: none;
   }
@@ -2585,6 +2684,13 @@ p {
     grid-template-columns: 1fr;
     gap: 20px;
     padding: 20px 16px;
+  }
+
+  .principles-grid,
+  .skills-compact-grid,
+  .contact-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .hero-stat-card::after {

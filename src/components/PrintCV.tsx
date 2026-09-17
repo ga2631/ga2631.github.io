@@ -27,6 +27,12 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
             <span>📍 {personalInfo.location}</span>
             <span>•</span>
             <span>🐙 github.com/ga2631</span>
+            {personalInfo.linkedinUrl && (
+              <>
+                <span>•</span>
+                <span>💼 {personalInfo.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</span>
+              </>
+            )}
             <span>•</span>
             <span>🌐 ga2631.github.io</span>
           </div>

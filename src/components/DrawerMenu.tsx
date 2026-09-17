@@ -14,6 +14,7 @@ import {
   ChevronRightIcon,
   GithubIcon,
   LinkedinIcon,
+  ZaloIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
@@ -221,7 +222,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
               <span>GitHub</span>
             </a>
             <a
-              href="https://www.linkedin.com/in/tanhn/"
+              href="https://www.linkedin.com/in/tan-huynh-nhat/"
               target="_blank"
               rel="noopener noreferrer"
               className="drawer-social-btn"
@@ -229,6 +230,16 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
             >
               <LinkedinIcon size={18} />
               <span>LinkedIn</span>
+            </a>
+            <a
+              href="https://zalo.me/0963684520"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="drawer-social-btn"
+              aria-label="Zalo Profile"
+            >
+              <ZaloIcon size={18} />
+              <span>Zalo</span>
             </a>
           </div>
           <div className="drawer-footer-note">

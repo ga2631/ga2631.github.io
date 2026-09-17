@@ -1,6 +1,6 @@
 import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
-import { GithubIcon, LinkedinIcon, MailIcon, DownloadIcon, ExternalLinkIcon } from './Icons.tsx';
+import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, DownloadIcon, ExternalLinkIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
 interface HeroProps {
@@ -72,6 +72,19 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                     title="LinkedIn"
                   >
                     <LinkedinIcon size={20} />
+                  </a>
+                )}
+
+                {data.zaloUrl && (
+                  <a
+                    href={data.zaloUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-icon-btn"
+                    aria-label="Zalo Profile"
+                    title="Zalo (0963684520)"
+                  >
+                    <ZaloIcon size={20} />
                   </a>
                 )}
 

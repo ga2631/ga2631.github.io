@@ -360,7 +360,6 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
                         rel="noopener noreferrer"
                         className="btn btn-secondary btn-sm"
                         title="Live Preview"
-                        style={{ flex: '0 0 auto', padding: '0 16px' }}
                       >
                         <ExternalLinkIcon size={14} />
                         <span>{t.demo}</span>

@@ -91,6 +91,8 @@ export interface UITranslation {
     copied: string;
     copyEmail: string;
     compose: string;
+    call: string;
+    zalo: string;
     callZalo: string;
     viewProfile: string;
   };
@@ -208,6 +210,8 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       copied: 'Copied!',
       copyEmail: 'Copy Email',
       compose: 'Compose',
+      call: 'Call',
+      zalo: 'Chat Zalo',
       callZalo: 'Call / Zalo',
       viewProfile: 'View Profile',
     },
@@ -323,6 +327,8 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       copied: 'Đã sao chép!',
       copyEmail: 'Sao chép Email',
       compose: 'Soạn thư',
+      call: 'Gọi điện',
+      zalo: 'Nhắn Zalo',
       callZalo: 'Gọi / Zalo',
       viewProfile: 'Xem hồ sơ',
     },
@@ -344,6 +350,8 @@ export const cvDataEn: CVData = {
     birthday: '23 Nov 1999',
     availability: 'Open to work',
     githubUrl: 'https://github.com/ga2631',
+    linkedinUrl: 'https://www.linkedin.com/in/tan-huynh-nhat/',
+    zaloUrl: 'https://zalo.me/0963684520',
     avatarUrl: 'https://github.com/ga2631.png',
     stats: [
       { label: 'Years Experience', value: '5+', subtext: 'Backend & Data Pipelines' },
@@ -606,6 +614,8 @@ export const cvDataVi: CVData = {
     birthday: '23/11/1999',
     availability: 'Sẵn sàng nhận việc',
     githubUrl: 'https://github.com/ga2631',
+    linkedinUrl: 'https://www.linkedin.com/in/tan-huynh-nhat/',
+    zaloUrl: 'https://zalo.me/0963684520',
     avatarUrl: 'https://github.com/ga2631.png',
     stats: [
       { label: 'Năm kinh nghiệm', value: '5+', subtext: 'Backend & Data Pipelines' },

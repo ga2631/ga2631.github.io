@@ -11,6 +11,7 @@ export interface PersonalInfo {
   avatarUrl?: string;
   githubUrl: string;
   linkedinUrl?: string;
+  zaloUrl?: string;
   resumePdfUrl?: string;
   stats: {
     label: string;
