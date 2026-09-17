@@ -115,21 +115,25 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
       - **Academic Background Cards**: `.edu-card:hover .edu-degree`
       - **Certification Cards**: `.cert-card:hover .cert-title`, `.cert-card:hover h4`
       - **Contact Cards**: `.contact-card:hover .contact-card-value`, `.contact-card:hover .contact-card-label`
-14. **Exact Clockwise Sequential Drawing Border: Top (3px default) -> Right -> Bottom -> Left -> Full 1px (`index.css`)**:
+14. **Exact Clockwise Sequential Drawing Border: Top (3px default) -> Right -> Bottom -> Left -> Full 1px & Reversible Un-Hover (`index.css`)**:
     - **Khắc phục triệt để lỗi mất viền ở góc bo (Native Curved Corner Preservation)**:
       - Sử dụng đường viền CSS thực (`border-top`, `border-right`, `border-bottom`, `border-left`) kết hợp `border-radius: inherit` kế thừa chính xác bán kính cong `18px` (`--radius-lg`) của card.
       - Loại bỏ cách dùng gradient thẳng để tránh hiện tượng đường thẳng bị `overflow: hidden` cắt cụt tại 4 góc bo.
     - **Trạng thái ban đầu (Default state)**:
       - Cạnh Trên (Top Border) hiển thị sẵn với độ dày **3px** nổi bật cùng 2 góc bo trên uốn lượn mượt mà (`border-top: 3px solid var(--accent-red)` trên `::before` với vùng cắt `clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(var(--radius-lg) + 2px), -2px calc(var(--radius-lg) + 2px))`).
-      - Các cạnh còn lại (Right, Bottom, Left) được ẩn thông qua `clip-path`.
-    - **Cơ chế kéo dài lần lượt từng cạnh theo chiều kim đồng hồ khi hover**:
-      - Khi rê chuột vào thẻ (`.glass-panel:hover`):
-        - **Cạnh Trên (Top - 0% đến 25% | 0s đến 0.15s)**: Thu nhỏ độ dày từ 3px về **1px** (`border-top-width: 1px`).
-        - **Cạnh Phải (Right - 25% đến 50% | 0.15s đến 0.30s)**: Mở rộng vùng hiển thị thẳng **từ trên xuống dưới**, uốn cong hoàn hảo qua góc bo dưới-phải (`clip-path` mở rộng xuống đáy).
-        - **Cạnh Dưới (Bottom - 50% đến 75% | 0.30s đến 0.45s)**: Mở rộng đường viền dưới ngang **từ phải sang trái**, uốn cong mượt mà qua góc bo dưới-trái.
-        - **Cạnh Trái (Left - 75% đến 100% | 0.45s đến 0.60s)**: Mở rộng đường viền trái thẳng **từ dưới lên trên**, kết nối hoàn hảo với góc bo trên-trái.
-        - **Hoàn tất (0.60s)**: Toàn bộ 4 cạnh và 4 góc bo 18px đều liền mạch với độ dày đồng nhất **1px** bao bọc hoàn chỉnh quanh box kết hợp bóng hào quang (`box-shadow: var(--border-glow)`).
-      - Khi rời chuột (un-hover): Toàn bộ viền thu gọn mượt mà về trạng thái viền trên 3px ban đầu trong 0.25s (`transition: clip-path 0.25s ease-out, border-top-width 0.25s ease-out`).
+      - Các cạnh còn lại (Right, Bottom, Left) được ẩn với `width: 0`, `height: 0` và `clip-path`.
+    - **Cơ chế chạy viền chiều kim đồng hồ khi Hover (0s -> 0.56s)**:
+      - **Pha 1 (0.00s -> 0.14s)**: Cạnh Trên (**Top**) thu nhỏ độ dày từ 3px về **1px** (`border-top-width: 1px`).
+      - **Pha 2 (0.14s -> 0.28s)**: Cạnh Phải (**Right**) mở rộng thẳng **từ trên xuống dưới**, uốn cong hoàn hảo qua góc bo dưới-phải (`clip-path` mở rộng xuống đáy).
+      - **Pha 3 (0.28s -> 0.42s)**: Cạnh Dưới (**Bottom**) mở rộng ngang **từ phải sang trái** (`width: 0 -> 100%`), uốn cong mượt mà qua góc bo dưới-trái.
+      - **Pha 4 (0.42s -> 0.56s)**: Cạnh Trái (**Left**) mở rộng thẳng **từ dưới lên trên** (`height: 0 -> 100%`), kết nối hoàn hảo vào góc bo trên-trái.
+      - **Hoàn tất (0.56s)**: Toàn bộ 4 cạnh và 4 góc bo 18px liền mạch với độ dày đồng nhất **1px** bao quanh box.
+    - **Cơ chế thu viền ngược chiều kim đồng hồ đối xứng khi rời chuột (Un-hover: 0s -> 0.56s)**:
+      - Khi rời chuột (mouse leave), hiệu ứng tự động **chạy ngược lại 100%** theo thứ tự đối xứng hoàn hảo:
+        - **Pha 1 (0.00s -> 0.14s)**: Cạnh Trái (**Left**) thu ngược **từ trên xuống dưới** (`height: 100% -> 0`).
+        - **Pha 2 (0.14s -> 0.28s)**: Cạnh Dưới (**Bottom**) thu ngược **từ trái sang phải** (`width: 100% -> 0`).
+        - **Pha 3 (0.28s -> 0.42s)**: Cạnh Phải (**Right**) thu ngược **từ dưới lên trên** (`clip-path` thu về góc bo trên).
+        - **Pha 4 (0.42s -> 0.56s)**: Cạnh Trên (**Top**) dày dần trở lại từ 1px về **3px** ban đầu (`border-top-width: 1px -> 3px`).
 
 15. **Profile Card Continuous Dual-Symmetric Rotating Border Effect (`index.css`)**:
     - **Cơ chế xoay vòng liên tục không ngừng (Infinite Continuous Rotation)**:
