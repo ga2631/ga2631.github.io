@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ProjectItem } from '../types/index.ts';
 import {
   CodeIcon,
@@ -9,6 +10,18 @@ import {
   StarIcon,
   GitForkIcon,
   SparklesIcon,
+  TargetIcon,
+  ZapIcon,
+  ToolsIcon,
+  LockIcon,
+  RocketIcon,
+  ShieldIcon,
+  ClockIcon,
+  UsersIcon,
+  TrendingDownIcon,
+  PuzzleIcon,
+  HourglassIcon,
+  RefreshCwIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
@@ -31,6 +44,50 @@ interface GitHubRepo {
   updated_at: string;
   fork: boolean;
 }
+
+const getImpactIcon = (impact: string) => {
+  const lower = impact.toLowerCase();
+  // 1. Lock 🔒: reconciliation, zero data loss, data integrity
+  if (lower.includes('reconciliation') || lower.includes('zero data loss') || lower.includes('khớp nối') || lower.includes('mất mát')) {
+    return <LockIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+  }
+  // 2. Rocket 🚀: real-time CDC sync, latency <2s
+  if (lower.includes('cdc') || lower.includes('real-time') || lower.includes('thời gian thực')) {
+    return <RocketIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+  }
+  // 3. Shield 🛡️: PII privacy, compliance, security
+  if (lower.includes('pii') || lower.includes('privacy') || lower.includes('compliance') || lower.includes('quyền riêng tư') || lower.includes('tuân thủ')) {
+    return <ShieldIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+  }
+  // 4. Clock ⏱️: Report generation time reduction
+  if (lower.includes('daily report') || lower.includes('tổng hợp báo cáo')) {
+    return <ClockIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+  }
+  // 5. Users 👥: Concurrent users, scaled smoothly, traffic
+  if (lower.includes('concurrent users') || lower.includes('scaled') || lower.includes('người dùng đồng thời') || lower.includes('vận hành ổn định')) {
+    return <UsersIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+  }
+  // 6. Hourglass ⏳: Saved hours/week
+  if (lower.includes('saved') || lower.includes('tiết kiệm') || lower.includes('hours/week') || lower.includes('giờ/tuần')) {
+    return <HourglassIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+  }
+  // 7. Refresh 🔄: Zero-downtime, automated deployments, CI/CD
+  if (lower.includes('zero-downtime') || lower.includes('automated deployments') || lower.includes('triển khai') || lower.includes('không gián đoạn')) {
+    return <RefreshCwIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+  }
+  // 8. Puzzle 🧩: Modular frontend charts, adaptable UX
+  if (lower.includes('modular') || lower.includes('mô-đun') || lower.includes('charts') || lower.includes('biểu đồ')) {
+    return <PuzzleIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+  }
+  // 9. Trending Down 📉: Reduction in manual requests, decreased query/report time
+  if (lower.includes('reduction') || lower.includes('decreased') || lower.includes('giảm 40%') || lower.includes('giảm 63%') || lower.includes('giảm ')) {
+    if (!lower.includes('analytical query times') && !lower.includes('thời gian thực thi truy vấn')) {
+      return <TrendingDownIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+    }
+  }
+  // 10. Zap ⚡: Query times, sub-second latency, speed
+  return <ZapIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
+};
 
 const FALLBACK_REPOS: GitHubRepo[] = [
   {
@@ -228,7 +285,8 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
                     <div className="project-impact-pills">
                       {project.keyImpacts.slice(0, 3).map((impact, idx) => (
                         <div key={idx} className="impact-pill">
-                          {impact}
+                          {getImpactIcon(impact)}
+                          <span>{impact}</span>
                         </div>
                       ))}
                     </div>
@@ -360,7 +418,6 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
                         rel="noopener noreferrer"
                         className="btn btn-secondary btn-sm"
                         title="Live Preview"
-                        style={{ flex: '0 0 auto', padding: '0 16px' }}
                       >
                         <ExternalLinkIcon size={14} />
                         <span>{t.demo}</span>
@@ -373,107 +430,118 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
         </div>
 
         {/* Detailed Architecture & Case Study Modal */}
-        {activeProject && (
-          <div className="blog-modal-backdrop" onClick={() => setActiveProject(null)}>
-            <div className="blog-modal-content" onClick={(e) => e.stopPropagation()}>
-              <button
-                className="modal-close-btn"
-                onClick={() => setActiveProject(null)}
-                aria-label="Close Project Details"
-              >
-                <CloseIcon size={18} />
-              </button>
+        {activeProject &&
+          createPortal(
+            <div className="blog-modal-backdrop" onClick={() => setActiveProject(null)}>
+              <div className="blog-modal-content" onClick={(e) => e.stopPropagation()}>
+                <button
+                  className="modal-close-btn"
+                  onClick={() => setActiveProject(null)}
+                  aria-label="Close Project Details"
+                >
+                  <CloseIcon size={18} />
+                </button>
 
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
-                <span className="badge badge-cyan">{activeProject.category}</span>
-                {activeProject.featured && <span className="badge badge-emerald">Featured Project</span>}
-                {activeProject.teamSize && <span className="badge">Team: {activeProject.teamSize}</span>}
-              </div>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+                  <span className="badge badge-cyan">{activeProject.category}</span>
+                  {activeProject.featured && <span className="badge badge-emerald">Featured Project</span>}
+                  {activeProject.teamSize && <span className="badge">Team: {activeProject.teamSize}</span>}
+                </div>
 
-              <h2
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '1.75rem',
-                  fontWeight: 800,
-                  color: 'var(--text-primary)',
-                  marginBottom: '8px',
-                  lineHeight: 1.25,
-                }}
-              >
-                {activeProject.title}
-              </h2>
-
-              {(activeProject.company || activeProject.role) && (
-                <div
+                <h2
                   style={{
-                    color: 'var(--text-accent)',
-                    fontWeight: 600,
-                    fontSize: '0.95rem',
-                    marginBottom: '16px',
-                    paddingBottom: '12px',
-                    borderBottom: '1px solid var(--border-color)',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '1.75rem',
+                    fontWeight: 800,
+                    color: 'var(--text-primary)',
+                    marginBottom: '8px',
+                    lineHeight: 1.25,
                   }}
                 >
-                  {activeProject.company} — {activeProject.role}
+                  {activeProject.title}
+                </h2>
+
+                {(activeProject.company || activeProject.role) && (
+                  <div
+                    style={{
+                      color: 'var(--text-accent)',
+                      fontWeight: 600,
+                      fontSize: '0.95rem',
+                      marginBottom: '16px',
+                      paddingBottom: '12px',
+                      borderBottom: '1px solid var(--border-color)',
+                    }}
+                  >
+                    {activeProject.company} — {activeProject.role}
+                  </div>
+                )}
+
+                <div className="article-body" style={{ marginTop: '16px' }}>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                    <span>{t.objective}</span>
+                  </h3>
+                  <p>{activeProject.description}</p>
+
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                    <span>{t.challenges}</span>
+                  </h3>
+                  <ul>
+                    {activeProject.highlights.map((item, idx) => (
+                      <li key={idx} style={{ marginBottom: '10px' }}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                    <span>{t.fullStack}</span>
+                  </h3>
+                  <div className="tech-tags-list" style={{ marginTop: '8px', marginBottom: '24px' }}>
+                    {activeProject.tags.map((tag) => (
+                      <span key={tag} className="badge badge-cyan">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              )}
 
-              <div className="article-body" style={{ marginTop: '16px' }}>
-                <h3>{t.objective}</h3>
-                <p>{activeProject.description}</p>
+                <div
+                  style={{
+                    marginTop: '28px',
+                    paddingTop: '20px',
+                    borderTop: '1px solid var(--border-color)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                  }}
+                >
+                  <div>
+                    {activeProject.demoUrl && (
+                      <a
+                        href={activeProject.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-primary btn-sm"
+                      >
+                        <ExternalLinkIcon size={16} />
+                        <span>{t.demo}</span>
+                      </a>
+                    )}
+                  </div>
 
-                <h3>{t.challenges}</h3>
-                <ul>
-                  {activeProject.highlights.map((item, idx) => (
-                    <li key={idx} style={{ marginBottom: '10px' }}>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                <h3>{t.fullStack}</h3>
-                <div className="tech-tags-list" style={{ marginTop: '8px', marginBottom: '24px' }}>
-                  {activeProject.tags.map((tag) => (
-                    <span key={tag} className="badge badge-cyan">
-                      {tag}
-                    </span>
-                  ))}
+                  <button className="btn btn-secondary btn-sm" onClick={() => setActiveProject(null)}>
+                    {t.closeModal}
+                  </button>
                 </div>
               </div>
-
-              <div
-                style={{
-                  marginTop: '28px',
-                  paddingTop: '20px',
-                  borderTop: '1px solid var(--border-color)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '12px',
-                }}
-              >
-                <div>
-                  {activeProject.demoUrl && (
-                    <a
-                      href={activeProject.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-primary btn-sm"
-                    >
-                      <ExternalLinkIcon size={16} />
-                      <span>{t.demo}</span>
-                    </a>
-                  )}
-                </div>
-
-                <button className="btn btn-secondary btn-sm" onClick={() => setActiveProject(null)}>
-                  {t.closeModal}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+            </div>,
+            document.body
+          )}
       </div>
     </section>
   );

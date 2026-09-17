@@ -1,7 +1,8 @@
 import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
-import { GithubIcon, LinkedinIcon, MailIcon, DownloadIcon, ExternalLinkIcon } from './Icons.tsx';
+import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, DownloadIcon, ExternalLinkIcon, CheckIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 
 interface HeroProps {
   data: PersonalInfo;
@@ -9,6 +10,15 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ data, t }) => {
+  const handleZaloClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.open(getSecureZaloUrl(), '_blank', 'noopener,noreferrer');
+  };
+
+  const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.location.href = getSecureMailtoUrl();
+  };
   return (
     <section className="hero-section" id="hero">
       <div className="container">
@@ -31,18 +41,25 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 )}
               </div>
 
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '4px' }}>
+              <h3 className="avatar-name">
                 {data.fullName}
               </h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>{data.location}</p>
+
+              <div className="hero-status-pill avatar-status-pill mobile-only-status">
+                <span className="status-dot"></span>
+                <span>{data.availability}</span>
+              </div>
+
+              <p className="avatar-location">{data.location}</p>
 
               <div className="avatar-info-box">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span style={{ color: 'var(--text-muted)' }}>$</span>
                   <span>git status</span>
                 </div>
-                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px' }}>
-                  {t.workingTreeClean}
+                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <CheckIcon size={14} style={{ flexShrink: 0 }} />
+                  <span>{t.workingTreeClean}</span>
                 </div>
                 <div style={{ color: 'var(--text-secondary)', marginTop: '6px', fontSize: '0.82rem' }}>
                   {t.focusPrompt}
@@ -75,8 +92,25 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                   </a>
                 )}
 
+                {data.zaloUrl && (
+                  <a
+                    href="#"
+                    onClick={handleZaloClick}
+                    onMouseEnter={(e) => { e.currentTarget.href = getSecureZaloUrl(); }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-icon-btn"
+                    aria-label="Zalo Profile"
+                    title="Zalo"
+                  >
+                    <ZaloIcon size={20} />
+                  </a>
+                )}
+
                 <a
-                  href={`mailto:${data.email}`}
+                  href="#"
+                  onClick={handleEmailClick}
+                  onMouseEnter={(e) => { e.currentTarget.href = getSecureMailtoUrl(); }}
                   className="social-icon-btn"
                   aria-label="Send Email"
                   title="Email"
@@ -89,7 +123,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
 
           {/* Right Column: Introduction & CTA */}
           <div className="hero-content">
-            <div className="hero-status-pill">
+            <div className="hero-status-pill desktop-only-status">
               <span className="status-dot"></span>
               <span>{data.availability}</span>
             </div>
@@ -115,7 +149,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
 
               <button
                 onClick={() => window.print()}
-                className="btn btn-outline"
+                className="btn btn-secondary"
                 title="Save CV as PDF"
               >
                 <DownloadIcon size={16} />

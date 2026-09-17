@@ -1,4 +1,5 @@
 import { CVData } from '../types/index.ts';
+import { getSecureEmail, getSecurePhone, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 
 export interface UITranslation {
   nav: {
@@ -86,11 +87,14 @@ export interface UITranslation {
     phoneHint: string;
     locationLabel: string;
     locationHint: string;
+    locationCta: string;
     linkedinLabel: string;
     linkedinHint: string;
     copied: string;
     copyEmail: string;
     compose: string;
+    call: string;
+    zalo: string;
     callZalo: string;
     viewProfile: string;
   };
@@ -116,7 +120,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       viewProjects: 'View Featured Projects',
       getInTouch: 'Get In Touch',
       saveCv: 'Save CV',
-      workingTreeClean: '✔ Working tree clean (production ready)',
+      workingTreeClean: 'Working tree clean (production ready)',
       focusPrompt: '$ focus = "Distributed Systems & Data"',
     },
     about: {
@@ -159,9 +163,9 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       demo: 'Demo',
       publicRepo: 'Public Repo',
       enterpriseSystem: 'Enterprise System',
-      objective: '🎯 Project Objective',
-      challenges: '⚡ Key Engineering Challenges & Technical Solutions',
-      fullStack: '🛠️ Full Technology Stack',
+      objective: 'Project Objective',
+      challenges: 'Key Engineering Challenges & Technical Solutions',
+      fullStack: 'Full Technology Stack',
       closeModal: 'Close Case Study',
       noProjects: 'No projects found.',
       resetFilters: 'Reset Filters',
@@ -201,13 +205,16 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       emailHint: 'Best for engineering opportunities, technical discussions & consulting.',
       phoneLabel: 'Phone & Zalo',
       phoneHint: 'Available for calls, direct technical screening & instant messaging.',
-      locationLabel: 'Location & Birthday',
+      locationLabel: 'Location',
       locationHint: 'Open for Hybrid / Onsite in Ho Chi Minh City & Remote worldwide.',
+      locationCta: 'Onsite / Hybrid / Remote',
       linkedinLabel: 'LinkedIn Profile',
       linkedinHint: 'Connect for professional networking & career endorsements.',
       copied: 'Copied!',
       copyEmail: 'Copy Email',
       compose: 'Compose',
+      call: 'Call',
+      zalo: 'Chat Zalo',
       callZalo: 'Call / Zalo',
       viewProfile: 'View Profile',
     },
@@ -231,7 +238,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       viewProjects: 'Xem dự án nổi bật',
       getInTouch: 'Liên hệ ngay',
       saveCv: 'Lưu CV',
-      workingTreeClean: '✔ Mã nguồn sẵn sàng cho môi trường Production',
+      workingTreeClean: 'Mã nguồn sẵn sàng cho môi trường Production',
       focusPrompt: '$ định_hướng = "Hệ thống Phân tán & Dữ liệu"',
     },
     about: {
@@ -274,9 +281,9 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       demo: 'Bản thử nghiệm',
       publicRepo: 'Public Repo',
       enterpriseSystem: 'Hệ thống Doanh nghiệp',
-      objective: '🎯 Mục tiêu Dự án',
-      challenges: '⚡ Thách thức Kỹ thuật & Giải pháp Thực thi',
-      fullStack: '🛠️ Toàn bộ Ngăn xếp Công nghệ',
+      objective: 'Mục tiêu Dự án',
+      challenges: 'Thách thức Kỹ thuật & Giải pháp Thực thi',
+      fullStack: 'Toàn bộ Ngăn xếp Công nghệ',
       closeModal: 'Đóng chi tiết',
       noProjects: 'Không tìm thấy dự án phù hợp.',
       resetFilters: 'Đặt lại bộ lọc',
@@ -318,11 +325,14 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       phoneHint: 'Sẵn sàng tiếp nhận cuộc gọi trao đổi chuyên môn & nhắn tin nhanh qua Zalo.',
       locationLabel: 'Địa điểm & Ngày sinh',
       locationHint: 'Làm việc Linh hoạt (Hybrid) / Trực tiếp tại TP.HCM & Remote toàn cầu.',
+      locationCta: 'Văn phòng / Từ xa / Linh hoạt',
       linkedinLabel: 'Hồ sơ LinkedIn',
       linkedinHint: 'Kết nối mạng lưới nghề nghiệp và tham khảo đánh giá năng lực.',
       copied: 'Đã sao chép!',
       copyEmail: 'Sao chép Email',
       compose: 'Soạn thư',
+      call: 'Gọi điện',
+      zalo: 'Nhắn Zalo',
       callZalo: 'Gọi / Zalo',
       viewProfile: 'Xem hồ sơ',
     },
@@ -338,12 +348,14 @@ export const cvDataEn: CVData = {
     jobTitle: 'Polyglot Backend & Data Engineer | Technical Team Lead',
     tagline: 'Architecting Scalable Distributed Systems, Medallion Data Warehouses & High-Concurrency Pipelines',
     bio: 'Polyglot Backend & Data Engineer with 5+ years of experience architecting high-concurrency distributed systems and modern Data Warehouses. Strong technical ownership across Golang, Java (Spring Boot), Node.js, and Python — specializing in real-time CDC pipelines, database optimization, and scalable microservices.',
-    email: 'tanhuynh2631@gmail.com',
-    phone: '+84-963684520',
+    email: getSecureEmail(),
+    phone: getSecurePhone(),
     location: 'Tan Khanh Ward, Ho Chi Minh City, Vietnam',
     birthday: '23 Nov 1999',
     availability: 'Open to work',
     githubUrl: 'https://github.com/ga2631',
+    linkedinUrl: 'https://www.linkedin.com/in/tan-huynh-nhat/',
+    zaloUrl: getSecureZaloUrl(),
     avatarUrl: 'https://github.com/ga2631.png',
     stats: [
       { label: 'Years Experience', value: '5+', subtext: 'Backend & Data Pipelines' },
@@ -359,7 +371,6 @@ export const cvDataEn: CVData = {
       role: 'Data Engineer',
       company: 'Adtechnology Technology Joint Stock Company',
       companySubtitle: 'Collaboration with Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company',
-      companyUrl: 'https://github.com/ga2631',
       location: 'Ban Co Ward, Ho Chi Minh City',
       period: '04/2026 – 06/2026',
       current: false,
@@ -376,7 +387,6 @@ export const cvDataEn: CVData = {
       role: 'Software Engineer / Team Lead',
       company: 'Adtechnology Technology Joint Stock Company',
       companySubtitle: 'Collaboration with Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company',
-      companyUrl: 'https://github.com/ga2631',
       location: 'Ban Co Ward, Ho Chi Minh City',
       period: '01/2024 – 03/2026',
       current: false,
@@ -393,7 +403,6 @@ export const cvDataEn: CVData = {
       role: 'Software Engineer / Project Manager',
       company: 'Adtechnology Technology Joint Stock Company',
       companySubtitle: 'Collaboration with Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company',
-      companyUrl: 'https://github.com/ga2631',
       location: 'Ban Co Ward, Ho Chi Minh City',
       period: '03/2021 – 12/2023',
       current: false,
@@ -419,9 +428,9 @@ export const cvDataEn: CVData = {
       category: 'Data / AI',
       tags: ['Golang', 'MySQL Binlogs', 'PostgreSQL', 'Medallion CDC', 'RabbitMQ', 'Docker'],
       keyImpacts: [
-        '⚡ Reduced analytical query times by over 70%',
-        '🔒 96% reconciliation rate with zero data loss',
-        '🚀 Near real-time CDC sync latency (<2s)',
+        'Reduced analytical query times by over 70%',
+        '96% reconciliation rate with zero data loss',
+        'Near real-time CDC sync latency (<2s)',
       ],
       highlights: [
         'Bypassed slow-to-modify legacy ERP source code by implementing Change Data Capture (CDC) reading directly from MySQL binlogs, completely decoupling extraction and capturing full audit trails.',
@@ -446,9 +455,9 @@ export const cvDataEn: CVData = {
       category: 'Backend / Cloud',
       tags: ['Java 17', 'Spring Boot', 'Spring WebFlux', 'Spring AOP', 'Kafka', 'BigQuery', 'Docker'],
       keyImpacts: [
-        '⚡ Sub-second latency for thousands of daily funnel events',
-        '🛡️ 100% PII privacy compliance via Spring AOP',
-        '⏱️ Reduced daily report generation time by >40%',
+        'Sub-second latency for thousands of daily funnel events',
+        '100% PII privacy compliance via Spring AOP',
+        'Reduced daily report generation time by >40%',
       ],
       highlights: [
         'Developed high-throughput event tracking service using Spring WebFlux (non-blocking reactive API) and Apache Kafka / RabbitMQ to capture real-time user journey events without impacting core booking performance.',
@@ -472,9 +481,9 @@ export const cvDataEn: CVData = {
       category: 'Fullstack',
       tags: ['Node.js', 'Vue.js', 'Redis Caching', 'ERP Integration', 'Docker', 'Agile'],
       keyImpacts: [
-        '👥 Scaled smoothly under 1,000+ peak concurrent users',
-        '📉 40% reduction in manual data extraction requests',
-        '🧩 Modular frontend charts adaptable to frequent UX changes',
+        'Scaled smoothly under 1,000+ peak concurrent users',
+        '40% reduction in manual data extraction requests',
+        'Modular frontend charts adaptable to frequent UX changes',
       ],
       highlights: [
         'Managed full SDLC and resource allocation from system design phase to User Acceptance Testing (UAT).',
@@ -497,9 +506,9 @@ export const cvDataEn: CVData = {
       category: 'Backend / Cloud',
       tags: ['PHP (Laravel)', 'VueJS', 'MariaDB', 'RabbitMQ', 'CentOS', 'CI/CD'],
       keyImpacts: [
-        '📉 Decreased report generation time by 63%',
-        '⏳ Saved 10-12 hours/week in manual accounting entry',
-        '🔄 100% zero-downtime automated deployments',
+        'Decreased report generation time by 63%',
+        'Saved 10-12 hours/week in manual accounting entry',
+        '100% zero-downtime automated deployments',
       ],
       highlights: [
         'Built and maintained automated data pipelines integrating Google Ads, Facebook Ads, and TikTok APIs to fetch and centralize advertising metrics.',
@@ -600,12 +609,14 @@ export const cvDataVi: CVData = {
     jobTitle: 'Kỹ sư Backend & Dữ liệu đa ngôn ngữ | Trưởng nhóm Kỹ thuật',
     tagline: 'Kiến trúc Hệ thống Phân tán Mở rộng, Medallion Data Warehouse & Đường ống Dữ liệu Tải cao',
     bio: 'Kỹ sư Backend & Dữ liệu đa ngôn ngữ với hơn 5 năm kinh nghiệm kiến trúc các hệ thống phân tán tải cao và Data Warehouse hiện đại. Năng lực làm chủ kỹ thuật chuyên sâu trên Golang, Java (Spring Boot), Node.js và Python — chuyên trách các đường ống dữ liệu CDC thời gian thực, tối ưu hóa cơ sở dữ liệu và microservices quy mô lớn.',
-    email: 'tanhuynh2631@gmail.com',
-    phone: '+84-963684520',
+    email: getSecureEmail(),
+    phone: getSecurePhone(),
     location: 'Phường Tân Khánh, TP. Hồ Chí Minh, Việt Nam',
     birthday: '23/11/1999',
     availability: 'Sẵn sàng nhận việc',
     githubUrl: 'https://github.com/ga2631',
+    linkedinUrl: 'https://www.linkedin.com/in/tan-huynh-nhat/',
+    zaloUrl: getSecureZaloUrl(),
     avatarUrl: 'https://github.com/ga2631.png',
     stats: [
       { label: 'Năm kinh nghiệm', value: '5+', subtext: 'Backend & Data Pipelines' },
@@ -621,7 +632,6 @@ export const cvDataVi: CVData = {
       role: 'Kỹ sư Dữ liệu (Data Engineer)',
       company: 'Công ty Cổ phần Công nghệ Adtechnology',
       companySubtitle: 'Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company',
-      companyUrl: 'https://github.com/ga2631',
       location: 'Phường Bàn Cờ, TP. Hồ Chí Minh',
       period: '04/2026 – 06/2026',
       current: false,
@@ -638,7 +648,6 @@ export const cvDataVi: CVData = {
       role: 'Kỹ sư Phần mềm / Trưởng nhóm Kỹ thuật (Tech Lead)',
       company: 'Công ty Cổ phần Công nghệ Adtechnology',
       companySubtitle: 'Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company',
-      companyUrl: 'https://github.com/ga2631',
       location: 'Phường Bàn Cờ, TP. Hồ Chí Minh',
       period: '01/2024 – 03/2026',
       current: false,
@@ -655,7 +664,6 @@ export const cvDataVi: CVData = {
       role: 'Kỹ sư Phần mềm / Quản lý Dự án (Project Manager)',
       company: 'Công ty Cổ phần Công nghệ Adtechnology',
       companySubtitle: 'Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company',
-      companyUrl: 'https://github.com/ga2631',
       location: 'Phường Bàn Cờ, TP. Hồ Chí Minh',
       period: '03/2021 – 12/2023',
       current: false,
@@ -681,9 +689,9 @@ export const cvDataVi: CVData = {
       category: 'Data / AI',
       tags: ['Golang', 'MySQL Binlogs', 'PostgreSQL', 'Medallion CDC', 'RabbitMQ', 'Docker'],
       keyImpacts: [
-        '⚡ Giảm hơn 70% thời gian thực thi truy vấn phân tích',
-        '🔒 Tỷ lệ khớp nối 96% với 0% mất mát dữ liệu',
-        '🚀 Độ trễ đồng bộ CDC gần thời gian thực (<2s)',
+        'Giảm hơn 70% thời gian thực thi truy vấn phân tích',
+        'Tỷ lệ khớp nối 96% với 0% mất mát dữ liệu',
+        'Độ trễ đồng bộ CDC gần thời gian thực (<2s)',
       ],
       highlights: [
         'Bỏ qua mã nguồn monolithic cũ kỹ bằng cách triển khai Change Data Capture (CDC) đọc trực tiếp từ MySQL binlogs, tách biệt hoàn toàn quá trình trích xuất và lưu vết kiểm toán đầy đủ.',
@@ -708,9 +716,9 @@ export const cvDataVi: CVData = {
       category: 'Backend / Cloud',
       tags: ['Java 17', 'Spring Boot', 'Spring WebFlux', 'Spring AOP', 'Kafka', 'BigQuery', 'Docker'],
       keyImpacts: [
-        '⚡ Độ trễ dưới 1 giây cho hàng nghìn sự kiện phễu mỗi ngày',
-        '🛡️ Tuân thủ 100% quyền riêng tư PII qua Spring AOP',
-        '⏱️ Giảm hơn 40% thời gian tổng hợp báo cáo định kỳ',
+        'Độ trễ dưới 1 giây cho hàng nghìn sự kiện phễu mỗi ngày',
+        'Tuân thủ 100% quyền riêng tư PII qua Spring AOP',
+        'Giảm hơn 40% thời gian tổng hợp báo cáo định kỳ',
       ],
       highlights: [
         'Phát triển dịch vụ theo dõi sự kiện thông lượng cao sử dụng Spring WebFlux (Reactive API bất đồng bộ) cùng Apache Kafka / RabbitMQ để ghi nhận hành vi người dùng mà không ảnh hưởng hiệu năng giao dịch cốt lõi.',
@@ -734,9 +742,9 @@ export const cvDataVi: CVData = {
       category: 'Fullstack',
       tags: ['Node.js', 'Vue.js', 'Redis Caching', 'ERP Integration', 'Docker', 'Agile'],
       keyImpacts: [
-        '👥 Vận hành ổn định dưới tải đỉnh 1,000+ người dùng đồng thời',
-        '📉 Giảm 40% yêu cầu trích xuất dữ liệu thủ công',
-        '🧩 Mô-đun biểu đồ linh hoạt thích ứng thay đổi giao diện',
+        'Vận hành ổn định dưới tải đỉnh 1,000+ người dùng đồng thời',
+        'Giảm 40% yêu cầu trích xuất dữ liệu thủ công',
+        'Mô-đun biểu đồ linh hoạt thích ứng thay đổi giao diện',
       ],
       highlights: [
         'Quản lý toàn bộ vòng đời phát triển phần mềm (SDLC) từ thiết kế kiến trúc đến kiểm thử nghiệm thu người dùng (UAT).',
@@ -759,9 +767,9 @@ export const cvDataVi: CVData = {
       category: 'Backend / Cloud',
       tags: ['PHP (Laravel)', 'VueJS', 'MariaDB', 'RabbitMQ', 'CentOS', 'CI/CD'],
       keyImpacts: [
-        '📉 Giảm 63% thời gian tạo báo cáo tài chính',
-        '⏳ Tiết kiệm 10-12 giờ/tuần nhập liệu thủ công cho kế toán',
-        '🔄 Triển khai nâng cấp tự động 100% không gián đoạn',
+        'Giảm 63% thời gian tạo báo cáo tài chính',
+        'Tiết kiệm 10-12 giờ/tuần nhập liệu thủ công cho kế toán',
+        'Triển khai nâng cấp tự động 100% không gián đoạn',
       ],
       highlights: [
         'Phát triển và duy trì các đường ống dữ liệu tự động tích hợp API Google Ads, Facebook Ads, TikTok Ads để thu thập số liệu tập trung.',

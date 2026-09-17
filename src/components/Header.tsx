@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SunIcon, MoonIcon, DownloadIcon, MenuIcon } from './Icons.tsx';
+import { SunIcon, MoonIcon, MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { DrawerMenu, NavItem } from './DrawerMenu.tsx';
 
@@ -143,7 +143,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title="Tiếng Việt"
                 aria-pressed={lang === 'vi'}
               >
-                <span>🇻🇳</span>
+                <VietnamFlagIcon size={16} />
                 <span>VI</span>
               </button>
               <button
@@ -152,21 +152,10 @@ export const Header: React.FC<HeaderProps> = ({
                 title="English"
                 aria-pressed={lang === 'en'}
               >
-                <span>🇬🇧</span>
+                <UKFlagIcon size={16} />
                 <span>EN</span>
               </button>
             </div>
-
-            {/* Desktop Save CV Button */}
-            <button
-              onClick={handlePrint}
-              className="btn btn-secondary btn-sm header-save-cv-btn"
-              title="Save / Export Clean CV as PDF"
-              id="print-cv-btn"
-            >
-              <DownloadIcon size={16} />
-              <span>{t.saveCv}</span>
-            </button>
 
             {/* Theme Toggle Button */}
             <button

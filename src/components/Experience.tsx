@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExperienceItem } from '../types/index.ts';
-import { BriefcaseIcon, ExternalLinkIcon } from './Icons.tsx';
+import { BriefcaseIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
 interface ExperienceProps {
@@ -29,35 +29,23 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
 
               <div className="glass-panel timeline-card">
                 <div className="timeline-header">
-                  <div>
+                  <div className="timeline-title-row">
                     <h3 className="timeline-role">{item.role}</h3>
-                    <div className="timeline-company">
-                      {item.companyUrl ? (
-                        <a
-                          href={item.companyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                        >
-                          {item.company}
-                          <ExternalLinkIcon size={14} />
-                        </a>
-                      ) : (
-                        item.company
-                      )}
-                      <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>• {item.location}</span>
+                    <div className="timeline-period-wrapper">
+                      <span className="timeline-period">{item.period}</span>
+                      {item.current && <span className="badge badge-emerald">Current Position</span>}
                     </div>
-                    {item.companySubtitle && (
-                      <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '2px' }}>
-                        * {item.companySubtitle}
-                      </div>
-                    )}
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                    <span className="timeline-period">{item.period}</span>
-                    {item.current && <span className="badge badge-emerald">Current Position</span>}
+                  <div className="timeline-company">
+                    <span>{item.company}</span>
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{item.location}</span>
                   </div>
+                  {item.companySubtitle && (
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '2px' }}>
+                      {item.companySubtitle}
+                    </div>
+                  )}
                 </div>
 
                 <p className="timeline-summary">{item.summary}</p>

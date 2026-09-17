@@ -14,8 +14,12 @@ import {
   ChevronRightIcon,
   GithubIcon,
   LinkedinIcon,
+  ZaloIcon,
+  VietnamFlagIcon,
+  UKFlagIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { getSecureZaloUrl } from '../utils/obfuscation.tsx';
 
 export interface NavItem {
   label: string;
@@ -169,14 +173,18 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                 <button
                   className={`drawer-lang-pill ${lang === 'vi' ? 'active' : ''}`}
                   onClick={() => setLang('vi')}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
-                  <span>🇻🇳 Tiếng Việt</span>
+                  <VietnamFlagIcon size={18} />
+                  <span>Tiếng Việt</span>
                 </button>
                 <button
                   className={`drawer-lang-pill ${lang === 'en' ? 'active' : ''}`}
                   onClick={() => setLang('en')}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
-                  <span>🇬🇧 English</span>
+                  <UKFlagIcon size={18} />
+                  <span>English</span>
                 </button>
               </div>
             </div>
@@ -221,7 +229,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
               <span>GitHub</span>
             </a>
             <a
-              href="https://www.linkedin.com/in/tanhn/"
+              href="https://www.linkedin.com/in/tan-huynh-nhat/"
               target="_blank"
               rel="noopener noreferrer"
               className="drawer-social-btn"
@@ -229,6 +237,21 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
             >
               <LinkedinIcon size={18} />
               <span>LinkedIn</span>
+            </a>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(getSecureZaloUrl(), '_blank', 'noopener,noreferrer');
+              }}
+              onMouseEnter={(e) => { e.currentTarget.href = getSecureZaloUrl(); }}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="drawer-social-btn"
+              aria-label="Zalo Profile"
+            >
+              <ZaloIcon size={18} />
+              <span>Zalo</span>
             </a>
           </div>
           <div className="drawer-footer-note">

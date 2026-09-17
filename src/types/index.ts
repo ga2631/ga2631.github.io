@@ -11,6 +11,7 @@ export interface PersonalInfo {
   avatarUrl?: string;
   githubUrl: string;
   linkedinUrl?: string;
+  zaloUrl?: string;
   resumePdfUrl?: string;
   stats: {
     label: string;
@@ -24,7 +25,6 @@ export interface ExperienceItem {
   role: string;
   company: string;
   companySubtitle?: string;
-  companyUrl?: string;
   location: string;
   period: string;
   current?: boolean;
