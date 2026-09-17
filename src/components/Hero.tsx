@@ -2,6 +2,7 @@ import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
 import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, DownloadIcon, ExternalLinkIcon, CheckIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 
 interface HeroProps {
   data: PersonalInfo;
@@ -9,6 +10,15 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ data, t }) => {
+  const handleZaloClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.open(getSecureZaloUrl(), '_blank', 'noopener,noreferrer');
+  };
+
+  const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.location.href = getSecureMailtoUrl();
+  };
   return (
     <section className="hero-section" id="hero">
       <div className="container">
@@ -84,19 +94,23 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
 
                 {data.zaloUrl && (
                   <a
-                    href={data.zaloUrl}
+                    href="#"
+                    onClick={handleZaloClick}
+                    onMouseEnter={(e) => { e.currentTarget.href = getSecureZaloUrl(); }}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="social-icon-btn"
                     aria-label="Zalo Profile"
-                    title="Zalo (0963684520)"
+                    title="Zalo"
                   >
                     <ZaloIcon size={20} />
                   </a>
                 )}
 
                 <a
-                  href={`mailto:${data.email}`}
+                  href="#"
+                  onClick={handleEmailClick}
+                  onMouseEnter={(e) => { e.currentTarget.href = getSecureMailtoUrl(); }}
                   className="social-icon-btn"
                   aria-label="Send Email"
                   title="Email"

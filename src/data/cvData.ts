@@ -1,4 +1,5 @@
 import { CVData } from '../types/index.ts';
+import { getSecureEmail, getSecurePhone, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 
 export interface UITranslation {
   nav: {
@@ -86,6 +87,7 @@ export interface UITranslation {
     phoneHint: string;
     locationLabel: string;
     locationHint: string;
+    locationCta: string;
     linkedinLabel: string;
     linkedinHint: string;
     copied: string;
@@ -203,8 +205,9 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       emailHint: 'Best for engineering opportunities, technical discussions & consulting.',
       phoneLabel: 'Phone & Zalo',
       phoneHint: 'Available for calls, direct technical screening & instant messaging.',
-      locationLabel: 'Location & Birthday',
+      locationLabel: 'Location',
       locationHint: 'Open for Hybrid / Onsite in Ho Chi Minh City & Remote worldwide.',
+      locationCta: 'Onsite / Hybrid / Remote',
       linkedinLabel: 'LinkedIn Profile',
       linkedinHint: 'Connect for professional networking & career endorsements.',
       copied: 'Copied!',
@@ -344,14 +347,14 @@ export const cvDataEn: CVData = {
     jobTitle: 'Polyglot Backend & Data Engineer | Technical Team Lead',
     tagline: 'Architecting Scalable Distributed Systems, Medallion Data Warehouses & High-Concurrency Pipelines',
     bio: 'Polyglot Backend & Data Engineer with 5+ years of experience architecting high-concurrency distributed systems and modern Data Warehouses. Strong technical ownership across Golang, Java (Spring Boot), Node.js, and Python — specializing in real-time CDC pipelines, database optimization, and scalable microservices.',
-    email: 'tanhuynh2631@gmail.com',
-    phone: '+84-963684520',
+    email: getSecureEmail(),
+    phone: getSecurePhone(),
     location: 'Tan Khanh Ward, Ho Chi Minh City, Vietnam',
     birthday: '23 Nov 1999',
     availability: 'Open to work',
     githubUrl: 'https://github.com/ga2631',
     linkedinUrl: 'https://www.linkedin.com/in/tan-huynh-nhat/',
-    zaloUrl: 'https://zalo.me/0963684520',
+    zaloUrl: getSecureZaloUrl(),
     avatarUrl: 'https://github.com/ga2631.png',
     stats: [
       { label: 'Years Experience', value: '5+', subtext: 'Backend & Data Pipelines' },
@@ -605,14 +608,14 @@ export const cvDataVi: CVData = {
     jobTitle: 'Kỹ sư Backend & Dữ liệu đa ngôn ngữ | Trưởng nhóm Kỹ thuật',
     tagline: 'Kiến trúc Hệ thống Phân tán Mở rộng, Medallion Data Warehouse & Đường ống Dữ liệu Tải cao',
     bio: 'Kỹ sư Backend & Dữ liệu đa ngôn ngữ với hơn 5 năm kinh nghiệm kiến trúc các hệ thống phân tán tải cao và Data Warehouse hiện đại. Năng lực làm chủ kỹ thuật chuyên sâu trên Golang, Java (Spring Boot), Node.js và Python — chuyên trách các đường ống dữ liệu CDC thời gian thực, tối ưu hóa cơ sở dữ liệu và microservices quy mô lớn.',
-    email: 'tanhuynh2631@gmail.com',
-    phone: '+84-963684520',
+    email: getSecureEmail(),
+    phone: getSecurePhone(),
     location: 'Phường Tân Khánh, TP. Hồ Chí Minh, Việt Nam',
     birthday: '23/11/1999',
     availability: 'Sẵn sàng nhận việc',
     githubUrl: 'https://github.com/ga2631',
     linkedinUrl: 'https://www.linkedin.com/in/tan-huynh-nhat/',
-    zaloUrl: 'https://zalo.me/0963684520',
+    zaloUrl: getSecureZaloUrl(),
     avatarUrl: 'https://github.com/ga2631.png',
     stats: [
       { label: 'Năm kinh nghiệm', value: '5+', subtext: 'Backend & Data Pipelines' },

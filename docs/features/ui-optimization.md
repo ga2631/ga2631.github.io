@@ -141,6 +141,16 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
       - Sử dụng kỹ thuật CSS Mask (`-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;`) với `padding: 1.5px` và `border-radius: inherit`.
       - Khóa chặt độ dày viền chính xác ở mức **1.5px**, ôm sát hoàn hảo mọi đường cong bo góc `18px` của Profile Card kết hợp hào quang tỏa nhẹ (`filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.45))`).
 
+16. **Anti-Scraping Phone Number & Sensitive Contact Protection (`obfuscation.tsx`, `Contact.tsx`, `Hero.tsx`, `DrawerMenu.tsx`, `PrintCV.tsx`, `cvData.ts`)**:
+    - **Bảo vệ chống công cụ quét số điện thoại & Email tự động (Bot & Crawler Defense)**:
+      - Loại bỏ hoàn toàn các chuỗi email (`tanhuynh2631@gmail.com`), số điện thoại (`+84-963684520`) và đường dẫn Zalo (`https://zalo.me/0963684520`) dạng văn bản thuần khỏi bundle JavaScript tĩnh và các thuộc tính DOM tĩnh (`title`, `href="mailto:..."`, `href="tel:..."`, `href="https://zalo.me/..."`).
+      - Mã hóa phân mảnh chuỗi Base64 (`OBFUSCATED_EMAIL_CHUNKS`, `OBFUSCATED_PHONE_CHUNKS`, `OBFUSCATED_ZALO_CHUNKS`) và giải mã động tại runtime trong vòng đời React (`useEffect`), vô hiệu hóa hoàn toàn các công cụ regex scraping hoặc web crawler quét HTML tĩnh.
+    - **Hiển thị tự nhiên 100% không yêu cầu người dùng thao tác thêm (Seamless Zero-Interaction Display)**:
+      - Tích hợp components `<SecureEmail />` và `<SecurePhone />` với kỹ thuật bóc tách thẻ con (`split-span token rendering`) và chữ đảo chiều CSS honeypot (`unicode-bidi: bidi-override`).
+      - Người dùng thật khi truy cập trang web sẽ **ngay lập tức nhìn thấy đầy đủ Email `tanhuynh2631@gmail.com` và số điện thoại `+84-963684520`** mà không cần phải bấm nút hiện thông tin, nhập captcha hay thực hiện bất kỳ thao tác nào khác.
+    - **Cơ chế kích hoạt email, cuộc gọi & nhắn tin Zalo an toàn (Dynamic Action Handlers)**:
+      - Các nút **Soạn Email (Compose)**, **Sao chép Email (Copy Email)**, **Gọi điện (Call)** và **Nhắn tin Zalo (Chat via Zalo)** được trang bị bộ xử lý động `onClick` và `onMouseEnter` tự động kích hoạt `window.location.href = getSecureMailtoUrl()`, `window.location.href = getSecureTelUrl()` và `window.open(getSecureZaloUrl())`, đảm bảo người dùng chỉ cần click là mở ngay ứng dụng email, trình quay số hoặc Zalo như thông thường.
+
 ---
 
 ## 2. Database & Schema Changes
@@ -149,7 +159,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
   - Loại bỏ trường không còn sử dụng `companyUrl?: string;` khỏi interface `ExperienceItem`.
 - Cập nhật dữ liệu tĩnh trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts):
   - Bổ sung `call: string;` và `zalo: string;` vào interface `UITranslation['contact']` và từ điển bản dịch EN/VI.
-  - Khai báo `linkedinUrl: 'https://www.linkedin.com/in/tan-huynh-nhat/'` và `zaloUrl: 'https://zalo.me/0963684520'` vào `personalInfo` của cả `cvDataEn` và `cvDataVi`.
+  - Tích hợp các hàm giải mã động `getSecureEmail()`, `getSecurePhone()`, và `getSecureZaloUrl()` thay thế chuỗi tĩnh cho `email`, `phone`, và `zaloUrl` trong `personalInfo` của cả `cvDataEn` và `cvDataVi`.
   - Tách bỏ hoàn toàn các ký tự emoji ra khỏi chuỗi nhãn và mảng dữ liệu (`workingTreeClean`, `objective`, `challenges`, `fullStack`, `keyImpacts`).
   - Loại bỏ các trường `companyUrl` khỏi danh sách kinh nghiệm làm việc của cả 2 ngôn ngữ EN và VI.
 
@@ -167,19 +177,21 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - **Micro-Interaction & Hover State Harmonization**: Chuẩn hóa chuyển đổi trạng thái màu chữ tiêu đề (`transition: color var(--transition-fast)`) sang màu nhấn chính `var(--text-accent)` trên toàn bộ hệ thống thẻ/card, tăng độ phản hồi thị giác (visual feedback) và tính tương tác cao cấp cho trang web.
 - **Native Curved Corner Preserving Clockwise Sequential Border Engine**: Áp dụng hệ thống CSS Keyframes với `clip-path: polygon()` điều khiển tuần tự 4 pha chạy viền trên các phần tử sở hữu đường viền CSS thực sự (`border-top`, `border-right`, `border-bottom`, `border-left`) và `border-radius: inherit`, đảm bảo 4 góc bo cong 18px luôn mềm mại, không bị đứt đoạn hay cắt khuyết góc.
 - **Dual-Symmetric Continuous Rotating Border Mask Engine**: Áp dụng CSS `@property --profile-border-angle` kết hợp `conic-gradient` đối xứng 2 đầu cực và `mask-composite: exclude` tạo hiệu ứng 2 luồng sáng viền 1.5px chạy tuần hoàn bất tận quanh Profile Card với hiệu năng phần cứng 60fps.
+- **Client-Side Runtime Anti-Scraping Token Obfuscation**: Hệ thống bảo mật thông tin liên hệ đa tầng kết hợp giải mã động phân mảnh token Base64 ở client-side, thẻ con phân tách (`split tokens`), CSS bidi-override honeypot và bộ xử lý sự kiện động, chặn 100% các công cụ regex crawler mà vẫn giữ trải nghiệm xem số/email và click gọi/gửi thư mượt mà cho người dùng thật.
 
 ---
 
 ## 4. Impacted Files
+- [src/utils/obfuscation.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/utils/obfuscation.tsx): Bộ tiện ích bảo mật thông tin liên hệ và các components `<SecureEmail />`, `<SecurePhone />` chống scraping tự động.
 - [src/components/Icons.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Icons.tsx): Bổ sung các vector SVG icon `CalendarIcon`, `ClockIcon`, `GlobeIcon`, `TargetIcon`, `ZapIcon`, `ToolsIcon`, `LockIcon`, `RocketIcon`, `ShieldIcon`, `UsersIcon`, `TrendingDownIcon`, `PuzzleIcon`, `HourglassIcon`, `RefreshCwIcon`, `VietnamFlagIcon`, `UKFlagIcon`.
 - [src/components/ArticleToc.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ArticleToc.tsx): Component bóc tách mục lục tự động (tối đa 2 cấp thẻ heading) và hiển thị sidebar TOC cố định.
 - [src/components/Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx): Tinh gọn thanh Header Desktop, tích hợp `VietnamFlagIcon` và `UKFlagIcon` SVG.
-- [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Tích hợp nút Zalo, SVG flags cho bộ chuyển ngôn ngữ trên mobile/tablet.
+- [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Tích hợp nút Zalo với bộ xử lý bảo mật URL, SVG flags cho bộ chuyển ngôn ngữ trên mobile/tablet.
 - [src/pages/BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Tinh gọn nút đóng bài viết, thay thế emoji ngày/thời gian bằng vector icon.
 - [src/components/BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx): Đồng bộ giao diện popup bài viết với nút đóng và vector icon.
-- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo, cấu hình border top mặc định và hiệu ứng chạy viền xung quanh toàn bộ khung cho các thẻ (ngoại trừ Profile card).
+- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo, cấu hình border top mặc định và hiệu ứng chạy viền xung quanh toàn bộ khung cho các thẻ, cấu hình viền xoay liên tục đối xứng 1.5px cho Profile Card.
 - [src/components/About.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/About.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và ánh xạ icon ngữ nghĩa cho từng triết lý kỹ thuật.
-- [src/components/Contact.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Contact.tsx): Chuẩn hóa cấu trúc nút bấm 50/50 đồng nhất.
+- [src/components/Contact.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Contact.tsx): Tích hợp `<SecureEmail />`, `<SecurePhone />` và bộ kích hoạt mở email / gọi điện / chat Zalo bảo mật chống scraping.
 - [src/components/Projects.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Projects.tsx): Tích hợp hàm `getImpactIcon()` và render vector icons chuẩn ngữ nghĩa cho impact badges và modal headers.
 - [src/components/Skills.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Skills.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và chuẩn hóa logic nhận diện icon/màu sắc chính xác cho 4 danh mục kỹ năng.
 - [src/components/Experience.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Experience.tsx): Tái cấu trúc `.timeline-title-row` cố định thời gian làm việc ở góc phải trên ngang hàng Job title, loại bỏ liên kết ngoài tới website công ty.

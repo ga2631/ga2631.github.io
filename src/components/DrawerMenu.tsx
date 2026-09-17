@@ -19,6 +19,7 @@ import {
   UKFlagIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { getSecureZaloUrl } from '../utils/obfuscation.tsx';
 
 export interface NavItem {
   label: string;
@@ -238,7 +239,12 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
               <span>LinkedIn</span>
             </a>
             <a
-              href="https://zalo.me/0963684520"
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(getSecureZaloUrl(), '_blank', 'noopener,noreferrer');
+              }}
+              onMouseEnter={(e) => { e.currentTarget.href = getSecureZaloUrl(); }}
               target="_blank"
               rel="noopener noreferrer"
               className="drawer-social-btn"

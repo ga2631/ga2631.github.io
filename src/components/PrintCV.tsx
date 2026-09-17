@@ -8,6 +8,7 @@ import {
   LinkedinIcon,
   GlobeIcon,
 } from './Icons.tsx';
+import { SecureEmail, SecurePhone } from '../utils/obfuscation.tsx';
 
 interface PrintCVProps {
   data: CVData;
@@ -29,11 +30,11 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
 
           <div className="print-contact-row">
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-              <MailIcon size={10} /> {personalInfo.email}
+              <MailIcon size={10} /> <SecureEmail />
             </span>
             <span>•</span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-              <PhoneIcon size={10} /> {personalInfo.phone}
+              <PhoneIcon size={10} /> <SecurePhone />
             </span>
             <span>•</span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
