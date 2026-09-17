@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { cvDataVi, cvDataEn, uiTranslations } from './data/cvData.ts';
+import { blogPostsVi, blogPostsEn } from './data/blogData.ts';
 import { Header } from './components/Header.tsx';
 import { Hero } from './components/Hero.tsx';
 import { About } from './components/About.tsx';
@@ -59,6 +60,7 @@ export const App: React.FC = () => {
   };
 
   const currentCvData = lang === 'vi' ? cvDataVi : cvDataEn;
+  const currentBlogPosts = lang === 'vi' ? blogPostsVi : blogPostsEn;
   const t = uiTranslations[lang];
 
   return (
@@ -76,7 +78,7 @@ export const App: React.FC = () => {
 
         <main>
           {route === 'blog' ? (
-            <BlogPage posts={currentCvData.blogPosts} t={t.blog} lang={lang} />
+            <BlogPage posts={currentBlogPosts} t={t.blog} lang={lang} />
           ) : (
             <>
               <Hero data={currentCvData.personalInfo} t={t.hero} />

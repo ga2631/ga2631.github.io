@@ -37,7 +37,6 @@ export const Header: React.FC<HeaderProps> = ({
   const navItems =
     currentRoute === 'blog'
       ? [
-          { label: lang === 'vi' ? '← Về Portfolio' : '← Back to Portfolio', href: '#/' },
           { label: t.about, href: '#about' },
           { label: t.experience, href: '#experience' },
           { label: t.projects, href: '#projects' },

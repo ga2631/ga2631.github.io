@@ -102,5 +102,5 @@ export interface CVData {
   skillCategories: SkillCategory[];
   educations: EducationItem[];
   certifications: CertificationItem[];
-  blogPosts: BlogPost[];
+  blogPosts?: BlogPost[];
 }
