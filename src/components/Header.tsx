@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { SunIcon, MoonIcon, DownloadIcon, MenuIcon, CloseIcon } from './Icons.tsx';
+import { SunIcon, MoonIcon, DownloadIcon, MenuIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { DrawerMenu, NavItem } from './DrawerMenu.tsx';
 
 interface HeaderProps {
   theme: 'dark' | 'light';
@@ -34,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
     window.print();
   };
 
-  const navItems =
+  const navItems: NavItem[] =
     currentRoute === 'blog'
       ? [
           { label: t.about, href: '#about' },
@@ -56,7 +57,25 @@ export const Header: React.FC<HeaderProps> = ({
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
-    if (currentRoute === 'blog' && href.startsWith('#') && !href.startsWith('#/')) {
+
+    // Navigate to Blog Page
+    if (href === '#/blog' || href.startsWith('#/blog')) {
+      window.location.hash = '#/blog';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Navigate to Home / Top
+    if (href === '#/' || href === '#hero' || href === '#') {
+      if (currentRoute === 'blog') {
+        window.location.hash = '#/';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // If on blog page and navigating to a home section (#about, #experience, etc.)
+    if (currentRoute === 'blog' && href.startsWith('#')) {
       window.location.hash = '#/';
       setTimeout(() => {
         const targetId = href.replace('#', '');
@@ -64,86 +83,128 @@ export const Header: React.FC<HeaderProps> = ({
         if (elem) {
           elem.scrollIntoView({ behavior: 'smooth' });
         }
-      }, 100);
+      }, 150);
+      return;
+    }
+
+    // If on home page, scroll directly to section
+    if (href.startsWith('#')) {
+      const targetId = href.replace('#', '');
+      const elem = document.getElementById(targetId);
+      if (elem) {
+        elem.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
   return (
-    <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="container header-container">
-        <a href="#/" className="logo" onClick={() => handleNavClick('#/')}>
-          <div className="logo-badge">TN</div>
-          <span>Tan Huynh Nhat</span>
-        </a>
+    <>
+      <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
+        <div className="container header-container">
+          <a
+            href="#/"
+            className="logo"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('#/');
+            }}
+          >
+            <div className="logo-badge">TN</div>
+            <span className="logo-text">Tan Huynh Nhat</span>
+          </a>
 
-        {/* Desktop Navigation Links */}
-        <nav className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className={`nav-link ${item.isActive ? 'active' : ''}`}
-              onClick={() => handleNavClick(item.href)}
+          {/* Desktop Navigation Links */}
+          <nav className="nav-links desktop-nav">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className={`nav-link ${item.isActive ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(item.href);
+                }}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="header-actions">
+            {/* Desktop Language Switcher */}
+            <div
+              className="lang-toggle-group header-lang-group"
+              role="group"
+              aria-label="Language Selector"
             >
-              {item.label}
-            </a>
-          ))}
-        </nav>
+              <button
+                className={`lang-btn ${lang === 'vi' ? 'active' : ''}`}
+                onClick={() => setLang('vi')}
+                title="Tiếng Việt"
+                aria-pressed={lang === 'vi'}
+              >
+                <span>🇻🇳</span>
+                <span>VI</span>
+              </button>
+              <button
+                className={`lang-btn ${lang === 'en' ? 'active' : ''}`}
+                onClick={() => setLang('en')}
+                title="English"
+                aria-pressed={lang === 'en'}
+              >
+                <span>🇬🇧</span>
+                <span>EN</span>
+              </button>
+            </div>
 
-        <div className="header-actions">
-          {/* Language Switcher */}
-          <div className="lang-toggle-group" role="group" aria-label="Language Selector">
+            {/* Desktop Save CV Button */}
             <button
-              className={`lang-btn ${lang === 'vi' ? 'active' : ''}`}
-              onClick={() => setLang('vi')}
-              title="Tiếng Việt"
-              aria-pressed={lang === 'vi'}
+              onClick={handlePrint}
+              className="btn btn-secondary btn-sm header-save-cv-btn"
+              title="Save / Export Clean CV as PDF"
+              id="print-cv-btn"
             >
-              <span>🇻🇳</span>
-              <span>VI</span>
+              <DownloadIcon size={16} />
+              <span>{t.saveCv}</span>
             </button>
+
+            {/* Theme Toggle Button */}
             <button
-              className={`lang-btn ${lang === 'en' ? 'active' : ''}`}
-              onClick={() => setLang('en')}
-              title="English"
-              aria-pressed={lang === 'en'}
+              onClick={toggleTheme}
+              className="theme-toggle-btn"
+              aria-label="Toggle Theme"
+              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
             >
-              <span>🇬🇧</span>
-              <span>EN</span>
+              {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
+            </button>
+
+            {/* Mobile & Tablet Drawer Trigger Button */}
+            <button
+              className="mobile-menu-btn"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open Navigation Drawer Menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              <MenuIcon size={22} />
             </button>
           </div>
-
-          {/* Save CV Button */}
-          <button
-            onClick={handlePrint}
-            className="btn btn-secondary btn-sm"
-            title="Save / Export Clean CV as PDF"
-            id="print-cv-btn"
-          >
-            <DownloadIcon size={16} />
-            <span>{t.saveCv}</span>
-          </button>
-
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            className="theme-toggle-btn"
-            aria-label="Toggle Theme"
-            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-          >
-            {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
-          </button>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle Navigation Menu"
-          >
-            {mobileMenuOpen ? <CloseIcon size={20} /> : <MenuIcon size={20} />}
-          </button>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Mobile & Tablet Slide-in Drawer Menu */}
+      <DrawerMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        navItems={navItems}
+        onNavClick={handleNavClick}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        lang={lang}
+        setLang={setLang}
+        tNav={t}
+        onPrint={handlePrint}
+      />
+    </>
   );
 };
+
