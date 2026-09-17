@@ -310,10 +310,56 @@ p {
   animation: borderClockwiseBottomLeft 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-/* Profile Card Exemption */
-.glass-panel.avatar-card::before,
+/* Profile Card Continuous Dual-Symmetric Rotating Border (1.5px) */
+@property --profile-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.glass-panel.avatar-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--profile-border-angle, 0deg),
+    var(--accent-red) 0deg,
+    rgba(239, 68, 68, 0.4) 35deg,
+    transparent 85deg,
+    transparent 95deg,
+    rgba(239, 68, 68, 0.4) 145deg,
+    var(--accent-red) 180deg,
+    rgba(239, 68, 68, 0.4) 215deg,
+    transparent 265deg,
+    transparent 275deg,
+    rgba(239, 68, 68, 0.4) 325deg,
+    var(--accent-red) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+  box-sizing: border-box;
+  animation: rotateProfileDualBorder 5s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.45));
+}
+
 .glass-panel.avatar-card::after {
   display: none !important;
+}
+
+@keyframes rotateProfileDualBorder {
+  to {
+    --profile-border-angle: 360deg;
+  }
 }
 
 .glass-panel:hover {

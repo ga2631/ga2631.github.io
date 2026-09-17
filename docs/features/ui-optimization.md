@@ -122,7 +122,6 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
     - **Trạng thái ban đầu (Default state)**:
       - Cạnh Trên (Top Border) hiển thị sẵn với độ dày **3px** nổi bật cùng 2 góc bo trên uốn lượn mượt mà (`border-top: 3px solid var(--accent-red)` trên `::before` với vùng cắt `clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(var(--radius-lg) + 2px), -2px calc(var(--radius-lg) + 2px))`).
       - Các cạnh còn lại (Right, Bottom, Left) được ẩn thông qua `clip-path`.
-      - **Ngoại lệ duy nhất - Profile Card (`.avatar-card`)**: Được miễn trừ hoàn toàn khỏi viền trên (`.glass-panel.avatar-card::before, .glass-panel.avatar-card::after { display: none !important; }`).
     - **Cơ chế kéo dài lần lượt từng cạnh theo chiều kim đồng hồ khi hover**:
       - Khi rê chuột vào thẻ (`.glass-panel:hover`):
         - **Cạnh Trên (Top - 0% đến 25% | 0s đến 0.15s)**: Thu nhỏ độ dày từ 3px về **1px** (`border-top-width: 1px`).
@@ -131,6 +130,16 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
         - **Cạnh Trái (Left - 75% đến 100% | 0.45s đến 0.60s)**: Mở rộng đường viền trái thẳng **từ dưới lên trên**, kết nối hoàn hảo với góc bo trên-trái.
         - **Hoàn tất (0.60s)**: Toàn bộ 4 cạnh và 4 góc bo 18px đều liền mạch với độ dày đồng nhất **1px** bao bọc hoàn chỉnh quanh box kết hợp bóng hào quang (`box-shadow: var(--border-glow)`).
       - Khi rời chuột (un-hover): Toàn bộ viền thu gọn mượt mà về trạng thái viền trên 3px ban đầu trong 0.25s (`transition: clip-path 0.25s ease-out, border-top-width 0.25s ease-out`).
+
+15. **Profile Card Continuous Dual-Symmetric Rotating Border Effect (`index.css`)**:
+    - **Cơ chế xoay vòng liên tục không ngừng (Infinite Continuous Rotation)**:
+      - Khác với các card thông thường kích hoạt khi hover, Profile Card (`.avatar-card`) sở hữu hiệu ứng viền phát sáng chạy vòng quanh tuần hoàn liên tục (`animation: rotateProfileDualBorder 5s linear infinite`).
+    - **Cấu trúc tia sáng xuất phát từ 2 góc đối xứng (Dual-Symmetric Beam Structure)**:
+      - Điểm sáng xuất phát đồng thời từ **2 góc đối xứng 180°** (0° và 180°) với sắc đỏ chủ đạo rực rỡ (`var(--accent-red)`).
+      - Độ sáng lan tỏa và **mờ dần (fade-out)** mềm mại về 2 góc cạnh kề (90° và 270°) thành dải trong suốt (`transparent`), tạo thành hiệu ứng 2 tia sáng đối xứng đuổi nhau tuần hoàn quanh thân card.
+    - **Quy chuẩn độ dày viền 1.5px (Exact 1.5px Border Thickness Boundary)**:
+      - Sử dụng kỹ thuật CSS Mask (`-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;`) với `padding: 1.5px` và `border-radius: inherit`.
+      - Khóa chặt độ dày viền chính xác ở mức **1.5px**, ôm sát hoàn hảo mọi đường cong bo góc `18px` của Profile Card kết hợp hào quang tỏa nhẹ (`filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.45))`).
 
 ---
 
@@ -157,6 +166,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - **Timeline Top-Right Geometric Alignment**: Tái lập cấu trúc Flexbox hai tầng cho Timeline Header (`.timeline-title-row` và `.timeline-company`) giúp khóa chặt thời gian làm việc ở góc phải trên ngang hàng với chức danh trên mọi màn hình.
 - **Micro-Interaction & Hover State Harmonization**: Chuẩn hóa chuyển đổi trạng thái màu chữ tiêu đề (`transition: color var(--transition-fast)`) sang màu nhấn chính `var(--text-accent)` trên toàn bộ hệ thống thẻ/card, tăng độ phản hồi thị giác (visual feedback) và tính tương tác cao cấp cho trang web.
 - **Native Curved Corner Preserving Clockwise Sequential Border Engine**: Áp dụng hệ thống CSS Keyframes với `clip-path: polygon()` điều khiển tuần tự 4 pha chạy viền trên các phần tử sở hữu đường viền CSS thực sự (`border-top`, `border-right`, `border-bottom`, `border-left`) và `border-radius: inherit`, đảm bảo 4 góc bo cong 18px luôn mềm mại, không bị đứt đoạn hay cắt khuyết góc.
+- **Dual-Symmetric Continuous Rotating Border Mask Engine**: Áp dụng CSS `@property --profile-border-angle` kết hợp `conic-gradient` đối xứng 2 đầu cực và `mask-composite: exclude` tạo hiệu ứng 2 luồng sáng viền 1.5px chạy tuần hoàn bất tận quanh Profile Card với hiệu năng phần cứng 60fps.
 
 ---
 
