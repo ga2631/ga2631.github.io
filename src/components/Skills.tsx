@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SkillCategory } from '../types/index.ts';
 import { CodeIcon, DatabaseIcon, ChartIcon, SparklesIcon } from './Icons.tsx';
 
@@ -7,8 +7,6 @@ interface SkillsProps {
 }
 
 export const Skills: React.FC<SkillsProps> = ({ categories }) => {
-  const [activeTab, setActiveTab] = useState<string>('All');
-
   const getCategoryIcon = (title: string) => {
     const lower = title.toLowerCase();
     if (lower.includes('core') || lower.includes('engineering')) {
@@ -23,12 +21,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories }) => {
     return <SparklesIcon size={18} style={{ color: 'var(--accent-emerald)' }} />;
   };
 
-  const tabs = ['All', ...categories.map((c) => c.title)];
-
-  const displayedCategories = activeTab === 'All'
-    ? categories
-    : categories.filter((c) => c.title === activeTab);
-
   return (
     <section className="section" id="skills">
       <div className="container">
@@ -42,22 +34,9 @@ export const Skills: React.FC<SkillsProps> = ({ categories }) => {
           </p>
         </div>
 
-        {/* Category Tabs */}
-        <div className="filter-bar" style={{ marginBottom: '28px' }}>
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`filter-btn ${activeTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
         {/* Optimized Compact Skills Grid */}
         <div className="skills-compact-grid">
-          {displayedCategories.map((category) => (
+          {categories.map((category) => (
             <div key={category.title} className="glass-panel skill-card-compact">
               <div className="skill-card-header">
                 <div className="skill-icon-badge">

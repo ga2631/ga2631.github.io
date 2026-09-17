@@ -83,12 +83,16 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
               <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>{data.location}</p>
 
               <div className="avatar-info-box">
-                <div>$ git status</div>
-                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px' }}>
-                  ✔ Working tree clean
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>$</span>
+                  <span>git status</span>
                 </div>
-                <div style={{ color: 'var(--text-secondary)', marginTop: '4px' }}>
-                  $ current_focus: "Cloud & Distributed Systems"
+                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px' }}>
+                  ✔ Working tree clean (production ready)
+                </div>
+                <div style={{ color: 'var(--text-secondary)', marginTop: '6px', fontSize: '0.82rem' }}>
+                  <span style={{ color: 'var(--accent-cyan)' }}>$</span> focus = <span style={{ color: 'var(--text-primary)' }}>"Distributed Systems & Data"</span>
+                  <span className="cursor-blink" />
                 </div>
               </div>
 

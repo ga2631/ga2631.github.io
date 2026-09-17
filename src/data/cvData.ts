@@ -10,7 +10,7 @@ export const cvData: CVData = {
     phone: '+84-963684520',
     location: 'Tan Khanh Ward, Ho Chi Minh City, Vietnam',
     birthday: '23 Nov 1999',
-    availability: 'Open for Senior / Lead Backend & Data Engineering Roles',
+    availability: 'Open to work',
     githubUrl: 'https://github.com/ga2631',
     avatarUrl: 'https://github.com/ga2631.png',
     stats: [

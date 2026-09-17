@@ -12,8 +12,8 @@ Hệ thống CV Portfolio & Blog Engine được thiết kế theo mô hình Sta
      - `Hero.tsx`: Headline, quick stats, action CTA và terminal visual card.
      - `About.tsx`: Triết lý phát triển phần mềm và năng lực kỹ thuật cốt lõi.
      - `Experience.tsx`: Timeline kinh nghiệm nghề nghiệp với achievements và tech tags.
-     - `Projects.tsx`: Danh mục dự án kèm bộ lọc category tương tác và demo links.
-     - `Skills.tsx`: Ma trận kỹ năng đa tầng (Frontend, Backend, Database, DevOps).
+     - `Projects.tsx`: Danh mục dự án tích hợp tải song song các Public GitHub Repositories (`api.github.com/users/ga2631/repos`) trực tiếp cùng 4 Enterprise Architecture Case Studies với bộ lọc tab đa năng (All Works, Architecture Case Studies, GitHub Repositories, Fullstack, Backend/Cloud, Data/AI) và modal phân tích kiến trúc chuyên sâu.
+     - `Skills.tsx`: Ma trận kỹ năng dạng compact pill clusters với glow dot chỉ báo mức độ thành thạo.
      - `EducationCertifications.tsx`: Bằng cấp đại học và chứng chỉ quốc tế (AWS, Docker, PSM).
      - `BlogSection.tsx`: Module hiển thị và đọc bài viết kỹ thuật (HTML Blog Reader) với modal view, sẵn sàng cho việc xuất bản bài viết và mở rộng thành blog độc lập.
      - `Contact.tsx`: Kênh liên hệ, tính năng 1-click Copy Email và form gửi tin nhắn.
