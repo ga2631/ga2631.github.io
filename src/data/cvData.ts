@@ -71,6 +71,10 @@ export interface UITranslation {
     subtitle: string;
     readArticle: string;
     closeArticle: string;
+    backToHome: string;
+    searchPlaceholder: string;
+    allTopics: string;
+    noArticlesFound: string;
   };
   contact: {
     badge: string;
@@ -179,11 +183,15 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       viewCredential: 'View Credential',
     },
     blog: {
-      badge: 'Technical Insights',
-      title: 'Engineering Articles & Notes',
-      subtitle: 'Deep dives into Change Data Capture, reactive event streaming, database optimization, and high-concurrency systems.',
+      badge: 'Technical Insights & Engineering Blog',
+      title: 'Architecture Deep Dives & System Notes',
+      subtitle: 'Technical writings on Change Data Capture, event-driven microservices, database performance, and distributed systems.',
       readArticle: 'Read Full Article',
       closeArticle: 'Close Article',
+      backToHome: 'Back to Portfolio & CV',
+      searchPlaceholder: 'Search articles by title, tags, or keywords...',
+      allTopics: 'All Topics',
+      noArticlesFound: 'No engineering articles match your search or filter.',
     },
     contact: {
       badge: 'Get In Touch',
@@ -290,11 +298,15 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       viewCredential: 'Xem chứng chỉ',
     },
     blog: {
-      badge: 'Góc nhìn Kỹ thuật',
-      title: 'Bài viết & Ghi chép Kỹ thuật',
-      subtitle: 'Phân tích chuyên sâu về Change Data Capture, xử lý dòng sự kiện với Spring WebFlux, tối ưu hóa CSDL và tải cao.',
+      badge: 'Góc nhìn Kỹ thuật & Blog Kỹ sư',
+      title: 'Kiến trúc Hệ thống & Ghi chép Kỹ thuật',
+      subtitle: 'Các bài viết phân tích chuyên sâu về Change Data Capture, xử lý dòng sự kiện với Spring WebFlux, tối ưu hóa CSDL và tải cao.',
       readArticle: 'Đọc toàn bộ bài viết',
       closeArticle: 'Đóng bài viết',
+      backToHome: '← Về trang Portfolio & CV',
+      searchPlaceholder: 'Tìm kiếm bài viết theo tiêu đề, thẻ công nghệ, từ khóa...',
+      allTopics: 'Tất cả chủ đề',
+      noArticlesFound: 'Không tìm thấy bài viết nào phù hợp với tìm kiếm hoặc bộ lọc.',
     },
     contact: {
       badge: 'Kết nối & Hợp tác',

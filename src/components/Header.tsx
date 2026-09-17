@@ -8,9 +8,17 @@ interface HeaderProps {
   lang: 'vi' | 'en';
   setLang: (lang: 'vi' | 'en') => void;
   t: UITranslation['nav'];
+  currentRoute?: 'home' | 'blog';
 }
 
-export const Header: React.FC<HeaderProps> = ({ theme, toggleTheme, lang, setLang, t }) => {
+export const Header: React.FC<HeaderProps> = ({
+  theme,
+  toggleTheme,
+  lang,
+  setLang,
+  t,
+  currentRoute = 'home',
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -26,20 +34,45 @@ export const Header: React.FC<HeaderProps> = ({ theme, toggleTheme, lang, setLan
     window.print();
   };
 
-  const navItems = [
-    { label: t.about, href: '#about' },
-    { label: t.experience, href: '#experience' },
-    { label: t.projects, href: '#projects' },
-    { label: t.skills, href: '#skills' },
-    { label: t.education, href: '#education' },
-    { label: t.blog, href: '#blog' },
-    { label: t.contact, href: '#contact' },
-  ];
+  const navItems =
+    currentRoute === 'blog'
+      ? [
+          { label: lang === 'vi' ? '← Về Portfolio' : '← Back to Portfolio', href: '#/' },
+          { label: t.about, href: '#about' },
+          { label: t.experience, href: '#experience' },
+          { label: t.projects, href: '#projects' },
+          { label: t.skills, href: '#skills' },
+          { label: t.education, href: '#education' },
+          { label: t.blog, href: '#/blog', isActive: true },
+        ]
+      : [
+          { label: t.about, href: '#about' },
+          { label: t.experience, href: '#experience' },
+          { label: t.projects, href: '#projects' },
+          { label: t.skills, href: '#skills' },
+          { label: t.education, href: '#education' },
+          { label: t.contact, href: '#contact' },
+          { label: t.blog, href: '#/blog' },
+        ];
+
+  const handleNavClick = (href: string) => {
+    setMobileMenuOpen(false);
+    if (currentRoute === 'blog' && href.startsWith('#') && !href.startsWith('#/')) {
+      window.location.hash = '#/';
+      setTimeout(() => {
+        const targetId = href.replace('#', '');
+        const elem = document.getElementById(targetId);
+        if (elem) {
+          elem.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="container header-container">
-        <a href="#hero" className="logo">
+        <a href="#/" className="logo" onClick={() => handleNavClick('#/')}>
           <div className="logo-badge">TN</div>
           <span>Tan Huynh Nhat</span>
         </a>
@@ -50,8 +83,8 @@ export const Header: React.FC<HeaderProps> = ({ theme, toggleTheme, lang, setLan
             <a
               key={item.href}
               href={item.href}
-              className="nav-link"
-              onClick={() => setMobileMenuOpen(false)}
+              className={`nav-link ${item.isActive ? 'active' : ''}`}
+              onClick={() => handleNavClick(item.href)}
             >
               {item.label}
             </a>

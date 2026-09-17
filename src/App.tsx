@@ -7,10 +7,10 @@ import { Experience } from './components/Experience.tsx';
 import { Projects } from './components/Projects.tsx';
 import { Skills } from './components/Skills.tsx';
 import { EducationCertifications } from './components/EducationCertifications.tsx';
-import { BlogSection } from './components/BlogSection.tsx';
 import { Contact } from './components/Contact.tsx';
 import { Footer } from './components/Footer.tsx';
 import { PrintCV } from './components/PrintCV.tsx';
+import { BlogPage } from './pages/BlogPage.tsx';
 
 export const App: React.FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -25,6 +25,11 @@ export const App: React.FC = () => {
     return 'en';
   });
 
+  const [route, setRoute] = useState<'home' | 'blog'>(() => {
+    const hash = window.location.hash;
+    return hash.startsWith('#/blog') || hash === '#blog' ? 'blog' : 'home';
+  });
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('app-theme', theme);
@@ -34,6 +39,20 @@ export const App: React.FC = () => {
     document.documentElement.setAttribute('lang', lang);
     localStorage.setItem('app-lang', lang);
   }, [lang]);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#/blog') || hash === '#blog') {
+        setRoute('blog');
+      } else {
+        setRoute('home');
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
@@ -52,21 +71,29 @@ export const App: React.FC = () => {
           lang={lang}
           setLang={setLang}
           t={t.nav}
+          currentRoute={route}
         />
+
         <main>
-          <Hero data={currentCvData.personalInfo} t={t.hero} />
-          <About data={currentCvData.personalInfo} t={t.about} />
-          <Experience experiences={currentCvData.experiences} t={t.experience} />
-          <Projects projects={currentCvData.projects} t={t.projects} />
-          <Skills categories={currentCvData.skillCategories} t={t.skills} />
-          <EducationCertifications
-            educations={currentCvData.educations}
-            certifications={currentCvData.certifications}
-            t={t.education}
-          />
-          <BlogSection posts={currentCvData.blogPosts} t={t.blog} />
-          <Contact data={currentCvData.personalInfo} t={t.contact} />
+          {route === 'blog' ? (
+            <BlogPage posts={currentCvData.blogPosts} t={t.blog} lang={lang} />
+          ) : (
+            <>
+              <Hero data={currentCvData.personalInfo} t={t.hero} />
+              <About data={currentCvData.personalInfo} t={t.about} />
+              <Experience experiences={currentCvData.experiences} t={t.experience} />
+              <Projects projects={currentCvData.projects} t={t.projects} />
+              <Skills categories={currentCvData.skillCategories} t={t.skills} />
+              <EducationCertifications
+                educations={currentCvData.educations}
+                certifications={currentCvData.certifications}
+                t={t.education}
+              />
+              <Contact data={currentCvData.personalInfo} t={t.contact} />
+            </>
+          )}
         </main>
+
         <Footer t={t.footer} />
       </div>
 
