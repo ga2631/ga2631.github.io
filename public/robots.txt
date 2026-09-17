@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ga2631.github.io/sitemap.xml
