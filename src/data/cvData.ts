@@ -557,8 +557,8 @@ export const cvDataEn: CVData = {
   educations: [
     {
       id: 'edu-1',
-      degree: 'Informatics & Computer Science Education (Sư phạm Tin học)',
-      institution: 'Ho Chi Minh City University of Education (Đại học Sư phạm TP.HCM - HCMUE)',
+      degree: 'Informatics & Computer Science Education',
+      institution: 'Ho Chi Minh City University of Education (HCMUE)',
       location: 'Ho Chi Minh City, Vietnam',
       period: '2018 - 2022',
       gpaOrHonors: 'Completed 100% Core Major Curriculum • Early Industry Transition',
@@ -575,25 +575,9 @@ export const cvDataEn: CVData = {
       id: 'cert-1',
       name: 'Google Cloud Professional Data Engineer',
       issuer: 'Google Cloud',
-      issueDate: 'In Progress (Target: 2026)',
+      issueDate: 'Target: 2027',
       status: 'Currently Pursuing',
-      credentialUrl: 'https://cloud.google.com/learn/certification/data-engineer',
-    },
-    {
-      id: 'cert-2',
-      name: 'Medallion Architecture & CDC Pipeline Specialist',
-      issuer: 'Enterprise Practical Engineering',
-      issueDate: '2024 - 2026',
-      badgeCode: 'DATA-CDC-MIGRATION',
-      credentialUrl: 'https://github.com/ga2631',
-    },
-    {
-      id: 'cert-3',
-      name: 'Agile Leadership & Product Delivery Practitioner',
-      issuer: 'Adtechnology Engineering Board',
-      issueDate: '2021 - 2026',
-      badgeCode: 'AGILE-LEAD-2024',
-      credentialUrl: 'https://github.com/ga2631',
+      // credentialUrl: 'https://cloud.google.com/learn/certification/data-engineer',
     },
   ],
 
@@ -902,15 +886,15 @@ export const cvDataVi: CVData = {
   educations: [
     {
       id: 'edu-1',
-      degree: 'Cử nhân Sư phạm Tin học (Khoa học Máy tính & Tin học)',
+      degree: 'Sư phạm Tin học',
       institution: 'Trường Đại học Sư phạm TP.HCM (HCMUE)',
       location: 'TP. Hồ Chí Minh, Việt Nam',
       period: '2018 - 2022',
-      gpaOrHonors: 'Hoàn thành 100% chương trình chuyên ngành • Chuyển tiếp sớm vào ngành công nghiệp',
+      gpaOrHonors: 'Hoàn thành 100% chương trình chuyên ngành • Bắt đầu làm việc từ sớm',
       details: [
         'Nền tảng Khoa học Máy tính Toàn diện: Nắm vững Cấu trúc Dữ liệu & Giải thuật (DSA), Lập trình Hướng đối tượng (OOP), Cơ sở Dữ liệu (DBMS / Relational SQL), Kiến trúc Máy tính, Hệ điều hành, Mạng máy tính và Phương pháp luận Kỹ thuật Phần mềm.',
         'Lợi thế Sư phạm & Kỹ năng Truyền đạt: Đào tạo sư phạm chính quy rèn luyện năng lực vượt trội trong việc viết tài liệu kỹ thuật, phân rã bài toán phức tạp, cố vấn chuyên môn (mentoring) và kết nối giao tiếp hiệu quả giữa đội ngũ kỹ thuật và khối kinh doanh.',
-        'Chuyển tiếp Sớm vào Ngành Công nghiệp: Được thôi thúc bởi đam mê mạnh mẽ với kỹ thuật phần mềm thực tế, tham gia thị trường lao động từ đầu năm 2021 để xây dựng các hệ thống quy mô lớn, tích lũy hơn 5 năm kinh nghiệm thực chiến và lãnh đạo kỹ thuật.',
+        'Bắt đầu làm việc từ sớm: Được thôi thúc bởi đam mê mạnh mẽ với kỹ thuật phần mềm thực tế, tham gia thị trường lao động từ đầu năm 2021 để xây dựng các hệ thống quy mô lớn, tích lũy hơn 5 năm kinh nghiệm thực chiến và lãnh đạo kỹ thuật.',
       ],
     },
   ],
@@ -920,25 +904,9 @@ export const cvDataVi: CVData = {
       id: 'cert-1',
       name: 'Google Cloud Professional Data Engineer',
       issuer: 'Google Cloud',
-      issueDate: 'Đang chuẩn bị thi (Mục tiêu 2026)',
+      issueDate: 'Mục tiêu 2027',
       status: 'Đang theo học',
-      credentialUrl: 'https://cloud.google.com/learn/certification/data-engineer',
-    },
-    {
-      id: 'cert-2',
-      name: 'Chuyên gia Kiến trúc Medallion & Đường ống CDC',
-      issuer: 'Enterprise Practical Engineering',
-      issueDate: '2024 - 2026',
-      badgeCode: 'DATA-CDC-MIGRATION',
-      credentialUrl: 'https://github.com/ga2631',
-    },
-    {
-      id: 'cert-3',
-      name: 'Thực hành Quản trị Agile & Chuyển giao Sản phẩm',
-      issuer: 'Hội đồng Kỹ thuật Adtechnology',
-      issueDate: '2021 - 2026',
-      badgeCode: 'AGILE-LEAD-2024',
-      credentialUrl: 'https://github.com/ga2631',
+      // credentialUrl: 'https://cloud.google.com/learn/certification/data-engineer',
     },
   ],
 
@@ -1010,4 +978,4 @@ export const cvDataVi: CVData = {
   ],
 };
 
-export const cvData = cvDataVi;
+export const cvData = cvDataEn;

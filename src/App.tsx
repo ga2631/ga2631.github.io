@@ -22,7 +22,7 @@ export const App: React.FC = () => {
   const [lang, setLang] = useState<'vi' | 'en'>(() => {
     const saved = localStorage.getItem('app-lang');
     if (saved === 'en' || saved === 'vi') return saved;
-    return 'vi';
+    return 'en';
   });
 
   useEffect(() => {
