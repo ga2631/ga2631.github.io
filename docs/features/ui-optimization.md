@@ -115,7 +115,22 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
       - **Academic Background Cards**: `.edu-card:hover .edu-degree`
       - **Certification Cards**: `.cert-card:hover .cert-title`, `.cert-card:hover h4`
       - **Contact Cards**: `.contact-card:hover .contact-card-value`, `.contact-card:hover .contact-card-label`
-      - **Blog Article Cards**: `.blog-card:hover .blog-title`
+14. **Exact Clockwise Sequential Drawing Border: Top (3px default) -> Right -> Bottom -> Left -> Full 1px (`index.css`)**:
+    - **Khắc phục triệt để lỗi mất viền ở góc bo (Native Curved Corner Preservation)**:
+      - Sử dụng đường viền CSS thực (`border-top`, `border-right`, `border-bottom`, `border-left`) kết hợp `border-radius: inherit` kế thừa chính xác bán kính cong `18px` (`--radius-lg`) của card.
+      - Loại bỏ cách dùng gradient thẳng để tránh hiện tượng đường thẳng bị `overflow: hidden` cắt cụt tại 4 góc bo.
+    - **Trạng thái ban đầu (Default state)**:
+      - Cạnh Trên (Top Border) hiển thị sẵn với độ dày **3px** nổi bật cùng 2 góc bo trên uốn lượn mượt mà (`border-top: 3px solid var(--accent-red)` trên `::before` với vùng cắt `clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(var(--radius-lg) + 2px), -2px calc(var(--radius-lg) + 2px))`).
+      - Các cạnh còn lại (Right, Bottom, Left) được ẩn thông qua `clip-path`.
+      - **Ngoại lệ duy nhất - Profile Card (`.avatar-card`)**: Được miễn trừ hoàn toàn khỏi viền trên (`.glass-panel.avatar-card::before, .glass-panel.avatar-card::after { display: none !important; }`).
+    - **Cơ chế kéo dài lần lượt từng cạnh theo chiều kim đồng hồ khi hover**:
+      - Khi rê chuột vào thẻ (`.glass-panel:hover`):
+        - **Cạnh Trên (Top - 0% đến 25% | 0s đến 0.15s)**: Thu nhỏ độ dày từ 3px về **1px** (`border-top-width: 1px`).
+        - **Cạnh Phải (Right - 25% đến 50% | 0.15s đến 0.30s)**: Mở rộng vùng hiển thị thẳng **từ trên xuống dưới**, uốn cong hoàn hảo qua góc bo dưới-phải (`clip-path` mở rộng xuống đáy).
+        - **Cạnh Dưới (Bottom - 50% đến 75% | 0.30s đến 0.45s)**: Mở rộng đường viền dưới ngang **từ phải sang trái**, uốn cong mượt mà qua góc bo dưới-trái.
+        - **Cạnh Trái (Left - 75% đến 100% | 0.45s đến 0.60s)**: Mở rộng đường viền trái thẳng **từ dưới lên trên**, kết nối hoàn hảo với góc bo trên-trái.
+        - **Hoàn tất (0.60s)**: Toàn bộ 4 cạnh và 4 góc bo 18px đều liền mạch với độ dày đồng nhất **1px** bao bọc hoàn chỉnh quanh box kết hợp bóng hào quang (`box-shadow: var(--border-glow)`).
+      - Khi rời chuột (un-hover): Toàn bộ viền thu gọn mượt mà về trạng thái viền trên 3px ban đầu trong 0.25s (`transition: clip-path 0.25s ease-out, border-top-width 0.25s ease-out`).
 
 ---
 
@@ -141,6 +156,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - **Responsive Profile Card Geometric Balancing**: Tối ưu tỷ lệ co giãn của Profile Card trên Tablet (`max-width: 540px`) và Mobile (`max-width: 100%`), kết hợp chuyển đổi pill trạng thái nhận việc dưới tên cá nhân giúp trải nghiệm xem CV trên thiết bị cầm tay đạt độ hoàn thiện cao nhất.
 - **Timeline Top-Right Geometric Alignment**: Tái lập cấu trúc Flexbox hai tầng cho Timeline Header (`.timeline-title-row` và `.timeline-company`) giúp khóa chặt thời gian làm việc ở góc phải trên ngang hàng với chức danh trên mọi màn hình.
 - **Micro-Interaction & Hover State Harmonization**: Chuẩn hóa chuyển đổi trạng thái màu chữ tiêu đề (`transition: color var(--transition-fast)`) sang màu nhấn chính `var(--text-accent)` trên toàn bộ hệ thống thẻ/card, tăng độ phản hồi thị giác (visual feedback) và tính tương tác cao cấp cho trang web.
+- **Native Curved Corner Preserving Clockwise Sequential Border Engine**: Áp dụng hệ thống CSS Keyframes với `clip-path: polygon()` điều khiển tuần tự 4 pha chạy viền trên các phần tử sở hữu đường viền CSS thực sự (`border-top`, `border-right`, `border-bottom`, `border-left`) và `border-radius: inherit`, đảm bảo 4 góc bo cong 18px luôn mềm mại, không bị đứt đoạn hay cắt khuyết góc.
 
 ---
 
@@ -151,7 +167,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Tích hợp nút Zalo, SVG flags cho bộ chuyển ngôn ngữ trên mobile/tablet.
 - [src/pages/BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Tinh gọn nút đóng bài viết, thay thế emoji ngày/thời gian bằng vector icon.
 - [src/components/BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx): Đồng bộ giao diện popup bài viết với nút đóng và vector icon.
-- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo cho toàn bộ các card/box.
+- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo, cấu hình border top mặc định và hiệu ứng chạy viền xung quanh toàn bộ khung cho các thẻ (ngoại trừ Profile card).
 - [src/components/About.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/About.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và ánh xạ icon ngữ nghĩa cho từng triết lý kỹ thuật.
 - [src/components/Contact.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Contact.tsx): Chuẩn hóa cấu trúc nút bấm 50/50 đồng nhất.
 - [src/components/Projects.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Projects.tsx): Tích hợp hàm `getImpactIcon()` và render vector icons chuẩn ngữ nghĩa cho impact badges và modal headers.
