@@ -6,6 +6,7 @@ export interface PersonalInfo {
   email: string;
   phone?: string;
   location: string;
+  birthday?: string;
   availability: string;
   avatarUrl?: string;
   githubUrl: string;
@@ -22,6 +23,7 @@ export interface ExperienceItem {
   id: string;
   role: string;
   company: string;
+  companySubtitle?: string;
   companyUrl?: string;
   location: string;
   period: string;
@@ -34,6 +36,9 @@ export interface ExperienceItem {
 export interface ProjectItem {
   id: string;
   title: string;
+  company?: string;
+  role?: string;
+  teamSize?: string;
   description: string;
   category: 'Fullstack' | 'Frontend' | 'Backend / Cloud' | 'Data / AI' | 'All';
   image?: string;
@@ -73,6 +78,7 @@ export interface CertificationItem {
   issueDate: string;
   credentialUrl?: string;
   badgeCode?: string;
+  status?: string;
 }
 
 export interface BlogPost {

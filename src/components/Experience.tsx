@@ -45,6 +45,11 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences }) => {
                       )}
                       <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>• {item.location}</span>
                     </div>
+                    {item.companySubtitle && (
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '2px' }}>
+                        * {item.companySubtitle}
+                      </div>
+                    )}
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>

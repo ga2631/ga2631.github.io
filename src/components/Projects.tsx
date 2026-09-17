@@ -52,6 +52,11 @@ export const Projects: React.FC<ProjectsProps> = ({ projects }) => {
                 </div>
 
                 <h3 className="project-title">{project.title}</h3>
+                {(project.company || project.role) && (
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-accent)', marginBottom: '8px', fontWeight: 500 }}>
+                    {project.company} {project.role ? `• ${project.role}` : ''} {project.teamSize ? `(Team: ${project.teamSize})` : ''}
+                  </div>
+                )}
                 <p className="project-desc">{project.description}</p>
 
                 <div className="project-highlights">
