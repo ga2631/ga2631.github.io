@@ -39,12 +39,14 @@ export interface ProjectItem {
   company?: string;
   role?: string;
   teamSize?: string;
+  shortDescription?: string;
   description: string;
   category: 'Fullstack' | 'Frontend' | 'Backend / Cloud' | 'Data / AI' | 'All';
   image?: string;
   demoUrl?: string;
   githubUrl?: string;
   tags: string[];
+  keyImpacts?: string[];
   highlights: string[];
   featured?: boolean;
 }

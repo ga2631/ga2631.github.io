@@ -55,13 +55,17 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                 )}
 
                 {edu.details && (
-                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingLeft: '16px', listStyle: 'disc' }}>
-                    {edu.details.map((detail, idx) => (
-                      <li key={idx} style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.5' }}>
-                        {detail}
-                      </li>
-                    ))}
-                  </ul>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '14px' }}>
+                    {edu.details.map((detail, idx) => {
+                      const [title, ...rest] = detail.split(': ');
+                      return (
+                        <div key={idx} style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: '1.55' }}>
+                          <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>• {title}: </span>
+                          <span>{rest.join(': ')}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
             ))}
