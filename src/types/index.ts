@@ -25,7 +25,6 @@ export interface ExperienceItem {
   role: string;
   company: string;
   companySubtitle?: string;
-  companyUrl?: string;
   location: string;
   period: string;
   current?: boolean;

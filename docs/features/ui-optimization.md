@@ -83,15 +83,35 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
         - `DevOps & Automation`: `<RefreshCwIcon />` (Vòng lặp tự động hóa CI/CD & zero-downtime).
         - `Data & Performance Driven`: `<ZapIcon />` (Hiệu năng xử lý dữ liệu tốc độ cao).
 
+11. **Hero Profile Card Mobile/Tablet Optimization & Adaptive Status Pill Placement (`Hero.tsx` & `index.css`)**:
+    - **Tối ưu hóa độ rộng Profile Card trên Mobile/Tablet**:
+      - Mở rộng giới hạn chiều dài/chiều ngang của Profile Card (`.avatar-card`) trên màn hình Tablet (`@media (max-width: 992px)`) lên `max-width: 540px` với padding `32px 28px`, và trên màn hình Mobile (`@media (max-width: 576px)`) lên `max-width: 100%` với padding `24px 18px`.
+      - Giúp khối Profile Card trở nên cân đối, đầy đặn, không bị co hẹp hoặc ép dòng thông tin trong console status box.
+    - **Cơ chế hiển thị thích ứng cho huy hiệu "Open to work" (Adaptive Status Pill)**:
+      - **Desktop (`> 992px`)**: Huy hiệu trạng thái (`.desktop-only-status`) duy trì ở vị trí mặc định ban đầu tại cột giới thiệu bên phải, nằm ngay trên tiêu đề chào mừng (`hero-name`).
+      - **Mobile / Tablet (`<= 992px`)**: Huy hiệu trạng thái (`.mobile-only-status`) tự động chuyển vào nằm trực tiếp **dưới tên lập trình viên** (`.avatar-name`) trong Profile Card bên trái, trong khi ẩn pill ở cột giới thiệu bên dưới để tránh trùng lặp.
+      - Sử dụng CSS Media Queries chuyên dụng (`.desktop-only-status` và `.mobile-only-status`) đảm bảo chuyển đổi mượt mà, chính xác theo từng breakpoint mà không gây giật layout hay phát sinh DOM dư thừa.
+
+12. **Experience Section - Company Link Streamlining & Top-Right Period Alignment (`Experience.tsx` & `index.css`)**:
+    - **Cố định thời gian làm việc ở góc phải trên (Top-Right Period Alignment)**:
+      - Tái cấu trúc vùng tiêu đề thẻ kinh nghiệm bằng hàng chứa `.timeline-title-row` phân bổ theo Flexbox (`justify-content: space-between; align-items: flex-start; gap: 16px;`).
+      - Đảm bảo khoảng thời gian làm việc (`.timeline-period-wrapper` / `.timeline-period`) luôn được cố định ở **góc phải trên, nằm ngang hàng trực tiếp với Chức danh công việc (Job title / `.timeline-role`)** trên mọi độ phân giải (Desktop, Tablet, và Mobile).
+      - Xóa bỏ hành vi ép `flex-direction: column` ở breakpoint 768px để tránh làm rớt thời gian làm việc xuống dưới công ty.
+    - **Loại bỏ liên kết ngoài tới website công ty**:
+      - Loại bỏ thẻ `<a>` tag kèm icon `ExternalLinkIcon` dẫn tới website công ty trong danh sách kinh nghiệm làm việc ([Experience.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Experience.tsx)).
+      - Hiển thị tên công ty dưới dạng văn bản tĩnh rõ ràng (`<span>{item.company}</span>`), hỗ trợ tự động xuống dòng linh hoạt (`flex-wrap: wrap`), bảo toàn cấu trúc phân tách địa điểm (`• {item.location}`) và ghi chú hợp tác công ty (`companySubtitle`).
+
 ---
 
 ## 2. Database & Schema Changes
 - Cập nhật hợp đồng dữ liệu [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts):
   - Bổ sung trường `zaloUrl?: string;` vào interface `PersonalInfo`.
+  - Loại bỏ trường không còn sử dụng `companyUrl?: string;` khỏi interface `ExperienceItem`.
 - Cập nhật dữ liệu tĩnh trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts):
   - Bổ sung `call: string;` và `zalo: string;` vào interface `UITranslation['contact']` và từ điển bản dịch EN/VI.
   - Khai báo `linkedinUrl: 'https://www.linkedin.com/in/tan-huynh-nhat/'` và `zaloUrl: 'https://zalo.me/0963684520'` vào `personalInfo` của cả `cvDataEn` và `cvDataVi`.
   - Tách bỏ hoàn toàn các ký tự emoji ra khỏi chuỗi nhãn và mảng dữ liệu (`workingTreeClean`, `objective`, `challenges`, `fullStack`, `keyImpacts`).
+  - Loại bỏ các trường `companyUrl` khỏi danh sách kinh nghiệm làm việc của cả 2 ngôn ngữ EN và VI.
 
 ---
 
@@ -99,9 +119,11 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - **Streamlined Modal Navigation UX**: Loại bỏ các nút đóng dư thừa, chỉ duy trì 2 điểm chạm đóng trực quan (góc phải trên và góc phải dưới), giảm thiểu sự lộn xộn thị giác và tăng tính chuyên nghiệp của giao diện.
 - **Modal Lifecycle & Scroll Lock Management**: Sử dụng React Hooks (`useEffect`) quản lý tự động `document.body.style.overflow` và phím tắt `Escape`.
 - **Single-Row 4-Column Desktop Grid Consistency**: Đồng bộ `grid-template-columns: repeat(4, 1fr)` cho tất cả các vùng chứa 4 box trên Desktop (`.hero-stats-banner`, `.principles-grid`, `.skills-compact-grid`, `.contact-cards-grid`).
-- **Unified Action Element Geometry**: Thiết lập quy chuẩn kích thước hình học đồng nhất (`height: 40px`, `border-radius: var(--radius-sm)`, `box-sizing: border-box`) cho toàn bộ các nút bấm trong `.contact-card-actions`.
+- **Unified Action Element Geometry**: Thiết lập quy chuẩn kích thước hình học đồng nhất (`height: 40px` - `42px`, `border-radius: var(--radius-md)`, `box-sizing: border-box`) cho toàn bộ các nút bấm trong `.contact-card-actions` và Drawer Menu (`.drawer-cv-btn`, `.drawer-lang-pill`, `.drawer-theme-toggle-btn`, `.drawer-social-btn`).
 - **Flexbox Equal Distribution & Zero Overflow**: Tối ưu `.project-actions-compact` và `.contact-card-actions` với thuộc tính `flex: 1 1 0` và `min-width: 0`.
 - **Semantic SVG Icon Mapping Engine**: Cơ chế `getImpactIcon()`, `getCategoryConfig()`, và `getPrincipleConfig()` ánh xạ chính xác 1-1 từng chỉ số kỹ thuật và triết lý với biểu tượng mang đúng ý nghĩa nguyên bản, đảm bảo 100% chuẩn nét SVG trên mọi thiết bị và hệ điều hành.
+- **Responsive Profile Card Geometric Balancing**: Tối ưu tỷ lệ co giãn của Profile Card trên Tablet (`max-width: 540px`) và Mobile (`max-width: 100%`), kết hợp chuyển đổi pill trạng thái nhận việc dưới tên cá nhân giúp trải nghiệm xem CV trên thiết bị cầm tay đạt độ hoàn thiện cao nhất.
+- **Timeline Top-Right Geometric Alignment**: Tái lập cấu trúc Flexbox hai tầng cho Timeline Header (`.timeline-title-row` và `.timeline-company`) giúp khóa chặt thời gian làm việc ở góc phải trên ngang hàng với chức danh trên mọi màn hình.
 
 ---
 
@@ -112,14 +134,15 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Tích hợp nút Zalo, SVG flags cho bộ chuyển ngôn ngữ trên mobile/tablet.
 - [src/pages/BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Tinh gọn nút đóng bài viết, thay thế emoji ngày/thời gian bằng vector icon.
 - [src/components/BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx): Đồng bộ giao diện popup bài viết với nút đóng và vector icon.
-- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`.
+- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên.
 - [src/components/About.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/About.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và ánh xạ icon ngữ nghĩa cho từng triết lý kỹ thuật.
 - [src/components/Contact.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Contact.tsx): Chuẩn hóa cấu trúc nút bấm 50/50 đồng nhất.
 - [src/components/Projects.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Projects.tsx): Tích hợp hàm `getImpactIcon()` và render vector icons chuẩn ngữ nghĩa cho impact badges và modal headers.
 - [src/components/Skills.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Skills.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và chuẩn hóa logic nhận diện icon/màu sắc chính xác cho 4 danh mục kỹ năng.
-- [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts): Khai báo kiểu `zaloUrl?: string;` trong `PersonalInfo`.
-- [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts): Chuẩn hóa chuỗi dữ liệu, loại bỏ emoji trong translations và project impacts.
-- [src/components/Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx): Bổ sung `CheckIcon` cho terminal status và nút liên kết Zalo.
+- [src/components/Experience.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Experience.tsx): Tái cấu trúc `.timeline-title-row` cố định thời gian làm việc ở góc phải trên ngang hàng Job title, loại bỏ liên kết ngoài tới website công ty.
+- [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts): Khai báo kiểu `zaloUrl?: string;` trong `PersonalInfo`, loại bỏ `companyUrl?: string;` trong `ExperienceItem`.
+- [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts): Chuẩn hóa chuỗi dữ liệu, loại bỏ emoji trong translations và project impacts, loại bỏ các trường `companyUrl`.
+- [src/components/Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx): Bổ sung `CheckIcon` cho terminal status, nút Zalo và hỗ trợ hiển thị thích ứng pill trạng thái nhận việc.
 - [src/components/PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx): Thay thế emoji bằng vector icon cho bản in ATS.
 - [docs/features/ui-optimization.md](file:///Users/tanhn/Projects/ga2631.github.io/docs/features/ui-optimization.md): Tài liệu kỹ thuật chi tiết của task tối ưu hóa giao diện.
 

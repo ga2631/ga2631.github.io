@@ -31,10 +31,16 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 )}
               </div>
 
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '4px' }}>
+              <h3 className="avatar-name">
                 {data.fullName}
               </h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>{data.location}</p>
+
+              <div className="hero-status-pill avatar-status-pill mobile-only-status">
+                <span className="status-dot"></span>
+                <span>{data.availability}</span>
+              </div>
+
+              <p className="avatar-location">{data.location}</p>
 
               <div className="avatar-info-box">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -103,7 +109,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
 
           {/* Right Column: Introduction & CTA */}
           <div className="hero-content">
-            <div className="hero-status-pill">
+            <div className="hero-status-pill desktop-only-status">
               <span className="status-dot"></span>
               <span>{data.availability}</span>
             </div>
@@ -129,7 +135,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
 
               <button
                 onClick={() => window.print()}
-                className="btn btn-outline"
+                className="btn btn-secondary"
                 title="Save CV as PDF"
               >
                 <DownloadIcon size={16} />
