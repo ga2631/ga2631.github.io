@@ -11,6 +11,7 @@ import { EducationCertifications } from './components/EducationCertifications.ts
 import { Contact } from './components/Contact.tsx';
 import { Footer } from './components/Footer.tsx';
 import { PrintCV } from './components/PrintCV.tsx';
+import { FloatingActions } from './components/FloatingActions.tsx';
 import { BlogPage } from './pages/BlogPage.tsx';
 
 export const App: React.FC = () => {
@@ -97,6 +98,13 @@ export const App: React.FC = () => {
         </main>
 
         <Footer t={t.footer} />
+
+        {/* Floating Quick Action Button (FAB) */}
+        <FloatingActions
+          onPrint={() => window.print()}
+          saveCvLabel={t.nav.saveCv}
+          lang={lang}
+        />
       </div>
 
       {/* Dedicated Standard ATS / Executive Print CV Document */}

@@ -210,3 +210,23 @@ export const ArrowLeftIcon: React.FC<IconProps> = ({ size = 18, ...props }) => (
   </svg>
 );
 
+export const ArrowUpIcon: React.FC<IconProps> = ({ size = 18, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="m5 12 7-7 7 7" />
+    <path d="M12 19V5" />
+  </svg>
+);
+
+export const UserIcon: React.FC<IconProps> = ({ size = 20, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+export const ChevronRightIcon: React.FC<IconProps> = ({ size = 18, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="m9 18 6-6-6-6" />
+  </svg>
+);
+
