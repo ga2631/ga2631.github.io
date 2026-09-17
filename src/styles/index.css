@@ -595,8 +595,7 @@ img, svg {
 
 .timeline {
   position: relative;
-  max-width: 900px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .timeline::before {
