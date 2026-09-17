@@ -145,6 +145,11 @@ img, svg {
    Typography & Utility Classes
    ========================================================================== */
 
+p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 .container {
   width: 100%;
   max-width: var(--max-width);
@@ -206,6 +211,7 @@ img, svg {
   font-size: 1.1rem;
   max-width: 600px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .glass-panel {
