@@ -63,7 +63,18 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
           <div className="hero-visual">
             <div className="glass-panel avatar-card">
               <div className="avatar-wrapper">
-                <div className="avatar-inner">TN</div>
+                {data.avatarUrl ? (
+                  <img
+                    src={data.avatarUrl}
+                    alt={data.fullName}
+                    className="avatar-img"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="avatar-inner">TN</div>
+                )}
               </div>
 
               <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '4px' }}>

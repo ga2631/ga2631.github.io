@@ -12,6 +12,7 @@ export const cvData: CVData = {
     birthday: '23 Nov 1999',
     availability: 'Open for Senior / Lead Backend & Data Engineering Roles',
     githubUrl: 'https://github.com/ga2631',
+    avatarUrl: 'https://github.com/ga2631.png',
     stats: [
       { label: 'Years Experience', value: '5+', subtext: 'Distributed Systems & Data' },
       { label: 'Data Reconciliation', value: '96%', subtext: 'Zero Data Loss Migration' },
