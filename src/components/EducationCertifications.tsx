@@ -93,7 +93,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
               <div key={cert.id} className="glass-panel cert-card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
                   <div>
-                    <h4 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '4px' }}>
+                    <h4 className="cert-title" style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '4px' }}>
                       {cert.name}
                     </h4>
                     <div style={{ color: 'var(--text-accent)', fontSize: '0.9rem', fontWeight: 500 }}>

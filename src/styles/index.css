@@ -949,7 +949,7 @@ p {
 .hero-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(320px, 360px) 1fr;
+  grid-template-columns: 1fr 2fr;
   gap: 48px;
   align-items: center;
 }
@@ -1065,6 +1065,11 @@ p {
   align-items: center;
   text-align: center;
   position: relative;
+  transition: transform var(--transition-smooth);
+}
+
+.hero-stat-card:hover {
+  transform: translateY(-3px);
 }
 
 .hero-stat-card:not(:last-child)::after {
@@ -1092,6 +1097,11 @@ p {
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 4px;
+  transition: color var(--transition-fast);
+}
+
+.hero-stat-card:hover .hero-stat-label {
+  color: var(--text-accent);
 }
 
 .hero-stat-subtext {
@@ -1172,6 +1182,11 @@ p {
   margin-bottom: 6px;
   color: var(--text-primary);
   letter-spacing: -0.01em;
+  transition: color var(--transition-fast);
+}
+
+.avatar-card:hover .avatar-name {
+  color: var(--text-accent);
 }
 
 .avatar-status-pill {
@@ -1288,6 +1303,11 @@ p {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
+  transition: color var(--transition-fast);
+}
+
+.principle-card:hover .principle-card-title {
+  color: var(--text-accent);
 }
 
 .principle-card-desc {
@@ -1338,6 +1358,13 @@ p {
 
 .timeline-card {
   padding: 32px;
+  transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.timeline-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-color-hover);
+  box-shadow: var(--border-glow);
 }
 
 .timeline-header {
@@ -1363,6 +1390,11 @@ p {
   line-height: 1.3;
   margin: 0;
   flex: 1 1 auto;
+  transition: color var(--transition-fast);
+}
+
+.timeline-card:hover .timeline-role {
+  color: var(--text-accent);
 }
 
 .timeline-period-wrapper {
@@ -1654,6 +1686,11 @@ p {
   opacity: 1;
 }
 
+.github-repo-card:hover .repo-link-title,
+.github-repo-card:hover .project-card-title {
+  color: var(--text-accent);
+}
+
 .repo-source-badge {
   display: inline-flex;
   align-items: center;
@@ -1824,6 +1861,11 @@ p {
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 4px;
+  transition: color var(--transition-fast);
+}
+
+.skill-card-compact:hover .skill-card-title {
+  color: var(--text-accent);
 }
 
 .skill-card-desc {
@@ -1895,6 +1937,13 @@ p {
 .edu-card, .cert-card {
   padding: 28px;
   margin-bottom: 20px;
+  transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.edu-card:hover, .cert-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-color-hover);
+  box-shadow: var(--border-glow);
 }
 
 .edu-degree {
@@ -1903,6 +1952,20 @@ p {
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 6px;
+  transition: color var(--transition-fast);
+}
+
+.edu-card:hover .edu-degree {
+  color: var(--text-accent);
+}
+
+.cert-title, .cert-card h4 {
+  transition: color var(--transition-fast);
+}
+
+.cert-card:hover .cert-title,
+.cert-card:hover h4 {
+  color: var(--text-accent);
 }
 
 .edu-institution {
@@ -2083,6 +2146,13 @@ p {
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+  transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-color-hover);
+  box-shadow: var(--border-glow);
 }
 
 .blog-title {
@@ -2448,6 +2518,7 @@ p {
   transition: color var(--transition-fast);
 }
 
+.contact-card:hover .contact-card-value,
 .contact-card-value:hover {
   color: var(--text-accent);
 }

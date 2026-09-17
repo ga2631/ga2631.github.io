@@ -83,7 +83,10 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
         - `DevOps & Automation`: `<RefreshCwIcon />` (Vòng lặp tự động hóa CI/CD & zero-downtime).
         - `Data & Performance Driven`: `<ZapIcon />` (Hiệu năng xử lý dữ liệu tốc độ cao).
 
-11. **Hero Profile Card Mobile/Tablet Optimization & Adaptive Status Pill Placement (`Hero.tsx` & `index.css`)**:
+11. **Hero Profile Card Desktop 1/3 Space & Mobile/Tablet Optimization (`Hero.tsx` & `index.css`)**:
+    - **Tỷ lệ hiển thị Desktop 1/3 không gian (1fr 2fr Desktop Grid Ratio)**:
+      - Cấu hình lưới `.hero-grid` trên Desktop (`> 992px`) chuyển sang tỉ lệ vàng `grid-template-columns: 1fr 2fr;` với khoảng cách `gap: 48px;`.
+      - Profile Card bên trái (`.avatar-card`) chiếm chính xác **1/3 (33.3%)** chiều ngang không gian hiển thị, tạo cảm giác bề thế, đĩnh đạc và cân đối tuyệt đối với khối nội dung giới thiệu 2/3 (66.7%) bên phải.
     - **Tối ưu hóa độ rộng Profile Card trên Mobile/Tablet**:
       - Mở rộng giới hạn chiều dài/chiều ngang của Profile Card (`.avatar-card`) trên màn hình Tablet (`@media (max-width: 992px)`) lên `max-width: 540px` với padding `32px 28px`, và trên màn hình Mobile (`@media (max-width: 576px)`) lên `max-width: 100%` với padding `24px 18px`.
       - Giúp khối Profile Card trở nên cân đối, đầy đặn, không bị co hẹp hoặc ép dòng thông tin trong console status box.
@@ -97,9 +100,22 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
       - Tái cấu trúc vùng tiêu đề thẻ kinh nghiệm bằng hàng chứa `.timeline-title-row` phân bổ theo Flexbox (`justify-content: space-between; align-items: flex-start; gap: 16px;`).
       - Đảm bảo khoảng thời gian làm việc (`.timeline-period-wrapper` / `.timeline-period`) luôn được cố định ở **góc phải trên, nằm ngang hàng trực tiếp với Chức danh công việc (Job title / `.timeline-role`)** trên mọi độ phân giải (Desktop, Tablet, và Mobile).
       - Xóa bỏ hành vi ép `flex-direction: column` ở breakpoint 768px để tránh làm rớt thời gian làm việc xuống dưới công ty.
-    - **Loại bỏ liên kết ngoài tới website công ty**:
-      - Loại bỏ thẻ `<a>` tag kèm icon `ExternalLinkIcon` dẫn tới website công ty trong danh sách kinh nghiệm làm việc ([Experience.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Experience.tsx)).
-      - Hiển thị tên công ty dưới dạng văn bản tĩnh rõ ràng (`<span>{item.company}</span>`), hỗ trợ tự động xuống dòng linh hoạt (`flex-wrap: wrap`), bảo toàn cấu trúc phân tách địa điểm (`• {item.location}`) và ghi chú hợp tác công ty (`companySubtitle`).
+13. **Card Box Hover Effects & Primary Accent Title Color Transition (`index.css` & `EducationCertifications.tsx`)**:
+    - **Tối ưu hóa hiệu ứng hover toàn diện trên các Box / Card**:
+      - Khi người dùng rê chuột (hover) vào bất kỳ thẻ nội dung nào trên toàn bộ trang web, tiêu đề chính của thẻ sẽ tự động chuyển mượt mà sang **màu chủ đạo** (`var(--text-accent)` - đỏ ruby `#ff4d6d` ở Dark theme, đỏ crimson `#dc2626` ở Light theme) kết hợp hiệu ứng chuyển động mượt (`transition: color var(--transition-fast)`).
+      - Đồng thời toàn bộ thẻ được nâng nhẹ độ cao (`transform: translateY(-3px)` hoặc `-4px`), viền thẻ sáng nhẹ (`border-color: var(--border-color-hover)`) kèm bóng hào quang màu đỏ (`box-shadow: var(--border-glow)`).
+    - **Danh mục các box được áp dụng**:
+      - **Hero Stats Banner Cards**: `.hero-stat-card:hover .hero-stat-label`
+      - **Profile Card**: `.avatar-card:hover .avatar-name`
+      - **About Principles Cards**: `.principle-card:hover .principle-card-title`
+      - **Experience Timeline Cards**: `.timeline-card:hover .timeline-role`
+      - **Enterprise Project Cards**: `.project-card-compact:hover .project-card-title`
+      - **GitHub Repository Cards**: `.github-repo-card:hover .repo-link-title`, `.github-repo-card:hover .project-card-title`
+      - **Skill Category Cards**: `.skill-card-compact:hover .skill-card-title`
+      - **Academic Background Cards**: `.edu-card:hover .edu-degree`
+      - **Certification Cards**: `.cert-card:hover .cert-title`, `.cert-card:hover h4`
+      - **Contact Cards**: `.contact-card:hover .contact-card-value`, `.contact-card:hover .contact-card-label`
+      - **Blog Article Cards**: `.blog-card:hover .blog-title`
 
 ---
 
@@ -124,6 +140,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - **Semantic SVG Icon Mapping Engine**: Cơ chế `getImpactIcon()`, `getCategoryConfig()`, và `getPrincipleConfig()` ánh xạ chính xác 1-1 từng chỉ số kỹ thuật và triết lý với biểu tượng mang đúng ý nghĩa nguyên bản, đảm bảo 100% chuẩn nét SVG trên mọi thiết bị và hệ điều hành.
 - **Responsive Profile Card Geometric Balancing**: Tối ưu tỷ lệ co giãn của Profile Card trên Tablet (`max-width: 540px`) và Mobile (`max-width: 100%`), kết hợp chuyển đổi pill trạng thái nhận việc dưới tên cá nhân giúp trải nghiệm xem CV trên thiết bị cầm tay đạt độ hoàn thiện cao nhất.
 - **Timeline Top-Right Geometric Alignment**: Tái lập cấu trúc Flexbox hai tầng cho Timeline Header (`.timeline-title-row` và `.timeline-company`) giúp khóa chặt thời gian làm việc ở góc phải trên ngang hàng với chức danh trên mọi màn hình.
+- **Micro-Interaction & Hover State Harmonization**: Chuẩn hóa chuyển đổi trạng thái màu chữ tiêu đề (`transition: color var(--transition-fast)`) sang màu nhấn chính `var(--text-accent)` trên toàn bộ hệ thống thẻ/card, tăng độ phản hồi thị giác (visual feedback) và tính tương tác cao cấp cho trang web.
 
 ---
 
@@ -134,12 +151,13 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Tích hợp nút Zalo, SVG flags cho bộ chuyển ngôn ngữ trên mobile/tablet.
 - [src/pages/BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Tinh gọn nút đóng bài viết, thay thế emoji ngày/thời gian bằng vector icon.
 - [src/components/BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx): Đồng bộ giao diện popup bài viết với nút đóng và vector icon.
-- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên.
+- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo cho toàn bộ các card/box.
 - [src/components/About.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/About.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và ánh xạ icon ngữ nghĩa cho từng triết lý kỹ thuật.
 - [src/components/Contact.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Contact.tsx): Chuẩn hóa cấu trúc nút bấm 50/50 đồng nhất.
 - [src/components/Projects.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Projects.tsx): Tích hợp hàm `getImpactIcon()` và render vector icons chuẩn ngữ nghĩa cho impact badges và modal headers.
 - [src/components/Skills.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Skills.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và chuẩn hóa logic nhận diện icon/màu sắc chính xác cho 4 danh mục kỹ năng.
 - [src/components/Experience.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Experience.tsx): Tái cấu trúc `.timeline-title-row` cố định thời gian làm việc ở góc phải trên ngang hàng Job title, loại bỏ liên kết ngoài tới website công ty.
+- [src/components/EducationCertifications.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/EducationCertifications.tsx): Bổ sung `className="cert-title"` hỗ trợ hover effect cho tiêu đề chứng chỉ.
 - [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts): Khai báo kiểu `zaloUrl?: string;` trong `PersonalInfo`, loại bỏ `companyUrl?: string;` trong `ExperienceItem`.
 - [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts): Chuẩn hóa chuỗi dữ liệu, loại bỏ emoji trong translations và project impacts, loại bỏ các trường `companyUrl`.
 - [src/components/Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx): Bổ sung `CheckIcon` cho terminal status, nút Zalo và hỗ trợ hiển thị thích ứng pill trạng thái nhận việc.
