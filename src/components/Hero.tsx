@@ -11,55 +11,7 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
     <section className="hero-section" id="hero">
       <div className="container">
         <div className="hero-grid">
-          {/* Left Column: Introduction & CTA */}
-          <div className="hero-content">
-            <div className="hero-status-pill">
-              <span className="status-dot"></span>
-              <span>{data.availability}</span>
-            </div>
-
-            <h1 className="hero-name">
-              Hi, I'm <span className="gradient-text">{data.fullName}</span>
-            </h1>
-
-            <h2 className="hero-title">{data.jobTitle}</h2>
-
-            <p className="hero-bio">{data.bio}</p>
-
-            <div className="hero-cta-group">
-              <a href="#projects" className="btn btn-primary">
-                <span>View Featured Projects</span>
-                <ExternalLinkIcon size={16} />
-              </a>
-
-              <a href="#contact" className="btn btn-secondary">
-                <MailIcon size={16} />
-                <span>Get In Touch</span>
-              </a>
-
-              <button
-                onClick={() => window.print()}
-                className="btn btn-outline"
-                title="Export or Print CV"
-              >
-                <DownloadIcon size={16} />
-                <span>Save CV (PDF)</span>
-              </button>
-            </div>
-
-            {/* Quick Stats Grid */}
-            <div className="hero-stats-grid">
-              {data.stats.map((stat, idx) => (
-                <div key={idx} className="stat-item">
-                  <span className="stat-value gradient-text">{stat.value}</span>
-                  <span className="stat-label">{stat.label}</span>
-                  {stat.subtext && <span className="stat-subtext">{stat.subtext}</span>}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Column: Visual Developer Profile Card */}
+          {/* Left Column: Visual Developer Profile Card */}
           <div className="hero-visual">
             <div className="glass-panel avatar-card">
               <div className="avatar-wrapper">
@@ -130,6 +82,54 @@ export const Hero: React.FC<HeroProps> = ({ data }) => {
                   <MailIcon size={20} />
                 </a>
               </div>
+            </div>
+          </div>
+
+          {/* Right Column: Introduction & CTA */}
+          <div className="hero-content">
+            <div className="hero-status-pill">
+              <span className="status-dot"></span>
+              <span>{data.availability}</span>
+            </div>
+
+            <h1 className="hero-name">
+              Hi, I'm <span className="gradient-text">{data.fullName}</span>
+            </h1>
+
+            <h2 className="hero-title">{data.jobTitle}</h2>
+
+            <p className="hero-bio">{data.bio}</p>
+
+            <div className="hero-cta-group">
+              <a href="#projects" className="btn btn-primary">
+                <span>View Featured Projects</span>
+                <ExternalLinkIcon size={16} />
+              </a>
+
+              <a href="#contact" className="btn btn-secondary">
+                <MailIcon size={16} />
+                <span>Get In Touch</span>
+              </a>
+
+              <button
+                onClick={() => window.print()}
+                className="btn btn-outline"
+                title="Export or Print CV"
+              >
+                <DownloadIcon size={16} />
+                <span>Save CV (PDF)</span>
+              </button>
+            </div>
+
+            {/* Quick Stats Grid */}
+            <div className="hero-stats-grid">
+              {data.stats.map((stat, idx) => (
+                <div key={idx} className="stat-item">
+                  <span className="stat-value gradient-text">{stat.value}</span>
+                  <span className="stat-label">{stat.label}</span>
+                  {stat.subtext && <span className="stat-subtext">{stat.subtext}</span>}
+                </div>
+              ))}
             </div>
           </div>
         </div>
