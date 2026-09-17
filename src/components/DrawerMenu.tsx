@@ -15,6 +15,8 @@ import {
   GithubIcon,
   LinkedinIcon,
   ZaloIcon,
+  VietnamFlagIcon,
+  UKFlagIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
@@ -170,14 +172,18 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                 <button
                   className={`drawer-lang-pill ${lang === 'vi' ? 'active' : ''}`}
                   onClick={() => setLang('vi')}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
-                  <span>🇻🇳 Tiếng Việt</span>
+                  <VietnamFlagIcon size={18} />
+                  <span>Tiếng Việt</span>
                 </button>
                 <button
                   className={`drawer-lang-pill ${lang === 'en' ? 'active' : ''}`}
                   onClick={() => setLang('en')}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
-                  <span>🇬🇧 English</span>
+                  <UKFlagIcon size={18} />
+                  <span>English</span>
                 </button>
               </div>
             </div>

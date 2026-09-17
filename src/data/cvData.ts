@@ -118,7 +118,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       viewProjects: 'View Featured Projects',
       getInTouch: 'Get In Touch',
       saveCv: 'Save CV',
-      workingTreeClean: '✔ Working tree clean (production ready)',
+      workingTreeClean: 'Working tree clean (production ready)',
       focusPrompt: '$ focus = "Distributed Systems & Data"',
     },
     about: {
@@ -161,9 +161,9 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       demo: 'Demo',
       publicRepo: 'Public Repo',
       enterpriseSystem: 'Enterprise System',
-      objective: '🎯 Project Objective',
-      challenges: '⚡ Key Engineering Challenges & Technical Solutions',
-      fullStack: '🛠️ Full Technology Stack',
+      objective: 'Project Objective',
+      challenges: 'Key Engineering Challenges & Technical Solutions',
+      fullStack: 'Full Technology Stack',
       closeModal: 'Close Case Study',
       noProjects: 'No projects found.',
       resetFilters: 'Reset Filters',
@@ -235,7 +235,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       viewProjects: 'Xem dự án nổi bật',
       getInTouch: 'Liên hệ ngay',
       saveCv: 'Lưu CV',
-      workingTreeClean: '✔ Mã nguồn sẵn sàng cho môi trường Production',
+      workingTreeClean: 'Mã nguồn sẵn sàng cho môi trường Production',
       focusPrompt: '$ định_hướng = "Hệ thống Phân tán & Dữ liệu"',
     },
     about: {
@@ -278,9 +278,9 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       demo: 'Bản thử nghiệm',
       publicRepo: 'Public Repo',
       enterpriseSystem: 'Hệ thống Doanh nghiệp',
-      objective: '🎯 Mục tiêu Dự án',
-      challenges: '⚡ Thách thức Kỹ thuật & Giải pháp Thực thi',
-      fullStack: '🛠️ Toàn bộ Ngăn xếp Công nghệ',
+      objective: 'Mục tiêu Dự án',
+      challenges: 'Thách thức Kỹ thuật & Giải pháp Thực thi',
+      fullStack: 'Toàn bộ Ngăn xếp Công nghệ',
       closeModal: 'Đóng chi tiết',
       noProjects: 'Không tìm thấy dự án phù hợp.',
       resetFilters: 'Đặt lại bộ lọc',
@@ -427,9 +427,9 @@ export const cvDataEn: CVData = {
       category: 'Data / AI',
       tags: ['Golang', 'MySQL Binlogs', 'PostgreSQL', 'Medallion CDC', 'RabbitMQ', 'Docker'],
       keyImpacts: [
-        '⚡ Reduced analytical query times by over 70%',
-        '🔒 96% reconciliation rate with zero data loss',
-        '🚀 Near real-time CDC sync latency (<2s)',
+        'Reduced analytical query times by over 70%',
+        '96% reconciliation rate with zero data loss',
+        'Near real-time CDC sync latency (<2s)',
       ],
       highlights: [
         'Bypassed slow-to-modify legacy ERP source code by implementing Change Data Capture (CDC) reading directly from MySQL binlogs, completely decoupling extraction and capturing full audit trails.',
@@ -454,9 +454,9 @@ export const cvDataEn: CVData = {
       category: 'Backend / Cloud',
       tags: ['Java 17', 'Spring Boot', 'Spring WebFlux', 'Spring AOP', 'Kafka', 'BigQuery', 'Docker'],
       keyImpacts: [
-        '⚡ Sub-second latency for thousands of daily funnel events',
-        '🛡️ 100% PII privacy compliance via Spring AOP',
-        '⏱️ Reduced daily report generation time by >40%',
+        'Sub-second latency for thousands of daily funnel events',
+        '100% PII privacy compliance via Spring AOP',
+        'Reduced daily report generation time by >40%',
       ],
       highlights: [
         'Developed high-throughput event tracking service using Spring WebFlux (non-blocking reactive API) and Apache Kafka / RabbitMQ to capture real-time user journey events without impacting core booking performance.',
@@ -480,9 +480,9 @@ export const cvDataEn: CVData = {
       category: 'Fullstack',
       tags: ['Node.js', 'Vue.js', 'Redis Caching', 'ERP Integration', 'Docker', 'Agile'],
       keyImpacts: [
-        '👥 Scaled smoothly under 1,000+ peak concurrent users',
-        '📉 40% reduction in manual data extraction requests',
-        '🧩 Modular frontend charts adaptable to frequent UX changes',
+        'Scaled smoothly under 1,000+ peak concurrent users',
+        '40% reduction in manual data extraction requests',
+        'Modular frontend charts adaptable to frequent UX changes',
       ],
       highlights: [
         'Managed full SDLC and resource allocation from system design phase to User Acceptance Testing (UAT).',
@@ -505,9 +505,9 @@ export const cvDataEn: CVData = {
       category: 'Backend / Cloud',
       tags: ['PHP (Laravel)', 'VueJS', 'MariaDB', 'RabbitMQ', 'CentOS', 'CI/CD'],
       keyImpacts: [
-        '📉 Decreased report generation time by 63%',
-        '⏳ Saved 10-12 hours/week in manual accounting entry',
-        '🔄 100% zero-downtime automated deployments',
+        'Decreased report generation time by 63%',
+        'Saved 10-12 hours/week in manual accounting entry',
+        '100% zero-downtime automated deployments',
       ],
       highlights: [
         'Built and maintained automated data pipelines integrating Google Ads, Facebook Ads, and TikTok APIs to fetch and centralize advertising metrics.',
@@ -691,9 +691,9 @@ export const cvDataVi: CVData = {
       category: 'Data / AI',
       tags: ['Golang', 'MySQL Binlogs', 'PostgreSQL', 'Medallion CDC', 'RabbitMQ', 'Docker'],
       keyImpacts: [
-        '⚡ Giảm hơn 70% thời gian thực thi truy vấn phân tích',
-        '🔒 Tỷ lệ khớp nối 96% với 0% mất mát dữ liệu',
-        '🚀 Độ trễ đồng bộ CDC gần thời gian thực (<2s)',
+        'Giảm hơn 70% thời gian thực thi truy vấn phân tích',
+        'Tỷ lệ khớp nối 96% với 0% mất mát dữ liệu',
+        'Độ trễ đồng bộ CDC gần thời gian thực (<2s)',
       ],
       highlights: [
         'Bỏ qua mã nguồn monolithic cũ kỹ bằng cách triển khai Change Data Capture (CDC) đọc trực tiếp từ MySQL binlogs, tách biệt hoàn toàn quá trình trích xuất và lưu vết kiểm toán đầy đủ.',
@@ -718,9 +718,9 @@ export const cvDataVi: CVData = {
       category: 'Backend / Cloud',
       tags: ['Java 17', 'Spring Boot', 'Spring WebFlux', 'Spring AOP', 'Kafka', 'BigQuery', 'Docker'],
       keyImpacts: [
-        '⚡ Độ trễ dưới 1 giây cho hàng nghìn sự kiện phễu mỗi ngày',
-        '🛡️ Tuân thủ 100% quyền riêng tư PII qua Spring AOP',
-        '⏱️ Giảm hơn 40% thời gian tổng hợp báo cáo định kỳ',
+        'Độ trễ dưới 1 giây cho hàng nghìn sự kiện phễu mỗi ngày',
+        'Tuân thủ 100% quyền riêng tư PII qua Spring AOP',
+        'Giảm hơn 40% thời gian tổng hợp báo cáo định kỳ',
       ],
       highlights: [
         'Phát triển dịch vụ theo dõi sự kiện thông lượng cao sử dụng Spring WebFlux (Reactive API bất đồng bộ) cùng Apache Kafka / RabbitMQ để ghi nhận hành vi người dùng mà không ảnh hưởng hiệu năng giao dịch cốt lõi.',
@@ -744,9 +744,9 @@ export const cvDataVi: CVData = {
       category: 'Fullstack',
       tags: ['Node.js', 'Vue.js', 'Redis Caching', 'ERP Integration', 'Docker', 'Agile'],
       keyImpacts: [
-        '👥 Vận hành ổn định dưới tải đỉnh 1,000+ người dùng đồng thời',
-        '📉 Giảm 40% yêu cầu trích xuất dữ liệu thủ công',
-        '🧩 Mô-đun biểu đồ linh hoạt thích ứng thay đổi giao diện',
+        'Vận hành ổn định dưới tải đỉnh 1,000+ người dùng đồng thời',
+        'Giảm 40% yêu cầu trích xuất dữ liệu thủ công',
+        'Mô-đun biểu đồ linh hoạt thích ứng thay đổi giao diện',
       ],
       highlights: [
         'Quản lý toàn bộ vòng đời phát triển phần mềm (SDLC) từ thiết kế kiến trúc đến kiểm thử nghiệm thu người dùng (UAT).',
@@ -769,9 +769,9 @@ export const cvDataVi: CVData = {
       category: 'Backend / Cloud',
       tags: ['PHP (Laravel)', 'VueJS', 'MariaDB', 'RabbitMQ', 'CentOS', 'CI/CD'],
       keyImpacts: [
-        '📉 Giảm 63% thời gian tạo báo cáo tài chính',
-        '⏳ Tiết kiệm 10-12 giờ/tuần nhập liệu thủ công cho kế toán',
-        '🔄 Triển khai nâng cấp tự động 100% không gián đoạn',
+        'Giảm 63% thời gian tạo báo cáo tài chính',
+        'Tiết kiệm 10-12 giờ/tuần nhập liệu thủ công cho kế toán',
+        'Triển khai nâng cấp tự động 100% không gián đoạn',
       ],
       highlights: [
         'Phát triển và duy trì các đường ống dữ liệu tự động tích hợp API Google Ads, Facebook Ads, TikTok Ads để thu thập số liệu tập trung.',

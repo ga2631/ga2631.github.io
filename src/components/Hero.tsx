@@ -1,6 +1,6 @@
 import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
-import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, DownloadIcon, ExternalLinkIcon } from './Icons.tsx';
+import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, DownloadIcon, ExternalLinkIcon, CheckIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
 interface HeroProps {
@@ -41,8 +41,9 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                   <span style={{ color: 'var(--text-muted)' }}>$</span>
                   <span>git status</span>
                 </div>
-                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px' }}>
-                  {t.workingTreeClean}
+                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <CheckIcon size={14} style={{ flexShrink: 0 }} />
+                  <span>{t.workingTreeClean}</span>
                 </div>
                 <div style={{ color: 'var(--text-secondary)', marginTop: '6px', fontSize: '0.82rem' }}>
                   {t.focusPrompt}

@@ -1,5 +1,13 @@
 import React from 'react';
 import { CVData } from '../types/index.ts';
+import {
+  MailIcon,
+  PhoneIcon,
+  MapPinIcon,
+  GithubIcon,
+  LinkedinIcon,
+  GlobeIcon,
+} from './Icons.tsx';
 
 interface PrintCVProps {
   data: CVData;
@@ -20,21 +28,33 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
           <div className="print-title">{personalInfo.jobTitle.toUpperCase()}</div>
 
           <div className="print-contact-row">
-            <span>📧 {personalInfo.email}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+              <MailIcon size={10} /> {personalInfo.email}
+            </span>
             <span>•</span>
-            <span>📞 {personalInfo.phone}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+              <PhoneIcon size={10} /> {personalInfo.phone}
+            </span>
             <span>•</span>
-            <span>📍 {personalInfo.location}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+              <MapPinIcon size={10} /> {personalInfo.location}
+            </span>
             <span>•</span>
-            <span>🐙 github.com/ga2631</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+              <GithubIcon size={10} /> github.com/ga2631
+            </span>
             {personalInfo.linkedinUrl && (
               <>
                 <span>•</span>
-                <span>💼 {personalInfo.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                  <LinkedinIcon size={10} /> {personalInfo.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                </span>
               </>
             )}
             <span>•</span>
-            <span>🌐 ga2631.github.io</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+              <GlobeIcon size={10} /> ga2631.github.io
+            </span>
           </div>
         </header>
 

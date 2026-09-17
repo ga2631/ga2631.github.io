@@ -9,18 +9,52 @@ interface SkillsProps {
 }
 
 export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
-  const getCategoryIcon = (title: string) => {
+  const getCategoryConfig = (title: string, index: number) => {
     const lower = title.toLowerCase();
-    if (lower.includes('core') || lower.includes('engineering') || lower.includes('cốt lõi')) {
-      return <CodeIcon size={18} style={{ color: 'var(--accent-cyan)' }} />;
+    // 1. Core Engineering / Lập trình & Kiến trúc Cốt lõi
+    if (lower.includes('core') || lower.includes('cốt lõi') || index === 0) {
+      return {
+        icon: <CodeIcon size={20} />,
+        color: 'var(--accent-red)',
+        bg: 'rgba(255, 56, 92, 0.12)',
+        border: 'rgba(255, 56, 92, 0.25)',
+      };
     }
-    if (lower.includes('database') || lower.includes('infrastructure') || lower.includes('cơ sở dữ liệu') || lower.includes('hạ tầng')) {
-      return <DatabaseIcon size={18} style={{ color: 'var(--accent-indigo)' }} />;
+    // 2. Database & Infrastructure / Cơ sở Dữ liệu & Hạ tầng
+    if (
+      lower.includes('database') ||
+      lower.includes('cơ sở dữ liệu') ||
+      lower.includes('infrastructure') ||
+      lower.includes('hạ tầng') ||
+      index === 1
+    ) {
+      return {
+        icon: <DatabaseIcon size={20} />,
+        color: 'var(--accent-crimson)',
+        bg: 'rgba(225, 29, 72, 0.12)',
+        border: 'rgba(225, 29, 72, 0.25)',
+      };
     }
-    if (lower.includes('analytics') || lower.includes('data') || lower.includes('dữ liệu lớn')) {
-      return <ChartIcon size={18} style={{ color: 'var(--accent-purple)' }} />;
+    // 3. Product Analytics & Data Engineering / Phân tích Sản phẩm & Kỹ thuật Dữ liệu
+    if (
+      lower.includes('analytics') ||
+      lower.includes('phân tích') ||
+      index === 2
+    ) {
+      return {
+        icon: <ChartIcon size={20} />,
+        color: 'var(--accent-rose)',
+        bg: 'rgba(251, 113, 133, 0.12)',
+        border: 'rgba(251, 113, 133, 0.25)',
+      };
     }
-    return <SparklesIcon size={18} style={{ color: 'var(--accent-emerald)' }} />;
+    // 4. Product, Agile & AI Workflow / Quản trị Sản phẩm, Agile & Quy trình AI
+    return {
+      icon: <SparklesIcon size={20} />,
+      color: 'var(--accent-cyan)',
+      bg: 'rgba(255, 77, 109, 0.12)',
+      border: 'rgba(255, 77, 109, 0.25)',
+    };
   };
 
   return (
@@ -38,29 +72,39 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
 
         {/* Optimized Compact Skills Grid */}
         <div className="skills-compact-grid">
-          {categories.map((category) => (
-            <div key={category.title} className="glass-panel skill-card-compact">
-              <div className="skill-card-header">
-                <div className="skill-icon-badge">
-                  {getCategoryIcon(category.title)}
-                </div>
-                <div>
-                  <h3 className="skill-card-title">{category.title}</h3>
-                  <p className="skill-card-desc">{category.description}</p>
-                </div>
-              </div>
-
-              {/* Wrapping Skill Badges Cluster */}
-              <div className="skills-pill-cluster">
-                {category.skills.map((skill) => (
-                  <div key={skill.name} className="skill-pill-tag">
-                    <span className="skill-pill-name">{skill.name}</span>
-                    <span className={`skill-level-dot level-${skill.level.toLowerCase()}`} title={skill.level} />
+          {categories.map((category, idx) => {
+            const config = getCategoryConfig(category.title, idx);
+            return (
+              <div key={category.title} className="glass-panel skill-card-compact">
+                <div className="skill-card-header">
+                  <div
+                    className="skill-icon-badge"
+                    style={{
+                      color: config.color,
+                      backgroundColor: config.bg,
+                      borderColor: config.border,
+                    }}
+                  >
+                    {config.icon}
                   </div>
-                ))}
+                  <div>
+                    <h3 className="skill-card-title">{category.title}</h3>
+                    <p className="skill-card-desc">{category.description}</p>
+                  </div>
+                </div>
+
+                {/* Wrapping Skill Badges Cluster */}
+                <div className="skills-pill-cluster">
+                  {category.skills.map((skill) => (
+                    <div key={skill.name} className="skill-pill-tag">
+                      <span className="skill-pill-name">{skill.name}</span>
+                      <span className={`skill-level-dot level-${skill.level.toLowerCase()}`} title={skill.level} />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
