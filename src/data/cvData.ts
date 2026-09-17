@@ -325,6 +325,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       phoneHint: 'Sẵn sàng tiếp nhận cuộc gọi trao đổi chuyên môn & nhắn tin nhanh qua Zalo.',
       locationLabel: 'Địa điểm & Ngày sinh',
       locationHint: 'Làm việc Linh hoạt (Hybrid) / Trực tiếp tại TP.HCM & Remote toàn cầu.',
+      locationCta: 'Văn phòng / Từ xa / Linh hoạt',
       linkedinLabel: 'Hồ sơ LinkedIn',
       linkedinHint: 'Kết nối mạng lưới nghề nghiệp và tham khảo đánh giá năng lực.',
       copied: 'Đã sao chép!',

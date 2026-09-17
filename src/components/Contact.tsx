@@ -68,7 +68,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
                 title="Copy email to clipboard"
               >
                 {copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
-                <span>{copied ? t.copied : t.copy}</span>
+                <span>{copied ? t.copied : t.copyEmail}</span>
               </button>
               <a
                 href="#"
