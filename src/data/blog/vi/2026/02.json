@@ -1,0 +1,27 @@
+[
+  {
+    "id": "post-5",
+    "slug": "distributed-idempotency-concurrency-control-golang-redis",
+    "category": "code-craftsmanship-languages",
+    "title": "Nghệ thuật Kiểm soát Bất biến (Idempotency) & Race Condition trong Distributed Workers với Go & Redis",
+    "summary": "Mô hình xử lý dữ liệu tin cậy qua Distributed Locks, cơ chế Dedup Key và kỹ thuật xử lý lỗi an toàn không gây nghẽn goroutine.",
+    "publishedAt": "Tháng 2, 2026",
+    "date": "2026-02-18",
+    "readTime": "6 phút đọc",
+    "tags": [
+      "Golang",
+      "Redis",
+      "Concurrency",
+      "Distributed Systems",
+      "Clean Code"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Trong kiến trúc microservices xử lý phân tán (Distributed Workers), hàng đợi message (RabbitMQ/Kafka) hoạt động theo cơ chế At-Least-Once Delivery. Khi mạng chập chờn hoặc worker gặp sự cố, cùng một tin nhắn thanh toán hoặc cập nhật trạng thái có thể được gửi nhiều lần, dẫn đến nguy cơ xung đột dữ liệu (Race Condition) và trừ tiền trùng lặp.</p>",
+      "initial-approach": "<p>Cách tiếp cận đơn giản là kiểm tra trạng thái giao dịch trong database trước khi thực hiện xử lý (Check-then-Act). Tuy nhiên, trong môi trường đa luồng hoặc nhiều worker chạy song song, hai worker có thể đồng thời đọc thấy trạng thái \"PENDING\" và cùng thực thi, tạo nên race condition nghiêm trọng.</p>",
+      "optimization-thinking": "<p>Để giải quyết triệt để, chúng tôi kết hợp hai cơ chế cấp độ hạ tầng và ứng dụng:</p><ul><li><strong>Idempotency Key & Redis Distributed Lock:</strong> Sử dụng lệnh nguyên tử <code>SET lock_key worker_id NX PX 5000</code> trên Redis để đảm bảo tại một thời điểm chỉ duy nhất một worker được quyền xử lý tin nhắn.</li><li><strong>Transactional Outbox & State Machine:</strong> Kiểm tra tính hợp lệ của bước chuyển trạng thái bằng lệnh cập nhật nguyên tử <code>UPDATE orders SET status = 'PAID' WHERE id = ? AND status = 'PENDING'</code>.</li><li><strong>Graceful Shutdown:</strong> Quản lý vòng đời Goroutine an toàn bằng <code>sync.WaitGroup</code> và <code>context.WithTimeout</code> để hoàn tất giao dịch dở dang trước khi tắt ứng dụng.</li></ul>",
+      "code-implementation": "<p>Mã nguồn Go triển khai pattern Idempotent Worker:</p><pre><code>func (w *PaymentWorker) Process(ctx context.Context, msg Message) error {\n    lockKey := fmt.Sprintf(\"lock:payment:%s\", msg.PaymentID)\n    acquired, err := w.redis.SetNX(ctx, lockKey, w.workerID, 10*time.Second).Result()\n    if err != nil || !acquired {\n        return nil // Bỏ qua nếu worker khác đang xử lý\n    }\n    defer w.redis.Del(ctx, lockKey)\n\n    return w.db.Transaction(func(tx *sql.Tx) error {\n        res, err := tx.ExecContext(ctx, \"UPDATE payments SET status = 'COMPLETED' WHERE id = ? AND status = 'PENDING'\", msg.PaymentID)\n        if err != nil { return err }\n        rows, _ := res.RowsAffected()\n        if rows == 0 { return nil } // Đã được xử lý trước đó (Idempotent)\n        return w.dispatchReceipt(ctx, msg)\n    })\n}</code></pre>",
+      "complexity-applications": "<p>Độ phức tạp thời gian: O(1) cho thao tác kiểm tra khóa Redis và O(1) cho câu lệnh SQL có chỉ mục. Ứng dụng rộng rãi trong các hệ thống cổng thanh toán trực tuyến, xử lý đơn hàng TMĐT, phân phối vé sự kiện và các luồng đồng bộ dữ liệu tài chính đòi hỏi tính toàn vẹn 100%.</p>"
+    }
+  }
+]

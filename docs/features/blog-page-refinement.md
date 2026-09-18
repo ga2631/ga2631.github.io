@@ -65,9 +65,29 @@ The 5 standard section keys per category:
    - `actionable-recommendations`: Gợi ý hành động (Actionable Recommendations)
    - `open-questions-discussion`: Câu hỏi mở, thảo luận (Open Questions & Discussion)
 
+### 5. Year/Month Partitioned JSON Storage & On-Demand Loader
+- **Directory Structure:** Articles are partitioned by language, year, and month under `src/data/blog/{lang}/{YYYY}/{MM}.json` (e.g. `src/data/blog/vi/2026/05.json`).
+- **Initial Load Behavior:** 
+  - Loads 20 most recent posts starting from the current / newest month.
+  - If the newest month contains fewer than 20 articles, it fetches backwards for a **maximum of 2 months** (`maxInitialMonths = 2`).
+- **On-Demand Pagination ("Load More"):**
+  - Displays a "Tải thêm bài viết" button with a loading spinner if older archives exist.
+  - Loads the next batch of month archives without reloading already fetched posts.
+- **Search & Filter Auto-Fetch:**
+  - When the user searches or selects a category/tag filter, `loadAllArchivePosts(lang)` is automatically invoked in the background to ensure searches cover the entire historical archive.
+- **Dynamic Assembly & Hydration:**
+  - `blogService.ts` hydrates posts on-the-fly, generating standard semantic HTML headings (`<h3>1. ...</h3>`) from the 5-key `sections` dictionary for each category.
+
 ## Verification
-- Unit and integration test suite passing (55 tests across 9 test files):
-  - `tests/unit/blog-post-structure.test.ts` (6 tests)
-  - `tests/unit/data-integrity.test.ts` (7 tests)
+- Unit and integration test suite passing (62 tests across 10 test files):
+  - `tests/unit/blog-post-structure.test.ts` (6 tests - validates 5-section schema for up to 20 articles)
+  - `tests/unit/blog-storage-loader.test.ts` (7 tests - validates month archive sorting, max 2 months initial rule, pagination, and up to 40 articles)
+  - `tests/unit/data-integrity.test.ts` (7 tests - validates up to 20 articles matching across locales)
   - `tests/integration/blog-reader.test.tsx` (10 tests)
-- Clean TypeScript and Sass build with Vite.
+  - `tests/integration/print-cv.test.tsx` (7 tests)
+  - `tests/integration/app-routing-theme.test.tsx` (5 tests)
+  - `tests/integration/navigation-drawer.test.tsx` (5 tests)
+  - `tests/integration/mobile-ergonomics.test.tsx` (5 tests)
+  - `tests/integration/projects-modal.test.tsx` (4 tests)
+  - `tests/unit/obfuscation.test.ts` (6 tests)
+- Clean TypeScript check (`tsc -b`) and Vite production bundle build (`vite build`).

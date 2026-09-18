@@ -1,0 +1,28 @@
+[
+  {
+    "id": "post-1",
+    "slug": "migrating-legacy-erp-to-medallion-data-warehouse-cdc",
+    "category": "data-engineering-analytics",
+    "title": "Migrating a 7-Year Legacy ERP to a Medallion Data Warehouse using CDC and Zero Data Loss",
+    "summary": "How we extracted MySQL binlogs with Change Data Capture, leveraged RabbitMQ idempotent workers, and reduced analytical query times by >70% with zero downtime.",
+    "publishedAt": "May 2026",
+    "date": "2026-05-15",
+    "readTime": "7 min read",
+    "tags": [
+      "Golang",
+      "CDC",
+      "Medallion Architecture",
+      "PostgreSQL",
+      "RabbitMQ",
+      "Data Engineering"
+    ],
+    "author": "Tan Huynh Nhat",
+    "sections": {
+      "business-data-requirements": "<p>Operating for over 7 years, our legacy ERP database accumulated millions of retail and fulfillment transactions. The Business Intelligence (BI) team and executives required near-realtime dashboards to optimize inventory and marketing budgets. However, the operational MySQL database relied heavily on an Entity-Attribute-Value (EAV) schema. Running heavy multi-table joins on OLTP exhausted CPU resources and threatened order processing throughput.</p>",
+      "data-modeling": "<p>Rather than querying transactional tables directly, we adopted a multi-tier Medallion Architecture separating OLAP from OLTP:</p><ul><li><strong>Bronze Layer (Raw Ingestion):</strong> Append-only tables preserving unmodified JSON payload events captured from MySQL binlogs.</li><li><strong>Silver Layer (Cleaned & Conformed):</strong> Validated 3NF schemas with normalized types, deduplicated events, and cleansed foreign key references.</li><li><strong>Gold Layer (Dimensional Star Schema):</strong> High-performance Fact and Dimension tables optimized for analytical reporting in Looker Studio.</li></ul>",
+      "pipeline-construction": "<p>The CDC ingestion pipeline was built without touching legacy ERP monolith code:</p><ul><li><strong>Binary Log Ingestion:</strong> Debezium/Canal captures MySQL row-based binlogs and streams change events into RabbitMQ topic exchanges.</li><li><strong>Idempotent Go Workers:</strong> High-throughput Go consumers decode payloads and execute atomic PostgreSQL <code>INSERT ... ON CONFLICT DO UPDATE</code> (UPSERT) operations.</li><li><strong>Dead Letter Queue (DLX):</strong> Corrupted events or transient network issues route to a DLX with automated exponential backoff retries.</li></ul>",
+      "testing-optimization": "<p>Key validation and tuning strategies included:</p><ul><li><strong>Automated Reconciliation:</strong> Nightly checksum audits at 02:00 AM comparing record counts and aggregate hashes between MySQL and PostgreSQL.</li><li><strong>Performance Tuning:</strong> Monthly table partitioning, BRIN indexes on timestamp columns, and micro-batching worker writes (500 records/batch).</li><li><strong>Pipeline Latency:</strong> End-to-end sync latency from OLTP commit to DW availability remained under 1.8 seconds under peak load.</li></ul>",
+      "summary-recommendations": "<p>The solution achieved a <strong>96% data reconciliation rate with 0% data loss</strong>, decreased analytical query times by <strong>over 70%</strong>, and eliminated ERP database locking. Recommendation: Always enforce idempotent consumer writes and schema versioning when designing event-driven CDC architectures.</p>"
+    }
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "id": "post-1",
+    "slug": "migrating-legacy-erp-to-medallion-data-warehouse-cdc",
+    "category": "data-engineering-analytics",
+    "title": "Chuyển đổi Hệ thống ERP Kế thừa 7 năm sang Medallion Data Warehouse với CDC & Zero Data Loss",
+    "summary": "Cách trích xuất MySQL binlog qua Change Data Capture, xây dựng worker Idempotent trên RabbitMQ và giảm hơn 70% thời gian truy vấn phân tích không gây gián đoạn hệ thống.",
+    "publishedAt": "Tháng 5, 2026",
+    "date": "2026-05-15",
+    "readTime": "7 phút đọc",
+    "tags": [
+      "Golang",
+      "CDC",
+      "Medallion Architecture",
+      "PostgreSQL",
+      "RabbitMQ",
+      "Data Engineering"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "business-data-requirements": "<p>Hệ thống ERP vận hành qua 7 năm với khối lượng giao dịch bán lẻ và kho vận lớn. Đội ngũ Business Intelligence (BI) và Ban giám đốc cần các báo cáo phân tích realtime và Near-realtime theo giờ để tối ưu dòng hàng và chi phí tiếp thị. Tuy nhiên, CSDL MySQL vận hành thiết kế theo mô hình Entity-Attribute-Value (EAV) phình to, mỗi báo cáo phải JOIN hàng chục bảng khiến CPU chạm ngưỡng 100%, gây trễ đơn hàng vận hành.</p>",
+      "data-modeling": "<p>Thay vì query trực tiếp trên CSDL OLTP, chúng tôi thiết kế kiến trúc Medallion (Data Lakehouse) trên PostgreSQL/ClickHouse tách biệt hoàn toàn OLAP khỏi OLTP:</p><ul><li><strong>Tầng Bronze (Raw Ingestion):</strong> Bảng append-only lưu trữ nguyên bản JSON event payload trích xuất từ MySQL binlog.</li><li><strong>Tầng Silver (Cleaned & Conformed):</strong> Mô hình chuẩn hóa (Third Normal Form) đã được làm sạch kiểu dữ liệu, khử trùng lặp và liên kết khóa ngoại.</li><li><strong>Tầng Gold (Dimensional Star Schema):</strong> Bảng Fact doanh thu, tồn kho và các Dimension Khách hàng, Sản phẩm tối ưu cho BI và Looker Studio.</li></ul>",
+      "pipeline-construction": "<p>Pipeline CDC được triển khai độc lập, không can thiệp mã nguồn ứng dụng ERP cũ:</p><ul><li><strong>Bắt log nhị phân (CDC):</strong> Sử dụng Debezium / Canal lắng nghe trực tiếp MySQL row-based binlogs và đẩy message vào RabbitMQ Exchange.</li><li><strong>Worker Go Idempotent:</strong> Xây dựng worker bằng Golang tiêu thụ message từ queue, giải mã payload và thực thi <code>INSERT INTO ... ON CONFLICT (id, version) DO UPDATE</code>.</li><li><strong>Dead Letter Exchange (DLX):</strong> Các bản ghi sai schema hoặc lỗi kết nối được chuyển vào hàng đợi xử lý lại tự động sau 3 lần retry có exponential backoff.</li></ul>",
+      "testing-optimization": "<p>Quá trình kiểm thử và tối ưu bao gồm:</p><ul><li><strong>Data Reconciliation:</strong> Đối soát checksum và số lượng bản ghi giữa MySQL OLTP và PostgreSQL Data Warehouse định kỳ mỗi đêm lúc 02:00 AM.</li><li><strong>Tối ưu hóa:</strong> Phân vùng bảng (Partitioning) theo tháng và đánh chỉ mục BRIN/B-Tree trên các cột thời gian truy vấn, gom lô (micro-batching) 500 records/lần ghi.</li><li><strong>Độ trễ:</strong> Độ trễ toàn luồng CDC từ khi giao dịch cam kết ở MySQL đến khi xuất hiện ở kho dữ liệu giảm xuống dưới 1.8 giây.</li></ul>",
+      "summary-recommendations": "<p>Hệ thống đạt <strong>96% tỷ lệ khớp nối dữ liệu với 0% mất mát</strong>, giảm hơn <strong>70% thời gian thực thi truy vấn phân tích</strong> mà không hề gây downtime cho hệ thống ERP lõi. Khuyến nghị: Luôn áp dụng Idempotency Key và cơ chế Schema Registry từ ngày đầu khi triển khai pipeline CDC.</p>"
+    }
+  }
+]

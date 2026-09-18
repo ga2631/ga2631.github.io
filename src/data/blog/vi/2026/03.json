@@ -1,0 +1,27 @@
+[
+  {
+    "id": "post-4",
+    "slug": "docker-multi-stage-github-actions-zero-downtime-cicd",
+    "category": "devops-cloud-tooling",
+    "title": "Tối ưu Multi-Stage Docker (<25MB) & Xây dựng Zero-Downtime CI/CD Pipeline với GitHub Actions",
+    "summary": "Chiến lược đóng gói container siêu nhẹ trên nền Alpine, cấu hình Nginx SPA fallback và tự động hóa kiểm thử static typecheck trong luồng phát hành.",
+    "publishedAt": "Tháng 3, 2026",
+    "date": "2026-03-10",
+    "readTime": "5 phút đọc",
+    "tags": [
+      "Docker",
+      "CI/CD",
+      "GitHub Actions",
+      "Nginx",
+      "DevOps"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "article-objectives": "<p>Hướng dẫn xây dựng quy trình đóng gói container ứng dụng web SPA siêu nhẹ (&lt; 25MB) bằng Docker Multi-Stage Builds trên nền tảng Alpine Linux, đồng thời thiết lập pipeline CI/CD tự động hóa toàn diện với GitHub Actions để đạt mục tiêu triển khai không gián đoạn (Zero-Downtime Deployment).</p>",
+      "architecture-principles": "<p>Mô hình triển khai gồm 2 giai đoạn tách biệt rõ ràng:</p><ul><li><strong>Stage 1 (Builder):</strong> Sử dụng image <code>node:20-alpine</code> để cài đặt dependencies, chạy typecheck và biên dịch mã nguồn thành static bundle tối ưu trong thư mục <code>/dist</code>.</li><li><strong>Stage 2 (Production Runner):</strong> Chỉ copy thư mục <code>/dist</code> sang image <code>nginx:alpine-slim</code> (&lt; 15MB), cấu hình gzip compression, bảo mật HTTP headers và fallback routing cho SPA.</li><li><strong>GitHub Actions Pipeline:</strong> Kích hoạt tự động khi có Pull Request / Push vào nhánh <code>main</code>, bao gồm các job: Lint -&gt; Test -&gt; Build -&gt; Docker Push -&gt; Server Deploy.</li></ul>",
+      "step-by-step-setup": "<p>Các bước cấu hình cụ thể:</p><ul><li><strong>Bước 1:</strong> Viết <code>Dockerfile</code> nhiều tầng với non-root user và <code>.dockerignore</code> loại bỏ <code>node_modules</code>, tài liệu không cần thiết.</li><li><strong>Bước 2:</strong> Cấu hình <code>nginx.conf</code> hỗ trợ <code>try_files $uri $uri/ /index.html;</code> cùng caching headers cho static assets.</li><li><strong>Bước 3:</strong> Tạo workflow GitHub Actions <code>.github/workflows/deploy.yml</code> sử dụng Docker Buildx cache để tăng tốc độ build CI lên gấp 3 lần.</li></ul>",
+      "troubleshooting-pitfalls": "<ul><li><strong>Lỗi 404 khi F5 trang con trong SPA:</strong> Xảy ra do Nginx chưa cấu hình fallback về <code>index.html</code>. Khắc phục bằng directive <code>try_files</code>.</li><li><strong>Kích thước image vẫn lớn:</strong> Thường do copy cả thư mục dev dependencies hoặc không dùng multi-stage build.</li><li><strong>Lỗ hổng bảo mật:</strong> Chạy container bằng quyền root. Cần khai báo <code>USER nginx</code> trong Dockerfile.</li></ul>",
+      "evaluation-scaling": "<p>Quy trình giúp giảm kích thước Docker image từ 850MB xuống 22MB, rút ngắn thời gian deploy từ 6 phút xuống còn dưới 45 giây. Mở rộng trong tương lai: Tích hợp quét lỗ hổng Trivy Security Scanner và triển khai Kubernetes Canary Rollouts.</p>"
+    }
+  }
+]

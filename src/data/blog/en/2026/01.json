@@ -1,0 +1,51 @@
+[
+  {
+    "id": "post-3",
+    "slug": "scaling-customer-reporting-portal-high-concurrency-redis",
+    "category": "architecture-system-design",
+    "title": "Scaling an ERP Customer Reporting Portal to 1,000+ Concurrent Users with Redis & Node.js",
+    "summary": "Techniques for caching heavy reporting queries, batch synchronization, and designing modular UI component architectures.",
+    "publishedAt": "Jan 2026",
+    "date": "2026-01-25",
+    "readTime": "5 min read",
+    "tags": [
+      "Node.js",
+      "Redis",
+      "Vue.js",
+      "High Concurrency",
+      "Architecture"
+    ],
+    "author": "Tan Huynh Nhat",
+    "sections": {
+      "context-problem": "<p>An enterprise reporting portal served over 1,000 corporate clients logging in concurrently between 08:00 and 09:30 AM. Each client requested multi-dimensional performance reports. Under morning peak load, database CPU utilization reached 100%, page response times degraded beyond 10 seconds, and users experienced frequent HTTP 504 Gateway Timeouts.</p>",
+      "system-requirements": "<ul><li><strong>Functional:</strong> Render customizable reporting views, dynamic date filters, channel breakdowns, and interactive data visualizations.</li><li><strong>Non-Functional:</strong> Sub-second page load times (&lt; 800ms), support 1,000+ active concurrent clients, maximum data staleness under 5 minutes, and efficient cloud resource utilization.</li></ul>",
+      "architecture-design": "<p>We engineered a decoupled caching and asynchronous rendering architecture:</p><ul><li><strong>Cache-Aside with Redis:</strong> Heavy analytical aggregations are cached in a Redis Cluster with structured key namespacing and dynamic TTLs aligned with data refresh frequencies.</li><li><strong>Modular UI Components:</strong> Independent Vue.js charting widgets render asynchronously using skeleton loaders, preventing blocking UI render cascades.</li><li><strong>Query Batching & Deduplication:</strong> Node.js backend batches identical queries within a 50ms window (DataLoader pattern), collapsing redundant database requests into a single query execution.</li></ul>",
+      "trade-offs-analysis": "<p>Comparing Database Read Replicas vs. Distributed Redis Caching:</p><ul><li><strong>Read Replicas:</strong> High infrastructure overhead and still vulnerable to expensive full-table aggregation spikes without proper caching.</li><li><strong>Redis Caching + Query Batching:</strong> Cut infrastructure costs by 80%, eliminated 90% of direct database load, with an acceptable 2-minute cache invalidation window for analytical metrics.</li></ul>",
+      "lessons-best-practices": "<p>Implement <strong>Cache Stampede Prevention</strong> via distributed mutexes or probabilistic early expiration (XFetch) to prevent simultaneous database hammering on cache misses. Always enforce strict connection pool timeouts.</p>"
+    }
+  },
+  {
+    "id": "post-6",
+    "slug": "from-developer-to-system-architect-practical-mindset",
+    "category": "tech-radar-career-insights",
+    "title": "From Software Engineer to System Architect: Mindset, Trade-offs & Practical Lessons",
+    "summary": "Field-tested reflections on balancing technical excellence with business value, making responsible architectural decisions, and sustained engineering growth.",
+    "publishedAt": "Jan 2026",
+    "date": "2026-01-10",
+    "readTime": "8 min read",
+    "tags": [
+      "Career Growth",
+      "System Architecture",
+      "Engineering Mindset",
+      "Tech Radar"
+    ],
+    "author": "Tan Huynh Nhat",
+    "sections": {
+      "introduction": "<p>Transitioning from a Senior Software Engineer to a System Architect is not just a matter of accumulating years of experience. It represents a fundamental mindset shift: evolving from asking \"How do I implement this code?\" to \"Why should we choose this approach, and what are its systemic consequences three years down the line?\".</p>",
+      "multi-dimensional-evaluation": "<p>Key differences between the two roles:</p><ul><li><strong>Problem Solving:</strong> Senior engineers strive for algorithm efficiency; architects navigate multi-dimensional trade-offs between cost, time-to-market, maintainability, and team capabilities.</li><li><strong>Scope of Impact:</strong> Expands from individual microservices to the entire technical ecosystem and cross-functional alignment (Product, DevOps, Security).</li><li><strong>Primary Toolkit:</strong> Evolves from IDEs and debuggers to Architecture Decision Records (ADRs), C4 Model diagrams, and clear technical articulation.</li></ul>",
+      "case-study-experience": "<p>A real-world lesson from a premature microservice migration: Our team initially split a system into 20 microservices to \"follow modern trends\". The result was quadrupled operational overhead, distributed tracing complexity, and team fatigue. Re-evaluating the business reality, we consolidated into a clean Modular Monolith with targeted Event-Driven workers, cutting cloud expenses by 50% while doubling feature velocity.</p>",
+      "actionable-recommendations": "<p>Three daily habits to cultivate architectural thinking:</p><ul><li><strong>Document ADRs for Major Decisions:</strong> Record the context, evaluated alternatives, decision rationale, and accepted compromises.</li><li><strong>Study Industry Engineering Blogs:</strong> Read real-world architectural case studies from Netflix, Stripe, and Uber to understand high-scale patterns.</li><li><strong>Practice System Design Reviews:</strong> Regularly sketch distributed architectures, challenge single points of failure, and analyze bottleneck resiliency.</li></ul>",
+      "open-questions-discussion": "<p>In the era of rapid AI and cloud-native acceleration, should architects focus primarily on mastering low-level core engineering, or cultivate technical leadership and product strategy? Share your perspectives and real-world experiences!</p>"
+    }
+  }
+]

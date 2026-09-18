@@ -20,6 +20,11 @@ import {
 import { UITranslation } from '../data/cvData.ts';
 import { processArticleToc, ArticleTocSidebar } from '../components/ArticleToc.tsx';
 import { BLOG_CATEGORY_DEFINITIONS, BlogCategoryDef } from '../data/blogCategories.ts';
+import {
+  loadInitialBlogPosts,
+  loadNextMonthBatch,
+  loadAllArchivePosts,
+} from '../data/blogService.ts';
 
 interface BlogPageProps {
   posts: BlogPost[];
@@ -28,6 +33,10 @@ interface BlogPageProps {
 }
 
 export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
+  const [allPosts, setAllPosts] = useState<BlogPost[]>(posts);
+  const [loadedMonthKeys, setLoadedMonthKeys] = useState<string[]>([]);
+  const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(false);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTag, setSelectedTag] = useState<string>('all');
@@ -47,6 +56,61 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
   const langKey = useMemo<'vi' | 'en'>(() => {
     return t.allTopics === 'Tất cả chủ đề' || !t.allTopics.toLowerCase().includes('all') ? 'vi' : 'en';
   }, [t.allTopics]);
+
+  // Sync with incoming posts prop
+  useEffect(() => {
+    if (posts && posts.length > 0) {
+      setAllPosts(posts);
+    }
+  }, [posts]);
+
+  // Initial load: 20 latest articles, maximum 2 months if month count < 20
+  useEffect(() => {
+    let isMounted = true;
+    loadInitialBlogPosts(langKey, 20, 2).then((res) => {
+      if (isMounted) {
+        setAllPosts(res.posts);
+        setLoadedMonthKeys(res.loadedMonthKeys);
+        setHasMoreMonths(res.hasMore);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [langKey]);
+
+  // Automatically load all archives if user applies filters/search to ensure complete query results
+  useEffect(() => {
+    if ((selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery.trim()) && hasMoreMonths) {
+      let isMounted = true;
+      loadAllArchivePosts(langKey).then((fullPosts) => {
+        if (isMounted) {
+          setAllPosts(fullPosts);
+          setHasMoreMonths(false);
+        }
+      });
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [selectedCategory, selectedTag, searchQuery, hasMoreMonths, langKey]);
+
+  const handleLoadMore = async () => {
+    if (isLoadingMore || !hasMoreMonths) return;
+    setIsLoadingMore(true);
+    try {
+      const res = await loadNextMonthBatch(langKey, loadedMonthKeys, 20);
+      setAllPosts((prev) => {
+        const existingIds = new Set(prev.map((p) => p.id));
+        const newUnique = res.posts.filter((p) => !existingIds.has(p.id));
+        return [...prev, ...newUnique];
+      });
+      setLoadedMonthKeys(res.loadedMonthKeys);
+      setHasMoreMonths(res.hasMore);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   // Process article content to extract TOC items (up to 2 levels) and inject unique IDs
   const { processedHtml, tocItems } = useMemo(() => {
@@ -108,33 +172,33 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
   // Extract all unique tags across posts
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
-    posts.forEach((post) => {
+    allPosts.forEach((post) => {
       post.tags.forEach((tag) => tagSet.add(tag));
     });
     return Array.from(tagSet);
-  }, [posts]);
+  }, [allPosts]);
 
   // Count articles per category
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: posts.length };
+    const counts: Record<string, number> = { all: allPosts.length };
     BLOG_CATEGORY_DEFINITIONS.forEach((cat) => {
       if (cat.id !== 'all') {
-        counts[cat.id] = posts.filter((p) => p.category === cat.id).length;
+        counts[cat.id] = allPosts.filter((p) => p.category === cat.id).length;
       }
     });
     return counts;
-  }, [posts]);
+  }, [allPosts]);
 
   // Count articles per tag
   const tagCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    posts.forEach((post) => {
+    allPosts.forEach((post) => {
       post.tags.forEach((tag) => {
         counts[tag] = (counts[tag] || 0) + 1;
       });
     });
     return counts;
-  }, [posts]);
+  }, [allPosts]);
 
   // Sync with URL hash for deep linking (e.g. #/blog/post-slug)
   useEffect(() => {
@@ -142,7 +206,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
       const hash = window.location.hash;
       if (hash.startsWith('#/blog/') && hash.length > 7) {
         const slug = hash.replace('#/blog/', '');
-        const matchedPost = posts.find((p) => p.slug === slug || p.id === slug);
+        const matchedPost = allPosts.find((p) => p.slug === slug || p.id === slug);
         if (matchedPost) {
           setActivePost(matchedPost);
         }
@@ -152,7 +216,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
     checkHashForPost();
     window.addEventListener('hashchange', checkHashForPost);
     return () => window.removeEventListener('hashchange', checkHashForPost);
-  }, [posts]);
+  }, [allPosts]);
 
   // Lock body scroll when popup is open
   useEffect(() => {
@@ -206,7 +270,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
   // Filter posts based on category, search query, and selected tag
   const filteredPosts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    return posts.filter((post) => {
+    return allPosts.filter((post) => {
       const matchesCategory =
         selectedCategory === 'all' || post.category === selectedCategory;
 
@@ -220,7 +284,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
 
       return matchesCategory && matchesTag && matchesQuery;
     });
-  }, [posts, searchQuery, selectedCategory, selectedTag]);
+  }, [allPosts, searchQuery, selectedCategory, selectedTag]);
 
   const handleResetFilters = () => {
     setSearchQuery('');
@@ -545,7 +609,42 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                   );
                 })}
               </div>
-            ) : (
+            ) : null}
+
+            {/* Load More Button if more month archives exist */}
+            {hasMoreMonths && filteredPosts.length > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px', marginBottom: '16px' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleLoadMore}
+                  disabled={isLoadingMore}
+                  style={{ minWidth: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <span
+                        className="spinner-sm"
+                        style={{
+                          display: 'inline-block',
+                          width: '14px',
+                          height: '14px',
+                          border: '2px solid rgba(255,255,255,0.2)',
+                          borderTopColor: 'currentColor',
+                          borderRadius: '50%',
+                          animation: 'spin 0.8s linear infinite',
+                        }}
+                      />
+                      <span>{t.loadingMore || 'Đang tải dữ liệu...'}</span>
+                    </>
+                  ) : (
+                    <span>{t.loadMoreArticles || 'Tải thêm bài viết'}</span>
+                  )}
+                </button>
+              </div>
+            )}
+
+            {filteredPosts.length === 0 && (
               <div className="glass-panel" style={{ padding: '48px 24px', textAlign: 'center', marginTop: '12px' }}>
                 <BookOpenIcon size={40} style={{ color: 'var(--text-muted)', margin: '0 auto 16px' }} />
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{t.noArticlesFound}</h3>

@@ -1,0 +1,28 @@
+[
+  {
+    "id": "post-2",
+    "slug": "building-reactive-event-tracking-spring-webflux-kafka",
+    "category": "architecture-system-design",
+    "title": "Kiến trúc Thu thập Sự kiện Thông lượng cao với Spring WebFlux, Kafka & Ẩn danh PII Tự động",
+    "summary": "Xây dựng cổng MarTech tuân thủ quyền riêng tư dữ liệu, xử lý hàng nghìn sự kiện phễu chuyển đổi TMĐT thời gian thực với độ trễ dưới 1 giây.",
+    "publishedAt": "Tháng 4, 2026",
+    "date": "2026-04-20",
+    "readTime": "6 phút đọc",
+    "tags": [
+      "Java 17",
+      "Spring Boot",
+      "Spring WebFlux",
+      "Kafka",
+      "Google Analytics 4",
+      "Privacy"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "context-problem": "<p>Trong các chiến dịch Marketing cao điểm của sàn thương mại điện tử, lưu lượng truy cập tăng đột biến 15-20 lần. Cổng theo dõi hành vi người dùng cần thu thập hàng chục nghìn vi sự kiện/giây (bỏ giỏ hàng, xem chi tiết sản phẩm, click khuyến mãi) để chuyển tiếp cho Google Analytics 4 và Facebook Conversions API. Mô hình đồng bộ truyền thống gây nghẽn luồng xử lý và làm chậm trải nghiệm mua sắm của khách hàng.</p>",
+      "system-requirements": "<ul><li><strong>Yêu cầu chức năng:</strong> Thu thập, xác thực, phân loại sự kiện theo thời gian thực và đồng bộ dữ liệu tới các nền tảng AdTech ngoài.</li><li><strong>Yêu cầu phi chức năng:</strong> Độ trễ API p99 &lt; 15ms, chịu tải thông lượng 10,000 RPS, tuân thủ tuyệt đối quy định ẩn danh dữ liệu cá nhân (PII) theo Nghị định 13/2023/NĐ-CP và zero-data-loss khi bên thứ ba gặp sự cố.</li></ul>",
+      "architecture-design": "<p>Hệ thống được thiết kế theo mô hình Reactive Event-Driven phi phong tỏa (Non-blocking):</p><ul><li><strong>Ingestion Layer:</strong> Ứng dụng Spring WebFlux (Project Reactor + Netty) tiếp nhận HTTP request bất đồng bộ và đẩy ngay vào Apache Kafka cluster.</li><li><strong>Privacy & Sanitization:</strong> Module Spring AOP và Jackson Custom Serializer quét đệ quy các trường nhạy cảm (Email, Số điện thoại, CMND/CCCD) để băm SHA-256 kèm Salt trước khi xuất ra ngoài.</li><li><strong>Outbox & Delivery:</strong> Worker tiêu thụ sự kiện từ Kafka và gọi External API qua Spring WebClient non-blocking.</li></ul>",
+      "trade-offs-analysis": "<p>Chúng tôi cân nhắc giữa kiến trúc Đồng bộ vs Bất đồng bộ Reactive:</p><ul><li><strong>Đồng bộ (Spring MVC + Tomcat):</strong> Dễ debug, nhưng mỗi request chiếm 1 Thread. Khi tải cao 5,000 concurrent, thread pool bị cạn kiệt (Thread Starvation).</li><li><strong>Reactive Non-Blocking (Spring WebFlux):</strong> Phức tạp hơn trong xử lý luồng dữ liệu (Reactive Streams) và quản lý Backpressure, nhưng chỉ cần số lượng Thread bằng số lõi CPU mà vẫn đáp ứng 20,000+ RPS ổn định với mức RAM tiết kiệm 60%.</li></ul>",
+      "lessons-best-practices": "<p>Kết hợp <strong>Resilience4j Circuit Breaker</strong> và Retry có Exponential Backoff tại tầng tích hợp API ngoài để cô lập lỗi khi hạ tầng bên thứ 3 chậm trễ. Tuyệt đối không thực hiện các tác vụ Blocking I/O trong Event Loop của WebFlux.</p>"
+    }
+  }
+]

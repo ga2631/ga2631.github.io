@@ -1,0 +1,27 @@
+[
+  {
+    "id": "post-5",
+    "slug": "distributed-idempotency-concurrency-control-golang-redis",
+    "category": "code-craftsmanship-languages",
+    "title": "Idempotency & Concurrency Control in Distributed Workers with Go & Redis",
+    "summary": "Reliable message processing with Distributed Locks, Dedup Keys, and graceful failure handling without goroutine leaks.",
+    "publishedAt": "Feb 2026",
+    "date": "2026-02-18",
+    "readTime": "6 min read",
+    "tags": [
+      "Golang",
+      "Redis",
+      "Concurrency",
+      "Distributed Systems",
+      "Clean Code"
+    ],
+    "author": "Tan Huynh Nhat",
+    "sections": {
+      "problem-statement": "<p>In distributed worker architectures, messaging systems (RabbitMQ, Kafka) operate on At-Least-Once delivery semantics. During transient network hiccups or consumer pod restarts, payment and order update messages can be delivered multiple times, risking race conditions and duplicate financial deductions.</p>",
+      "initial-approach": "<p>A simple \"Check-then-Act\" pattern checks database state prior to execution. In multi-worker environments, however, concurrent goroutines frequently read the \"PENDING\" status simultaneously, both proceeding to process the duplicate event and corrupting state.</p>",
+      "optimization-thinking": "<p>We engineered a resilient, two-tiered idempotency model:</p><ul><li><strong>Distributed Locks via Redis:</strong> Atomic <code>SET lock_key worker_id NX PX 5000</code> operations ensure only a single worker executes the transaction block for a specific deduplication key.</li><li><strong>Atomic State Transitions:</strong> Database updates enforce conditional state guards: <code>UPDATE orders SET status = 'PAID' WHERE id = ? AND status = 'PENDING'</code>.</li><li><strong>Graceful Shutdown:</strong> Goroutine lifecycles are bound to <code>sync.WaitGroup</code> and cancelable contexts, preventing abrupt termination of in-flight business transactions.</li></ul>",
+      "code-implementation": "<p>Go implementation of the idempotent distributed worker:</p><pre><code>func (w *PaymentWorker) Process(ctx context.Context, msg Message) error {\n    lockKey := fmt.Sprintf(\"lock:payment:%s\", msg.PaymentID)\n    acquired, err := w.redis.SetNX(ctx, lockKey, w.workerID, 10*time.Second).Result()\n    if err != nil || !acquired {\n        return nil // Skip processing if another worker holds the lock\n    }\n    defer w.redis.Del(ctx, lockKey)\n\n    return w.db.Transaction(func(tx *sql.Tx) error {\n        res, err := tx.ExecContext(ctx, \"UPDATE payments SET status = 'COMPLETED' WHERE id = ? AND status = 'PENDING'\", msg.PaymentID)\n        if err != nil { return err }\n        rows, _ := res.RowsAffected()\n        if rows == 0 { return nil } // Already processed idempotently\n        return w.dispatchReceipt(ctx, msg)\n    })\n}</code></pre>",
+      "complexity-applications": "<p>Time Complexity: O(1) Redis lock acquisition and O(1) indexed SQL execution. Widely applicable to e-commerce payment gateways, financial ledger syncs, ticketing platforms, and mission-critical event-driven architectures.</p>"
+    }
+  }
+]

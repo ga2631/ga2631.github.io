@@ -92,6 +92,7 @@ export interface BlogPost {
   title: string;
   summary: string;
   publishedAt: string;
+  date?: string;
   readTime: string;
   tags: string[];
   author: string;

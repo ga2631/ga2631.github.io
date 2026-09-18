@@ -123,7 +123,9 @@
     "noArticlesFound": "Không tìm thấy bài viết nào phù hợp với tìm kiếm hoặc bộ lọc.",
     "article": "Bài viết",
     "showingArticles": "Hiển thị {count} trên tổng số {total} bài viết",
-    "resetFilters": "Đặt lại bộ lọc"
+    "resetFilters": "Đặt lại bộ lọc",
+    "loadMoreArticles": "Tải thêm bài viết",
+    "loadingMore": "Đang tải dữ liệu..."
   },
   "contact": {
     "badge": "Kết nối & Hợp tác",

@@ -112,7 +112,7 @@ export interface UITranslation {
     credentialId: string;
   };
   blog: {
-    badge: string;
+    badge?: string;
     title: string;
     subtitle: string;
     readArticle: string;
@@ -133,6 +133,8 @@ export interface UITranslation {
     article: string;
     showingArticles: string;
     resetFilters: string;
+    loadMoreArticles?: string;
+    loadingMore?: string;
   };
   contact: {
     badge: string;

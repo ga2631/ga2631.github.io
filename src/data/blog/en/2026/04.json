@@ -1,0 +1,28 @@
+[
+  {
+    "id": "post-2",
+    "slug": "building-reactive-event-tracking-spring-webflux-kafka",
+    "category": "architecture-system-design",
+    "title": "Architecting High-Throughput Event Ingestion with Spring WebFlux, Kafka & Automated PII Masking",
+    "summary": "Building a privacy-compliant MarTech analytics gateway that handles thousands of real-time e-commerce conversion events with sub-second latency.",
+    "publishedAt": "Apr 2026",
+    "date": "2026-04-20",
+    "readTime": "6 min read",
+    "tags": [
+      "Java 17",
+      "Spring Boot",
+      "Spring WebFlux",
+      "Kafka",
+      "Google Analytics 4",
+      "Privacy"
+    ],
+    "author": "Tan Huynh Nhat",
+    "sections": {
+      "context-problem": "<p>During flash sales and peak marketing campaigns, e-commerce traffic surges by 15x–20x. The tracking gateway must reliably capture tens of thousands of customer micro-events per second (cart additions, voucher clicks, product views) and relay them to Google Analytics 4 and Facebook Conversions API. Traditional synchronous architectures caused thread exhaustion and sluggish checkout experiences.</p>",
+      "system-requirements": "<ul><li><strong>Functional:</strong> Ingest, validate, cleanse, and route tracking events in real time to external marketing partners.</li><li><strong>Non-Functional:</strong> p99 API response time &lt; 15ms, sustain 10,000 RPS throughput, strict PII privacy compliance (Decree 13/2023/ND-CP), and zero message loss during partner outages.</li></ul>",
+      "architecture-design": "<p>We designed an asynchronous, non-blocking Reactive Event-Driven architecture:</p><ul><li><strong>Ingestion Layer:</strong> Spring WebFlux (Project Reactor over Netty) ingests requests asynchronously and immediately buffers payloads to an Apache Kafka cluster.</li><li><strong>Privacy & Sanitization:</strong> Custom Spring AOP interceptors and Jackson serializers recursively mask sensitive PII (emails, phone numbers, identity numbers) using salted SHA-256 hashing.</li><li><strong>Outbound Delivery:</strong> Consumer microservices read from Kafka and dispatch payload batches via non-blocking Spring WebClient.</li></ul>",
+      "trade-offs-analysis": "<p>Evaluating Synchronous MVC vs. Reactive WebFlux:</p><ul><li><strong>Traditional Spring MVC (Thread-per-request):</strong> Straightforward debugging, but high concurrency leads to thread starvation and memory bloat under 5,000+ concurrent connections.</li><li><strong>Reactive Non-Blocking (Spring WebFlux):</strong> Steeper learning curve for reactive stream debugging, but scales effortlessly across 20,000+ RPS using minimal CPU threads and 60% less heap memory.</li></ul>",
+      "lessons-best-practices": "<p>Integrate <strong>Resilience4j Circuit Breakers</strong> and rate limiters on outbound ad connectors to isolate upstream latency. Never invoke blocking JDBC or file I/O operations directly within the reactive Event Loop.</p>"
+    }
+  }
+]

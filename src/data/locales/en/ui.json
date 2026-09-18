@@ -123,7 +123,9 @@
     "noArticlesFound": "No engineering articles match your search or filter.",
     "article": "Article",
     "showingArticles": "Showing {count} of {total} articles",
-    "resetFilters": "Reset filters"
+    "resetFilters": "Reset filters",
+    "loadMoreArticles": "Load more articles",
+    "loadingMore": "Loading archives..."
   },
   "contact": {
     "badge": "Get In Touch",
