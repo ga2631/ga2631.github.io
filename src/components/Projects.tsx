@@ -491,34 +491,116 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                 )}
 
                 <div className="article-body" style={{ marginTop: '16px' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                    <span>{t.objective}</span>
-                  </h3>
-                  <p>{activeProject.description}</p>
+                  {/* 1. Project Objective */}
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '10px' }}>
+                      <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                      <span>{t.objective}</span>
+                    </h3>
+                    <p style={{ lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
+                      {activeProject.description}
+                    </p>
+                  </div>
 
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                    <span>{t.challenges}</span>
-                  </h3>
-                  <ul>
-                    {activeProject.highlights.map((item, idx) => (
-                      <li key={idx} style={{ marginBottom: '10px' }}>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  {/* 2. Key Responsibilities & Strengths */}
+                  {activeProject.responsibilities && activeProject.responsibilities.length > 0 && (
+                    <div style={{ marginBottom: '24px' }}>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                        <ShieldIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                        <span>{t.responsibilities}</span>
+                      </h3>
+                      <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                        {activeProject.responsibilities.map((resp, idx) => (
+                          <li key={idx} style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                            {resp}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                    <span>{t.fullStack}</span>
-                  </h3>
-                  <div className="tech-tags-list" style={{ marginTop: '8px', marginBottom: '24px' }}>
-                    {activeProject.tags.map((tag) => (
-                      <span key={tag} className="badge badge-cyan">
-                        {tag}
-                      </span>
-                    ))}
+                  {/* 3. Challenges & Solutions */}
+                  {activeProject.challengesSolutions && activeProject.challengesSolutions.length > 0 ? (
+                    <div style={{ marginBottom: '24px' }}>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                        <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                        <span>{t.challengesSolutions}</span>
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {activeProject.challengesSolutions.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="glass-panel"
+                            style={{
+                              padding: '12px 16px',
+                              borderRadius: 'var(--radius-md)',
+                              borderLeft: '3px solid var(--accent-primary)',
+                            }}
+                          >
+                            <div style={{ marginBottom: '6px', fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
+                              <span style={{ color: 'var(--accent-red, #ef4444)', marginRight: '6px' }}>
+                                [{t.challengeLabel}]:
+                              </span>
+                              {item.challenge}
+                            </div>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
+                              <span style={{ color: 'var(--accent-emerald, #10b981)', marginRight: '6px', fontWeight: 600 }}>
+                                → [{t.solutionLabel}]:
+                              </span>
+                              {item.solution}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    activeProject.highlights && activeProject.highlights.length > 0 && (
+                      <div style={{ marginBottom: '24px' }}>
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                          <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                          <span>{t.challenges}</span>
+                        </h3>
+                        <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                          {activeProject.highlights.map((item, idx) => (
+                            <li key={idx} style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  )}
+
+                  {/* 4. Achievements */}
+                  {activeProject.achievements && activeProject.achievements.length > 0 && (
+                    <div style={{ marginBottom: '24px' }}>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                        <RocketIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                        <span>{t.achievements}</span>
+                      </h3>
+                      <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                        {activeProject.achievements.map((ach, idx) => (
+                          <li key={idx} style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                            {ach}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 5. Tech Stack */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                      <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                      <span>{t.techStack}</span>
+                    </h3>
+                    <div className="tech-tags-list" style={{ marginTop: '8px' }}>
+                      {activeProject.tags.map((tag) => (
+                        <span key={tag} className="badge badge-cyan">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 

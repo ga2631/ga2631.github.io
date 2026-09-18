@@ -78,8 +78,14 @@ export interface UITranslation {
     featuredProject: string;
     team: string;
     objective: string;
+    responsibilities: string;
+    challengesSolutions: string;
+    achievements: string;
+    techStack: string;
     challenges: string;
     fullStack: string;
+    challengeLabel: string;
+    solutionLabel: string;
     closeModal: string;
     noProjects: string;
     resetFilters: string;

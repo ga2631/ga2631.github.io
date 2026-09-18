@@ -154,7 +154,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
     - Chuyển đổi toàn bộ biểu tượng logo thương hiệu viết tắt từ `TN` sang chữ cái đơn `T` tinh gọn, hiện đại và tạo điểm nhấn thị giác sắc nét hơn.
     - Cập nhật đồng bộ trên [Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx), [DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx), ảnh đại diện fallback [Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx) và file vector favicon [public/favicon.svg](file:///Users/tanhn/Projects/ga2631.github.io/public/favicon.svg).
 
-17. **Data-Driven Architecture & Comprehensive UI Localization Audit (`cvData.ts`, `DrawerMenu.tsx`, `Header.tsx`, `Projects.tsx`, `Experience.tsx`, `EducationCertifications.tsx`, `FloatingActions.tsx`, `Footer.tsx`, `PrintCV.tsx`, `ArticleToc.tsx`, `BlogSection.tsx`, `BlogPage.tsx`, `App.tsx`)**:
+18. **Data-Driven Architecture & Comprehensive UI Localization Audit (`cvData.ts`, `DrawerMenu.tsx`, `Header.tsx`, `Projects.tsx`, `Experience.tsx`, `EducationCertifications.tsx`, `FloatingActions.tsx`, `Footer.tsx`, `PrintCV.tsx`, `ArticleToc.tsx`, `BlogSection.tsx`, `BlogPage.tsx`, `App.tsx`)**:
     - **Triệt tiêu 100% chuỗi tĩnh và điều kiện ngôn ngữ phân tán (Zero Hardcoded Strings)**:
       - Rà soát toàn bộ các component và view trong repository.
       - Mở rộng hợp đồng dữ liệu `UITranslation` trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) bổ sung đầy đủ các danh mục con: `common`, `drawer`, `printCv`, cùng các nhãn `currentPosition`, `featuredProject`, `team`, `credentialId`, `article`, `showingArticles`, `resetFilters`, `allRightsReserved`.
@@ -181,12 +181,23 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
     - **TypeScript Data Loader & Runtime Security Injection**:
       - [cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) và [blogData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/blogData.ts) đóng vai trò Loader tầng dữ liệu có kiểm tra kiểu chặt chẽ (`Type Guard`), đồng thời tự động tiêm các token bảo mật chống bot crawler `getSecureEmail()`, `getSecurePhone()`, `getSecureZaloUrl()` vào `personalInfo`.
 
+19. **Standardized 5-Section Enterprise Project Case Study Architecture (`Projects.tsx`, `types/index.ts`, `cvData.ts`, `en/cv.json`, `vi/cv.json`)**:
+    - Chuẩn hóa cấu trúc mô tả chi tiết của toàn bộ các dự án kiến trúc tiêu biểu thành **5 thành phần chuyên sâu và chuyên nghiệp**:
+      1. **Project Objective (Mục tiêu Dự án)**: Trình bày bài toán kinh doanh và mục tiêu kỹ thuật cốt lõi cần giải quyết.
+      2. **Key Responsibilities & Strengths (Trách nhiệm chính & Thế mạnh cốt lõi)**: Mô tả vai trò kỹ thuật chuyên sâu, lãnh đạo kiến trúc, thiết kế tầng dịch vụ và thế mạnh chuyên môn.
+      3. **Challenges & Solutions (Thách thức Kỹ thuật & Giải pháp Thực thi)**: Cấu trúc từng cặp Thách thức (`Challenge`) và Giải pháp kỹ thuật (`Solution`) với thiết kế trực quan nổi bật.
+      4. **Key Achievements & Metrics (Thành tựu & Kết quả định lượng)**: Các chỉ số đo lường hiệu năng, tỷ lệ khớp nối dữ liệu, thời gian tiết kiệm và mức độ sẵn sàng của hệ thống.
+      5. **Technology Stack (Hệ sinh thái Công nghệ & Ngăn xếp)**: Bộ thẻ tag công nghệ, công cụ và nền tảng hạ tầng thực tế được áp dụng.
+
 ---
 
 ## 2. Database & Schema Changes
 - Cập nhật hợp đồng dữ liệu [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts):
   - Bổ sung trường `zaloUrl?: string;` vào interface `PersonalInfo`.
+  - Mở rộng interface `ProjectItem` với các trường cấu trúc chuẩn hóa: `responsibilities?: string[];`, `challengesSolutions?: { challenge: string; solution: string }[];`, `achievements?: string[];`.
   - Loại bỏ trường không còn sử dụng `companyUrl?: string;` khỏi interface `ExperienceItem`.
+- Cập nhật từ điển dịch thuật [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts):
+  - Bổ sung các nhãn 5 thành phần dự án: `responsibilities`, `challengesSolutions`, `achievements`, `techStack`, `challengeLabel`, `solutionLabel`.
 - Cập nhật dữ liệu tĩnh trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) & [src/data/locales/](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/):
   - Khởi tạo cấu trúc lưu trữ localization dạng JSON độc lập cho từng ngôn ngữ:
     - [src/data/locales/en/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/ui.json) & [src/data/locales/vi/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/ui.json)

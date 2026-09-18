@@ -122,7 +122,7 @@
       "role": "Quản lý Dự án & Kiến trúc sư Hệ thống",
       "teamSize": "6 thành viên",
       "shortDescription": "Chuyển đổi CSDL ERP EAV 7 năm tuổi sang kiến trúc Medallion Data Warehouse (Bronze-Silver-Gold) qua MySQL CDC binlogs & RabbitMQ.",
-      "description": "Thiết kế kiến trúc và triển khai chuyển đổi toàn diện CSDL ERP kế thừa 7 năm tuổi từ mô hình phức tạp Entity-Attribute-Value (EAV) sang kiến trúc tập trung Medallion Data Warehouse (Bronze-Silver-Gold), giải phóng năng lực phân tích nâng cao và giảm thiểu chi phí vận hành.",
+      "description": "Kiến trúc và thực thi chuyển đổi toàn diện hệ thống cơ sở dữ liệu ERP 7 năm tuổi từ mô hình Entity-Attribute-Value (EAV) phức tạp sang Medallion Data Warehouse tập trung (Bronze-Silver-Gold) nhằm tăng tốc báo cáo phân tích, tách biệt hoàn toàn tải OLTP và OLAP, đồng thời triệt tiêu hiện tượng nghẽn cổ chai truy vấn.",
       "category": "Data / AI",
       "tags": [
         "Golang",
@@ -130,20 +130,44 @@
         "PostgreSQL",
         "Medallion CDC",
         "RabbitMQ",
-        "Docker"
+        "Docker",
+        "Linux",
+        "Git"
       ],
       "keyImpacts": [
         "Giảm hơn 70% thời gian thực thi truy vấn phân tích",
         "Tỷ lệ khớp nối 96% với 0% mất mát dữ liệu",
         "Độ trễ đồng bộ CDC gần thời gian thực (<2s)"
       ],
+      "responsibilities": [
+        "Trực tiếp thiết kế kiến trúc tổng thể, mô hình hóa dữ liệu, lộ trình chuyển đổi và quản trị rủi ro cho toàn bộ dữ liệu tài chính - quảng cáo cốt lõi của doanh nghiệp.",
+        "Xây dựng kiến trúc dữ liệu Medallion Data Warehouse 3 tầng (Bronze: Binlog thô -> Silver: Sự kiện CDC làm sạch -> Gold: Data Mart nghiệp vụ).",
+        "Thiết kế các microservices hiệu năng cao, độ trễ thấp bằng Golang với kiến trúc phân tầng chuẩn và cơ chế xác thực schema chặt chẽ.",
+        "Dẫn dắt nhóm 6 kỹ sư thông qua quy trình Sprint Planning, kiểm thử tự động và chuyển đổi dữ liệu an toàn không gián đoạn dịch vụ (Zero-Downtime Cutover)."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Sửa đổi trực tiếp mã nguồn ERP 7 năm tuổi để đẩy sự kiện tiềm ẩn rủi ro hồi quy và tốn kém thời gian.",
+          "solution": "Bỏ qua việc sửa mã nguồn ứng dụng, triển khai Change Data Capture (CDC) đọc trực tiếp từ MySQL Binlogs truyền vào hàng đợi RabbitMQ."
+        },
+        {
+          "challenge": "Cơ chế retry trên môi trường phân tán dễ gây sai lệch thứ tự và trùng lặp bản ghi khi ghi vào kho dữ liệu.",
+          "solution": "Xây dựng các Go worker idempotent với cơ chế PostgreSQL UPSERT (ON CONFLICT) và khóa khử trùng lặp (deduplication key)."
+        },
+        {
+          "challenge": "Khối lượng bản ghi lớn từ quá khứ gây áp lực I/O nặng và độ trễ xử lý dữ liệu.",
+          "solution": "Mở rộng quy mô theo chiều ngang (horizontal scaling) các container Go trên Docker, tối ưu prefetch limit của RabbitMQ và phân vùng (partitioning) bảng Gold PostgreSQL."
+        }
+      ],
+      "achievements": [
+        "Đạt tỷ lệ khớp nối dữ liệu 96% (Reconciliation Rate) giữa nguồn cũ và kho dữ liệu mới mà không làm mất mát bất kỳ bản ghi nào.",
+        "Giảm hơn 70% thời gian thực thi truy vấn phân tích phức tạp nhờ loại bỏ hoàn toàn các phép JOIN bảng EAV nhiều tầng sang Data Mart phẳng.",
+        "Duy trì độ trễ đồng bộ đường ống CDC thời gian thực dưới 2 giây, tuân thủ 100% Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân."
+      ],
       "highlights": [
-        "Bỏ qua mã nguồn monolithic cũ kỹ bằng cách triển khai Change Data Capture (CDC) đọc trực tiếp từ MySQL binlogs, tách biệt hoàn toàn quá trình trích xuất và lưu vết kiểm toán đầy đủ.",
-        "Xây dựng các Go worker có tính chất Idempotent tiêu thụ hàng đợi RabbitMQ, đảm bảo xử lý chính xác một lần (Exactly-Once) với PostgreSQL UPSERTs và xác thực lược đồ nghiêm ngặt.",
-        "Khắc phục nghẽn I/O ổ đĩa khi tải lớn bằng cách mở rộng quy mô ngang các dịch vụ Go trên Docker và tinh chỉnh prefetch limit của RabbitMQ.",
-        "Đạt tỷ lệ khớp nối dữ liệu 96% giữa nguồn ERP cũ và kho dữ liệu mới mà không làm mất mát dữ liệu.",
-        "Giảm hơn 70% thời gian thực thi truy vấn phân tích phức tạp nhờ loại bỏ join bảng EAV sang các data mart cấu trúc chuẩn.",
-        "Duy trì độ trễ đồng bộ đường ống CDC dưới vài giây, tuân thủ nghiêm ngặt Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân."
+        "Bỏ qua mã nguồn monolithic cũ kỹ bằng cách triển khai Change Data Capture (CDC) đọc trực tiếp từ MySQL binlogs.",
+        "Xây dựng các Go worker có tính chất Idempotent tiêu thụ hàng đợi RabbitMQ với PostgreSQL UPSERTs.",
+        "Đạt tỷ lệ khớp nối dữ liệu 96% với 0% mất mát và giảm hơn 70% thời gian thực thi truy vấn."
       ],
       "githubUrl": "https://github.com/ga2631",
       "demoUrl": "https://ga2631.github.io",
@@ -156,15 +180,17 @@
       "role": "Kỹ sư Backend / Kỹ sư Dữ liệu",
       "teamSize": "6 thành viên",
       "shortDescription": "Thu thập chuyển đổi TMĐT thời gian thực và xây dựng data mart ETL tự động với luồng Reactive Streaming & mã hóa PII tự động.",
-      "description": "Xây dựng trung tâm Marketing Technology (MarTech) tập trung để tổng hợp chỉ số quảng cáo đa kênh và xử lý khối lượng lớn sự kiện chuyển đổi thương mại điện tử phục vụ các báo cáo trực quan theo thời gian thực.",
+      "description": "Xây dựng trung tâm Marketing Technology (MarTech) tập trung để tổng hợp chỉ số quảng cáo đa nền tảng (Google, Facebook, TikTok) và xử lý phễu chuyển đổi thương mại điện tử theo thời gian thực với cơ chế tự động ẩn dữ liệu PII và xuất báo cáo BI tức thì.",
       "category": "Backend / Cloud",
       "tags": [
         "Java 17",
         "Spring Boot",
         "Spring WebFlux",
         "Spring AOP",
+        "Spring Batch",
         "Kafka",
         "BigQuery",
+        "PostgreSQL",
         "Docker"
       ],
       "keyImpacts": [
@@ -172,12 +198,35 @@
         "Tuân thủ 100% quyền riêng tư PII qua Spring AOP",
         "Giảm hơn 40% thời gian tổng hợp báo cáo định kỳ"
       ],
+      "responsibilities": [
+        "Kiến trúc API Gateway non-blocking theo hướng sự kiện (Event-Driven) sử dụng Java 17, Spring Boot và Spring WebFlux.",
+        "Thiết kế cơ chế tự động phát hiện, mã hóa và ẩn danh dữ liệu cá nhân (PII) bằng Spring AOP trước khi truyền tải đến GA4/BigQuery.",
+        "Xây dựng các adapter tích hợp bền bỉ với Google Ads API, Facebook Graph API, TikTok API kèm cơ chế Rate Limiting và Circuit Breaker.",
+        "Xây dựng các tác vụ ETL tự động với Spring Batch xử lý các tệp trích xuất Avro từ Google BigQuery nạp vào cơ sở dữ liệu báo cáo PostgreSQL."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Các đợt flash sale tạo lưu lượng sự kiện chuyển đổi tăng vọt, nguy cơ làm nghẽn API đặt hàng cốt lõi.",
+          "solution": "Triển khai tầng tiếp nhận bất đồng bộ non-blocking với Spring WebFlux kết hợp Apache Kafka đệm sự kiện, tách biệt hoàn toàn luồng thanh toán đồng bộ."
+        },
+        {
+          "challenge": "Thường xuyên bị Rate Limit và timeout gián đoạn từ các nền tảng quảng cáo (Google/Meta/TikTok).",
+          "solution": "Tích hợp thư viện Resilience4j với cơ chế Circuit Breaker, Exponential Backoff Retry và Token Bucket Rate Limiter."
+        },
+        {
+          "challenge": "Đảm bảo số điện thoại và email khách hàng không bị rò rỉ vào các công cụ phân tích bên ngoài.",
+          "solution": "Xây dựng các bộ Interceptor bằng Spring AOP tự động phát hiện, băm (hash) và che giấu các trường PII trước khi xuất dữ liệu."
+        }
+      ],
+      "achievements": [
+        "Tiếp nhận và xử lý mượt mà hàng nghìn sự kiện phễu mỗi ngày với độ trễ dưới 1 giây mà không gây ảnh hưởng đến hiệu năng hệ thống đặt hàng.",
+        "Đạt 100% tuân thủ bảo mật dữ liệu cá nhân (PII) trên toàn bộ đường ống phân tích.",
+        "Giảm hơn 40% thời gian tổng hợp báo cáo marketing đa kênh hàng ngày, hỗ trợ ra quyết định tối ưu hóa ROAS chiến dịch tức thì."
+      ],
       "highlights": [
-        "Phát triển dịch vụ theo dõi sự kiện thông lượng cao sử dụng Spring WebFlux (Reactive API bất đồng bộ) cùng Apache Kafka / RabbitMQ để ghi nhận hành vi người dùng mà không ảnh hưởng hiệu năng giao dịch cốt lõi.",
-        "Xây dựng cổng dữ liệu bảo mật bằng Spring AOP và Interceptor tùy biến nhằm tự động phát hiện, mã hóa và loại bỏ PII trước khi gửi sang Google Analytics 4 (GA4).",
-        "Triển khai các đường ống ingestion tự động sử dụng Spring WebClient và Resilience4j (Circuit Breaker & Retry patterns) để xử lý mượt mà giới hạn rate-limit từ các API Google, Facebook và TikTok.",
-        "Xây dựng các tác vụ ETL tự động với Spring Batch xử lý file Avro dung lượng lớn từ BigQuery vào PostgreSQL, tối ưu schema cho việc tải Looker Studio tức thì.",
-        "Xử lý thành công hàng nghìn sự kiện phễu chuyển đổi mỗi ngày với độ trễ dưới 1 giây, bảo vệ 100% dữ liệu PII và giảm hơn 40% thời gian xuất báo cáo."
+        "Phát triển dịch vụ theo dõi sự kiện thông lượng cao sử dụng Spring WebFlux cùng Apache Kafka.",
+        "Xây dựng cổng dữ liệu bảo mật bằng Spring AOP nhằm tự động phát hiện và loại bỏ PII trước khi gửi sang Google Analytics 4 (GA4).",
+        "Xử lý hàng nghìn sự kiện phễu với độ trễ <1s và giảm hơn 40% thời gian xuất báo cáo."
       ],
       "githubUrl": "https://github.com/ga2631",
       "demoUrl": "https://ga2631.github.io",
@@ -190,12 +239,14 @@
       "role": "Quản lý Dự án & Trưởng nhóm Kỹ thuật",
       "teamSize": "6 thành viên",
       "shortDescription": "Cổng thông tin khách hàng doanh nghiệp chịu tải 1,000+ CCU với cơ chế đệm truy vấn Redis và biểu đồ Vue.js dạng mô-đun.",
-      "description": "Dẫn dắt nhóm liên chức năng xây dựng Cổng thông tin khách hàng tích hợp trực tiếp vào hệ thống ERP nội bộ, cung cấp nền tảng báo cáo minh bạch và tự động trích xuất dữ liệu chiến dịch quảng cáo.",
+      "description": "Dẫn dắt nhóm liên chức năng xây dựng Cổng thông tin khách hàng doanh nghiệp (Customer Portal) tích hợp trực tiếp với hệ thống ERP nội bộ, cung cấp báo cáo hiệu suất chiến dịch minh bạch thời gian thực, theo dõi hóa đơn tự động và bảng điều khiển phân tích tự phục vụ cho khách hàng doanh nghiệp chịu tải 1,000+ CCU.",
       "category": "Fullstack",
       "tags": [
         "Node.js",
         "Vue.js",
-        "Redis Caching",
+        "Redis",
+        "MariaDB",
+        "MySQL",
         "ERP Integration",
         "Docker",
         "Agile"
@@ -205,11 +256,35 @@
         "Giảm 40% yêu cầu trích xuất dữ liệu thủ công",
         "Mô-đun biểu đồ linh hoạt thích ứng thay đổi giao diện"
       ],
+      "responsibilities": [
+        "Quản lý toàn diện vòng đời phát triển phần mềm (SDLC), viết đặc tả kỹ thuật, lập kế hoạch lộ trình và phân bổ nguồn lực cho đội ngũ 6 lập trình viên.",
+        "Thiết kế tầng RESTful API bảo mật và cầu nối tích hợp dữ liệu giữa cổng thông tin khách hàng bên ngoài và backend ERP nội bộ.",
+        "Thiết lập chiến lược đệm dữ liệu (caching) hiệu năng cao với Redis, ngăn chặn tình trạng quá tải cơ sở dữ liệu khi lượng lớn khách hàng truy cập đồng thời.",
+        "Định hướng kiến trúc frontend dạng mô-đun trên Vue.js với các component biểu đồ động có khả năng tái sử dụng cao."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Nhiều khách hàng doanh nghiệp truy vấn báo cáo tổng hợp nhiều tháng cùng lúc làm chậm hệ thống ERP nội bộ.",
+          "solution": "Thiết lập kiến trúc đệm đa tầng bằng Redis với cơ chế TTL động và các worker xử lý tổng hợp theo đợt bất đồng bộ."
+        },
+        {
+          "challenge": "Khách hàng thường xuyên thay đổi cách hiển thị chỉ số và bố cục báo cáo theo yêu cầu nghiệp vụ.",
+          "solution": "Xây dựng hệ thống widget biểu đồ Vue.js dạng mô-đun hóa có khả năng cắm ghép linh hoạt mà không cần viết lại mã nguồn cốt lõi."
+        },
+        {
+          "challenge": "Ngăn chặn rò rỉ dữ liệu giữa các doanh nghiệp khi cùng truy xuất trên cơ sở dữ liệu ERP dùng chung.",
+          "solution": "Áp dụng kiểm soát truy cập dựa trên vai trò đa người thuê (Multi-Tenant RBAC) với bộ lọc bản ghi chặt chẽ theo tenant ở tầng API Gateway."
+        }
+      ],
+      "achievements": [
+        "Vận hành mượt mà và duy trì độ sẵn sàng cao dưới tải đỉnh 1,000+ người dùng doanh nghiệp đồng thời (CCU).",
+        "Giảm hơn 40% số lượng yêu cầu trích xuất dữ liệu và hỗ trợ thủ công từ phía khách hàng.",
+        "Rút ngắn chu kỳ phát hành các chỉ số báo cáo mới từ 2 tuần xuống còn 2 ngày nhờ kiến trúc mô-đun hóa."
+      ],
       "highlights": [
-        "Quản lý toàn bộ vòng đời phát triển phần mềm (SDLC) từ thiết kế kiến trúc đến kiểm thử nghiệm thu người dùng (UAT).",
-        "Tái cấu trúc luồng đồng bộ dữ liệu kết hợp xử lý theo lô (batch) và bộ nhớ đệm Redis, đáp ứng ổn định 1,000 người dùng đồng thời mà không gây quá tải CSDL ERP.",
-        "Định hướng đội ngũ frontend áp dụng kiến trúc mô-đun Vue.js với các component biểu đồ tái sử dụng cao, đáp ứng nhanh các yêu cầu tinh chỉnh giao diện của khách hàng.",
-        "Giảm 40% thời gian xử lý các yêu cầu trích xuất dữ liệu thủ công, nâng cao sự hài lòng của đối tác."
+        "Quản lý toàn bộ SDLC từ thiết kế kiến trúc đến kiểm thử nghiệm thu người dùng (UAT).",
+        "Tái cấu trúc luồng đồng bộ dữ liệu kết hợp xử lý theo lô và bộ nhớ đệm Redis, đáp ứng 1,000 CCU.",
+        "Giảm 40% yêu cầu trích xuất dữ liệu thủ công, nâng cao sự hài lòng của đối tác."
       ],
       "githubUrl": "https://github.com/ga2631",
       "demoUrl": "https://ga2631.github.io",
@@ -222,14 +297,16 @@
       "role": "Kỹ sư Phần mềm",
       "teamSize": "2 thành viên",
       "shortDescription": "Mô-đun tự động hóa phân bổ dòng tiền tài chính, đồng bộ chỉ số quảng cáo đa kênh và CI/CD nâng cấp zero-downtime.",
-      "description": "Hiện đại hóa, mở rộng và bảo trì hệ thống ERP doanh nghiệp bằng cách tự động hóa đồng bộ dữ liệu tiếp thị đa nền tảng, tinh gọn quy trình tài chính và đảm bảo độ sẵn sàng cao của hệ thống.",
+      "description": "Hiện đại hóa các phân hệ ERP doanh nghiệp thông qua việc tự động hóa phân bổ dòng tiền tài chính phức tạp, tích hợp API quảng cáo đa kênh và thiết lập quy trình triển khai CI/CD không gián đoạn (Zero-Downtime) trên máy chủ CentOS.",
       "category": "Backend / Cloud",
       "tags": [
         "PHP (Laravel)",
         "VueJS",
         "MariaDB",
+        "MySQL",
         "RabbitMQ",
         "CentOS",
+        "Nginx",
         "CI/CD"
       ],
       "keyImpacts": [
@@ -237,12 +314,35 @@
         "Tiết kiệm 10-12 giờ/tuần nhập liệu thủ công cho kế toán",
         "Triển khai nâng cấp tự động 100% không gián đoạn"
       ],
+      "responsibilities": [
+        "Thiết kế và phát triển phân hệ tự động hóa phân bổ dòng tiền tài chính, chia tách doanh thu chính xác theo từng trung tâm chi phí.",
+        "Tích hợp các API quảng cáo ngoài (Google Ads, Facebook Ads, TikTok Ads) nhằm đồng bộ tập trung số liệu chi tiêu marketing hàng ngày.",
+        "Phân tích hiệu năng, đánh chỉ mục (indexing) và tối ưu hóa các truy vấn cơ sở dữ liệu quan hệ phức tạp trong MariaDB/MySQL.",
+        "Quản trị hạ tầng máy chủ CentOS, cấu hình Nginx Reverse Proxy và xây dựng quy trình triển khai tự động CI/CD trên nền tảng Git."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Đội ngũ kế toán mất hàng chục giờ mỗi tuần nhập liệu và tính toán phân bổ thủ công, dễ phát sinh sai lệch làm tròn.",
+          "solution": "Xây dựng công cụ tính toán tự động hóa với quy tắc kiểm tra công thức tài chính nghiêm ngặt, tự động đối soát và lưu vết kiểm toán (audit log)."
+        },
+        {
+          "challenge": "Các truy vấn JOIN nhiều bảng trên hàng triệu dòng dữ liệu khiến báo cáo tài chính hàng tháng mất vài phút để phản hồi.",
+          "solution": "Tối ưu hóa bộ chỉ mục cơ sở dữ liệu (indexing), tái cấu trúc khóa tổng hợp và tạo bảng tổng hợp sẵn theo ngày, giúp giảm 63% thời gian truy vấn."
+        },
+        {
+          "challenge": "Mỗi lần deploy phiên bản mới gây gián đoạn công việc của bộ phận kinh doanh và kế toán trong giờ làm việc.",
+          "solution": "Xây dựng quy trình CI/CD với kịch bản Zero-Downtime reload qua Nginx upstream và cơ chế tự động rollback migration khi có sự cố."
+        }
+      ],
+      "achievements": [
+        "Giảm 63% thời gian tạo báo cáo tài chính hàng tháng.",
+        "Tiết kiệm 10–12 giờ mỗi tuần nhập liệu thủ công cho bộ phận kế toán, đưa tỷ lệ sai sót tính toán về mức xấp xỉ bằng không.",
+        "Đạt 100% triển khai tự động không gián đoạn dịch vụ (Zero-Downtime) cho tất cả các bản phát hành."
+      ],
       "highlights": [
-        "Phát triển và duy trì các đường ống dữ liệu tự động tích hợp API Google Ads, Facebook Ads, TikTok Ads để thu thập số liệu tập trung.",
-        "Xây dựng mô-đun phân bổ dòng tiền tự động chia tách tổng số tiền thu được theo các thành phần tài chính dựa trên công thức nghiêm ngặt.",
-        "Phân tích profiling và tối ưu hóa các truy vấn CSDL quan hệ phức tạp, giảm 63% thời gian xuất báo cáo.",
-        "Xóa bỏ hoàn toàn việc nhập liệu thủ công cho đội kế toán, tiết kiệm 10-12 giờ mỗi tuần và giảm sai sót tính toán về mức xấp xỉ 0.",
-        "Quản trị hạ tầng máy chủ ERP (Docker, Nginx) và thiết lập CI/CD đảm bảo triển khai nâng cấp mượt mà."
+        "Xây dựng mô-đun phân bổ dòng tiền tự động chia tách tổng số tiền thu được theo công thức tài chính.",
+        "Tối ưu hóa các truy vấn CSDL quan hệ phức tạp, giảm 63% thời gian xuất báo cáo.",
+        "Xóa bỏ hoàn toàn việc nhập liệu thủ công, tiết kiệm 10-12 giờ mỗi tuần với CI/CD Zero-Downtime."
       ],
       "githubUrl": "https://github.com/ga2631",
       "demoUrl": "https://ga2631.github.io",

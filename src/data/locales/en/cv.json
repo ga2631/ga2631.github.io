@@ -122,7 +122,7 @@
       "role": "Project Manager & System Architect",
       "teamSize": "6 members",
       "shortDescription": "Migrated a 7-year legacy ERP EAV database to a Medallion Data Warehouse (Bronze-Silver-Gold) via MySQL CDC binlogs & RabbitMQ.",
-      "description": "Architected and executed the end-to-end migration of a 7-year-old legacy ERP database, transitioning from a complex Entity-Attribute-Value (EAV) model to a centralized Medallion Data Warehouse (Bronze-Silver-Gold) to unlock advanced analytics and reduce operational overhead.",
+      "description": "Architected and executed the end-to-end migration of a 7-year-old legacy ERP database, transitioning from a complex Entity-Attribute-Value (EAV) model to a centralized Medallion Data Warehouse (Bronze-Silver-Gold) to unlock high-speed analytical reporting, decouple OLTP from OLAP workloads, and eliminate query bottlenecks.",
       "category": "Data / AI",
       "tags": [
         "Golang",
@@ -130,20 +130,44 @@
         "PostgreSQL",
         "Medallion CDC",
         "RabbitMQ",
-        "Docker"
+        "Docker",
+        "Linux",
+        "Git"
       ],
       "keyImpacts": [
         "Reduced analytical query times by over 70%",
         "96% reconciliation rate with zero data loss",
         "Near real-time CDC sync latency (<2s)"
       ],
+      "responsibilities": [
+        "Led the overall system architecture, data modeling, migration roadmap, and risk management for mission-critical enterprise financial and advertising data.",
+        "Formulated the 3-layer Medallion Data Architecture (Bronze raw binlogs -> Silver cleaned CDC events -> Gold business data marts).",
+        "Engineered high-throughput, low-latency microservices in Golang with clean layered architecture and strict schema validation.",
+        "Guided 6 cross-functional engineers through sprint planning, automated testing, and zero-downtime cutover."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Modifying the 7-year-old legacy ERP source code to emit events was too risky and slow.",
+          "solution": "Bypassed application code entirely by implementing Change Data Capture (CDC) streaming directly from MySQL Binlogs into RabbitMQ queues."
+        },
+        {
+          "challenge": "Distributed network retries risked duplicate or out-of-order writes during data transfer.",
+          "solution": "Built idempotent Go workers consuming RabbitMQ queues enforcing exactly-once semantics with PostgreSQL UPSERT (ON CONFLICT) and distributed deduplication keys."
+        },
+        {
+          "challenge": "High ingestion volume caused database I/O contention and processing lag.",
+          "solution": "Horizontally scaled containerized Go workers on Docker, tuned RabbitMQ prefetch limits, and partitioned PostgreSQL Gold tables."
+        }
+      ],
+      "achievements": [
+        "Achieved a 96% data reconciliation rate between legacy source and target warehouse with zero data loss.",
+        "Reduced complex analytical query execution time by over 70% by eliminating multi-level EAV table joins in favor of structured data marts.",
+        "Maintained near real-time CDC synchronization with pipeline latency under 2 seconds, ensuring 100% compliance with data privacy regulations (Decree 13/2023/ND-CP)."
+      ],
       "highlights": [
-        "Bypassed slow-to-modify legacy ERP source code by implementing Change Data Capture (CDC) reading directly from MySQL binlogs, completely decoupling extraction and capturing full audit trails.",
-        "Built idempotent Go workers consuming RabbitMQ queues enforcing exactly-once processing with PostgreSQL UPSERTs (On Conflict) and strict schema validation.",
-        "Mitigated disk I/O bottlenecks during massive ingestion by horizontally scaling containerized Go services via Docker and tuning RabbitMQ prefetch limits.",
-        "Achieved 96% data reconciliation rate between legacy source and target warehouse with zero data loss.",
-        "Reduced complex analytical query execution time by over 70% by eliminating EAV joins in favor of structured data marts.",
-        "Maintained near real-time CDC synchronization with pipeline latency under a few seconds, with strict compliance to Decree 13/2023/ND-CP on PII data protection."
+        "Bypassed slow-to-modify legacy ERP source code by implementing Change Data Capture (CDC) reading directly from MySQL binlogs, completely decoupling extraction.",
+        "Built idempotent Go workers consuming RabbitMQ queues enforcing exactly-once processing with PostgreSQL UPSERTs (On Conflict).",
+        "Achieved 96% data reconciliation rate with zero data loss and reduced query times by >70%."
       ],
       "githubUrl": "https://github.com/ga2631",
       "demoUrl": "https://ga2631.github.io",
@@ -156,15 +180,17 @@
       "role": "Backend Engineer / Data Engineer",
       "teamSize": "6 members",
       "shortDescription": "Real-time e-commerce conversion tracking and automated marketing ETL data marts with reactive streaming & automated PII masking.",
-      "description": "Engineered a centralized Marketing Technology (MarTech) hub to aggregate cross-platform advertising metrics and process high-volume e-commerce conversion events, feeding structured data into real-time reporting dashboards.",
+      "description": "Engineered a centralized Marketing Technology (MarTech) hub to aggregate cross-platform advertising metrics (Google, Facebook, TikTok) and process high-volume e-commerce conversion funnels in real time with automated PII masking and instant BI reporting.",
       "category": "Backend / Cloud",
       "tags": [
         "Java 17",
         "Spring Boot",
         "Spring WebFlux",
         "Spring AOP",
+        "Spring Batch",
         "Kafka",
         "BigQuery",
+        "PostgreSQL",
         "Docker"
       ],
       "keyImpacts": [
@@ -172,12 +198,35 @@
         "100% PII privacy compliance via Spring AOP",
         "Reduced daily report generation time by >40%"
       ],
+      "responsibilities": [
+        "Architected non-blocking event-driven API gateway using Java 17, Spring Boot, and Spring WebFlux for conversion telemetry ingestion.",
+        "Designed automated PII detection, encryption, and anonymization pipelines using Spring AOP before forwarding metrics to GA4/BigQuery.",
+        "Engineered resilient integration adapters for Google Ads, Facebook Graph, and TikTok Marketing APIs with rate limiting and circuit breakers.",
+        "Built automated Spring Batch ETL jobs transforming Google BigQuery Avro exports into PostgreSQL reporting tables."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Flash sale campaigns created sudden conversion event spikes that threatened to degrade core booking APIs.",
+          "solution": "Implemented asynchronous, non-blocking ingestion using Spring WebFlux and Apache Kafka buffering, isolating event ingestion from synchronous checkout flows."
+        },
+        {
+          "challenge": "Frequent rate limiting and intermittent timeouts from external ad platform APIs (Google/Meta/TikTok).",
+          "solution": "Applied Resilience4j with Circuit Breaker, exponential backoff retries, and token-bucket rate limiters."
+        },
+        {
+          "challenge": "Ensuring sensitive user phone numbers and emails never leak into external analytical tools.",
+          "solution": "Created centralized Spring AOP interceptors dynamically detecting, hashing, and masking PII payload fields before data transit."
+        }
+      ],
+      "achievements": [
+        "Successfully ingested thousands of daily conversion funnel events with sub-second latency without impacting checkout performance.",
+        "Achieved 100% PII privacy compliance across all analytics pipelines.",
+        "Decreased daily cross-channel marketing report generation time by over 40%, enabling immediate campaign ROAS decision-making."
+      ],
       "highlights": [
-        "Developed high-throughput event tracking service using Spring WebFlux (non-blocking reactive API) and Apache Kafka / RabbitMQ to capture real-time user journey events without impacting core booking performance.",
-        "Engineered secure data gateway using Spring AOP and custom Interceptors to automatically detect, encrypt, and strip PII before transmitting to Google Analytics 4 (GA4).",
-        "Implemented automated ingestion pipelines using Spring WebClient and Resilience4j (Circuit Breaker & Retry patterns) to gracefully handle Google, Facebook, and TikTok API rate limits and timeouts.",
-        "Built automated ETL jobs utilizing Spring Batch to process large-scale Avro data extracts from Google BigQuery into PostgreSQL, optimizing schema specifically for instant Looker Studio dashboard loading.",
-        "Successfully ingested thousands of daily conversion funnel events with sub-second latency, achieving 100% data privacy compliance and reducing daily report generation time by over 40%."
+        "Developed high-throughput event tracking service using Spring WebFlux and Apache Kafka to capture real-time user journey events.",
+        "Engineered secure data gateway using Spring AOP to automatically detect and strip PII before transmitting to Google Analytics 4 (GA4).",
+        "Ingested thousands of daily funnel events with sub-second latency and reduced report generation time by >40%."
       ],
       "githubUrl": "https://github.com/ga2631",
       "demoUrl": "https://ga2631.github.io",
@@ -190,12 +239,14 @@
       "role": "Project Manager & Tech Lead",
       "teamSize": "6 members",
       "shortDescription": "Enterprise Client Portal handling 1,000+ concurrent users with Redis query caching and modular Vue.js interactive chart widgets.",
-      "description": "Led a cross-functional team to build a Client Portal directly integrated with the internal ERP system, delivering a centralized, transparent, and real-time reporting platform for clients to automate ad campaign data retrieval.",
+      "description": "Led a cross-functional team to build an enterprise-grade Customer Portal directly integrated with the core internal ERP system, delivering real-time, transparent campaign performance reporting, automated invoice tracking, and self-service analytics for enterprise clients under 1,000+ CCU.",
       "category": "Fullstack",
       "tags": [
         "Node.js",
         "Vue.js",
-        "Redis Caching",
+        "Redis",
+        "MariaDB",
+        "MySQL",
         "ERP Integration",
         "Docker",
         "Agile"
@@ -205,10 +256,34 @@
         "40% reduction in manual data extraction requests",
         "Modular frontend charts adaptable to frequent UX changes"
       ],
+      "responsibilities": [
+        "Managed the full Software Development Life Cycle (SDLC), technical specifications, roadmap planning, and resource allocation across 6 developers.",
+        "Designed secure RESTful API layers and integration bridges between external client portals and the internal ERP backend.",
+        "Established high-efficiency caching strategies using Redis to prevent database saturation during simultaneous client logins.",
+        "Spearheaded modular frontend UI architecture in Vue.js with reusable dynamic chart components."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Multiple enterprise clients accessing heavy multi-month reporting queries simultaneously degraded internal ERP responsiveness.",
+          "solution": "Implemented multi-tier Redis query caching with dynamic TTL and asynchronous batch aggregation workers."
+        },
+        {
+          "challenge": "Clients frequently requested custom metric combinations and layout adjustments.",
+          "solution": "Built modular, composable Vue.js dashboard widgets allowing instant metric plug-and-play without refactoring core code."
+        },
+        {
+          "challenge": "Preventing cross-tenant data leakage while querying shared ERP schemas.",
+          "solution": "Implemented strict Multi-Tenant Role-Based Access Control (RBAC) with row-level tenant filtering at the API gateway layer."
+        }
+      ],
+      "achievements": [
+        "Scaled smoothly and maintained high availability under 1,000+ peak concurrent enterprise users.",
+        "Reduced manual ad data extraction and support requests from clients by over 40%.",
+        "Accelerated release cycles for new reporting metrics from 2 weeks down to 2 days via modular architecture."
+      ],
       "highlights": [
         "Managed full SDLC and resource allocation from system design phase to User Acceptance Testing (UAT).",
-        "Redesigned data synchronization flow with batch processing and Redis caching, smoothly handling 1,000 concurrent users without overloading the core ERP database.",
-        "Guided frontend team to adopt a modular Vue.js architecture with highly reusable charting components, rapidly accommodating frequent client UI/metric modifications without breaking sprint delivery.",
+        "Redesigned data synchronization flow with batch processing and Redis caching, smoothly handling 1,000 CCU.",
         "Reduced time spent on manual data extraction requests by 40%, significantly improving client satisfaction."
       ],
       "githubUrl": "https://github.com/ga2631",
@@ -222,14 +297,16 @@
       "role": "Software Engineer",
       "teamSize": "2 members",
       "shortDescription": "Financial cash inflow automation module, multi-channel ad metrics sync, and zero-downtime CI/CD upgrades for legacy ERP.",
-      "description": "Modernized, scaled, and maintained the enterprise ERP system by automating cross-platform marketing data synchronization, streamlining financial workflows, and ensuring high system availability.",
+      "description": "Modernized, scaled, and maintained enterprise ERP modules by automating complex financial cash inflow distribution, integrating multi-channel ad marketing APIs, and setting up zero-downtime CI/CD deployment pipelines on CentOS servers.",
       "category": "Backend / Cloud",
       "tags": [
         "PHP (Laravel)",
         "VueJS",
         "MariaDB",
+        "MySQL",
         "RabbitMQ",
         "CentOS",
+        "Nginx",
         "CI/CD"
       ],
       "keyImpacts": [
@@ -237,12 +314,35 @@
         "Saved 10-12 hours/week in manual accounting entry",
         "100% zero-downtime automated deployments"
       ],
+      "responsibilities": [
+        "Designed and developed the financial cash inflow distribution engine, accurately allocating multi-million revenue across cost centers.",
+        "Integrated external marketing APIs (Google Ads, Facebook Ads, TikTok Ads) to centralize daily advertising expenditure data.",
+        "Profiled, indexed, and refactored heavy relational database queries in MariaDB/MySQL.",
+        "Maintained CentOS infrastructure, configured Nginx reverse proxies, and built automated Git-based CI/CD deployment workflows."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Accounting spent dozens of hours weekly manually calculating revenue shares with frequent rounding discrepancies.",
+          "solution": "Built an automated calculation engine enforcing strict financial formula validations, automated reconciliation, and audit logs."
+        },
+        {
+          "challenge": "Complex multi-table joins on millions of rows caused monthly financial report queries to take several minutes.",
+          "solution": "Optimized database indexes, restructured composite keys, and pre-aggregated daily summaries, slashing query time by 63%."
+        },
+        {
+          "challenge": "Deploying ERP updates previously interrupted critical accounting and sales operations during business hours.",
+          "solution": "Designed zero-downtime blue/green deployment scripts with Nginx upstream reload and automated database migration rollbacks."
+        }
+      ],
+      "achievements": [
+        "Decreased monthly financial report generation time by 63%.",
+        "Saved 10-12 hours per week of manual accounting data entry, reducing human calculation errors to near zero.",
+        "Achieved 100% zero-downtime automated deployments across all production releases."
+      ],
       "highlights": [
-        "Built and maintained automated data pipelines integrating Google Ads, Facebook Ads, and TikTok APIs to fetch and centralize advertising metrics.",
-        "Developed dynamic cash inflow module that automatically splits total received amounts into discrete accounting components based on strict financial formulas.",
+        "Developed dynamic cash inflow module that automatically splits total received amounts into discrete accounting components.",
         "Profiled and optimized complex relational database queries, decreasing report generation time by 63%.",
-        "Eliminated manual data entry for the accounting team, saving 10-12 hours/week and reducing calculation errors to near zero.",
-        "Administered ERP server infrastructure (Docker, Nginx) and integrated CI/CD pipelines to ensure seamless zero-downtime upgrades."
+        "Eliminated manual data entry for the accounting team, saving 10-12 hours/week with 100% zero-downtime CI/CD."
       ],
       "githubUrl": "https://github.com/ga2631",
       "demoUrl": "https://ga2631.github.io",

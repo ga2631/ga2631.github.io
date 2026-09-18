@@ -48,6 +48,9 @@ export interface ProjectItem {
   tags: string[];
   keyImpacts?: string[];
   highlights: string[];
+  responsibilities?: string[];
+  challengesSolutions?: { challenge: string; solution: string }[];
+  achievements?: string[];
   featured?: boolean;
 }
 
