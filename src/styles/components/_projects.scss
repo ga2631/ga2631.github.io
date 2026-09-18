@@ -136,26 +136,6 @@
   margin-bottom: 14px;
 }
 
-.project-impact-pills {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.impact-pill {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: var(--radius-sm);
-  padding: 5px 10px;
-}
-
 .project-card-footer {
   margin-top: auto;
 }
@@ -252,7 +232,18 @@
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   padding: 2px 8px;
-  border-radius: var(--radius-sm);
+.badge-tech-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+  }
 }
 
 .repo-stats-row {

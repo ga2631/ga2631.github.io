@@ -67,7 +67,8 @@ Cập nhật hợp đồng dữ liệu tĩnh (Static Data Contract) tại `src/t
   - Chuẩn hóa hệ thống màu chữ phân cấp (Color Hierarchy): Các thông tin chức danh (Job Title), tên dự án (Project Title), vai trò (Project Role), tên bằng cấp (Degree) và chứng chỉ (Certifications) sử dụng màu chủ đạo (`#b91c1c`); tên công ty, đơn vị đào tạo, tổ chức cấp chứng chỉ sử dụng màu chữ thông thường (`#0f172a`).
   - Tối ưu cấu trúc phân mục Dự án: Vai trò hiển thị trước bên trái, tên công ty đặt bên phải vai trò (`<Vai trò> | <Tên công ty>`).
   - Tách bạch phần Học vấn / Nền tảng chuyên môn (`Academic Background`) thành từng dòng/bullet point rõ ràng (`.print-edu-gpa`, `.print-edu-bullets`) thay vì gộp thành đoạn văn liền khối.
-  - Chuẩn hóa hiển thị Chứng chỉ chuyên môn (`Certifications`) đồng bộ với cấu trúc Học vấn (`.print-edu-header`, `.print-cert-item`), hiển thị tên chứng chỉ, đơn vị cấp, thời hạn/mục tiêu và trạng thái theo chuẩn nhất quán.
+- **Language & Tech Stack Color Identification System**: Xây dựng bộ quy chuẩn màu sắc nhận diện trực quan cho toàn bộ ngôn ngữ lập trình và công nghệ (TypeScript, Go, Python, Java, PHP, JavaScript, React, Vue, PostgreSQL, MySQL, Redis, RabbitMQ, Docker, Linux, SQL, Rust, C++, C#, v.v.). Mỗi tag được áp dụng màu chữ, màu nền pastel tinh tế, viền đồng bộ kèm chấm tròn màu (`lang-color-dot`) phát sáng nhẹ, giúp người xem dễ dàng phân biệt và nhận diện nhanh các ngôn ngữ/công nghệ sử dụng trong các kho mã nguồn GitHub và dự án kiến trúc.
+- **Project Card UI Streamlining**: Loại bỏ phần tóm tắt chỉ số tác động (Success Metrics / Impact Pills) trên bề mặt các thẻ dự án (Project Cards) ở trang chủ để tránh lặp lại thông tin, giúp bố cục thẻ dự án thanh thoát, đồng đều hơn; toàn bộ chỉ số định lượng chi tiết được tập trung đầy đủ trong cửa sổ Case Study Kiến trúc Hệ thống (Modal Reader).
 - **Sass (SCSS) Modular Stylesheet Architecture**: Tái cấu trúc file đơn khối `src/styles/index.css` (~3,600 dòng) thành kiến trúc Sass module hóa chuẩn 7-1 pattern:
   - `abstracts/`: `_variables.scss` (Design tokens, Dark/Light mode theme tokens, skill level colors), `_mixins.scss` (Responsive mixins, glassmorphism helper).
   - `base/`: `_reset.scss` (HTML/body reset, ambient glow keyframes, typography reset), `_layout.scss` (Container, section titles, badges, glass-panel borders & animations, button styles).
@@ -80,6 +81,8 @@ Cập nhật hợp đồng dữ liệu tĩnh (Static Data Contract) tại `src/t
 ---
 
 ## 4. Impacted Files
+- `src/components/Projects.tsx`: Tinh giản thẻ dự án, tích hợp hàm `getTechColorInfo` ánh xạ mã màu thương hiệu chuẩn xác cho toàn bộ ngôn ngữ/công nghệ trên thẻ GitHub, thẻ dự án và Modal Reader.
+- `src/styles/components/_projects.scss`: Bổ sung class `.badge-tech-tag` với hiệu ứng tương tác làm nổi bật khi hover.
 - `package.json`: Bổ sung dependency `sass` vào `devDependencies`.
 - `src/main.tsx`: Chuyển đổi import từ `src/styles/index.css` sang `src/styles/index.scss`.
 - `src/styles/index.scss`: Master entry point cho Sass stylesheet.
