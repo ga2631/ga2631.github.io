@@ -1754,17 +1754,12 @@ p {
   justify-content: space-between;
   height: 100%;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
   transition: all var(--transition-smooth);
-  position: relative;
-  overflow: hidden;
 }
 
 .github-repo-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(239, 68, 68, 0.4);
-  box-shadow: 0 12px 32px rgba(239, 68, 68, 0.15);
+  box-shadow: var(--border-glow);
 }
 
 .github-repo-card:hover .repo-link-title,
