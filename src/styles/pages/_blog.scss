@@ -846,6 +846,16 @@ $category-colors: (
   margin-bottom: 16px;
 }
 
+/* Load More Articles Button Container (Using padding instead of margin) */
+.blog-load-more-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 24px;
+  padding-bottom: 64px;
+  width: 100%;
+}
+
 /* ==========================================================================
    Article Modal / Reader View Elements
    ========================================================================== */

@@ -633,7 +633,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
 
             {/* Load More Button if more month archives exist */}
             {hasMoreMonths && filteredPosts.length > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px', marginBottom: '16px' }}>
+              <div className="blog-load-more-container">
                 <button
                   type="button"
                   className="btn btn-secondary"
