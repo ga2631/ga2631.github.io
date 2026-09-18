@@ -5,19 +5,22 @@
 @media print {
   @page {
     size: A4 portrait;
-    margin: 8mm 12mm;
+    margin: 6mm 10mm;
   }
 
   html, body {
+    width: 100% !important;
     background: #ffffff !important;
     color: #0f172a !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    font-size: 8.5pt !important;
-    line-height: 1.32 !important;
+    font-size: 8pt !important;
+    line-height: 1.26 !important;
     padding: 0 !important;
     margin: 0 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
   }
 
   /* Completely hide all interactive web elements */
@@ -50,96 +53,107 @@
   .print-cv-document {
     display: block !important;
     width: 100% !important;
+    max-width: 100% !important;
     background: #ffffff !important;
     color: #0f172a !important;
     padding: 0 !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
   }
 
-  /* Force Page 2 clean break */
+  /* Page 1 and Page 2 strict page boundary enforcement */
+  .print-page-1 {
+    page-break-after: always !important;
+    break-after: page !important;
+    box-sizing: border-box !important;
+  }
+
   .print-page-2 {
     page-break-before: always !important;
     break-before: page !important;
-    padding-top: 4px;
+    padding-top: 0 !important;
+    box-sizing: border-box !important;
   }
 
   .print-header {
     text-align: center;
-    margin-bottom: 8px;
-    padding-bottom: 6px;
+    margin-bottom: 5px;
+    padding-bottom: 4px;
     border-bottom: 1.5px solid #0f172a;
   }
 
   .print-name {
     font-family: var(--font-heading), -apple-system, sans-serif;
-    font-size: 16pt;
+    font-size: 15pt;
     font-weight: 800;
     color: #b91c1c;
     letter-spacing: 0.04em;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .print-title {
-    font-size: 9.2pt;
+    font-size: 8.8pt;
     font-weight: 700;
     color: #b91c1c;
     letter-spacing: 0.03em;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
 
   .print-contact-row {
-    font-size: 8pt;
+    font-size: 7.7pt;
     color: #475569;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     gap: 2px 8px;
-    line-height: 1.25;
+    line-height: 1.22;
   }
 
   .print-contact-links {
-    margin-top: 2px;
+    margin-top: 1.5px;
   }
 
   .print-section {
-    margin-bottom: 8px;
+    margin-bottom: 5px;
   }
 
   .print-section-heading {
     font-family: var(--font-heading), -apple-system, sans-serif;
-    font-size: 9.2pt;
+    font-size: 8.8pt;
     font-weight: 800;
     color: #b91c1c;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     border-bottom: 1.2px solid rgba(185, 28, 28, 0.45);
     padding-bottom: 1px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
   }
 
   .print-summary-text {
-    font-size: 8.2pt;
+    font-size: 7.8pt;
     color: #334155;
-    line-height: 1.35;
+    line-height: 1.27;
     text-align: justify;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .print-skills-table {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1.5px;
   }
 
   .print-skill-row {
-    font-size: 8pt;
-    line-height: 1.25;
+    font-size: 7.7pt;
+    line-height: 1.22;
   }
 
   .print-skill-category {
     color: #0f172a;
-    margin-right: 5px;
+    margin-right: 4px;
   }
 
   .print-skill-list {
@@ -150,7 +164,7 @@
   .print-projects-list {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
   }
 
   .print-exp-item,
@@ -158,10 +172,11 @@
   .print-edu-item,
   .print-cert-item {
     page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   .print-cert-item {
-    margin-top: 5px;
+    margin-top: 3px;
   }
 
   .print-exp-header,
@@ -170,14 +185,21 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    gap: 8px;
     margin-bottom: 1px;
+  }
+
+  .print-exp-title-group,
+  .print-edu-title-group {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .print-exp-role,
   .print-proj-title,
   .print-edu-degree {
     font-weight: 700;
-    font-size: 8.8pt;
+    font-size: 8.4pt;
     color: #b91c1c;
   }
 
@@ -186,19 +208,19 @@
   .print-edu-inst {
     font-weight: 600;
     color: #0f172a;
-    font-size: 8.5pt;
+    font-size: 8.2pt;
   }
 
   .print-proj-sub {
-    font-size: 8.4pt;
-    line-height: 1.25;
-    margin-bottom: 2px;
+    font-size: 8pt;
+    line-height: 1.22;
+    margin-bottom: 1px;
   }
 
   .print-proj-role {
     font-weight: 600;
     color: #b91c1c;
-    font-size: 8.4pt;
+    font-size: 8pt;
   }
 
   .print-proj-separator {
@@ -208,7 +230,9 @@
 
   .print-exp-meta,
   .print-edu-period {
-    font-size: 7.8pt;
+    flex: 0 0 auto;
+    text-align: right;
+    font-size: 7.5pt;
     color: #64748b;
     font-style: italic;
     white-space: nowrap;
@@ -216,24 +240,25 @@
 
   .print-exp-summary,
   .print-proj-desc {
-    font-size: 8pt;
+    font-size: 7.7pt;
     color: #475569;
     font-style: italic;
     margin-bottom: 1px;
+    line-height: 1.23;
   }
 
   .print-exp-bullets,
   .print-proj-highlights,
   .print-edu-bullets {
-    margin: 1px 0 2px 12px;
+    margin: 1px 0 1.5px 10px;
     padding: 0;
     list-style-type: disc;
 
     li {
-      font-size: 8pt;
+      font-size: 7.7pt;
       color: #1e293b;
-      line-height: 1.28;
-      margin-bottom: 1px;
+      line-height: 1.24;
+      margin-bottom: 0.5px;
       text-align: justify;
     }
 
@@ -244,28 +269,30 @@
   }
 
   .print-tech-stack {
-    font-size: 7.6pt;
+    font-size: 7.4pt;
     color: #475569;
-    margin-top: 1px;
+    margin-top: 0.5px;
+    line-height: 1.22;
   }
 
   .print-edu-gpa,
   .print-edu-highlight {
-    font-size: 8pt;
+    font-size: 7.7pt;
     color: #334155;
-    line-height: 1.28;
+    line-height: 1.24;
     text-align: justify;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin-top: 0.5px;
+    margin-bottom: 0.5px;
   }
 
   .print-cert-row {
-    font-size: 8pt;
+    font-size: 7.7pt;
     color: #334155;
-    line-height: 1.28;
+    line-height: 1.24;
   }
 
   .print-page-break-avoid {
     page-break-inside: avoid;
+    break-inside: avoid;
   }
 }
