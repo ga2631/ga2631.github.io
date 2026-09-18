@@ -2,7 +2,7 @@
    Responsive Breakpoints
    ========================================================================== */
 
-@media (max-width: 992px) {
+@media screen and (max-width: 992px) {
   .desktop-nav,
   .header-lang-group {
     display: none !important;
@@ -102,7 +102,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .hero-name {
     font-size: 2.5rem;
   }
@@ -116,7 +116,7 @@
   }
 }
 
-@media (max-width: 576px) {
+@media screen and (max-width: 576px) {
   .header-container {
     padding: 0 16px;
   }

@@ -97,7 +97,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
             {experiences.map((exp) => (
               <div key={exp.id} className="print-exp-item">
                 <div className="print-exp-header">
-                  <div>
+                  <div className="print-exp-title-group">
                     <span className="print-exp-role">{exp.role}</span>
                     <span className="print-exp-company"> | {exp.company}</span>
                   </div>
@@ -168,7 +168,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
           {educations.map((edu) => (
             <div key={edu.id} className="print-edu-item">
               <div className="print-edu-header">
-                <div>
+                <div className="print-edu-title-group">
                   <strong className="print-edu-degree">{edu.degree}</strong>
                   <span className="print-edu-inst"> | {edu.institution}</span>
                 </div>
@@ -205,7 +205,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
           {certifications.map((cert) => (
             <div key={cert.id} className="print-cert-item">
               <div className="print-edu-header">
-                <div>
+                <div className="print-edu-title-group">
                   <strong className="print-edu-degree">{cert.name}</strong>
                   <span className="print-edu-inst"> | {cert.issuer}</span>
                 </div>
