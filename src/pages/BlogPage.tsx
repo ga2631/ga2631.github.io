@@ -331,7 +331,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
           <FilterIcon size={16} />
           <span>{t.categoriesTitle || 'Chuyên đề'}</span>
           <span className="badge badge-cyan" style={{ marginLeft: '4px', fontSize: '0.75rem' }}>
-            {selectedCategory !== 'all' || selectedTag !== 'all' ? '1+' : posts.length}
+            {selectedCategory !== 'all' || selectedTag !== 'all' ? '1+' : (allPosts.length > 20 ? '20+' : allPosts.length)}
           </span>
         </button>
       </div>
@@ -380,6 +380,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
               {BLOG_CATEGORY_DEFINITIONS.map((cat: BlogCategoryDef) => {
                 const isActive = selectedCategory === cat.id;
                 const count = categoryCounts[cat.id] || 0;
+                const displayCount = cat.id === 'all' && count > 20 ? '20+' : count;
 
                 return (
                   <button
@@ -408,7 +409,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                       </span>
                       <span className="category-item-name">{cat.title[langKey]}</span>
                     </div>
-                    <span className="category-count-pill">{count}</span>
+                    <span className="category-count-pill">{displayCount}</span>
                   </button>
                 );
               })}
@@ -434,7 +435,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                 }}
               >
                 <span>{t.allTopics}</span>
-                <span className="tag-count">{posts.length}</span>
+                <span className="tag-count">{allPosts.length > 20 ? '20+' : allPosts.length}</span>
               </button>
               {allTags.map((tag) => {
                 const count = tagCounts[tag] || 0;
