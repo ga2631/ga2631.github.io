@@ -179,27 +179,17 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                   </div>
                 </div>
 
-                {/* Wrapping Skill Badges Cluster Sorted High-to-Low with Interactive Tooltips */}
+                {/* Wrapping Skill Badges Cluster Sorted High-to-Low */}
                 <div className="skills-pill-cluster">
                   {sortedSkills.map((skill) => {
                     const levelCfg = getLevelConfig(skill.level);
                     return (
-                      <div
+                      <span
                         key={skill.name}
                         className={`skill-pill-tag ${levelCfg.tagClass}`}
-                        tabIndex={0}
-                        role="tooltip"
-                        aria-label={`${skill.name} - ${levelCfg.label}`}
                       >
-                        <span className="skill-pill-name">{skill.name}</span>
-
-                        {/* Interactive Tooltip showing 1-5 score and level */}
-                        <div className="skill-tooltip" role="presentation">
-                          <span className="skill-tooltip-score">{levelCfg.scoreText}</span>
-                          <span className="skill-tooltip-divider">•</span>
-                          <span className="skill-tooltip-text">{levelCfg.label}</span>
-                        </div>
-                      </div>
+                        {skill.name}
+                      </span>
                     );
                   })}
                 </div>
