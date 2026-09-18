@@ -211,6 +211,9 @@ Every feature scenario must pass these universal criteria:
 | **TS-13-03** | `DEV-DESK-01`, `DEV-DESK-02` | Desktop Print Preview | Verify Page 2 content | **Page 2** begins at the top with Featured Architecture Projects + Education & Certifications. No 3rd overflow page generated. | Verify page 2 boundaries |
 | **TS-13-04** | `DEV-MOB-01`, `DEV-MOB-03` | Mobile viewport (iPhone Safari / Android Chrome) | Tap "Save CV" in drawer or Floating Action Button | Native mobile print preview opens; layout is identical to desktop print output; `@media screen` mobile styles do **not** leak or distort print styles; document renders exactly 2 A4 pages. | Mobile print simulation test |
 | **TS-13-05** | `DEV-MOB-01` | iOS Safari Mobile | Save PDF from mobile print dialog | Text size is locked (`-webkit-text-size-adjust: 100%`); headings do not orphan (`break-after: avoid`); typography remains crisp. | Exported PDF inspection |
+| **TS-13-06** | `DEV-MOB-01`, `DEV-TAB-01`, `DEV-DESK-02` | Automated Test Suite (`print-cv.test.tsx`) | Compare rendered DOM structure, node count, and innerHTML across Mobile (375px), Tablet (768px), and Desktop (1440px) | Output is **100% identical** across all 3 viewports in both EN and VI locales (`mobileHtml === desktopHtml === tabletHtml`). | Automated Vitest assertion |
+| **TS-13-07** | Any profile | Application root (`App.tsx`) | Inspect DOM tree hierarchy | `.print-cv-document` is rendered strictly as a direct child of `.app-root` and outside `.web-only`, ensuring complete CSS cascade isolation. | Automated Vitest assertion |
+| **TS-13-08** | CSS / SCSS Engine | Build pipeline | Static audit of `_responsive.scss` | 100% of media queries specify `@media screen and (...)`, preventing any responsive overrides from leaking into `@media print`. | Automated Vitest SCSS parser |
 
 ---
 

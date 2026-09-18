@@ -12,12 +12,13 @@ Quy trình kiểm thử toàn diện và hệ thống kiểm thử tự động 
    - **Giao diện sáng/tối (Dark / Light Theme)**: Xác thực việc tự động phát hiện `prefers-color-scheme`, hoán đổi biến màu CSS (`data-theme`), bảo đảm độ tương phản văn bản đạt chuẩn và không gây nhấp nháy giao diện khi tải lại trang (Zero FOUC).
    - **Bảo mật thông tin liên hệ (Contact Obfuscation)**: Kiểm thử thuật toán giải mã runtime động Base64 chunked tokens, chia tách thẻ `<span>` chống bot cào dữ liệu tĩnh, đồng thời kích hoạt chính xác `mailto:` và `tel:`.
    - **Bài viết kỹ thuật & SPA Routing (`#/blog`)**: Kiểm thử bộ máy tìm kiếm thời gian thực, lọc theo danh mục, giao diện đọc bài 2 cột với mục lục động (Table of Contents - TOC) trên Desktop và chế độ đọc tối ưu trên Mobile/Tablet.
-3. **Print Engine & ATS PDF Export Flow**:
+3. **Print Engine & ATS PDF Export Flow (100% Cross-Device Invariance)**:
    - Kiểm tra cách ly môi trường in `@media print`, triệt tiêu hoàn toàn mã CSS màn hình (`@media screen and (...)`) khi thực hiện in từ điện thoại di động hoặc máy tính bảng.
+   - Bổ sung test case tự động xác thực tính tương đồng **100% (Bit-by-bit & DOM Invariance)** của tài liệu in ấn `.print-cv-document` khi render trên Mobile (375px), Tablet (768px) và Desktop (1440px) ở cả 2 ngôn ngữ VI và EN.
    - Bảo đảm cấu trúc CV in ấn chính xác tuyệt đối 2 trang A4 chuẩn ATS (Trang 1: Header + Summary + Skills + 3 Vị trí công việc; Trang 2: Case Studies + Education & Certifications), ngăn chặn ngắt trang mồ côi (`break-after: avoid`).
 4. **Automated Testing & CI/CD Verification Flow**:
-   - Tích hợp framework kiểm thử tự động **Vitest + React Testing Library + JSDOM** thực thi với lệnh `npm test`.
-   - 7 bộ test suites tự động bao phủ toàn diện: `obfuscation.test.ts`, `data-integrity.test.ts`, `app-routing-theme.test.tsx`, `navigation-drawer.test.tsx`, `projects-modal.test.tsx`, `blog-reader.test.tsx`, `print-cv.test.tsx`, `mobile-ergonomics.test.tsx`.
+   - Tích hợp framework kiểm thử tự động **Vitest + React Testing Library + JSDOM** thực thi với lệnh `npm test` với 43 test cases tự động.
+   - 8 bộ test suites tự động bao phủ toàn diện: `obfuscation.test.ts`, `data-integrity.test.ts`, `app-routing-theme.test.tsx`, `navigation-drawer.test.tsx`, `projects-modal.test.tsx`, `blog-reader.test.tsx`, `print-cv.test.tsx` (kiểm thử 100% cross-device parity), `mobile-ergonomics.test.tsx`.
    - Tự động chạy trong pipeline CI/CD GitHub Actions ([deploy.yml](file:///Users/tanhn/Projects/ga2631.github.io/.github/workflows/deploy.yml)) trước khi thực hiện typecheck và production build.
    - Kiểm tra hoạt động của Docker Compose cho môi trường phát triển (Hot Module Replacement) và Nginx Alpine cho môi trường production với cơ chế SPA fallback `try_files $uri $uri/ /index.html;`.
 
