@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 /* ==========================================================================
    Blog Section & Dedicated Blog Page (Full-Width, Full-Height App Layout)
    ========================================================================== */
@@ -330,14 +332,14 @@ $category-colors: (
    ========================================================================== */
 
 @each $day, $colors in $category-colors {
-  $accent: map-get($colors, accent);
-  $accent-light: map-get($colors, accent-light);
-  $bg-alpha: map-get($colors, bg-alpha);
-  $bg-alpha-light: map-get($colors, bg-alpha-light);
-  $border-alpha: map-get($colors, border-alpha);
-  $border-hover: map-get($colors, border-hover);
-  $glow: map-get($colors, glow);
-  $gradient: map-get($colors, gradient);
+  $accent: map.get($colors, accent);
+  $accent-light: map.get($colors, accent-light);
+  $bg-alpha: map.get($colors, bg-alpha);
+  $bg-alpha-light: map.get($colors, bg-alpha-light);
+  $border-alpha: map.get($colors, border-alpha);
+  $border-hover: map.get($colors, border-hover);
+  $glow: map.get($colors, glow);
+  $gradient: map.get($colors, gradient);
 
   /* Icon Box */
   .category-icon-box.icon-#{$day} {
@@ -430,8 +432,8 @@ $category-colors: (
 /* Light Theme Category Overrides */
 [data-theme="light"] {
   @each $day, $colors in $category-colors {
-    $accent-light: map-get($colors, accent-light);
-    $bg-alpha-light: map-get($colors, bg-alpha-light);
+    $accent-light: map.get($colors, accent-light);
+    $bg-alpha-light: map.get($colors, bg-alpha-light);
 
     .category-icon-box.icon-#{$day} {
       background: $bg-alpha-light;
