@@ -1954,6 +1954,26 @@ p {
   transform: translateY(-1px);
 }
 
+.skills-legend-item.legend-level-5:hover {
+  border-color: rgba(168, 85, 247, 0.6);
+}
+
+.skills-legend-item.legend-level-4:hover {
+  border-color: rgba(6, 182, 212, 0.6);
+}
+
+.skills-legend-item.legend-level-3:hover {
+  border-color: rgba(16, 185, 129, 0.6);
+}
+
+.skills-legend-item.legend-level-2:hover {
+  border-color: rgba(245, 158, 11, 0.6);
+}
+
+.skills-legend-item.legend-level-1:hover {
+  border-color: rgba(148, 163, 184, 0.6);
+}
+
 .skills-compact-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -2048,37 +2068,73 @@ p {
   z-index: 20;
 }
 
-/* Level-specific hover glow and borders */
+/* Level-specific hover glow and borders for 1-5 scale */
+.skill-pill-tag.skill-tag-5:hover,
+.skill-pill-tag.skill-tag-5:focus-visible,
 .skill-pill-tag.skill-tag-expert:hover,
 .skill-pill-tag.skill-tag-expert:focus-visible {
-  border-color: rgba(239, 68, 68, 0.55);
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.22);
 }
 
+.skill-pill-tag.skill-tag-5:hover .skill-level-dot,
 .skill-pill-tag.skill-tag-expert:hover .skill-level-dot {
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 1);
 }
 
+.skill-pill-tag.skill-tag-4:hover,
+.skill-pill-tag.skill-tag-4:focus-visible,
 .skill-pill-tag.skill-tag-advanced:hover,
 .skill-pill-tag.skill-tag-advanced:focus-visible {
-  border-color: rgba(251, 113, 133, 0.55);
-  box-shadow: 0 4px 14px rgba(251, 113, 133, 0.2);
+  border-color: rgba(6, 182, 212, 0.6);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.22);
 }
 
+.skill-pill-tag.skill-tag-4:hover .skill-level-dot,
 .skill-pill-tag.skill-tag-advanced:hover .skill-level-dot {
-  box-shadow: 0 0 10px rgba(251, 113, 133, 0.9);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 1);
 }
 
+.skill-pill-tag.skill-tag-3:hover,
+.skill-pill-tag.skill-tag-3:focus-visible,
 .skill-pill-tag.skill-tag-proficient:hover,
 .skill-pill-tag.skill-tag-proficient:focus-visible {
-  border-color: rgba(245, 158, 11, 0.55);
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.22);
 }
 
+.skill-pill-tag.skill-tag-3:hover .skill-level-dot,
 .skill-pill-tag.skill-tag-proficient:hover .skill-level-dot {
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.9);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 1);
 }
 
+.skill-pill-tag.skill-tag-2:hover,
+.skill-pill-tag.skill-tag-2:focus-visible,
+.skill-pill-tag.skill-tag-familiar:hover,
+.skill-pill-tag.skill-tag-familiar:focus-visible {
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.22);
+}
+
+.skill-pill-tag.skill-tag-2:hover .skill-level-dot,
+.skill-pill-tag.skill-tag-familiar:hover .skill-level-dot {
+  box-shadow: 0 0 12px rgba(245, 158, 11, 1);
+}
+
+.skill-pill-tag.skill-tag-1:hover,
+.skill-pill-tag.skill-tag-1:focus-visible,
+.skill-pill-tag.skill-tag-fundamental:hover,
+.skill-pill-tag.skill-tag-fundamental:focus-visible {
+  border-color: rgba(148, 163, 184, 0.6);
+  box-shadow: 0 4px 16px rgba(148, 163, 184, 0.22);
+}
+
+.skill-pill-tag.skill-tag-1:hover .skill-level-dot,
+.skill-pill-tag.skill-tag-fundamental:hover .skill-level-dot {
+  box-shadow: 0 0 12px rgba(148, 163, 184, 1);
+}
+
+/* 5 Distinct Non-Repetitive Colors for 1-5 Scale */
 .skill-level-dot {
   width: 7px;
   height: 7px;
@@ -2087,19 +2143,39 @@ p {
   transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
+/* Level 5 (5/5) - Electric Purple / Master */
+.skill-level-dot.level-5,
 .skill-level-dot.level-expert {
-  background-color: var(--accent-red);
-  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+  background-color: #a855f7;
+  box-shadow: 0 0 7px rgba(168, 85, 247, 0.7);
 }
 
+/* Level 4 (4/5) - Cyber Cyan / Advanced */
+.skill-level-dot.level-4,
 .skill-level-dot.level-advanced {
-  background-color: var(--accent-rose);
-  box-shadow: 0 0 6px rgba(251, 113, 133, 0.6);
+  background-color: #06b6d4;
+  box-shadow: 0 0 7px rgba(6, 182, 212, 0.7);
 }
 
+/* Level 3 (3/5) - Emerald Green / Proficient */
+.skill-level-dot.level-3,
 .skill-level-dot.level-proficient {
-  background-color: var(--accent-amber);
-  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+  background-color: #10b981;
+  box-shadow: 0 0 7px rgba(16, 185, 129, 0.7);
+}
+
+/* Level 2 (2/5) - Warm Amber Gold / Familiar */
+.skill-level-dot.level-2,
+.skill-level-dot.level-familiar {
+  background-color: #f59e0b;
+  box-shadow: 0 0 7px rgba(245, 158, 11, 0.7);
+}
+
+/* Level 1 (1/5) - Steel Slate Gray / Fundamental */
+.skill-level-dot.level-1,
+.skill-level-dot.level-fundamental {
+  background-color: #94a3b8;
+  box-shadow: 0 0 7px rgba(148, 163, 184, 0.7);
 }
 
 /* Interactive Floating Skill Level Tooltip */
@@ -2111,15 +2187,15 @@ p {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color-hover);
   color: var(--text-primary);
-  padding: 5px 11px;
-  border-radius: var(--radius-sm);
-  font-size: 0.76rem;
+  padding: 5px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.78rem;
   font-weight: 600;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2147,8 +2223,19 @@ p {
   transform: translateX(-50%) translateY(0);
 }
 
+.skill-tooltip-score {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.skill-tooltip-divider {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
 .skill-tooltip-text {
-  line-height: 1;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 

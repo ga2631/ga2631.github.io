@@ -56,7 +56,7 @@ export interface ProjectItem {
 
 export interface SkillItem {
   name: string;
-  level: 'Expert' | 'Advanced' | 'Proficient';
+  level: string | number;
   iconName?: string;
 }
 

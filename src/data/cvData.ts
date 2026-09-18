@@ -95,9 +95,16 @@ export interface UITranslation {
     title: string;
     subtitle: string;
     legendTitle: string;
+    level5: string;
+    level4: string;
+    level3: string;
+    level2: string;
+    level1: string;
     expert: string;
     advanced: string;
     proficient: string;
+    familiar: string;
+    fundamental: string;
   };
   education: {
     badge: string;
