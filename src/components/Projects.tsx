@@ -616,25 +616,23 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                     paddingTop: '20px',
                     borderTop: '1px solid var(--border-color)',
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    justifyContent: activeProject.demoUrl ? 'space-between' : 'flex-end',
                     alignItems: 'center',
                     flexWrap: 'wrap',
                     gap: '12px',
                   }}
                 >
-                  <div>
-                    {activeProject.demoUrl && (
-                      <a
-                        href={activeProject.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-primary btn-sm"
-                      >
-                        <ExternalLinkIcon size={16} />
-                        <span>{t.demo}</span>
-                      </a>
-                    )}
-                  </div>
+                  {activeProject.demoUrl && (
+                    <a
+                      href={activeProject.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary btn-sm"
+                    >
+                      <ExternalLinkIcon size={16} />
+                      <span>{t.demo}</span>
+                    </a>
+                  )}
 
                   <button className="btn btn-secondary btn-sm" onClick={() => setActiveProject(null)}>
                     {t.closeModal}

@@ -170,7 +170,6 @@
         "Achieved 96% data reconciliation rate with zero data loss and reduced query times by >70%."
       ],
       "githubUrl": "https://github.com/ga2631",
-      "demoUrl": "https://ga2631.github.io",
       "featured": true
     },
     {
@@ -229,7 +228,6 @@
         "Ingested thousands of daily funnel events with sub-second latency and reduced report generation time by >40%."
       ],
       "githubUrl": "https://github.com/ga2631",
-      "demoUrl": "https://ga2631.github.io",
       "featured": true
     },
     {
@@ -287,7 +285,6 @@
         "Reduced time spent on manual data extraction requests by 40%, significantly improving client satisfaction."
       ],
       "githubUrl": "https://github.com/ga2631",
-      "demoUrl": "https://ga2631.github.io",
       "featured": true
     },
     {
@@ -345,7 +342,6 @@
         "Eliminated manual data entry for the accounting team, saving 10-12 hours/week with 100% zero-downtime CI/CD."
       ],
       "githubUrl": "https://github.com/ga2631",
-      "demoUrl": "https://ga2631.github.io",
       "featured": false
     }
   ],
