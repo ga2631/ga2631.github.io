@@ -34,7 +34,7 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
     },
     title: {
       vi: 'Tất cả chuyên đề',
-      en: 'All Topics & Categories',
+      en: 'All Topics',
     },
     description: {
       vi: 'Tổng hợp toàn bộ các bài viết ghi chép kiến trúc, kỹ thuật và bài học kinh nghiệm.',
