@@ -13,15 +13,8 @@ import {
   TargetIcon,
   ZapIcon,
   ToolsIcon,
-  LockIcon,
   RocketIcon,
   ShieldIcon,
-  ClockIcon,
-  UsersIcon,
-  TrendingDownIcon,
-  PuzzleIcon,
-  HourglassIcon,
-  RefreshCwIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
@@ -45,50 +38,6 @@ interface GitHubRepo {
   updated_at: string;
   fork: boolean;
 }
-
-const getImpactIcon = (impact: string) => {
-  const lower = impact.toLowerCase();
-  // 1. Lock 🔒: reconciliation, zero data loss, data integrity
-  if (lower.includes('reconciliation') || lower.includes('zero data loss') || lower.includes('khớp nối') || lower.includes('mất mát')) {
-    return <LockIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-  }
-  // 2. Rocket 🚀: real-time CDC sync, latency <2s
-  if (lower.includes('cdc') || lower.includes('real-time') || lower.includes('thời gian thực')) {
-    return <RocketIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-  }
-  // 3. Shield 🛡️: PII privacy, compliance, security
-  if (lower.includes('pii') || lower.includes('privacy') || lower.includes('compliance') || lower.includes('quyền riêng tư') || lower.includes('tuân thủ')) {
-    return <ShieldIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-  }
-  // 4. Clock ⏱️: Report generation time reduction
-  if (lower.includes('daily report') || lower.includes('tổng hợp báo cáo')) {
-    return <ClockIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-  }
-  // 5. Users 👥: Concurrent users, scaled smoothly, traffic
-  if (lower.includes('concurrent users') || lower.includes('scaled') || lower.includes('người dùng đồng thời') || lower.includes('vận hành ổn định')) {
-    return <UsersIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-  }
-  // 6. Hourglass ⏳: Saved hours/week
-  if (lower.includes('saved') || lower.includes('tiết kiệm') || lower.includes('hours/week') || lower.includes('giờ/tuần')) {
-    return <HourglassIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-  }
-  // 7. Refresh 🔄: Zero-downtime, automated deployments, CI/CD
-  if (lower.includes('zero-downtime') || lower.includes('automated deployments') || lower.includes('triển khai') || lower.includes('không gián đoạn')) {
-    return <RefreshCwIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-  }
-  // 8. Puzzle 🧩: Modular frontend charts, adaptable UX
-  if (lower.includes('modular') || lower.includes('mô-đun') || lower.includes('charts') || lower.includes('biểu đồ')) {
-    return <PuzzleIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-  }
-  // 9. Trending Down 📉: Reduction in manual requests, decreased query/report time
-  if (lower.includes('reduction') || lower.includes('decreased') || lower.includes('giảm 40%') || lower.includes('giảm 63%') || lower.includes('giảm ')) {
-    if (!lower.includes('analytical query times') && !lower.includes('thời gian thực thi truy vấn')) {
-      return <TrendingDownIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-    }
-  }
-  // 10. Zap ⚡: Query times, sub-second latency, speed
-  return <ZapIcon size={12} style={{ flexShrink: 0, color: 'var(--accent-primary)' }} />;
-};
 
 const FALLBACK_REPOS: GitHubRepo[] = [
   {
@@ -173,27 +122,98 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
     };
   }, []);
 
-  const getLanguageColor = (lang: string | null): string => {
-    if (!lang) return 'var(--accent-primary)';
-    const colorMap: Record<string, string> = {
-      TypeScript: '#3178c6',
-      JavaScript: '#f7df1e',
-      Python: '#3572A5',
-      Go: '#00add8',
-      Golang: '#00add8',
-      Java: '#b07219',
-      PHP: '#4F5D95',
-      HTML: '#e34c26',
-      CSS: '#563d7c',
-      SCSS: '#c6538c',
-      'C++': '#f34b7d',
-      'C#': '#178600',
-      Rust: '#dea584',
-      Shell: '#89e051',
-      Vue: '#41b883',
-      Dockerfile: '#384d54',
-    };
-    return colorMap[lang] || 'var(--accent-primary)';
+  const getTechColorInfo = (name: string | null) => {
+    if (!name) {
+      return { color: 'var(--text-accent)', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.3)' };
+    }
+    const n = name.trim().toLowerCase();
+
+    // 1. Go / Golang
+    if (n === 'go' || n === 'golang') {
+      return { color: '#00add8', bg: 'rgba(0, 173, 216, 0.12)', border: 'rgba(0, 173, 216, 0.35)' };
+    }
+    // 2. TypeScript / TS
+    if (n === 'typescript' || n === 'ts') {
+      return { color: '#3178c6', bg: 'rgba(49, 120, 198, 0.12)', border: 'rgba(49, 120, 198, 0.35)' };
+    }
+    // 3. JavaScript / JS
+    if (n === 'javascript' || n === 'js') {
+      return { color: '#eab308', bg: 'rgba(234, 179, 8, 0.12)', border: 'rgba(234, 179, 8, 0.35)' };
+    }
+    // 4. Python
+    if (n === 'python') {
+      return { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.35)' };
+    }
+    // 5. Java / Spring Boot
+    if (n === 'java' || n.includes('spring')) {
+      return { color: '#f97316', bg: 'rgba(249, 115, 22, 0.12)', border: 'rgba(249, 115, 22, 0.35)' };
+    }
+    // 6. PHP / Laravel / CodeIgniter
+    if (n === 'php' || n.includes('laravel') || n.includes('codeigniter')) {
+      return { color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.12)', border: 'rgba(167, 139, 250, 0.35)' };
+    }
+    // 7. React / ReactJS / Next.js
+    if (n.includes('react') || n.includes('next')) {
+      return { color: '#22d3ee', bg: 'rgba(34, 211, 238, 0.12)', border: 'rgba(34, 211, 238, 0.35)' };
+    }
+    // 8. Vue / VueJS
+    if (n.includes('vue')) {
+      return { color: '#34d399', bg: 'rgba(52, 211, 153, 0.12)', border: 'rgba(52, 211, 153, 0.35)' };
+    }
+    // 9. PostgreSQL
+    if (n.includes('postgres')) {
+      return { color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.35)' };
+    }
+    // 10. MySQL / MariaDB / Binlogs
+    if (n.includes('mysql') || n.includes('mariadb') || n.includes('binlog')) {
+      return { color: '#0ea5e9', bg: 'rgba(14, 165, 233, 0.12)', border: 'rgba(14, 165, 233, 0.35)' };
+    }
+    // 11. Redis
+    if (n.includes('redis')) {
+      return { color: '#f87171', bg: 'rgba(248, 113, 113, 0.12)', border: 'rgba(248, 113, 113, 0.35)' };
+    }
+    // 12. Kafka / RabbitMQ / CDC
+    if (n.includes('kafka') || n.includes('rabbitmq') || n.includes('cdc')) {
+      return { color: '#fb923c', bg: 'rgba(251, 146, 60, 0.12)', border: 'rgba(251, 146, 60, 0.35)' };
+    }
+    // 13. ClickHouse / OLAP / Medallion / Data Warehouse
+    if (n.includes('clickhouse') || n.includes('olap') || n.includes('medallion') || n.includes('warehouse')) {
+      return { color: '#facc15', bg: 'rgba(250, 204, 21, 0.12)', border: 'rgba(250, 204, 21, 0.35)' };
+    }
+    // 14. Docker / Dockerfile / Container
+    if (n.includes('docker')) {
+      return { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.35)' };
+    }
+    // 15. Kubernetes / K8s
+    if (n.includes('kubernetes') || n.includes('k8s')) {
+      return { color: '#818cf8', bg: 'rgba(129, 140, 248, 0.12)', border: 'rgba(129, 140, 248, 0.35)' };
+    }
+    // 16. Linux / Shell / Bash
+    if (n.includes('linux') || n.includes('shell') || n.includes('bash')) {
+      return { color: '#a3e635', bg: 'rgba(163, 230, 53, 0.12)', border: 'rgba(163, 230, 53, 0.35)' };
+    }
+    // 17. BigQuery / SQL
+    if (n.includes('bigquery') || n === 'sql') {
+      return { color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.35)' };
+    }
+    // 18. HTML / CSS / SCSS
+    if (n === 'html' || n === 'css' || n === 'scss') {
+      return { color: '#f472b6', bg: 'rgba(244, 114, 182, 0.12)', border: 'rgba(244, 114, 182, 0.35)' };
+    }
+    // 19. Rust
+    if (n === 'rust') {
+      return { color: '#fdba74', bg: 'rgba(253, 186, 116, 0.12)', border: 'rgba(253, 186, 116, 0.35)' };
+    }
+    // 20. C++ / C#
+    if (n.includes('c++') || n.includes('c#')) {
+      return { color: '#fb7185', bg: 'rgba(251, 113, 133, 0.12)', border: 'rgba(251, 113, 133, 0.35)' };
+    }
+    // 21. Git / CI/CD / DevOps
+    if (n.includes('git') || n.includes('ci/cd') || n.includes('devops')) {
+      return { color: '#fb7185', bg: 'rgba(251, 113, 133, 0.12)', border: 'rgba(251, 113, 133, 0.35)' };
+    }
+
+    return { color: 'var(--text-accent)', bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.25)' };
   };
 
   const formatDate = (dateStr: string): string => {
@@ -255,7 +275,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
         <div className="projects-grid">
           {/* 1. Enterprise Architecture Case Studies */}
           {showCaseStudies &&
-            projects.map((project) => (
+            projects.map((project: ProjectItem) => (
               <div
                 key={project.id}
                 className="glass-panel project-card-compact"
@@ -280,27 +300,35 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                   <p className="project-card-desc">
                     {project.shortDescription || project.description}
                   </p>
-
-                  {/* Key Metric Highlights */}
-                  {project.keyImpacts && project.keyImpacts.length > 0 && (
-                    <div className="project-impact-pills">
-                      {project.keyImpacts.slice(0, 3).map((impact, idx) => (
-                        <div key={idx} className="impact-pill">
-                          {getImpactIcon(impact)}
-                          <span>{impact}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
 
                 <div className="project-card-footer">
                   <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                    {project.tags.slice(0, 4).map((tech) => (
-                      <span key={tech} className="badge">
-                        {tech}
-                      </span>
-                    ))}
+                    {project.tags.slice(0, 4).map((tech: string) => {
+                      const info = getTechColorInfo(tech);
+                      return (
+                        <span
+                          key={tech}
+                          className="badge badge-tech-tag"
+                          style={{
+                            color: info.color,
+                            backgroundColor: info.bg,
+                            borderColor: info.border,
+                          }}
+                        >
+                          <span
+                            className="lang-color-dot"
+                            style={{
+                              width: '6px',
+                              height: '6px',
+                              backgroundColor: info.color,
+                              marginRight: '2px',
+                            }}
+                          />
+                          {tech}
+                        </span>
+                      );
+                    })}
                     {project.tags.length > 4 && (
                       <span className="badge" style={{ color: 'var(--text-accent)' }}>
                         +{project.tags.length - 4} {tCommon.more}
@@ -340,10 +368,12 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
 
           {/* 3. Live GitHub Public Repositories */}
           {showRepos &&
-            repos.map((repo) => {
+            repos.map((repo: GitHubRepo) => {
               const repoTags = repo.topics && repo.topics.length > 0
                 ? repo.topics
                 : (repo.language ? [repo.language] : []);
+
+              const mainLangInfo = getTechColorInfo(repo.language);
 
               return (
                 <div key={repo.id} className="glass-panel github-repo-card">
@@ -376,12 +406,15 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                   <div className="project-card-footer">
                     <div className="repo-stats-row">
                       {repo.language && (
-                        <div className="repo-lang-pill">
+                        <div className="repo-lang-pill" style={{ color: mainLangInfo.color }}>
                           <span
                             className="lang-color-dot"
-                            style={{ backgroundColor: getLanguageColor(repo.language) }}
+                            style={{
+                              backgroundColor: mainLangInfo.color,
+                              boxShadow: `0 0 8px ${mainLangInfo.color}`,
+                            }}
                           />
-                          <span>{repo.language}</span>
+                          <span style={{ fontWeight: 700 }}>{repo.language}</span>
                         </div>
                       )}
 
@@ -397,14 +430,34 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                       </div>
                     </div>
 
-                    {/* Unified Tech Tags List */}
+                    {/* Unified Tech Tags List with distinct language colors */}
                     {repoTags.length > 0 && (
                       <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                        {repoTags.slice(0, 4).map((tag) => (
-                          <span key={tag} className="badge">
-                            {tag}
-                          </span>
-                        ))}
+                        {repoTags.slice(0, 4).map((tag: string) => {
+                          const info = getTechColorInfo(tag);
+                          return (
+                            <span
+                              key={tag}
+                              className="badge badge-tech-tag"
+                              style={{
+                                color: info.color,
+                                backgroundColor: info.bg,
+                                borderColor: info.border,
+                              }}
+                            >
+                              <span
+                                className="lang-color-dot"
+                                style={{
+                                  width: '6px',
+                                  height: '6px',
+                                  backgroundColor: info.color,
+                                  marginRight: '2px',
+                                }}
+                              />
+                              {tag}
+                            </span>
+                          );
+                        })}
                         {repoTags.length > 4 && (
                           <span className="badge" style={{ color: 'var(--text-accent)' }}>
                             +{repoTags.length - 4} {tCommon.more}
@@ -588,11 +641,31 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                         <span>{t.techStack}</span>
                       </h3>
                       <div className="tech-tags-list" style={{ marginTop: '8px' }}>
-                        {activeProject.tags.map((tag) => (
-                          <span key={tag} className="badge badge-cyan">
-                            {tag}
-                          </span>
-                        ))}
+                        {activeProject.tags.map((tag: string) => {
+                          const info = getTechColorInfo(tag);
+                          return (
+                            <span
+                              key={tag}
+                              className="badge badge-tech-tag"
+                              style={{
+                                color: info.color,
+                                backgroundColor: info.bg,
+                                borderColor: info.border,
+                              }}
+                            >
+                              <span
+                                className="lang-color-dot"
+                                style={{
+                                  width: '6px',
+                                  height: '6px',
+                                  backgroundColor: info.color,
+                                  marginRight: '2px',
+                                }}
+                              />
+                              {tag}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>

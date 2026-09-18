@@ -76,7 +76,13 @@ ga2631.github.io/
 │   ├── types/
 │   │   └── index.ts            # TypeScript data contracts & type definitions
 │   ├── styles/
-│   │   └── index.css           # Design tokens, Dark/Light theme, Print CSS, Responsive
+│   │   ├── abstracts/          # Variables, design tokens & SCSS mixins
+│   │   ├── base/               # Reset, typography, glass panels & layout utilities
+│   │   ├── components/         # Modular component partials (Header, Hero, Drawer, FAB, etc.)
+│   │   ├── pages/              # Blog page & Article modal reader
+│   │   ├── print/              # ATS 2-page A4 print stylesheet
+│   │   ├── responsive/         # Media query breakpoints for Mobile & Tablet
+│   │   └── index.scss          # Master Sass entry point
 │   ├── App.tsx                 # Root SPA router & state management
 │   └── main.tsx                # React 19 bootstrap entry
 ├── Dockerfile                  # Multi-stage production container

@@ -1,0 +1,293 @@
+/* ==========================================================================
+   Typography, Layout, Buttons & Shared Panels
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ff4d6d 0%, #ef4444 35%, #fb7185 70%, #ff4d6d 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShimmer 6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes gradientShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.section {
+  padding: 96px 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Clockwise Sequential Border Animation: Top (3px -> 1px) -> Right -> Bottom -> Left -> 1px Full
+   Reversible on Un-hover: Left -> Bottom -> Right -> Top (1px -> 3px)
+   Real CSS Borders & Native Curved Corners (No clipped corners)
+   ========================================================================== */
+
+/* 1. ::before handles Top border (3px -> 1px) and Right border (draws Top -> Bottom) */
+.glass-panel:not(.avatar-card)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  box-sizing: border-box;
+  border-top: 3px solid var(--accent-red);
+  border-right: 1px solid var(--accent-red);
+  clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(var(--radius-lg) + 2px), -2px calc(var(--radius-lg) + 2px));
+  transition:
+    clip-path 0.15s ease 0.28s,
+    border-top-width 0.14s ease 0.42s;
+}
+
+/* 2. ::after handles Bottom border (draws Right -> Left) and Left border (draws Bottom -> Top) */
+.glass-panel:not(.avatar-card)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--accent-red);
+  border-left: 1px solid transparent;
+  transition:
+    height 0.14s linear 0s,
+    border-left-color 0s linear 0.14s,
+    width 0.14s linear 0.14s;
+}
+
+/* Hover: Trigger Clockwise Flow (Top thins -> Right -> Bottom -> Left) */
+.glass-panel:not(.avatar-card):hover::before {
+  border-top-width: 1px;
+  clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(100% + 2px), -2px calc(100% + 2px));
+  transition:
+    border-top-width 0.14s ease 0s,
+    clip-path 0.14s ease 0.14s;
+}
+
+.glass-panel:not(.avatar-card):hover::after {
+  width: 100%;
+  height: 100%;
+  border-left-color: var(--accent-red);
+  transition:
+    width 0.14s linear 0.28s,
+    border-left-color 0s linear 0.42s,
+    height 0.14s linear 0.42s;
+}
+
+/* Profile Card Continuous Dual-Symmetric Rotating Border (1.5px) */
+@property --profile-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.glass-panel.avatar-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--profile-border-angle, 0deg),
+    var(--accent-red) 0deg,
+    rgba(239, 68, 68, 0.4) 35deg,
+    transparent 85deg,
+    transparent 95deg,
+    rgba(239, 68, 68, 0.4) 145deg,
+    var(--accent-red) 180deg,
+    rgba(239, 68, 68, 0.4) 215deg,
+    transparent 265deg,
+    transparent 275deg,
+    rgba(239, 68, 68, 0.4) 325deg,
+    var(--accent-red) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+  box-sizing: border-box;
+  animation: rotateProfileDualBorder 5s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.45));
+}
+
+.glass-panel.avatar-card::after {
+  display: none !important;
+}
+
+@keyframes rotateProfileDualBorder {
+  to {
+    --profile-border-angle: 360deg;
+  }
+}
+
+.glass-panel:hover {
+  box-shadow: var(--border-glow);
+}
+
+/* ==========================================================================
+   Buttons & Badges
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(225, 29, 72, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(225, 29, 72, 0.5);
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-color-hover);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+  border-color: var(--text-accent);
+  color: var(--text-accent);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.badge:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+}
+
+.badge-cyan {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ff4d6d;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.badge-emerald {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.badge-purple {
+  background: rgba(168, 85, 247, 0.12);
+  color: #c084fc;
+  border-color: rgba(168, 85, 247, 0.25);
+}

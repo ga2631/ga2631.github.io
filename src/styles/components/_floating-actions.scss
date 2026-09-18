@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Floating Action Button (Float Button - FAB)
+   ========================================================================== */
+
+.floating-actions-container {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 990;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.floating-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  user-select: none;
+}
+
+.floating-btn-primary {
+  padding: 12px 20px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.88rem;
+  box-shadow: 0 6px 24px rgba(225, 29, 72, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 32px rgba(225, 29, 72, 0.6);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+  }
+}
+
+.floating-btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: fabShimmer 3.5s infinite;
+}
+
+@keyframes fabShimmer {
+  0% { left: -100%; }
+  40%, 100% { left: 100%; }
+}
+
+.floating-btn-text {
+  letter-spacing: 0.02em;
+}
+
+.floating-btn-secondary {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-color-hover);
+    color: var(--text-accent);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -40,7 +40,9 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
               <MapPinIcon size={10} /> {personalInfo.location}
             </span>
-            <span>•</span>
+          </div>
+
+          <div className="print-contact-row print-contact-links">
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
               <GithubIcon size={10} /> github.com/ga2631
             </span>
@@ -65,7 +67,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
             {t.summaryHeading}
           </h2>
           <p className="print-summary-text">
-            {personalInfo.bio} {t.summaryExtension}
+            {personalInfo.bio} {data.printCv?.summaryExtension ? ` ${data.printCv.summaryExtension}` : ''}
           </p>
         </section>
 
@@ -131,10 +133,15 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
               <div key={proj.id} className="print-proj-item">
                 <div className="print-proj-header">
                   <span className="print-proj-title">{proj.title}</span>
-                  <span className="print-proj-role">
-                    {proj.role} {proj.company ? `(${proj.company})` : ''}
-                  </span>
                 </div>
+
+                {(proj.role || proj.company) && (
+                  <div className="print-proj-sub">
+                    {proj.role && <span className="print-proj-role">{proj.role}</span>}
+                    {proj.role && proj.company && <span className="print-proj-separator"> | </span>}
+                    {proj.company && <span className="print-proj-company">{proj.company}</span>}
+                  </div>
+                )}
 
                 <p className="print-proj-desc">{proj.shortDescription || proj.description}</p>
 
@@ -163,23 +170,54 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
               <div className="print-edu-header">
                 <div>
                   <strong className="print-edu-degree">{edu.degree}</strong>
-                  <div className="print-edu-inst">{edu.institution}</div>
+                  <span className="print-edu-inst"> | {edu.institution}</span>
                 </div>
                 <div className="print-edu-period">{edu.period}</div>
               </div>
-              <div className="print-edu-highlight">
-                <strong>{t.academicBackground}</strong> {edu.gpaOrHonors}.{' '}
-                {t.academicDetails}
-              </div>
+
+              {edu.gpaOrHonors && (
+                <div className="print-edu-gpa">
+                  <strong>{t.academicBackground}</strong> {edu.gpaOrHonors}
+                </div>
+              )}
+
+              {edu.details && (
+                <ul className="print-edu-bullets">
+                  {edu.details.map((detail, idx) => {
+                    const [title, ...rest] = detail.split(': ');
+                    return (
+                      <li key={idx}>
+                        <strong>{title}:</strong> {rest.join(': ')}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              {!edu.details && data.printCv?.academicDetails && (
+                <div className="print-edu-highlight">
+                  {data.printCv.academicDetails}
+                </div>
+              )}
             </div>
           ))}
 
-          <div className="print-cert-row" style={{ marginTop: '6px' }}>
-            <strong>
-              {t.certificationsAndBadges}
-            </strong>{' '}
-            {certifications.map((c) => `${c.name} (${c.issuer} - ${c.issueDate})`).join(' • ')}
-          </div>
+          {certifications.map((cert) => (
+            <div key={cert.id} className="print-cert-item">
+              <div className="print-edu-header">
+                <div>
+                  <strong className="print-edu-degree">{cert.name}</strong>
+                  <span className="print-edu-inst"> | {cert.issuer}</span>
+                </div>
+                <div className="print-edu-period">{cert.issueDate}</div>
+              </div>
+              {cert.status && (
+                <div className="print-edu-gpa">
+                  <strong>{t.certificationsAndBadges}</strong> {cert.status}
+                </div>
+              )}
+            </div>
+          ))}
         </section>
       </div>
     </div>

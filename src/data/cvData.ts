@@ -54,7 +54,6 @@ export interface UITranslation {
   about: {
     badge: string;
     title: string;
-    principles: { title: string; description: string }[];
   };
   experience: {
     badge: string;
@@ -153,7 +152,6 @@ export interface UITranslation {
   };
   printCv: {
     summaryHeading: string;
-    summaryExtension: string;
     skillsHeading: string;
     experienceHeading: string;
     technologies: string;
@@ -161,7 +159,6 @@ export interface UITranslation {
     keyTechnologies: string;
     educationHeading: string;
     academicBackground: string;
-    academicDetails: string;
     certificationsAndBadges: string;
   };
 }

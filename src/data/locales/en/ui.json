@@ -45,25 +45,7 @@
   },
   "about": {
     "badge": "About Me",
-    "title": "Engineering Excellence & Philosophy",
-    "principles": [
-      {
-        "title": "Architectural Resilience",
-        "description": "Designing modular microservices and event-driven architectures with high availability, fault tolerance, and low latency."
-      },
-      {
-        "title": "Type Safety & Clean Code",
-        "description": "Leveraging modern TypeScript, Golang, and domain-driven design to ensure maintainability, high test coverage, and robust data contracts."
-      },
-      {
-        "title": "DevOps & Automation",
-        "description": "Automating multi-stage Docker containerization and CI/CD pipelines for reliable, zero-downtime deployment workflows."
-      },
-      {
-        "title": "Data & Performance Driven",
-        "description": "Optimizing high-throughput CDC streaming pipelines, reducing query bottlenecks, and delivering sub-second analytic insights."
-      }
-    ]
+    "title": "Engineering Excellence & Philosophy"
   },
   "experience": {
     "badge": "Career Path",
@@ -86,11 +68,11 @@
     "enterpriseSystem": "Enterprise System",
     "featuredProject": "Featured Project",
     "team": "Team",
-    "objective": "1. Project Objective",
-    "responsibilities": "2. Key Responsibilities & Strengths",
-    "challengesSolutions": "3. Challenges & Solutions",
-    "achievements": "4. Key Achievements & Metrics",
-    "techStack": "5. Technology Stack",
+    "objective": "Project Objective",
+    "responsibilities": "Key Responsibilities & Strengths",
+    "challengesSolutions": "Challenges & Solutions",
+    "achievements": "Key Achievements & Metrics",
+    "techStack": "Technology Stack",
     "challenges": "Key Engineering Challenges & Technical Solutions",
     "fullStack": "Full Technology Stack",
     "challengeLabel": "Challenge",
@@ -162,7 +144,6 @@
   },
   "printCv": {
     "summaryHeading": "PROFESSIONAL SUMMARY",
-    "summaryExtension": "Proven track record of architecting scalable microservices, orchestrating CDC pipelines with zero data loss, and reducing analytical query execution times by over 70%. Experienced Technical Team Lead capable of bridging business specifications into high-performance distributed systems with rigorous code quality and automated CI/CD deployment workflows.",
     "skillsHeading": "CORE TECHNICAL SKILLS",
     "experienceHeading": "PROFESSIONAL EXPERIENCE",
     "technologies": "Technologies:",
@@ -170,7 +151,6 @@
     "keyTechnologies": "Key Technologies:",
     "educationHeading": "EDUCATION & CERTIFICATIONS",
     "academicBackground": "Academic Background:",
-    "academicDetails": "Completed comprehensive CS foundation curriculum (Data Structures & Algorithms, OOP, Relational Databases, Computer Networks, Operating Systems, Software Engineering). Early transition into professional software development with 5+ years of verified production engineering.",
     "certificationsAndBadges": "Professional Certifications & Badges:"
   }
 }
