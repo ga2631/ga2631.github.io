@@ -403,10 +403,8 @@ $category-colors: (
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 20px $glow;
   }
 
-  /* Article Card Border & Hover Accent in Category Theme Color */
+  /* Article Card Border & Hover Accent in Category Theme Color (with Clockwise Animation) */
   .blog-card.card-day-#{$day} {
-    border-color: $border-alpha;
-
     &::before {
       border-top-color: $accent;
       border-right-color: $accent;
@@ -417,7 +415,6 @@ $category-colors: (
     }
 
     &:hover {
-      border-color: $border-hover;
       box-shadow: 0 0 24px $glow;
 
       &::after {
@@ -477,8 +474,6 @@ $category-colors: (
     }
 
     .blog-card.card-day-#{$day} {
-      border-color: rgba(0, 0, 0, 0.08);
-
       &::before {
         border-top-color: $accent-light;
         border-right-color: $accent-light;
@@ -489,7 +484,7 @@ $category-colors: (
       }
 
       &:hover {
-        border-color: $accent-light;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 0 16px rgba(0, 0, 0, 0.06);
 
         &::after {
           border-left-color: $accent-light;
@@ -823,11 +818,10 @@ $category-colors: (
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
-  transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: var(--border-glow);
 
     .blog-title {
       color: var(--text-accent);
