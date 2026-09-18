@@ -104,11 +104,13 @@
     "title": "Skills & Technologies",
     "subtitle": "Comprehensive technical toolkit spanning distributed backend engineering, modern data platforms, and cloud infrastructure.",
     "legendTitle": "Proficiency Scale",
+    "all": "All",
     "level5": "Expert",
     "level4": "Advanced",
     "level3": "Proficient",
     "level2": "Familiar",
-    "level1": "Fundamental"
+    "level1": "Fundamental",
+    "noSkills": "No skills at this level in this category."
   },
   "education": {
     "badge": "Credentials",

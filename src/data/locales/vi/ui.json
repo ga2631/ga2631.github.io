@@ -104,11 +104,13 @@
     "title": "Kỹ năng & Công nghệ",
     "subtitle": "Tập hợp toàn diện các kỹ năng từ phát triển Backend phân tán, nền tảng Dữ liệu hiện đại đến Hạ tầng đám mây.",
     "legendTitle": "Thang điểm Thành thạo",
+    "all": "Tất cả",
     "level5": "Chuyên gia",
     "level4": "Nâng cao",
     "level3": "Thành thạo",
     "level2": "Tiếp cận",
-    "level1": "Cơ bản"
+    "level1": "Cơ bản",
+    "noSkills": "Không có kỹ năng ở cấp độ này trong danh mục."
   },
   "education": {
     "badge": "Bằng cấp & Chứng chỉ",

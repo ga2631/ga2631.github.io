@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SkillCategory } from '../types/index.ts';
 import { CodeIcon, DatabaseIcon, ChartIcon, SparklesIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
@@ -9,6 +9,8 @@ interface SkillsProps {
 }
 
 export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
+  const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
+
   const getCategoryConfig = (title: string, index: number) => {
     const lower = title.toLowerCase();
     // 1. Core Engineering / Lập trình & Kiến trúc Cốt lõi
@@ -129,25 +131,64 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           </p>
         </div>
 
-        {/* Standardized 1-5 Scale Proficiency Legend Bar */}
+        {/* Standardized 1-5 Scale Proficiency Legend & Interactive Filter Bar */}
         <div className="skills-legend-bar">
           <span className="skills-legend-title">{t.legendTitle}:</span>
           <div className="skills-legend-items">
-            <div className="skills-legend-item legend-level-5" title={t.level5}>
+            <button
+              type="button"
+              className={`skills-legend-item legend-all ${selectedLevel === null ? 'active' : ''}`}
+              onClick={() => setSelectedLevel(null)}
+              aria-pressed={selectedLevel === null}
+              title={t.all || 'All'}
+            >
+              <span>{t.all || 'All'}</span>
+            </button>
+            <button
+              type="button"
+              className={`skills-legend-item legend-level-5 ${selectedLevel === 5 ? 'active' : ''}`}
+              onClick={() => setSelectedLevel(selectedLevel === 5 ? null : 5)}
+              aria-pressed={selectedLevel === 5}
+              title={`${t.level5} (5/5)`}
+            >
               <span>{t.level5}</span>
-            </div>
-            <div className="skills-legend-item legend-level-4" title={t.level4}>
+            </button>
+            <button
+              type="button"
+              className={`skills-legend-item legend-level-4 ${selectedLevel === 4 ? 'active' : ''}`}
+              onClick={() => setSelectedLevel(selectedLevel === 4 ? null : 4)}
+              aria-pressed={selectedLevel === 4}
+              title={`${t.level4} (4/5)`}
+            >
               <span>{t.level4}</span>
-            </div>
-            <div className="skills-legend-item legend-level-3" title={t.level3}>
+            </button>
+            <button
+              type="button"
+              className={`skills-legend-item legend-level-3 ${selectedLevel === 3 ? 'active' : ''}`}
+              onClick={() => setSelectedLevel(selectedLevel === 3 ? null : 3)}
+              aria-pressed={selectedLevel === 3}
+              title={`${t.level3} (3/5)`}
+            >
               <span>{t.level3}</span>
-            </div>
-            <div className="skills-legend-item legend-level-2" title={t.level2}>
+            </button>
+            <button
+              type="button"
+              className={`skills-legend-item legend-level-2 ${selectedLevel === 2 ? 'active' : ''}`}
+              onClick={() => setSelectedLevel(selectedLevel === 2 ? null : 2)}
+              aria-pressed={selectedLevel === 2}
+              title={`${t.level2} (2/5)`}
+            >
               <span>{t.level2}</span>
-            </div>
-            <div className="skills-legend-item legend-level-1" title={t.level1}>
+            </button>
+            <button
+              type="button"
+              className={`skills-legend-item legend-level-1 ${selectedLevel === 1 ? 'active' : ''}`}
+              onClick={() => setSelectedLevel(selectedLevel === 1 ? null : 1)}
+              aria-pressed={selectedLevel === 1}
+              title={`${t.level1} (1/5)`}
+            >
               <span>{t.level1}</span>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -159,6 +200,11 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
             const sortedSkills = [...category.skills].sort(
               (a, b) => getLevelScore(b.level) - getLevelScore(a.level)
             );
+
+            // Filter skills if a proficiency level is selected
+            const displayedSkills = selectedLevel !== null
+              ? sortedSkills.filter((s) => getLevelScore(s.level) === selectedLevel)
+              : sortedSkills;
 
             return (
               <div key={category.title} className="glass-panel skill-card-compact">
@@ -179,20 +225,26 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                   </div>
                 </div>
 
-                {/* Wrapping Skill Badges Cluster Sorted High-to-Low */}
-                <div className="skills-pill-cluster">
-                  {sortedSkills.map((skill) => {
-                    const levelCfg = getLevelConfig(skill.level);
-                    return (
-                      <span
-                        key={skill.name}
-                        className={`skill-pill-tag ${levelCfg.tagClass}`}
-                      >
-                        {skill.name}
-                      </span>
-                    );
-                  })}
-                </div>
+                {/* Wrapping Skill Badges Cluster Sorted High-to-Low or Empty State */}
+                {displayedSkills.length > 0 ? (
+                  <div className="skills-pill-cluster">
+                    {displayedSkills.map((skill) => {
+                      const levelCfg = getLevelConfig(skill.level);
+                      return (
+                        <span
+                          key={skill.name}
+                          className={`skill-pill-tag ${levelCfg.tagClass}`}
+                        >
+                          {skill.name}
+                        </span>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="skills-empty-state">
+                    <span>{t.noSkills || 'No skills at this level.'}</span>
+                  </div>
+                )}
               </div>
             );
           })}
