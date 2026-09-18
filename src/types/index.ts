@@ -95,8 +95,9 @@ export interface BlogPost {
   readTime: string;
   tags: string[];
   author: string;
-  contentHtml: string;
   category?: string;
+  sections?: Record<string, string>;
+  contentHtml: string;
 }
 
 export interface BlogCategoryItem {

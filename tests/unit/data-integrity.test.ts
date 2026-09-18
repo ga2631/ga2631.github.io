@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { cvDataEn, cvDataVi, uiTranslations } from '../../src/data/cvData';
 import { blogPostsEn, blogPostsVi } from '../../src/data/blogData';
+import { validateBlogPostStructure } from '../../src/data/blogTemplates';
 
 // Recursive helper to get all nested object keys
 const getAllKeys = (obj: Record<string, any>, prefix = ''): string[] => {
@@ -102,6 +103,10 @@ describe('TS-03: Localization & Data Integrity Verification', () => {
       expect(post.readTime).toBeTruthy();
       expect(post.publishedAt).toBeTruthy();
       expect(post.tags.length).toBeGreaterThan(0);
+
+      // Validate strict adherence to category 5-section standard structure
+      expect(validateBlogPostStructure(post, 'en').isValid).toBe(true);
+      expect(validateBlogPostStructure(viPost, 'vi').isValid).toBe(true);
     });
   });
 });
