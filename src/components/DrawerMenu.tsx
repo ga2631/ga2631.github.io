@@ -105,7 +105,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
         {/* Drawer Header */}
         <div className="drawer-header">
           <div className="drawer-brand">
-            <div className="logo-badge">TN</div>
+            <div className="logo-badge">T</div>
             <div className="drawer-brand-text">
               <span className="drawer-brand-name">Tan Huynh Nhat</span>
               <span className="drawer-brand-sub">Senior Software Engineer</span>

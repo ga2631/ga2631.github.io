@@ -148,23 +148,9 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 16. **Anti-Scraping Phone Number & Sensitive Contact Protection (`obfuscation.tsx`, `Contact.tsx`, `Hero.tsx`, `DrawerMenu.tsx`, `PrintCV.tsx`, `cvData.ts`)**:
     - **Bảo vệ chống công cụ quét số điện thoại & Email tự động (Bot & Crawler Defense)**:
       - Loại bỏ hoàn toàn các chuỗi email (`tanhuynh2631@gmail.com`), số điện thoại (`+84-963684520`) và đường dẫn Zalo (`https://zalo.me/0963684520`) dạng văn bản thuần khỏi bundle JavaScript tĩnh và các thuộc tính DOM tĩnh (`title`, `href="mailto:..."`, `href="tel:..."`, `href="https://zalo.me/..."`).
-      - Mã hóa phân mảnh chuỗi Base64 (`OBFUSCATED_EMAIL_CHUNKS`, `OBFUSCATED_PHONE_CHUNKS`, `OBFUSCATED_ZALO_CHUNKS`) và giải mã động tại runtime trong vòng đời React (`useEffect`), vô hiệu hóa hoàn toàn các công cụ regex scraping hoặc web crawler quét HTML tĩnh.
-    - **Hiển thị tự nhiên 100% không yêu cầu người dùng thao tác thêm (Seamless Zero-Interaction Display)**:
-      - Tích hợp components `<SecureEmail />` và `<SecurePhone />` với kỹ thuật bóc tách thẻ con (`split-span token rendering`) và chữ đảo chiều CSS honeypot (`unicode-bidi: bidi-override`).
-      - Người dùng thật khi truy cập trang web sẽ **ngay lập tức nhìn thấy đầy đủ Email `tanhuynh2631@gmail.com` và số điện thoại `+84-963684520`** mà không cần phải bấm nút hiện thông tin, nhập captcha hay thực hiện bất kỳ thao tác nào khác.
-    - **Cơ chế kích hoạt email, cuộc gọi & nhắn tin Zalo an toàn (Dynamic Action Handlers)**:
-      - Các nút **Soạn Email (Compose)**, **Sao chép Email (Copy Email)**, **Gọi điện (Call)** và **Nhắn tin Zalo (Chat via Zalo)** được trang bị bộ xử lý động `onClick` và `onMouseEnter` tự động kích hoạt `window.location.href = getSecureMailtoUrl()`, `window.location.href = getSecureTelUrl()` và `window.open(getSecureZaloUrl())`, đảm bảo người dùng chỉ cần click là mở ngay ứng dụng email, trình quay số hoặc Zalo như thông thường.
-
-13. **Projects Section - GitHub & Self-Coded Project Tech Tags & Badges Unification (`Projects.tsx` & `index.css`)**:
-    - **Đồng nhất thiết kế thẻ Tag công nghệ**:
-      - Chuyển đổi toàn bộ các thẻ chủ đề (topics) của kho mã nguồn GitHub sang định dạng huy hiệu tiêu chuẩn `.badge` (thay thế cho `.badge-topic` vuông vức và loại bỏ tiền tố `#` gây lệch nhịp thị giác).
-      - Đảm bảo cả hai loại dự án (Enterprise Case Studies tự phát triển và GitHub Repositories công khai) đều sử dụng chung một chuẩn hình học bo cong mềm mại (`border-radius: var(--radius-full)`), cùng bảng màu chữ `var(--text-secondary)`, viền `var(--border-color)` và hiệu ứng di chuột (hover).
-    - **Đồng bộ vị trí & phân tầng hiển thị thông tin**:
-      - Bố trí hàng thông số kỹ thuật (`.repo-stats-row`: ngôn ngữ lập trình, số sao star, số lượt fork) nằm ở phía trên danh sách thẻ công nghệ (`.tech-tags-list`) trong phần chân thẻ (`.project-card-footer`).
-      - Tích hợp cơ chế tự động lấy `repo.language` làm tag dự phòng nếu kho GitHub chưa thiết lập `topics`.
-      - Áp dụng cơ chế giới hạn tối đa 4 tag đầu tiên và hiển thị tag phụ `+{remaining} more` màu sắc nhấn (`var(--text-accent)`) đồng nhất cho cả 2 loại thẻ khi số lượng tag vượt quá 4.
-    - **Chuẩn hóa Meta Badges đầu thẻ**:
-      - Định nghĩa bổ sung `.badge-purple` trong [index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css) và đồng bộ `.badge-cyan` cho huy hiệu loại dự án / Public Repo.
+14. **Brand Logo Streamlining (`Header.tsx`, `DrawerMenu.tsx`, `Hero.tsx`, `favicon.svg`)**:
+    - Chuyển đổi toàn bộ biểu tượng logo thương hiệu viết tắt từ `TN` sang chữ cái đơn `T` tinh gọn, hiện đại và tạo điểm nhấn thị giác sắc nét hơn.
+    - Cập nhật đồng bộ trên [Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx), [DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx), ảnh đại diện fallback [Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx) và file vector favicon [public/favicon.svg](file:///Users/tanhn/Projects/ga2631.github.io/public/favicon.svg).
 
 ---
 
@@ -186,6 +172,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - **Single-Row 4-Column Desktop Grid Consistency**: Đồng bộ `grid-template-columns: repeat(4, 1fr)` cho tất cả các vùng chứa 4 box trên Desktop (`.hero-stats-banner`, `.principles-grid`, `.skills-compact-grid`, `.contact-cards-grid`).
 - **Unified Action Element Geometry**: Thiết lập quy chuẩn kích thước hình học đồng nhất (`height: 40px` - `42px`, `border-radius: var(--radius-md)`, `box-sizing: border-box`) cho toàn bộ các nút bấm trong `.contact-card-actions` và Drawer Menu (`.drawer-cv-btn`, `.drawer-lang-pill`, `.drawer-theme-toggle-btn`, `.drawer-social-btn`).
 - **Unified Project Badge & Tag Geometry**: Đồng bộ hóa 100% hình học, kích thước, hiệu ứng hover và cơ chế hiển thị `+N more` giữa GitHub Repositories và Enterprise Case Studies, loại bỏ sự phân mảnh về phong cách tag trong phần Projects.
+- **Clockwise Sequential Border Animation Preservation**: Chuẩn hóa lớp hover của `.github-repo-card` kế thừa trực tiếp từ `.glass-panel`, loại bỏ `border-color` tĩnh giúp khôi phục hiệu ứng viền chạy theo chiều kim đồng hồ mượt mà.
 - **Flexbox Equal Distribution & Zero Overflow**: Tối ưu `.project-actions-compact` và `.contact-card-actions` với thuộc tính `flex: 1 1 0` và `min-width: 0`.
 - **Semantic SVG Icon Mapping Engine**: Cơ chế `getImpactIcon()`, `getCategoryConfig()`, và `getPrincipleConfig()` ánh xạ chính xác 1-1 từng chỉ số kỹ thuật và triết lý với biểu tượng mang đúng ý nghĩa nguyên bản, đảm bảo 100% chuẩn nét SVG trên mọi thiết bị và hệ điều hành.
 - **Responsive Profile Card Geometric Balancing**: Tối ưu tỷ lệ co giãn của Profile Card trên Tablet (`max-width: 540px`) và Mobile (`max-width: 100%`), kết hợp chuyển đổi pill trạng thái nhận việc dưới tên cá nhân giúp trải nghiệm xem CV trên thiết bị cầm tay đạt độ hoàn thiện cao nhất.
@@ -198,14 +185,15 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 ---
 
 ## 4. Impacted Files
+- [public/favicon.svg](file:///Users/tanhn/Projects/ga2631.github.io/public/favicon.svg): Cập nhật logo chữ cái `T` trên favicon trình duyệt.
 - [src/utils/obfuscation.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/utils/obfuscation.tsx): Bộ tiện ích bảo mật thông tin liên hệ và các components `<SecureEmail />`, `<SecurePhone />` chống scraping tự động.
 - [src/components/Icons.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Icons.tsx): Bổ sung các vector SVG icon `CalendarIcon`, `ClockIcon`, `GlobeIcon`, `TargetIcon`, `ZapIcon`, `ToolsIcon`, `LockIcon`, `RocketIcon`, `ShieldIcon`, `UsersIcon`, `TrendingDownIcon`, `PuzzleIcon`, `HourglassIcon`, `RefreshCwIcon`, `VietnamFlagIcon`, `UKFlagIcon`.
 - [src/components/ArticleToc.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ArticleToc.tsx): Component bóc tách mục lục tự động (tối đa 2 cấp thẻ heading) và hiển thị sidebar TOC cố định.
-- [src/components/Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx): Tinh gọn thanh Header Desktop, tích hợp `VietnamFlagIcon` và `UKFlagIcon` SVG.
-- [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Tích hợp nút Zalo với bộ xử lý bảo mật URL, SVG flags cho bộ chuyển ngôn ngữ trên mobile/tablet.
+- [src/components/Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx): Tinh gọn thanh Header Desktop, cập nhật logo chữ `T`, tích hợp `VietnamFlagIcon` và `UKFlagIcon` SVG.
+- [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Cập nhật logo chữ `T`, tích hợp nút Zalo với bộ xử lý bảo mật URL, SVG flags cho bộ chuyển ngôn ngữ trên mobile/tablet.
 - [src/pages/BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Tinh gọn nút đóng bài viết, thay thế emoji ngày/thời gian bằng vector icon.
 - [src/components/BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx): Đồng bộ giao diện popup bài viết với nút đóng và vector icon.
-- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo, cấu hình border top mặc định và hiệu ứng chạy viền xung quanh toàn bộ khung cho các thẻ, cấu hình viền xoay liên tục đối xứng 1.5px cho Profile Card, bổ sung `.badge-purple`, `.badge:hover` và đồng bộ giao diện tag.
+- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo, cấu hình border top mặc định và hiệu ứng chạy viền xung quanh toàn bộ khung cho các thẻ, cấu hình viền xoay liên tục đối xứng 1.5px cho Profile Card, bổ sung `.badge-purple`, `.badge:hover` và đồng bộ giao diện tag, phục hồi hiệu ứng viền clockwise cho GitHub cards.
 - [src/components/About.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/About.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và ánh xạ icon ngữ nghĩa cho từng triết lý kỹ thuật.
 - [src/components/Contact.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Contact.tsx): Tích hợp `<SecureEmail />`, `<SecurePhone />` và bộ kích hoạt mở email / gọi điện / chat Zalo bảo mật chống scraping.
 - [src/components/Projects.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Projects.tsx): Tích hợp hàm `getImpactIcon()`, render vector icons chuẩn ngữ nghĩa cho impact badges và modal headers, đồng nhất định dạng thẻ tag `.badge` và vị trí hiển thị giữa GitHub Repositories và Case Studies.
@@ -214,7 +202,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - [src/components/EducationCertifications.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/EducationCertifications.tsx): Bổ sung `className="cert-title"` hỗ trợ hover effect cho tiêu đề chứng chỉ.
 - [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts): Khai báo kiểu `zaloUrl?: string;` trong `PersonalInfo`, loại bỏ `companyUrl?: string;` trong `ExperienceItem`.
 - [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts): Chuẩn hóa chuỗi dữ liệu, loại bỏ emoji trong translations và project impacts, loại bỏ các trường `companyUrl`.
-- [src/components/Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx): Bổ sung `CheckIcon` cho terminal status, nút Zalo và hỗ trợ hiển thị thích ứng pill trạng thái nhận việc.
+- [src/components/Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx): Cập nhật avatar fallback chữ `T`, bổ sung `CheckIcon` cho terminal status, nút Zalo và hỗ trợ hiển thị thích ứng pill trạng thái nhận việc.
 - [src/components/PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx): Thay thế emoji bằng vector icon cho bản in ATS.
 - [docs/features/ui-optimization.md](file:///Users/tanhn/Projects/ga2631.github.io/docs/features/ui-optimization.md): Tài liệu kỹ thuật chi tiết của task tối ưu hóa giao diện.
 

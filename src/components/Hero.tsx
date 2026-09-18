@@ -37,7 +37,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                     }}
                   />
                 ) : (
-                  <div className="avatar-inner">TN</div>
+                  <div className="avatar-inner">T</div>
                 )}
               </div>
 

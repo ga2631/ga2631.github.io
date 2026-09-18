@@ -109,7 +109,7 @@ export const Header: React.FC<HeaderProps> = ({
               handleNavClick('#/');
             }}
           >
-            <div className="logo-badge">TN</div>
+            <div className="logo-badge">T</div>
             <span className="logo-text">Tan Huynh Nhat</span>
           </a>
 
