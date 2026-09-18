@@ -168,24 +168,36 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
       - [PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx): Chuyển toàn bộ tiêu đề mục in và đoạn mô tả bổ sung sang nạp trực tiếp từ `t: UITranslation['printCv']`.
       - [ArticleToc.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ArticleToc.tsx), [BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx), [BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Tự động nạp `tCommon.tableOfContents`, `tCommon.copiedLink`, `tCommon.shareLink`, `tCommon.overview`, `t.showingArticles`, `t.article`, `t.resetFilters`.
 
+18. **JSON-Based Modular Localization & Data Decoupling (`src/data/locales/`)**:
+    - **Tách biệt hoàn toàn dữ liệu tĩnh sang file JSON theo ngôn ngữ**:
+      - Chuyển đổi toàn bộ từ điển giao diện, dữ liệu hồ sơ năng lực và bài viết blog từ mã TypeScript tĩnh sang cấu trúc JSON thuần túy:
+        - `src/data/locales/en/ui.json` & `src/data/locales/vi/ui.json`: Quản lý toàn bộ nhãn giao diện, nút điều hướng, drawer menu, modal controls, tiêu đề in ATS.
+        - `src/data/locales/en/cv.json` & `src/data/locales/vi/cv.json`: Quản lý toàn bộ thông tin cá nhân, kinh nghiệm làm việc, dự án tiêu biểu, kỹ năng, học vấn và chứng chỉ.
+        - `src/data/locales/en/blog.json` & `src/data/locales/vi/blog.json`: Quản lý danh sách các bài viết kỹ thuật chuyên sâu và nội dung HTML.
+    - **Mở rộng đa ngôn ngữ trong tương lai (Future-Proof Scalability)**:
+      - Khi cần bổ sung ngôn ngữ mới (ví dụ `ja`, `fr`, `de`), chỉ cần tạo thư mục `src/data/locales/{lang}/` với bộ 3 file `ui.json`, `cv.json`, `blog.json` mà không cần sửa đổi bất kỳ logic giao diện hay component JSX nào.
+    - **TypeScript Data Loader & Runtime Security Injection**:
+      - [cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) và [blogData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/blogData.ts) đóng vai trò Loader tầng dữ liệu có kiểm tra kiểu chặt chẽ (`Type Guard`), đồng thời tự động tiêm các token bảo mật chống bot crawler `getSecureEmail()`, `getSecurePhone()`, `getSecureZaloUrl()` vào `personalInfo`.
+
 ---
 
 ## 2. Database & Schema Changes
 - Cập nhật hợp đồng dữ liệu [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts):
   - Bổ sung trường `zaloUrl?: string;` vào interface `PersonalInfo`.
   - Loại bỏ trường không còn sử dụng `companyUrl?: string;` khỏi interface `ExperienceItem`.
-- Cập nhật dữ liệu tĩnh trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts):
-  - Mở rộng interface `UITranslation` với `common`, `drawer`, `printCv` cùng các trường nhãn quốc tế hóa toàn diện.
-  - Cung cấp trọn vẹn bản dịch tiếng Anh (`en`) và tiếng Việt (`vi`) cho toàn bộ các text hiển thị trên ứng dụng.
-  - Bổ sung `call: string;` và `zalo: string;` vào interface `UITranslation['contact']` và từ điển bản dịch EN/VI.
+- Cập nhật dữ liệu tĩnh trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) & [src/data/locales/](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/):
+  - Khởi tạo cấu trúc lưu trữ localization dạng JSON độc lập cho từng ngôn ngữ:
+    - [src/data/locales/en/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/ui.json) & [src/data/locales/vi/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/ui.json)
+    - [src/data/locales/en/cv.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/cv.json) & [src/data/locales/vi/cv.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/cv.json)
+    - [src/data/locales/en/blog.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/blog.json) & [src/data/locales/vi/blog.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/blog.json)
   - Tích hợp các hàm giải mã động `getSecureEmail()`, `getSecurePhone()`, và `getSecureZaloUrl()` thay thế chuỗi tĩnh cho `email`, `phone`, và `zaloUrl` trong `personalInfo` của cả `cvDataEn` và `cvDataVi`.
   - Tách bỏ hoàn toàn các ký tự emoji ra khỏi chuỗi nhãn và mảng dữ liệu (`workingTreeClean`, `objective`, `challenges`, `fullStack`, `keyImpacts`).
-  - Loại bỏ các trường `companyUrl` khỏi danh sách kinh nghiệm làm việc của cả 2 ngôn ngữ EN và VI.
 
 ---
 
 ## 3. Technical Optimizations
-- **Data-Driven Architecture & Localization Engine**: Centralized 100% UI texts and metadata inside `src/data/cvData.ts` with strict TypeScript contracts (`UITranslation`), ensuring complete separation of concerns and eliminating inline ternary language switches across JSX templates.
+- **JSON-Based Modular Localization Engine**: Tách rời toàn bộ nội dung tĩnh ra các file JSON theo từng ngôn ngữ trong `src/data/locales/`, đảm bảo khả năng mở rộng thêm ngôn ngữ mới mà không làm phình to mã nguồn TypeScript.
+- **Data-Driven Architecture & Localization Engine**: Centralized 100% UI texts and metadata with strict TypeScript contracts (`UITranslation`), ensuring complete separation of concerns and eliminating inline ternary language switches across JSX templates.
 - **Streamlined Modal Navigation UX**: Loại bỏ các nút đóng dư thừa, chỉ duy trì 2 điểm chạm đóng trực quan (góc phải trên và góc phải dưới), giảm thiểu sự lộn xộn thị giác và tăng tính chuyên nghiệp của giao diện.
 - **Modal Lifecycle & Scroll Lock Management**: Sử dụng React Hooks (`useEffect`) quản lý tự động `document.body.style.overflow` và phím tắt `Escape`.
 - **Single-Row 4-Column Desktop Grid Consistency**: Đồng bộ `grid-template-columns: repeat(4, 1fr)` cho tất cả các vùng chứa 4 box trên Desktop (`.hero-stats-banner`, `.principles-grid`, `.skills-compact-grid`, `.contact-cards-grid`).
@@ -205,6 +217,14 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 
 ## 4. Impacted Files
 - [public/favicon.svg](file:///Users/tanhn/Projects/ga2631.github.io/public/favicon.svg): Cập nhật logo chữ cái `T` trên favicon trình duyệt.
+- [src/data/locales/en/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/ui.json): File JSON từ điển UI tiếng Anh.
+- [src/data/locales/en/cv.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/cv.json): File JSON hồ sơ CV tiếng Anh.
+- [src/data/locales/en/blog.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/blog.json): File JSON bài viết blog tiếng Anh.
+- [src/data/locales/vi/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/ui.json): File JSON từ điển UI tiếng Việt.
+- [src/data/locales/vi/cv.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/cv.json): File JSON hồ sơ CV tiếng Việt.
+- [src/data/locales/vi/blog.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/blog.json): File JSON bài viết blog tiếng Việt.
+- [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts): Data loader nạp `ui.json` và `cv.json` theo ngôn ngữ và inject obfuscation.
+- [src/data/blogData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/blogData.ts): Data loader nạp `blog.json` theo ngôn ngữ.
 - [src/utils/obfuscation.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/utils/obfuscation.tsx): Bộ tiện ích bảo mật thông tin liên hệ và các components `<SecureEmail />`, `<SecurePhone />` chống scraping tự động.
 - [src/components/Icons.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Icons.tsx): Bổ sung các vector SVG icon `CalendarIcon`, `ClockIcon`, `GlobeIcon`, `TargetIcon`, `ZapIcon`, `ToolsIcon`, `LockIcon`, `RocketIcon`, `ShieldIcon`, `UsersIcon`, `TrendingDownIcon`, `PuzzleIcon`, `HourglassIcon`, `RefreshCwIcon`, `VietnamFlagIcon`, `UKFlagIcon`.
 - [src/components/ArticleToc.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ArticleToc.tsx): Component bóc tách mục lục tự động và hiển thị sidebar TOC với tiêu đề động `tocTitle`.
@@ -225,7 +245,7 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 - [src/components/PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx): Nạp động 100% tiêu đề các phần và mô tả từ `t: UITranslation['printCv']`.
 - [src/App.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/App.tsx): Điều phối dữ liệu tập trung và truyền props `personalInfo`, `t`, `tCommon` xuống toàn bộ cây component.
 - [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts): Khai báo kiểu `zaloUrl?: string;` trong `PersonalInfo`, loại bỏ `companyUrl?: string;` trong `ExperienceItem`.
-- [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts): Chuẩn hóa chuỗi dữ liệu, loại bỏ emoji trong translations và project impacts, mở rộng hợp đồng `UITranslation`.
 - [docs/features/ui-optimization.md](file:///Users/tanhn/Projects/ga2631.github.io/docs/features/ui-optimization.md): Tài liệu kỹ thuật chi tiết của task tối ưu hóa giao diện.
+
 
 

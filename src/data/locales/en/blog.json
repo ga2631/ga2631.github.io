@@ -1,0 +1,35 @@
+[
+  {
+    "id": "post-1",
+    "slug": "migrating-legacy-erp-to-medallion-data-warehouse-cdc",
+    "title": "Migrating a 7-Year Legacy ERP to a Medallion Data Warehouse using CDC and Zero Data Loss",
+    "summary": "How we extracted MySQL binlogs with Change Data Capture, leveraged RabbitMQ idempotent workers, and reduced analytical query times by >70% with zero downtime.",
+    "publishedAt": "May 2026",
+    "readTime": "7 min read",
+    "tags": ["Golang", "CDC", "Medallion Architecture", "PostgreSQL", "RabbitMQ", "Data Engineering"],
+    "author": "Tan Huynh Nhat",
+    "contentHtml": "<h3>The Challenge: Entity-Attribute-Value (EAV) Bottlenecks</h3><p>Over 7 years of operation, our core ERP database grew organically with extensive EAV tables. Analytical queries required joining dozens of attribute tables, causing query execution times to exceed several minutes and overloading the operational database.</p><h3>1. Bypassing Application Code with Change Data Capture (CDC)</h3><p>Rather than modifying the rigid legacy monolithic codebase, we hooked directly into MySQL binary logs (binlogs). Every <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> event was automatically captured and published to RabbitMQ queues, creating a complete historical audit trail with zero performance impact on the ERP app.</p><h3>2. The Medallion Architecture (Bronze - Silver - Gold)</h3><ul><li><strong>Bronze Layer (Raw Ingestion):</strong> Stores raw JSON event payloads exactly as received from MySQL binlogs.</li><li><strong>Silver Layer (Cleansed & Idempotent Processing):</strong> Idempotent Go workers consume RabbitMQ events, validate schemas, and perform <code>ON CONFLICT DO UPDATE</code> (UPSERTs) in PostgreSQL.</li><li><strong>Gold Layer (Aggregated Data Marts):</strong> Structured dimensional tables optimized for Looker Studio dashboards and fast aggregation.</li></ul><h3>3. Key Results</h3><p>The migration achieved a <strong>96% data reconciliation rate with zero data loss</strong>, reduced complex analytical query times by <strong>over 70%</strong>, and kept end-to-end CDC pipeline latency under 2 seconds.</p>"
+  },
+  {
+    "id": "post-2",
+    "slug": "building-reactive-event-tracking-spring-webflux-kafka",
+    "title": "Architecting High-Throughput Event Ingestion with Spring WebFlux, Kafka & Automated PII Masking",
+    "summary": "Building a privacy-compliant MarTech analytics gateway that handles thousands of real-time e-commerce conversion events with sub-second latency.",
+    "publishedAt": "Apr 2026",
+    "readTime": "6 min read",
+    "tags": ["Java 17", "Spring Boot", "Spring WebFlux", "Kafka", "Google Analytics 4", "Privacy"],
+    "author": "Tan Huynh Nhat",
+    "contentHtml": "<h3>High-Throughput Non-Blocking Event Tracking</h3><p>E-commerce checkout funnels require capturing micro-events (cart abandonment, add-on selections, voucher clicks) without introducing latency to user transactions. We leveraged <strong>Spring WebFlux</strong> to implement non-blocking asynchronous endpoints backed by Apache Kafka and RabbitMQ.</p><h3>Automated PII Masking via Spring AOP</h3><p>To comply with Decree 13/2023/ND-CP and international privacy laws, sensitive personal identifiable information (PII) must never reach third-party analytics endpoints like Google Analytics 4 (GA4). We implemented custom Spring AOP interceptors that recursively scan and mask sensitive fields prior to transmission.</p><h3>Resilience with Circuit Breakers</h3><p>Using Resilience4j Circuit Breakers and retry mechanisms, our API gateway gracefully absorbed external ad platform rate limits and network degradation without dropping customer conversion signals.</p>"
+  },
+  {
+    "id": "post-3",
+    "slug": "scaling-customer-reporting-portal-high-concurrency-redis",
+    "title": "Scaling an ERP Customer Reporting Portal to 1,000+ Concurrent Users with Redis & Node.js",
+    "summary": "Techniques for caching heavy reporting queries, batch synchronization, and designing modular UI component architectures.",
+    "publishedAt": "Jan 2026",
+    "readTime": "5 min read",
+    "tags": ["Node.js", "Redis", "Vue.js", "High Concurrency", "Architecture"],
+    "author": "Tan Huynh Nhat",
+    "contentHtml": "<h3>The Concurrency Challenge</h3><p>When multiple enterprise clients run heavy ad reporting analytics simultaneously during morning rush hours, database CPU usage spikes to 100%. We decoupled direct reporting queries from the transactional ERP database using Redis caching and intelligent query batching.</p><h3>Modular Charting with Vue.js</h3><p>By breaking reporting widgets into independent, reactive chart components with unified state contracts, client requests for new metrics could be rolled out in hours without touching backend core modules.</p>"
+  }
+]

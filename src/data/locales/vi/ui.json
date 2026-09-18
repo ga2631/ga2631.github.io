@@ -1,0 +1,165 @@
+{
+  "common": {
+    "more": "khác",
+    "resetFilters": "Đặt lại bộ lọc",
+    "shareLink": "Chia sẻ / Sao chép liên kết",
+    "copiedLink": "Đã sao chép liên kết!",
+    "scrollToTop": "Cuộn lên đầu trang",
+    "exportPdf": "Tải / Xuất CV dạng PDF",
+    "articlesBadge": "Bài viết",
+    "overview": "Tổng quan",
+    "tableOfContents": "Mục lục bài viết",
+    "teamSize": "Quy mô",
+    "featuredProject": "Dự án Tiêu biểu",
+    "currentPosition": "Vị trí hiện tại",
+    "credentialId": "Mã chứng chỉ",
+    "article": "Bài viết",
+    "showingArticles": "Hiển thị {count} trên tổng số {total} bài viết"
+  },
+  "drawer": {
+    "navigation": "ĐIỀU HƯỚNG",
+    "preferences": "TÙY CHỌN & TIỆN ÍCH",
+    "language": "Ngôn ngữ:",
+    "theme": "Giao diện:",
+    "switchToLight": "Chuyển sang Giao diện Sáng",
+    "switchToDark": "Chuyển sang Giao diện Tối",
+    "footerNote": "Hồ sơ Kỹ sư Phần mềm"
+  },
+  "nav": {
+    "about": "Giới thiệu",
+    "experience": "Kinh nghiệm",
+    "projects": "Dự án",
+    "skills": "Kỹ năng",
+    "education": "Học vấn",
+    "blog": "Bài viết",
+    "contact": "Liên hệ",
+    "saveCv": "Lưu CV"
+  },
+  "hero": {
+    "greeting": "Xin chào, tôi là",
+    "viewProjects": "Xem dự án nổi bật",
+    "getInTouch": "Liên hệ ngay",
+    "saveCv": "Lưu CV",
+    "workingTreeClean": "Mã nguồn sẵn sàng cho môi trường Production",
+    "focusPrompt": "$ định_hướng = \"Hệ thống Phân tán & Dữ liệu\""
+  },
+  "about": {
+    "badge": "Về bản thân",
+    "title": "Triết lý Kỹ thuật & Năng lực Cốt lõi",
+    "principles": [
+      {
+        "title": "Kiến trúc Bền bỉ & Chịu tải",
+        "description": "Thiết kế hệ thống microservices mô-đun hóa và kiến trúc hướng sự kiện (Event-Driven) với tính sẵn sàng cao, chịu lỗi tốt và độ trễ thấp."
+      },
+      {
+        "title": "An toàn Kiểu dữ liệu & Clean Code",
+        "description": "Ứng dụng Golang, Java hiện đại và thiết kế hướng miền (DDD) nhằm đảm bảo tính bảo trì lâu dài, độ bao phủ kiểm thử cao và dữ liệu chuẩn mực."
+      },
+      {
+        "title": "Tự động hóa & DevOps",
+        "description": "Tự động hóa đóng gói container Docker đa tầng và luồng CI/CD giúp quy trình triển khai phần mềm mượt mà, zero-downtime."
+      },
+      {
+        "title": "Tối ưu hóa Hiệu năng & Dữ liệu",
+        "description": "Xây dựng luồng xử lý CDC thời gian thực, tối ưu hóa các điểm nghẽn truy vấn cơ sở dữ liệu và cung cấp báo cáo phân tích tức thì."
+      }
+    ]
+  },
+  "experience": {
+    "badge": "Lộ trình Nghề nghiệp",
+    "title": "Kinh nghiệm Làm việc Chuyên nghiệp",
+    "subtitle": "Hành trình dẫn dắt kỹ thuật, thiết kế kiến trúc backend mở rộng và xây dựng các hệ thống dữ liệu doanh nghiệp.",
+    "technologies": "Công nghệ sử dụng:",
+    "currentPosition": "Vị trí hiện tại"
+  },
+  "projects": {
+    "badge": "Dự án & Mã nguồn",
+    "title": "Dự án Kỹ thuật Tiêu biểu",
+    "subtitle": "Phân tích kiến trúc chuyên sâu các hệ thống doanh nghiệp và các kho mã nguồn mở nạp trực tiếp từ GitHub.",
+    "allWorks": "Tất cả dự án",
+    "caseStudies": "Kiến trúc Doanh nghiệp",
+    "githubRepos": "Kho mã nguồn GitHub",
+    "viewArchitecture": "Xem kiến trúc",
+    "sourceCode": "Mã nguồn",
+    "demo": "Bản thử nghiệm",
+    "publicRepo": "Public Repo",
+    "enterpriseSystem": "Hệ thống Doanh nghiệp",
+    "featuredProject": "Dự án Tiêu biểu",
+    "team": "Quy mô",
+    "objective": "Mục tiêu Dự án",
+    "challenges": "Thách thức Kỹ thuật & Giải pháp Thực thi",
+    "fullStack": "Toàn bộ Ngăn xếp Công nghệ",
+    "closeModal": "Đóng chi tiết",
+    "noProjects": "Không tìm thấy dự án phù hợp.",
+    "resetFilters": "Đặt lại bộ lọc"
+  },
+  "skills": {
+    "badge": "Ma trận Kỹ năng",
+    "title": "Kỹ năng & Công nghệ",
+    "subtitle": "Tập hợp toàn diện các kỹ năng từ phát triển Backend phân tán, nền tảng Dữ liệu hiện đại đến Hạ tầng đám mây.",
+    "expert": "Chuyên gia (Expert)",
+    "advanced": "Nâng cao (Advanced)",
+    "proficient": "Thành thạo (Proficient)"
+  },
+  "education": {
+    "badge": "Bằng cấp & Chứng chỉ",
+    "title": "Học vấn & Chứng chỉ Chuyên môn",
+    "subtitle": "Nền tảng Khoa học Máy tính vững chắc, tư duy sư phạm khúc chiết và tinh thần liên tục trau dồi chứng chỉ quốc tế.",
+    "academicBg": "Nền tảng Học vấn",
+    "certificationsTitle": "Chứng chỉ Chuyên môn Quốc tế & Doanh nghiệp",
+    "viewCredential": "Xem chứng chỉ",
+    "credentialId": "Mã chứng chỉ"
+  },
+  "blog": {
+    "badge": "Góc nhìn Kỹ thuật & Blog Kỹ sư",
+    "title": "Kiến trúc Hệ thống & Ghi chép Kỹ thuật",
+    "subtitle": "Các bài viết phân tích chuyên sâu về Change Data Capture, xử lý dòng sự kiện với Spring WebFlux, tối ưu hóa CSDL và tải cao.",
+    "readArticle": "Đọc toàn bộ bài viết",
+    "closeArticle": "Đóng bài viết",
+    "backToHome": "Về trang Portfolio & CV",
+    "searchPlaceholder": "Tìm kiếm bài viết theo tiêu đề, thẻ công nghệ, từ khóa...",
+    "allTopics": "Tất cả chủ đề",
+    "noArticlesFound": "Không tìm thấy bài viết nào phù hợp với tìm kiếm hoặc bộ lọc.",
+    "article": "Bài viết",
+    "showingArticles": "Hiển thị {count} trên tổng số {total} bài viết",
+    "resetFilters": "Đặt lại bộ lọc"
+  },
+  "contact": {
+    "badge": "Kết nối & Hợp tác",
+    "title": "Sẵn sàng Xây dựng Hệ thống Quy mô lớn",
+    "subtitle": "Mở rộng cơ hội hợp tác cho các vị trí Senior Backend & Data Engineer, Technical Team Lead và tư vấn kiến trúc phần mềm.",
+    "emailLabel": "Email Trực tiếp",
+    "emailHint": "Kênh tốt nhất để thảo luận cơ hội nghề nghiệp, kỹ thuật & hợp tác dự án.",
+    "phoneLabel": "Điện thoại & Zalo",
+    "phoneHint": "Sẵn sàng tiếp nhận cuộc gọi trao đổi chuyên môn & nhắn tin nhanh qua Zalo.",
+    "locationLabel": "Địa điểm & Ngày sinh",
+    "locationHint": "Làm việc Linh hoạt (Hybrid) / Trực tiếp tại TP.HCM & Remote toàn cầu.",
+    "locationCta": "Văn phòng / Từ xa / Linh hoạt",
+    "linkedinLabel": "Hồ sơ LinkedIn",
+    "linkedinHint": "Kết nối mạng lưới nghề nghiệp và tham khảo đánh giá năng lực.",
+    "copied": "Đã sao chép!",
+    "copyEmail": "Sao chép Email",
+    "compose": "Soạn thư",
+    "call": "Gọi điện",
+    "zalo": "Nhắn Zalo",
+    "callZalo": "Gọi / Zalo",
+    "viewProfile": "Xem hồ sơ"
+  },
+  "footer": {
+    "hostedOn": "Lưu trữ trên GitHub Pages",
+    "allRightsReserved": "Đã đăng ký bản quyền"
+  },
+  "printCv": {
+    "summaryHeading": "TÓM TẮT NĂNG LỰC CHUYÊN MÔN",
+    "summaryExtension": "Có bề dày kinh nghiệm thiết kế hệ thống microservices chịu tải cao, điều phối luồng xử lý CDC đảm bảo zero data loss và tối ưu hóa thời gian thực thi truy vấn phân tích dữ liệu hơn 70%. Đảm nhiệm vai trò Technical Lead dẫn dắt đội ngũ kỹ sư hiện thực hóa các yêu cầu kinh doanh phức tạp thành hệ thống phân tán hiệu năng cao, chuẩn mực chất lượng mã nguồn và tự động hóa quy trình CI/CD.",
+    "skillsHeading": "KỸ NĂNG CHUYÊN MÔN CỐT LÕI",
+    "experienceHeading": "KINH NGHIỆM LÀM VIỆC",
+    "technologies": "Công nghệ:",
+    "projectsHeading": "DỰ ÁN KIẾN TRÚC DOANH NGHIỆP TIÊU BIỂU",
+    "keyTechnologies": "Công nghệ chính:",
+    "educationHeading": "HỌC VẤN & CHỨNG CHỈ CHUYÊN MÔN",
+    "academicBackground": "Nền tảng học vấn:",
+    "academicDetails": "Hoàn thành chương trình nền tảng Khoa học máy tính toàn diện (Cấu trúc dữ liệu & Giải thuật, OOP, Cơ sở dữ liệu quan hệ, Mạng máy tính, Hệ điều hành, Công nghệ phần mềm). Tham gia phát triển phần mềm chuyên nghiệp từ sớm với hơn 5 năm kinh nghiệm thực chiến.",
+    "certificationsAndBadges": "Chứng chỉ chuyên môn & Huy hiệu:"
+  }
+}
