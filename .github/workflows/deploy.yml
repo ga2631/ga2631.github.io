@@ -40,6 +40,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Run Automated Test Suites
+        run: npm test
+
       - name: TypeScript Typecheck
         run: npm run typecheck
 

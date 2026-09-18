@@ -122,6 +122,29 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
     };
   }, []);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (activeProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeProject]);
+
+  // Handle escape key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && activeProject) {
+        setActiveProject(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeProject]);
+
   const getTechColorInfo = (name: string | null) => {
     if (!name) {
       return { color: 'var(--text-accent)', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.3)' };
