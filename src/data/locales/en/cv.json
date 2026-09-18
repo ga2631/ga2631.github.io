@@ -1,9 +1,9 @@
 {
   "personalInfo": {
     "fullName": "Tan Huynh Nhat",
-    "jobTitle": "Polyglot Backend & Data Engineer | Technical Team Lead",
+    "jobTitle": "Full Stack & Data Engineer",
     "tagline": "Architecting Scalable Distributed Systems, Medallion Data Warehouses & High-Concurrency Pipelines",
-    "bio": "Polyglot Backend & Data Engineer with 5+ years of experience architecting high-concurrency distributed systems and modern Data Warehouses. Strong technical ownership across Golang, Java (Spring Boot), Node.js, and Python — specializing in real-time CDC pipelines, database optimization, and scalable microservices.",
+    "bio": "Full Stack & Data Engineer with 5+ years of experience architecting high-concurrency distributed systems and modern Data Warehouses. Strong technical mastery across Golang, Java (Spring Boot), Node.js, Python, and PHP — specializing in real-time CDC pipelines, database optimization, and scalable microservices.",
     "email": "dGFuaHV5bmgyNjMxQGdtYWlsLmNvbQ==",
     "phone": "Kzg0LTk2MzY4NDUyMA==",
     "location": "Tan Khanh Ward, Ho Chi Minh City, Vietnam",
@@ -17,12 +17,12 @@
       {
         "label": "Years Experience",
         "value": "5+",
-        "subtext": "Backend & Data Pipelines"
+        "subtext": "Full Stack & Data Pipelines"
       },
       {
         "label": "Data Reconciliation",
         "value": "96%",
-        "subtext": "Zero Data Loss Migration"
+        "subtext": "Low-Loss Resilient Migration"
       },
       {
         "label": "Query Performance",
@@ -43,7 +43,7 @@
     },
     {
       "title": "Type Safety & Clean Code",
-      "description": "Leveraging modern TypeScript, Golang, and domain-driven design to ensure maintainability, high test coverage, and robust data contracts."
+      "description": "Leveraging Golang, Python, Java, and domain-driven design (DDD) to ensure long-term maintainability, high test coverage, and robust data contracts."
     },
     {
       "title": "DevOps & Automation",
@@ -63,7 +63,7 @@
       "id": "exp-1",
       "role": "Data Engineer",
       "company": "Adtechnology Technology Joint Stock Company",
-      "companySubtitle": "Collaboration with Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "companySubtitle": "Collaboration with AdsBase Advertising Technology JSC",
       "location": "Ban Co Ward, Ho Chi Minh City",
       "period": "04/2026 – 06/2026",
       "current": false,
@@ -85,17 +85,20 @@
     },
     {
       "id": "exp-2",
-      "role": "Software Engineer / Team Lead",
+      "role": "Software Engineer",
       "company": "Adtechnology Technology Joint Stock Company",
-      "companySubtitle": "Collaboration with Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "companySubtitle": "Collaboration with Viet Nam Gate Advertising JSC",
       "location": "Ban Co Ward, Ho Chi Minh City",
       "period": "01/2024 – 03/2026",
       "current": false,
       "summary": "Led technical delivery for an engineering team maintaining and scaling core enterprise ERP platforms, driving automation and API reliability.",
       "achievements": [
-        "Led technical delivery for a team of 4-5 engineers maintaining and scaling core ERP platforms.",
-        "Integrated Zalo Notification Service (ZNS) end-to-end and designed an automated accounts receivable management feature.",
-        "Translated business requirements into actionable PRDs and User Stories, and conducted rigorous code/API reviews to eliminate scope drift and ensure <b>99.9% system uptime</b>."
+        "Upgraded and optimized ERP operational infrastructure, saving <b>50% of system resources</b>.",
+        "Engineered multi-platform advertising analytics modules consolidating Google, Facebook, and TikTok metrics into a central dashboard with a post-aggregation error margin below <b>1%</b>.",
+        "Integrated Zalo Notification Service (ZNS) for advertising campaigns, guaranteeing <b>100% notification delivery</b> to end clients.",
+        "Translated business requirements into comprehensive PRDs and User Stories, enforcing strict code and API reviews to maintain <b>99.9% uptime</b>.",
+        "Managed a team of <b>6–8 engineers</b> developing the Customer Reporting System.",
+        "Led technical handoff and mentoring for a squad of <b>2–3 engineers</b> to maintain and scale core enterprise ERP modules."
       ],
       "technologies": [
         "Golang",
@@ -111,17 +114,18 @@
     },
     {
       "id": "exp-3",
-      "role": "Software Engineer / Project Manager",
+      "role": "Software Engineer",
       "company": "Adtechnology Technology Joint Stock Company",
-      "companySubtitle": "Collaboration with Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "companySubtitle": "Collaboration with bePro.vn Service Company and Viet Nam Gate Advertising JSC",
       "location": "Ban Co Ward, Ho Chi Minh City",
       "period": "03/2021 – 12/2023",
       "current": false,
-      "summary": "Directed a team of 8 in end-to-end development of ad reporting modules, performance optimization, and CI/CD automation.",
+      "summary": "Collaborated with the Head of Engineering to develop cross-platform ad reporting modules, optimize application performance, and automate CI/CD workflows.",
       "achievements": [
-        "Directed a team of 8 in the end-to-end development of ad reporting modules, aggregating data across Google, Facebook, and TikTok into centralized dashboards.",
-        "Optimized application performance, established CI/CD pipelines, and implemented system caching, decreasing report generation time by <b>63%</b>.",
-        "Developed accounting and affiliate management modules saving <b>10–12 hours/week</b> of manual data entry, and maintained the company WordPress website."
+        "Optimized application performance, built automated CI/CD pipelines, and deployed multi-layer caching, reducing query response times by <b>63%</b>.",
+        "Developed multi-target storage and backup for documents, reports, expenses, and ledgers across Google Drive and servers with full traceability, achieving <b>96%+ data recovery</b> and eliminating <b>30% duplicate data</b>.",
+        "Built automated accounting and receivables reconciliation modules with client reporting, saving <b>10–12 hours/week</b> of manual data entry and reporting.",
+        "Standardized Agile/Scrum workflows via Jira, reducing project cycle time by <b>30%</b> and increasing delivery efficiency by <b>60%</b>."
       ],
       "technologies": [
         "PHP (Laravel, CodeIgniter)",

@@ -1,9 +1,9 @@
 {
   "personalInfo": {
     "fullName": "Huỳnh Nhật Tân",
-    "jobTitle": "Kỹ sư full stack & Dữ liệu đa ngôn ngữ",
+    "jobTitle": "Kỹ sư Full stack & Dữ liệu",
     "tagline": "Kiến trúc Hệ thống Phân tán Mở rộng, Medallion Data Warehouse & Đường ống Dữ liệu Tải cao",
-    "bio": "Kỹ sư full stack & Dữ liệu đa ngôn ngữ với hơn 5 năm kinh nghiệm kiến trúc các hệ thống phân tán tải cao và Data Warehouse hiện đại. Năng lực làm chủ kỹ thuật chuyên sâu trên Golang, Java (Spring Boot), Node.js, Python và PHP — chuyên trách các đường ống dữ liệu CDC thời gian thực, tối ưu hóa cơ sở dữ liệu và microservices quy mô lớn.",
+    "bio": "Kỹ sư Full stack & Dữ liệu với hơn 5 năm kinh nghiệm kiến trúc các hệ thống phân tán tải cao và Data Warehouse hiện đại. Năng lực làm chủ kỹ thuật chuyên sâu trên Golang, Java (Spring Boot), Node.js, Python và PHP — chuyên trách các đường ống dữ liệu CDC thời gian thực, tối ưu hóa cơ sở dữ liệu và microservices quy mô lớn.",
     "email": "dGFuaHV5bmgyNjMxQGdtYWlsLmNvbQ==",
     "phone": "Kzg0LTk2MzY4NDUyMA==",
     "location": "Phường Tân Khánh, TP. Hồ Chí Minh, Việt Nam",
@@ -43,7 +43,7 @@
     },
     {
       "title": "An toàn Kiểu dữ liệu & Clean Code",
-      "description": "Ứng dụng Golang, Java hiện đại và thiết kế hướng miền (DDD) nhằm đảm bảo tính bảo trì lâu dài, độ bao phủ kiểm thử cao và dữ liệu chuẩn mực."
+      "description": "Ứng dụng ngôn ngữ lập trình Golang, Python, Java và thiết kế hướng nghiệp vụ (DDD) nhằm đảm bảo tính bảo trì lâu dài, độ bao phủ kiểm thử cao và dữ liệu chuẩn mực."
     },
     {
       "title": "Tự động hóa & DevOps",
@@ -61,7 +61,7 @@
   "experiences": [
     {
       "id": "exp-1",
-      "role": "Kỹ sư Dữ liệu (Data Engineer)",
+      "role": "Kỹ sư Dữ liệu",
       "company": "Công ty Cổ phần Công nghệ Adtechnology",
       "companySubtitle": "Hợp tác cùng AdsBase Advertising Technology JSC",
       "location": "Phường Bàn Cờ, TP. Hồ Chí Minh",
@@ -85,17 +85,20 @@
     },
     {
       "id": "exp-2",
-      "role": "Kỹ sư Phần mềm / Trưởng nhóm Kỹ thuật (Tech Lead)",
+      "role": "Kỹ sư Phần mềm",
       "company": "Công ty Cổ phần Công nghệ Adtechnology",
-      "companySubtitle": "Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "companySubtitle": "Hợp tác cùng Viet Nam Gate Advertising JSC",
       "location": "Phường Bàn Cờ, TP. Hồ Chí Minh",
       "period": "01/2024 – 03/2026",
       "current": false,
       "summary": "Dẫn dắt kỹ thuật đội ngũ kỹ sư bảo trì và mở rộng nền tảng ERP doanh nghiệp cốt lõi, thúc đẩy tự động hóa quy trình và độ tin cậy của API.",
       "achievements": [
-        "Dẫn dắt chuyển giao kỹ thuật cho nhóm 4-5 kỹ sư duy trì và mở rộng hệ thống ERP doanh nghiệp cốt lõi.",
-        "Tích hợp toàn diện dịch vụ Zalo Notification Service (ZNS) và thiết kế tính năng quản lý công nợ phải thu tự động.",
-        "Chuyển hóa yêu cầu kinh doanh thành tài liệu PRD và User Story rõ ràng, thực hiện code review/API review chặt chẽ chống trôi phạm vi và duy trì độ sẵn sàng <b>99.9% uptime</b>."
+        "Nâng cấp, tối ưu hạ tầng vận hành ERP, giúp tối ưu <b>50% tài nguyên hệ thống</b>",
+        "Phát triển các mô-đun báo cáo hiệu quả quảng cáo, tổng hợp dữ liệu Google, Facebook và TikTok về bảng điều khiển trung tâm. Tỉ lệ sai số dữ liệu sau khi tổng hợp là dưới <b>1%</b>",
+        "Tích hợp toàn diện dịch vụ Zalo Notification Service (ZNS) cho hệ thống quảng cáo, đảm bảo <b>100% dữ liệu</b> được gửi đến khách hàng.",
+        "Chuyển hóa yêu cầu kinh doanh thành tài liệu PRD và User Story rõ ràng, thực hiện code review/API review chặt chẽ, duy trì độ sẵn sàng <b>99.9% uptime</b>.",
+        "Quản lý nhóm <b>6-8 kỹ sư</b> phát triển hệ thống Báo cáo Khách hàng",
+        "Dẫn dắt chuyển giao kỹ thuật cho nhóm <b>2-3 kỹ sư</b> duy trì và mở rộng hệ thống ERP doanh nghiệp cốt lõi."
       ],
       "technologies": [
         "Golang",
@@ -111,17 +114,18 @@
     },
     {
       "id": "exp-3",
-      "role": "Kỹ sư Phần mềm / Quản lý Dự án (Project Manager)",
+      "role": "Kỹ sư Phần mềm",
       "company": "Công ty Cổ phần Công nghệ Adtechnology",
-      "companySubtitle": "Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "companySubtitle": "Hợp tác cùng bePro.vn Service Company và Viet Nam Gate Advertising JSC",
       "location": "Phường Bàn Cờ, TP. Hồ Chí Minh",
       "period": "03/2021 – 12/2023",
       "current": false,
-      "summary": "Điều hành nhóm 8 thành viên phát triển mô-đun báo cáo quảng cáo đa nền tảng, tối ưu hóa hiệu năng ứng dụng và tự động hóa CI/CD.",
+      "summary": "Phối hợp với Trưởng phòng Công nghệ phát triển mô-đun báo cáo quảng cáo đa nền tảng, tối ưu hóa hiệu năng ứng dụng và tự động hóa CI/CD.",
       "achievements": [
-        "Quản lý nhóm 8 nhân sự phát triển trọn gói các mô-đun báo cáo quảng cáo, tổng hợp dữ liệu Google, Facebook và TikTok về bảng điều khiển trung tâm.",
         "Tối ưu hóa hiệu năng ứng dụng, xây dựng luồng CI/CD và triển khai caching đa tầng giúp giảm <b>63% thời gian phản hồi truy vấn</b>.",
-        "Phát triển mô-đun kế toán và quản lý đối tác liên kết (Affiliate), tiết kiệm <b>10–12 giờ/tuần</b> nhập liệu thủ công."
+        "Phát triển mô-đun lưu trữ chứng từ, báo cáo, chi phí và công nợ trên Google Drive và máy chủ. Sao lưu ở nhiều nơi và truy vết dữ liệu. Hơn <b>96% dữ liệu được truy vết và tái lập</b> thành công, giảm <b>30% dữ liệu trùng lập</b>.",
+        "Phát triển mô-đun kế toán, đối soát công nợ tự động và gửi báo cáo công nợ đến khách hàng. Tiết kiệm <b>10–12 giờ/tuần</b> nhập liệu và báo cáo thủ công.",
+        "Chuẩn hoá, thiết lập quy trình làm việc theo mô hình Agile/Scrum thông qua Jira. Giúp giảm <b>30%</b> thời gian làm việc, tăng <b>60%</b> hiệu quả công việc."
       ],
       "technologies": [
         "PHP (Laravel, CodeIgniter)",
