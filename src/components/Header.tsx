@@ -198,6 +198,7 @@ export const Header: React.FC<HeaderProps> = ({
         tCommon={t.common}
         personalInfo={personalInfo}
         onPrint={handlePrint}
+        currentRoute={currentRoute}
       />
     </>
   );

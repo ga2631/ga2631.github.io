@@ -115,11 +115,13 @@ export const App: React.FC = () => {
         )}
 
         {/* Floating Quick Action Button (FAB) */}
-        <FloatingActions
-          onPrint={() => window.print()}
-          saveCvLabel={t.nav.saveCv}
-          tCommon={t.common}
-        />
+        {route !== 'blog' && (
+          <FloatingActions
+            onPrint={() => window.print()}
+            saveCvLabel={t.nav.saveCv}
+            tCommon={t.common}
+          />
+        )}
       </div>
 
       {/* Dedicated Standard ATS / Executive Print CV Document */}

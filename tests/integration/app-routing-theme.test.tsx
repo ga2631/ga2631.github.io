@@ -23,6 +23,8 @@ describe('TS-01, TS-03, TS-04: App Routing, Theme & Localization Integration', (
     render(<App />);
 
     expect(screen.getByPlaceholderText(uiTranslations.en.blog.searchPlaceholder)).toBeInTheDocument();
+    // Floating Save CV button should NOT be rendered on blog page
+    expect(document.getElementById('floating-save-cv-btn')).not.toBeInTheDocument();
   });
 
   it('should dynamically switch route on window hashchange event', async () => {
