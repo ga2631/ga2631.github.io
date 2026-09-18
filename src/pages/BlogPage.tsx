@@ -19,10 +19,10 @@ import { processArticleToc, ArticleTocSidebar } from '../components/ArticleToc.t
 interface BlogPageProps {
   posts: BlogPost[];
   t: UITranslation['blog'];
-  lang: 'vi' | 'en';
+  tCommon: UITranslation['common'];
 }
 
-export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
+export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('all');
   const [activePost, setActivePost] = useState<BlogPost | null>(null);
@@ -185,9 +185,9 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
           </a>
 
           <div className="blog-route-indicator">
-            <span style={{ color: 'var(--text-muted)' }}>Portfolio</span>
+            <span style={{ color: 'var(--text-muted)' }}>{t.backToHome}</span>
             <span style={{ color: 'var(--text-muted)' }}>/</span>
-            <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>Blog & Articles</span>
+            <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>{t.badge}</span>
           </div>
         </div>
 
@@ -255,7 +255,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
         {/* Results Count Info */}
         <div className="blog-results-meta">
           <span>
-            Showing <strong>{filteredPosts.length}</strong> of {posts.length} articles
+            {t.showingArticles.replace('{count}', String(filteredPosts.length)).replace('{total}', String(posts.length))}
           </span>
           {(searchQuery || selectedTag !== 'all') && (
             <button
@@ -265,7 +265,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
                 setSelectedTag('all');
               }}
             >
-              Reset filters
+              {t.resetFilters}
             </button>
           )}
         </div>
@@ -285,7 +285,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
                       {post.publishedAt} • {post.readTime}
                     </span>
                     <span className="badge badge-purple" style={{ fontSize: '0.72rem' }}>
-                      <SparklesIcon size={11} /> Article
+                      <SparklesIcon size={11} /> {t.article}
                     </span>
                   </div>
 
@@ -336,7 +336,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
                 setSelectedTag('all');
               }}
             >
-              Reset Search & Filters
+              {t.resetFilters}
             </button>
           </div>
         )}
@@ -371,12 +371,12 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
                     {copiedLink ? (
                       <>
                         <CheckIcon size={14} style={{ color: 'var(--accent-emerald)' }} />
-                        <span style={{ color: 'var(--accent-emerald)' }}>{lang === 'vi' ? 'Đã sao chép link!' : 'Copied Link!'}</span>
+                        <span style={{ color: 'var(--accent-emerald)' }}>{tCommon.copiedLink}</span>
                       </>
                     ) : (
                       <>
                         <CopyIcon size={14} />
-                        <span>{lang === 'vi' ? 'Chia sẻ / Copy Link' : 'Share / Copy Link'}</span>
+                        <span>{tCommon.shareLink}</span>
                       </>
                     )}
                   </button>
@@ -412,7 +412,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
 
                     {/* Summary Callout */}
                     <div className="article-summary-callout">
-                      <strong>Overview: </strong>
+                      <strong>{tCommon.overview}: </strong>
                       <span>{activePost.summary}</span>
                     </div>
 
@@ -437,7 +437,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, lang }) => {
                       tocItems={tocItems}
                       activeHeadingId={activeHeadingId}
                       onSelectHeading={handleSelectHeading}
-                      lang={lang}
+                      tocTitle={tCommon.tableOfContents}
                     />
                   )}
                 </div>

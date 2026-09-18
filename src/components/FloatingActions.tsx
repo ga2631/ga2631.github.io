@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { DownloadIcon, ArrowUpIcon } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface FloatingActionsProps {
   onPrint: () => void;
   saveCvLabel: string;
-  lang: 'vi' | 'en';
+  tCommon: UITranslation['common'];
 }
 
 export const FloatingActions: React.FC<FloatingActionsProps> = ({
   onPrint,
   saveCvLabel,
-  lang,
+  tCommon,
 }) => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -37,8 +38,8 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
         <button
           className="floating-btn floating-btn-secondary"
           onClick={scrollToTop}
-          title={lang === 'vi' ? 'Cuộn lên đầu trang' : 'Scroll to top'}
-          aria-label={lang === 'vi' ? 'Cuộn lên đầu trang' : 'Scroll to top'}
+          title={tCommon.scrollToTop}
+          aria-label={tCommon.scrollToTop}
         >
           <ArrowUpIcon size={18} />
         </button>
@@ -48,7 +49,7 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
       <button
         className="floating-btn floating-btn-primary"
         onClick={onPrint}
-        title={lang === 'vi' ? 'Tải / Xuất CV dạng PDF' : 'Save / Export CV as PDF'}
+        title={tCommon.exportPdf}
         aria-label={saveCvLabel}
         id="floating-save-cv-btn"
       >
@@ -59,3 +60,4 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
     </div>
   );
 };
+

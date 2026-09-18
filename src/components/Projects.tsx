@@ -28,6 +28,7 @@ import { UITranslation } from '../data/cvData.ts';
 interface ProjectsProps {
   projects: ProjectItem[];
   t: UITranslation['projects'];
+  tCommon: UITranslation['common'];
 }
 
 interface GitHubRepo {
@@ -134,7 +135,7 @@ const FALLBACK_REPOS: GitHubRepo[] = [
   },
 ];
 
-export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
+export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'case-studies' | 'github'>('all');
   const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
@@ -302,7 +303,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
                     ))}
                     {project.tags.length > 4 && (
                       <span className="badge" style={{ color: 'var(--text-accent)' }}>
-                        +{project.tags.length - 4} more
+                        +{project.tags.length - 4} {tCommon.more}
                       </span>
                     )}
                   </div>
@@ -339,204 +340,262 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
 
           {/* 3. Live GitHub Public Repositories */}
           {showRepos &&
-            repos.map((repo) => (
-              <div key={repo.id} className="glass-panel github-repo-card">
-                <div className="project-card-header">
-                  <div className="project-meta-row">
-                    <span className="repo-source-badge">
-                      <GitRepoIcon size={14} /> {t.publicRepo}
-                    </span>
-                    <span className="repo-date">{formatDate(repo.updated_at)}</span>
+            repos.map((repo) => {
+              const repoTags = repo.topics && repo.topics.length > 0
+                ? repo.topics
+                : (repo.language ? [repo.language] : []);
+
+              return (
+                <div key={repo.id} className="glass-panel github-repo-card">
+                  <div className="project-card-header">
+                    <div className="project-meta-row">
+                      <span className="badge badge-cyan">
+                        <GitRepoIcon size={13} /> {t.publicRepo}
+                      </span>
+                      <span className="badge" style={{ fontSize: '0.75rem' }}>
+                        {formatDate(repo.updated_at)}
+                      </span>
+                    </div>
+
+                    <h3 className="project-card-title repo-title">
+                      <a
+                        href={repo.html_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="repo-link-title"
+                      >
+                        {repo.name}
+                      </a>
+                    </h3>
+
+                    <p className="project-card-desc repo-desc">
+                      {repo.description || 'Public GitHub repository by @ga2631 with active source code and configuration.'}
+                    </p>
                   </div>
 
-                  <h3 className="project-card-title repo-title">
-                    <a
-                      href={repo.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="repo-link-title"
-                    >
-                      {repo.name}
-                    </a>
-                  </h3>
+                  <div className="project-card-footer">
+                    <div className="repo-stats-row">
+                      {repo.language && (
+                        <div className="repo-lang-pill">
+                          <span
+                            className="lang-color-dot"
+                            style={{ backgroundColor: getLanguageColor(repo.language) }}
+                          />
+                          <span>{repo.language}</span>
+                        </div>
+                      )}
 
-                  <p className="project-card-desc repo-desc">
-                    {repo.description || 'Public GitHub repository by @ga2631 with active source code and configuration.'}
-                  </p>
-
-                  {/* Topic Tags */}
-                  {repo.topics && repo.topics.length > 0 && (
-                    <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                      {repo.topics.slice(0, 4).map((topic) => (
-                        <span key={topic} className="badge badge-topic">
-                          #{topic}
+                      <div className="repo-counts">
+                        <span className="repo-count-item" title="Stars">
+                          <StarIcon size={14} />
+                          <span>{repo.stargazers_count}</span>
                         </span>
-                      ))}
+                        <span className="repo-count-item" title="Forks">
+                          <GitForkIcon size={14} />
+                          <span>{repo.forks_count}</span>
+                        </span>
+                      </div>
                     </div>
-                  )}
-                </div>
 
-                <div className="project-card-footer">
-                  <div className="repo-stats-row">
-                    {repo.language && (
-                      <div className="repo-lang-pill">
-                        <span
-                          className="lang-color-dot"
-                          style={{ backgroundColor: getLanguageColor(repo.language) }}
-                        />
-                        <span>{repo.language}</span>
+                    {/* Unified Tech Tags List */}
+                    {repoTags.length > 0 && (
+                      <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
+                        {repoTags.slice(0, 4).map((tag) => (
+                          <span key={tag} className="badge">
+                            {tag}
+                          </span>
+                        ))}
+                        {repoTags.length > 4 && (
+                          <span className="badge" style={{ color: 'var(--text-accent)' }}>
+                            +{repoTags.length - 4} {tCommon.more}
+                          </span>
+                        )}
                       </div>
                     )}
 
-                    <div className="repo-counts">
-                      <span className="repo-count-item" title="Stars">
-                        <StarIcon size={14} />
-                        <span>{repo.stargazers_count}</span>
-                      </span>
-                      <span className="repo-count-item" title="Forks">
-                        <GitForkIcon size={14} />
-                        <span>{repo.forks_count}</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="project-actions-compact">
-                    <a
-                      href={repo.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-outline btn-sm"
-                    >
-                      <GithubIcon size={15} />
-                      <span>{t.sourceCode}</span>
-                    </a>
-
-                    {repo.homepage && (
+                    <div className="project-actions-compact">
                       <a
-                        href={repo.homepage}
+                        href={repo.html_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-secondary btn-sm"
-                        title="Live Preview"
+                        className="btn btn-outline btn-sm"
                       >
-                        <ExternalLinkIcon size={14} />
-                        <span>{t.demo}</span>
+                        <GithubIcon size={15} />
+                        <span>{t.sourceCode}</span>
                       </a>
-                    )}
+
+                      {repo.homepage && (
+                        <a
+                          href={repo.homepage}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-secondary btn-sm"
+                          title="Live Preview"
+                        >
+                          <ExternalLinkIcon size={14} />
+                          <span>{t.demo}</span>
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
 
         {/* Detailed Architecture & Case Study Modal */}
         {activeProject &&
           createPortal(
             <div className="blog-modal-backdrop" onClick={() => setActiveProject(null)}>
-              <div className="blog-modal-content" onClick={(e) => e.stopPropagation()}>
-                <button
-                  className="modal-close-btn"
-                  onClick={() => setActiveProject(null)}
-                  aria-label="Close Project Details"
-                >
-                  <CloseIcon size={18} />
-                </button>
-
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
-                  <span className="badge badge-cyan">{activeProject.category}</span>
-                  {activeProject.featured && <span className="badge badge-emerald">Featured Project</span>}
-                  {activeProject.teamSize && <span className="badge">Team: {activeProject.teamSize}</span>}
-                </div>
-
-                <h2
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: '1.75rem',
-                    fontWeight: 800,
-                    color: 'var(--text-primary)',
-                    marginBottom: '8px',
-                    lineHeight: 1.25,
-                  }}
-                >
-                  {activeProject.title}
-                </h2>
-
-                {(activeProject.company || activeProject.role) && (
-                  <div
-                    style={{
-                      color: 'var(--text-accent)',
-                      fontWeight: 600,
-                      fontSize: '0.95rem',
-                      marginBottom: '16px',
-                      paddingBottom: '12px',
-                      borderBottom: '1px solid var(--border-color)',
-                    }}
+              <div className="blog-modal-content project-modal-dialog" onClick={(e) => e.stopPropagation()}>
+                {/* Pinned / Fixed Header */}
+                <div className="project-modal-header">
+                  <button
+                    className="modal-close-btn"
+                    onClick={() => setActiveProject(null)}
+                    aria-label="Close Project Details"
                   >
-                    {activeProject.company} — {activeProject.role}
+                    <CloseIcon size={18} />
+                  </button>
+
+                  <div className="project-modal-header-meta">
+                    <span className="badge badge-cyan">{activeProject.category}</span>
+                    {activeProject.featured && <span className="badge badge-emerald">{t.featuredProject}</span>}
+                    {activeProject.teamSize && <span className="badge">{t.team}: {activeProject.teamSize}</span>}
                   </div>
-                )}
 
-                <div className="article-body" style={{ marginTop: '16px' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                    <span>{t.objective}</span>
-                  </h3>
-                  <p>{activeProject.description}</p>
+                  <h2 className="project-modal-title">
+                    {activeProject.title}
+                  </h2>
 
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                    <span>{t.challenges}</span>
-                  </h3>
-                  <ul>
-                    {activeProject.highlights.map((item, idx) => (
-                      <li key={idx} style={{ marginBottom: '10px' }}>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                    <span>{t.fullStack}</span>
-                  </h3>
-                  <div className="tech-tags-list" style={{ marginTop: '8px', marginBottom: '24px' }}>
-                    {activeProject.tags.map((tag) => (
-                      <span key={tag} className="badge badge-cyan">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  {(activeProject.company || activeProject.role) && (
+                    <div className="project-modal-subtitle">
+                      {activeProject.company} — {activeProject.role}
+                    </div>
+                  )}
                 </div>
 
-                <div
-                  style={{
-                    marginTop: '28px',
-                    paddingTop: '20px',
-                    borderTop: '1px solid var(--border-color)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    gap: '12px',
-                  }}
-                >
-                  <div>
-                    {activeProject.demoUrl && (
-                      <a
-                        href={activeProject.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-primary btn-sm"
-                      >
-                        <ExternalLinkIcon size={16} />
-                        <span>{t.demo}</span>
-                      </a>
-                    )}
-                  </div>
+                {/* Scrollable Content Body */}
+                <div className="project-modal-body">
+                  <div className="article-body">
+                    {/* 1. Project Objective */}
+                    <div style={{ marginBottom: '24px' }}>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '10px' }}>
+                        <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                        <span>{t.objective}</span>
+                      </h3>
+                      <p style={{ lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
+                        {activeProject.description}
+                      </p>
+                    </div>
 
-                  <button className="btn btn-secondary btn-sm" onClick={() => setActiveProject(null)}>
-                    {t.closeModal}
-                  </button>
+                    {/* 2. Key Responsibilities & Strengths */}
+                    {activeProject.responsibilities && activeProject.responsibilities.length > 0 && (
+                      <div style={{ marginBottom: '24px' }}>
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                          <ShieldIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                          <span>{t.responsibilities}</span>
+                        </h3>
+                        <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                          {activeProject.responsibilities.map((resp, idx) => (
+                            <li
+                              key={idx}
+                              style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                              dangerouslySetInnerHTML={{ __html: resp }}
+                            />
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* 3. Challenges & Solutions */}
+                    {activeProject.challengesSolutions && activeProject.challengesSolutions.length > 0 ? (
+                      <div style={{ marginBottom: '24px' }}>
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                          <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                          <span>{t.challengesSolutions}</span>
+                        </h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          {activeProject.challengesSolutions.map((item, idx) => (
+                            <div
+                              key={idx}
+                              className="glass-panel"
+                              style={{
+                                padding: '12px 16px',
+                                borderRadius: 'var(--radius-md)',
+                                borderLeft: '3px solid var(--accent-primary)',
+                              }}
+                            >
+                              <div style={{ marginBottom: '6px', fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
+                                <span style={{ color: 'var(--accent-red, #ef4444)', marginRight: '6px' }}>
+                                  [{t.challengeLabel}]:
+                                </span>
+                                <span dangerouslySetInnerHTML={{ __html: item.challenge }} />
+                              </div>
+                              <div style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
+                                <span style={{ color: 'var(--accent-emerald, #10b981)', marginRight: '6px', fontWeight: 600 }}>
+                                  → [{t.solutionLabel}]:
+                                </span>
+                                <span dangerouslySetInnerHTML={{ __html: item.solution }} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      activeProject.highlights && activeProject.highlights.length > 0 && (
+                        <div style={{ marginBottom: '24px' }}>
+                          <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                            <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                            <span>{t.challenges}</span>
+                          </h3>
+                          <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                            {activeProject.highlights.map((item, idx) => (
+                              <li
+                                key={idx}
+                                style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                                dangerouslySetInnerHTML={{ __html: item }}
+                              />
+                            ))}
+                          </ul>
+                        </div>
+                      )
+                    )}
+
+                    {/* 4. Achievements */}
+                    {activeProject.achievements && activeProject.achievements.length > 0 && (
+                      <div style={{ marginBottom: '24px' }}>
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                          <RocketIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                          <span>{t.achievements}</span>
+                        </h3>
+                        <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                          {activeProject.achievements.map((ach, idx) => (
+                            <li
+                              key={idx}
+                              style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                              dangerouslySetInnerHTML={{ __html: ach }}
+                            />
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* 5. Tech Stack */}
+                    <div style={{ marginBottom: '8px' }}>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                        <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                        <span>{t.techStack}</span>
+                      </h3>
+                      <div className="tech-tags-list" style={{ marginTop: '8px' }}>
+                        {activeProject.tags.map((tag) => (
+                          <span key={tag} className="badge badge-cyan">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>,

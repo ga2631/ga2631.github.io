@@ -1,0 +1,176 @@
+{
+  "common": {
+    "more": "more",
+    "resetFilters": "Reset filters",
+    "shareLink": "Share / Copy Link",
+    "copiedLink": "Copied Link!",
+    "scrollToTop": "Scroll to top",
+    "exportPdf": "Save / Export CV as PDF",
+    "articlesBadge": "Articles",
+    "overview": "Overview",
+    "tableOfContents": "Table of Contents",
+    "teamSize": "Team",
+    "featuredProject": "Featured Project",
+    "currentPosition": "Current Position",
+    "credentialId": "Credential ID",
+    "article": "Article",
+    "showingArticles": "Showing {count} of {total} articles"
+  },
+  "drawer": {
+    "navigation": "NAVIGATION",
+    "preferences": "PREFERENCES & ACTIONS",
+    "language": "Language:",
+    "theme": "Theme Mode:",
+    "switchToLight": "Switch to Light Mode",
+    "switchToDark": "Switch to Dark Mode",
+    "footerNote": "Engineering Portfolio"
+  },
+  "nav": {
+    "about": "About",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "education": "Education",
+    "blog": "Blog",
+    "contact": "Contact",
+    "saveCv": "Save CV"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "viewProjects": "View Featured Projects",
+    "getInTouch": "Get In Touch",
+    "saveCv": "Save CV",
+    "workingTreeClean": "Working tree clean (production ready)",
+    "focusPrompt": "$ focus = \"Distributed Systems & Data\""
+  },
+  "about": {
+    "badge": "About Me",
+    "title": "Engineering Excellence & Philosophy",
+    "principles": [
+      {
+        "title": "Architectural Resilience",
+        "description": "Designing modular microservices and event-driven architectures with high availability, fault tolerance, and low latency."
+      },
+      {
+        "title": "Type Safety & Clean Code",
+        "description": "Leveraging modern TypeScript, Golang, and domain-driven design to ensure maintainability, high test coverage, and robust data contracts."
+      },
+      {
+        "title": "DevOps & Automation",
+        "description": "Automating multi-stage Docker containerization and CI/CD pipelines for reliable, zero-downtime deployment workflows."
+      },
+      {
+        "title": "Data & Performance Driven",
+        "description": "Optimizing high-throughput CDC streaming pipelines, reducing query bottlenecks, and delivering sub-second analytic insights."
+      }
+    ]
+  },
+  "experience": {
+    "badge": "Career Path",
+    "title": "Professional Experience",
+    "subtitle": "A timeline of engineering leadership, scalable backend architectures, and high-impact data systems.",
+    "technologies": "Technologies:",
+    "currentPosition": "Current Position"
+  },
+  "projects": {
+    "badge": "Portfolio & Repositories",
+    "title": "Featured Engineering Projects",
+    "subtitle": "Enterprise architecture deep-dives and public open-source repositories loaded live from GitHub.",
+    "allWorks": "All Works",
+    "caseStudies": "Architecture Case Studies",
+    "githubRepos": "GitHub Repositories",
+    "viewArchitecture": "View Architecture",
+    "sourceCode": "Source Code",
+    "demo": "Demo",
+    "publicRepo": "Public Repo",
+    "enterpriseSystem": "Enterprise System",
+    "featuredProject": "Featured Project",
+    "team": "Team",
+    "objective": "1. Project Objective",
+    "responsibilities": "2. Key Responsibilities & Strengths",
+    "challengesSolutions": "3. Challenges & Solutions",
+    "achievements": "4. Key Achievements & Metrics",
+    "techStack": "5. Technology Stack",
+    "challenges": "Key Engineering Challenges & Technical Solutions",
+    "fullStack": "Full Technology Stack",
+    "challengeLabel": "Challenge",
+    "solutionLabel": "Solution",
+    "closeModal": "Close Case Study",
+    "noProjects": "No projects found.",
+    "resetFilters": "Reset Filters"
+  },
+  "skills": {
+    "badge": "Skills Matrix",
+    "title": "Skills & Technologies",
+    "subtitle": "Comprehensive technical toolkit spanning distributed backend engineering, modern data platforms, and cloud infrastructure.",
+    "legendTitle": "Proficiency Scale",
+    "all": "All",
+    "level5": "Expert",
+    "level4": "Advanced",
+    "level3": "Proficient",
+    "level2": "Familiar",
+    "level1": "Fundamental",
+    "noSkills": "No skills at this level in this category."
+  },
+  "education": {
+    "badge": "Credentials",
+    "title": "Academic Education & Certifications",
+    "subtitle": "Formal computer science fundamentals, pedagogical communication edge, and continuous professional accreditations.",
+    "academicBg": "Academic Background",
+    "certificationsTitle": "Professional Certifications & Accreditations",
+    "viewCredential": "View Credential",
+    "credentialId": "Credential ID"
+  },
+  "blog": {
+    "badge": "Technical Insights & Engineering Blog",
+    "title": "Architecture Deep Dives & System Notes",
+    "subtitle": "Technical writings on Change Data Capture, event-driven microservices, database performance, and distributed systems.",
+    "readArticle": "Read Full Article",
+    "closeArticle": "Close Article",
+    "backToHome": "Back to Portfolio & CV",
+    "searchPlaceholder": "Search articles by title, tags, or keywords...",
+    "allTopics": "All Topics",
+    "noArticlesFound": "No engineering articles match your search or filter.",
+    "article": "Article",
+    "showingArticles": "Showing {count} of {total} articles",
+    "resetFilters": "Reset filters"
+  },
+  "contact": {
+    "badge": "Get In Touch",
+    "title": "Let's Build Something Scalable Together",
+    "subtitle": "Open for Senior Backend & Data Engineering roles, Technical Lead opportunities, and high-impact architectural consulting.",
+    "emailLabel": "Direct Email",
+    "emailHint": "Best for engineering opportunities, technical discussions & consulting.",
+    "phoneLabel": "Phone & Zalo",
+    "phoneHint": "Available for calls, direct technical screening & instant messaging.",
+    "locationLabel": "Location",
+    "locationHint": "Open for Hybrid / Onsite in Ho Chi Minh City & Remote worldwide.",
+    "locationCta": "Onsite / Hybrid / Remote",
+    "linkedinLabel": "LinkedIn Profile",
+    "linkedinHint": "Connect for professional networking & career endorsements.",
+    "copied": "Copied!",
+    "copyEmail": "Copy Email",
+    "compose": "Compose",
+    "call": "Call",
+    "zalo": "Chat Zalo",
+    "callZalo": "Call / Zalo",
+    "viewProfile": "View Profile"
+  },
+  "footer": {
+    "hostedOn": "Hosted on GitHub Pages",
+    "allRightsReserved": "All rights reserved"
+  },
+  "printCv": {
+    "summaryHeading": "PROFESSIONAL SUMMARY",
+    "summaryExtension": "Proven track record of architecting scalable microservices, orchestrating CDC pipelines with zero data loss, and reducing analytical query execution times by over 70%. Experienced Technical Team Lead capable of bridging business specifications into high-performance distributed systems with rigorous code quality and automated CI/CD deployment workflows.",
+    "skillsHeading": "CORE TECHNICAL SKILLS",
+    "experienceHeading": "PROFESSIONAL EXPERIENCE",
+    "technologies": "Technologies:",
+    "projectsHeading": "FEATURED ENGINEERING ARCHITECTURE CASE STUDIES",
+    "keyTechnologies": "Key Technologies:",
+    "educationHeading": "EDUCATION & CERTIFICATIONS",
+    "academicBackground": "Academic Background:",
+    "academicDetails": "Completed comprehensive CS foundation curriculum (Data Structures & Algorithms, OOP, Relational Databases, Computer Networks, Operating Systems, Software Engineering). Early transition into professional software development with 5+ years of verified production engineering.",
+    "certificationsAndBadges": "Professional Certifications & Badges:"
+  }
+}

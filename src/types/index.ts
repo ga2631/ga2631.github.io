@@ -48,12 +48,15 @@ export interface ProjectItem {
   tags: string[];
   keyImpacts?: string[];
   highlights: string[];
+  responsibilities?: string[];
+  challengesSolutions?: { challenge: string; solution: string }[];
+  achievements?: string[];
   featured?: boolean;
 }
 
 export interface SkillItem {
   name: string;
-  level: 'Expert' | 'Advanced' | 'Proficient';
+  level: string | number;
   iconName?: string;
 }
 

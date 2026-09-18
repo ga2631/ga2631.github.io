@@ -33,7 +33,7 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
                     <h3 className="timeline-role">{item.role}</h3>
                     <div className="timeline-period-wrapper">
                       <span className="timeline-period">{item.period}</span>
-                      {item.current && <span className="badge badge-emerald">Current Position</span>}
+                      {item.current && <span className="badge badge-emerald">{t.currentPosition}</span>}
                     </div>
                   </div>
 
@@ -52,9 +52,11 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
 
                 <div className="timeline-achievements">
                   {item.achievements.map((ach, idx) => (
-                    <div key={idx} className="achievement-point">
-                      {ach}
-                    </div>
+                    <div
+                      key={idx}
+                      className="achievement-point"
+                      dangerouslySetInnerHTML={{ __html: ach }}
+                    />
                   ))}
                 </div>
 

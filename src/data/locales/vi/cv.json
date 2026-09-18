@@ -1,0 +1,498 @@
+{
+  "personalInfo": {
+    "fullName": "Huỳnh Nhật Tân",
+    "jobTitle": "Kỹ sư Backend & Dữ liệu đa ngôn ngữ | Trưởng nhóm Kỹ thuật",
+    "tagline": "Kiến trúc Hệ thống Phân tán Mở rộng, Medallion Data Warehouse & Đường ống Dữ liệu Tải cao",
+    "bio": "Kỹ sư Backend & Dữ liệu đa ngôn ngữ với hơn 5 năm kinh nghiệm kiến trúc các hệ thống phân tán tải cao và Data Warehouse hiện đại. Năng lực làm chủ kỹ thuật chuyên sâu trên Golang, Java (Spring Boot), Node.js và Python — chuyên trách các đường ống dữ liệu CDC thời gian thực, tối ưu hóa cơ sở dữ liệu và microservices quy mô lớn.",
+    "email": "dGFuaHV5bmgyNjMxQGdtYWlsLmNvbQ==",
+    "phone": "Kzg0LTk2MzY4NDUyMA==",
+    "location": "Phường Tân Khánh, TP. Hồ Chí Minh, Việt Nam",
+    "birthday": "23/11/1999",
+    "availability": "Sẵn sàng nhận việc",
+    "githubUrl": "https://github.com/ga2631",
+    "linkedinUrl": "https://www.linkedin.com/in/tan-huynh-nhat/",
+    "zaloUrl": "aHR0cHM6Ly96YWxvLm1lLzA5NjM2ODQ1MjA=",
+    "avatarUrl": "https://github.com/ga2631.png",
+    "stats": [
+      {
+        "label": "Năm kinh nghiệm",
+        "value": "5+",
+        "subtext": "Backend & Data Pipelines"
+      },
+      {
+        "label": "Khớp nối dữ liệu",
+        "value": "96%",
+        "subtext": "Chuyển đổi không mất dữ liệu"
+      },
+      {
+        "label": "Hiệu năng truy vấn",
+        "value": "70%+",
+        "subtext": "Giảm độ trễ thực thi"
+      },
+      {
+        "label": "Tải đồng thời tối đa",
+        "value": "1,000+",
+        "subtext": "Người dùng đồng thời (CCU)"
+      }
+    ]
+  },
+  "experiences": [
+    {
+      "id": "exp-1",
+      "role": "Kỹ sư Dữ liệu (Data Engineer)",
+      "company": "Công ty Cổ phần Công nghệ Adtechnology",
+      "companySubtitle": "Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "location": "Phường Bàn Cờ, TP. Hồ Chí Minh",
+      "period": "04/2026 – 06/2026",
+      "current": false,
+      "summary": "Xây dựng đặc tả đo lường dữ liệu sản phẩm và phát triển các đường ống dữ liệu, hệ thống báo cáo hiệu quả cao cho phễu chuyển đổi thương mại điện tử và tiếp thị đa kênh.",
+      "achievements": [
+        "Thiết lập đặc tả đo lường phân tích sản phẩm (GA4) cho phễu chuyển đổi TMĐT nhằm phát hiện điểm rơi và tối ưu chiến lược doanh thu.",
+        "Xây dựng bảng điều khiển báo cáo tự động trên Looker Studio kết hợp AI, rút ngắn hơn <b>40% thời gian tổng hợp dữ liệu</b>.",
+        "Thiết kế giao thức bảo mật dữ liệu định danh cá nhân (PII) trước khi truyền sang Google Analytics, đảm bảo <b>100% tuân thủ quyền riêng tư</b>."
+      ],
+      "technologies": [
+        "Google Analytics 4 (GA4)",
+        "Google Tag Manager (GTM)",
+        "Looker Studio",
+        "BigQuery",
+        "SQL",
+        "Python",
+        "AI Workflows"
+      ]
+    },
+    {
+      "id": "exp-2",
+      "role": "Kỹ sư Phần mềm / Trưởng nhóm Kỹ thuật (Tech Lead)",
+      "company": "Công ty Cổ phần Công nghệ Adtechnology",
+      "companySubtitle": "Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "location": "Phường Bàn Cờ, TP. Hồ Chí Minh",
+      "period": "01/2024 – 03/2026",
+      "current": false,
+      "summary": "Dẫn dắt kỹ thuật đội ngũ kỹ sư bảo trì và mở rộng nền tảng ERP doanh nghiệp cốt lõi, thúc đẩy tự động hóa quy trình và độ tin cậy của API.",
+      "achievements": [
+        "Dẫn dắt chuyển giao kỹ thuật cho nhóm 4-5 kỹ sư duy trì và mở rộng hệ thống ERP doanh nghiệp cốt lõi.",
+        "Tích hợp toàn diện dịch vụ Zalo Notification Service (ZNS) và thiết kế tính năng quản lý công nợ phải thu tự động.",
+        "Chuyển hóa yêu cầu kinh doanh thành tài liệu PRD và User Story rõ ràng, thực hiện code review/API review chặt chẽ chống trôi phạm vi và duy trì độ sẵn sàng <b>99.9% uptime</b>."
+      ],
+      "technologies": [
+        "Golang",
+        "Java (Spring Boot)",
+        "Node.js",
+        "PHP (Laravel)",
+        "PostgreSQL",
+        "MySQL",
+        "Redis",
+        "RabbitMQ",
+        "Docker"
+      ]
+    },
+    {
+      "id": "exp-3",
+      "role": "Kỹ sư Phần mềm / Quản lý Dự án (Project Manager)",
+      "company": "Công ty Cổ phần Công nghệ Adtechnology",
+      "companySubtitle": "Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "location": "Phường Bàn Cờ, TP. Hồ Chí Minh",
+      "period": "03/2021 – 12/2023",
+      "current": false,
+      "summary": "Điều hành nhóm 8 thành viên phát triển mô-đun báo cáo quảng cáo đa nền tảng, tối ưu hóa hiệu năng ứng dụng và tự động hóa CI/CD.",
+      "achievements": [
+        "Quản lý nhóm 8 nhân sự phát triển trọn gói các mô-đun báo cáo quảng cáo, tổng hợp dữ liệu Google, Facebook và TikTok về bảng điều khiển trung tâm.",
+        "Tối ưu hóa hiệu năng ứng dụng, xây dựng luồng CI/CD và triển khai caching đa tầng giúp giảm <b>63% thời gian phản hồi truy vấn</b>.",
+        "Phát triển mô-đun kế toán và quản lý đối tác liên kết (Affiliate), tiết kiệm <b>10–12 giờ/tuần</b> nhập liệu thủ công."
+      ],
+      "technologies": [
+        "PHP (Laravel, CodeIgniter)",
+        "JavaScript (VueJS, ReactJS)",
+        "MySQL",
+        "MariaDB",
+        "Redis",
+        "RabbitMQ",
+        "Linux",
+        "Docker",
+        "CI/CD"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "Hạ tầng Dữ liệu ERP & Chuyển đổi Medallion Data Warehouse",
+      "company": "Viet Nam Gate Advertising JSC",
+      "role": "Quản lý Dự án & Kiến trúc sư Hệ thống",
+      "teamSize": "6 thành viên",
+      "shortDescription": "Chuyển đổi CSDL ERP EAV 7 năm tuổi sang kiến trúc Medallion Data Warehouse (Bronze-Silver-Gold) qua MySQL CDC binlogs & RabbitMQ.",
+      "description": "Kiến trúc và thực thi chuyển đổi toàn diện hệ thống cơ sở dữ liệu ERP 7 năm tuổi từ mô hình Entity-Attribute-Value (EAV) phức tạp sang Medallion Data Warehouse tập trung (Bronze-Silver-Gold) nhằm tăng tốc báo cáo phân tích, tách biệt hoàn toàn tải OLTP và OLAP, đồng thời triệt tiêu hiện tượng nghẽn cổ chai truy vấn.",
+      "category": "Data / AI",
+      "tags": [
+        "Golang",
+        "MySQL Binlogs",
+        "PostgreSQL",
+        "Medallion CDC",
+        "RabbitMQ",
+        "Docker",
+        "Linux",
+        "Git"
+      ],
+      "keyImpacts": [
+        "Giảm hơn 70% thời gian thực thi truy vấn phân tích",
+        "Tỷ lệ khớp nối 96% với 0% mất mát dữ liệu",
+        "Độ trễ đồng bộ CDC gần thời gian thực (<2s)"
+      ],
+      "responsibilities": [
+        "Trực tiếp thiết kế kiến trúc tổng thể, mô hình hóa dữ liệu, lộ trình chuyển đổi và quản trị rủi ro cho toàn bộ dữ liệu tài chính - quảng cáo cốt lõi của doanh nghiệp.",
+        "Xây dựng kiến trúc dữ liệu Medallion Data Warehouse 3 tầng (Bronze: Binlog thô -> Silver: Sự kiện CDC làm sạch -> Gold: Data Mart nghiệp vụ).",
+        "Thiết kế các microservices hiệu năng cao, độ trễ thấp bằng Golang với kiến trúc phân tầng chuẩn và cơ chế xác thực schema chặt chẽ.",
+        "Dẫn dắt nhóm 6 kỹ sư thông qua quy trình Sprint Planning, kiểm thử tự động và chuyển đổi dữ liệu an toàn không gián đoạn dịch vụ (Zero-Downtime Cutover)."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Sửa đổi trực tiếp mã nguồn ERP 7 năm tuổi để đẩy sự kiện tiềm ẩn rủi ro hồi quy và tốn kém thời gian.",
+          "solution": "Bỏ qua việc sửa mã nguồn ứng dụng, triển khai Change Data Capture (CDC) đọc trực tiếp từ MySQL Binlogs truyền vào hàng đợi RabbitMQ."
+        },
+        {
+          "challenge": "Cơ chế retry trên môi trường phân tán dễ gây sai lệch thứ tự và trùng lặp bản ghi khi ghi vào kho dữ liệu.",
+          "solution": "Xây dựng các Go worker idempotent với cơ chế PostgreSQL UPSERT (ON CONFLICT) và khóa khử trùng lặp (deduplication key)."
+        },
+        {
+          "challenge": "Khối lượng bản ghi lớn từ quá khứ gây áp lực I/O nặng và độ trễ xử lý dữ liệu.",
+          "solution": "Mở rộng quy mô theo chiều ngang (horizontal scaling) các container Go trên Docker, tối ưu prefetch limit của RabbitMQ và phân vùng (partitioning) bảng Gold PostgreSQL."
+        }
+      ],
+      "achievements": [
+        "Đạt tỷ lệ khớp nối dữ liệu <b>96% (Reconciliation Rate)</b> giữa nguồn cũ và kho dữ liệu mới mà <b>không làm mất mát bất kỳ bản ghi nào</b>.",
+        "Giảm hơn <b>70% thời gian thực thi truy vấn phân tích phức tạp</b> nhờ loại bỏ hoàn toàn các phép JOIN bảng EAV nhiều tầng sang Data Mart phẳng.",
+        "Duy trì độ trễ đồng bộ đường ống CDC thời gian thực <b>dưới 2 giây</b>, tuân thủ <b>100% Nghị định 13/2023/NĐ-CP</b> về bảo vệ dữ liệu cá nhân."
+      ],
+      "highlights": [
+        "Bỏ qua mã nguồn monolithic cũ kỹ bằng cách triển khai Change Data Capture (CDC) đọc trực tiếp từ MySQL binlogs.",
+        "Xây dựng các Go worker có tính chất Idempotent tiêu thụ hàng đợi RabbitMQ với PostgreSQL UPSERTs.",
+        "Đạt tỷ lệ khớp nối dữ liệu 96% với 0% mất mát và giảm hơn 70% thời gian thực thi truy vấn."
+      ],
+      "githubUrl": "https://github.com/ga2631",
+      "featured": true
+    },
+    {
+      "id": "proj-2",
+      "title": "Trung tâm MarTech Đa kênh & Phân tích Phễu Chuyển đổi",
+      "company": "Công ty Cổ phần Công nghệ Adtechnology",
+      "role": "Kỹ sư Backend / Kỹ sư Dữ liệu",
+      "teamSize": "6 thành viên",
+      "shortDescription": "Thu thập chuyển đổi TMĐT thời gian thực và xây dựng data mart ETL tự động với luồng Reactive Streaming & mã hóa PII tự động.",
+      "description": "Xây dựng trung tâm Marketing Technology (MarTech) tập trung để tổng hợp chỉ số quảng cáo đa nền tảng (Google, Facebook, TikTok) và xử lý phễu chuyển đổi thương mại điện tử theo thời gian thực với cơ chế tự động ẩn dữ liệu PII và xuất báo cáo BI tức thì.",
+      "category": "Backend / Cloud",
+      "tags": [
+        "Java 17",
+        "Spring Boot",
+        "Spring WebFlux",
+        "Spring AOP",
+        "Spring Batch",
+        "Kafka",
+        "BigQuery",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "keyImpacts": [
+        "Độ trễ dưới 1 giây cho hàng nghìn sự kiện phễu mỗi ngày",
+        "Tuân thủ 100% quyền riêng tư PII qua Spring AOP",
+        "Giảm hơn 40% thời gian tổng hợp báo cáo định kỳ"
+      ],
+      "responsibilities": [
+        "Kiến trúc API Gateway non-blocking theo hướng sự kiện (Event-Driven) sử dụng Java 17, Spring Boot và Spring WebFlux.",
+        "Thiết kế cơ chế tự động phát hiện, mã hóa và ẩn danh dữ liệu cá nhân (PII) bằng Spring AOP trước khi truyền tải đến GA4/BigQuery.",
+        "Xây dựng các adapter tích hợp bền bỉ với Google Ads API, Facebook Graph API, TikTok API kèm cơ chế Rate Limiting và Circuit Breaker.",
+        "Xây dựng các tác vụ ETL tự động với Spring Batch xử lý các tệp trích xuất Avro từ Google BigQuery nạp vào cơ sở dữ liệu báo cáo PostgreSQL."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Các đợt flash sale tạo lưu lượng sự kiện chuyển đổi tăng vọt, nguy cơ làm nghẽn API đặt hàng cốt lõi.",
+          "solution": "Triển khai tầng tiếp nhận bất đồng bộ non-blocking với Spring WebFlux kết hợp Apache Kafka đệm sự kiện, tách biệt hoàn toàn luồng thanh toán đồng bộ."
+        },
+        {
+          "challenge": "Thường xuyên bị Rate Limit và timeout gián đoạn từ các nền tảng quảng cáo (Google/Meta/TikTok).",
+          "solution": "Tích hợp thư viện Resilience4j với cơ chế Circuit Breaker, Exponential Backoff Retry và Token Bucket Rate Limiter."
+        },
+        {
+          "challenge": "Đảm bảo số điện thoại và email khách hàng không bị rò rỉ vào các công cụ phân tích bên ngoài.",
+          "solution": "Xây dựng các bộ Interceptor bằng Spring AOP tự động phát hiện, băm (hash) và che giấu các trường PII trước khi xuất dữ liệu."
+        }
+      ],
+      "achievements": [
+        "Tiếp nhận và xử lý mượt mà <b>hàng nghìn sự kiện phễu mỗi ngày</b> với <b>độ trễ dưới 1 giây</b> mà không gây ảnh hưởng đến hiệu năng hệ thống đặt hàng.",
+        "Đạt <b>100% tuân thủ bảo mật dữ liệu cá nhân (PII)</b> trên toàn bộ đường ống phân tích thông qua Spring AOP.",
+        "Giảm hơn <b>40% thời gian tổng hợp báo cáo marketing đa kênh hàng ngày</b>, hỗ trợ ra quyết định tối ưu hóa ROAS chiến dịch tức thì."
+      ],
+      "highlights": [
+        "Phát triển dịch vụ theo dõi sự kiện thông lượng cao sử dụng Spring WebFlux cùng Apache Kafka.",
+        "Xây dựng cổng dữ liệu bảo mật bằng Spring AOP nhằm tự động phát hiện và loại bỏ PII trước khi gửi sang Google Analytics 4 (GA4).",
+        "Xử lý hàng nghìn sự kiện phễu với độ trễ <1s và giảm hơn 40% thời gian xuất báo cáo."
+      ],
+      "githubUrl": "https://github.com/ga2631",
+      "featured": true
+    },
+    {
+      "id": "proj-3",
+      "title": "Cổng Báo cáo Ứng dụng Khách hàng Tải cao (1,000+ CCU)",
+      "company": "Viet Nam Gate Advertising JSC",
+      "role": "Quản lý Dự án & Trưởng nhóm Kỹ thuật",
+      "teamSize": "6 thành viên",
+      "shortDescription": "Cổng thông tin khách hàng doanh nghiệp chịu tải 1,000+ CCU với cơ chế đệm truy vấn Redis và biểu đồ Vue.js dạng mô-đun.",
+      "description": "Dẫn dắt nhóm liên chức năng xây dựng Cổng thông tin khách hàng doanh nghiệp (Customer Portal) tích hợp trực tiếp với hệ thống ERP nội bộ, cung cấp báo cáo hiệu suất chiến dịch minh bạch thời gian thực, theo dõi hóa đơn tự động và bảng điều khiển phân tích tự phục vụ cho khách hàng doanh nghiệp chịu tải 1,000+ CCU.",
+      "category": "Fullstack",
+      "tags": [
+        "Node.js",
+        "Vue.js",
+        "Redis",
+        "MariaDB",
+        "MySQL",
+        "ERP Integration",
+        "Docker",
+        "Agile"
+      ],
+      "keyImpacts": [
+        "Vận hành ổn định dưới tải đỉnh 1,000+ người dùng đồng thời",
+        "Giảm 40% yêu cầu trích xuất dữ liệu thủ công",
+        "Mô-đun biểu đồ linh hoạt thích ứng thay đổi giao diện"
+      ],
+      "responsibilities": [
+        "Quản lý toàn diện vòng đời phát triển phần mềm (SDLC), viết đặc tả kỹ thuật, lập kế hoạch lộ trình và phân bổ nguồn lực cho đội ngũ 6 lập trình viên.",
+        "Thiết kế tầng RESTful API bảo mật và cầu nối tích hợp dữ liệu giữa cổng thông tin khách hàng bên ngoài và backend ERP nội bộ.",
+        "Thiết lập chiến lược đệm dữ liệu (caching) hiệu năng cao với Redis, ngăn chặn tình trạng quá tải cơ sở dữ liệu khi lượng lớn khách hàng truy cập đồng thời.",
+        "Định hướng kiến trúc frontend dạng mô-đun trên Vue.js với các component biểu đồ động có khả năng tái sử dụng cao."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Nhiều khách hàng doanh nghiệp truy vấn báo cáo tổng hợp nhiều tháng cùng lúc làm chậm hệ thống ERP nội bộ.",
+          "solution": "Thiết lập kiến trúc đệm đa tầng bằng Redis với cơ chế TTL động và các worker xử lý tổng hợp theo đợt bất đồng bộ."
+        },
+        {
+          "challenge": "Khách hàng thường xuyên thay đổi cách hiển thị chỉ số và bố cục báo cáo theo yêu cầu nghiệp vụ.",
+          "solution": "Xây dựng hệ thống widget biểu đồ Vue.js dạng mô-đun hóa có khả năng cắm ghép linh hoạt mà không cần viết lại mã nguồn cốt lõi."
+        },
+        {
+          "challenge": "Ngăn chặn rò rỉ dữ liệu giữa các doanh nghiệp khi cùng truy xuất trên cơ sở dữ liệu ERP dùng chung.",
+          "solution": "Áp dụng kiểm soát truy cập dựa trên vai trò đa người thuê (Multi-Tenant RBAC) với bộ lọc bản ghi chặt chẽ theo tenant ở tầng API Gateway."
+        }
+      ],
+      "achievements": [
+        "Vận hành mượt mà và duy trì độ sẵn sàng cao dưới tải đỉnh <b>1,000+ người dùng doanh nghiệp đồng thời (CCU)</b>.",
+        "Giảm hơn <b>40% số lượng yêu cầu trích xuất dữ liệu và hỗ trợ thủ công</b> từ phía khách hàng.",
+        "Rút ngắn chu kỳ phát hành các chỉ số báo cáo mới từ 2 tuần xuống còn <b>2 ngày</b> nhờ kiến trúc mô-đun hóa."
+      ],
+      "highlights": [
+        "Quản lý toàn bộ SDLC từ thiết kế kiến trúc đến kiểm thử nghiệm thu người dùng (UAT).",
+        "Tái cấu trúc luồng đồng bộ dữ liệu kết hợp xử lý theo lô và bộ nhớ đệm Redis, đáp ứng 1,000 CCU.",
+        "Giảm 40% yêu cầu trích xuất dữ liệu thủ công, nâng cao sự hài lòng của đối tác."
+      ],
+      "githubUrl": "https://github.com/ga2631",
+      "featured": true
+    },
+    {
+      "id": "proj-4",
+      "title": "Nâng cấp Hệ thống ERP Nội bộ & Tự động hóa Tài chính",
+      "company": "Viet Nam Gate Advertising JSC",
+      "role": "Kỹ sư Phần mềm",
+      "teamSize": "2 thành viên",
+      "shortDescription": "Mô-đun tự động hóa phân bổ dòng tiền tài chính, đồng bộ chỉ số quảng cáo đa kênh và CI/CD nâng cấp zero-downtime.",
+      "description": "Hiện đại hóa các phân hệ ERP doanh nghiệp thông qua việc tự động hóa phân bổ dòng tiền tài chính phức tạp, tích hợp API quảng cáo đa kênh và thiết lập quy trình triển khai CI/CD không gián đoạn (Zero-Downtime) trên máy chủ CentOS.",
+      "category": "Backend / Cloud",
+      "tags": [
+        "PHP (Laravel)",
+        "VueJS",
+        "MariaDB",
+        "MySQL",
+        "RabbitMQ",
+        "CentOS",
+        "Nginx",
+        "CI/CD"
+      ],
+      "keyImpacts": [
+        "Giảm 63% thời gian tạo báo cáo tài chính",
+        "Tiết kiệm 10-12 giờ/tuần nhập liệu thủ công cho kế toán",
+        "Triển khai nâng cấp tự động 100% không gián đoạn"
+      ],
+      "responsibilities": [
+        "Thiết kế và phát triển phân hệ tự động hóa phân bổ dòng tiền tài chính, chia tách doanh thu chính xác theo từng trung tâm chi phí.",
+        "Tích hợp các API quảng cáo ngoài (Google Ads, Facebook Ads, TikTok Ads) nhằm đồng bộ tập trung số liệu chi tiêu marketing hàng ngày.",
+        "Phân tích hiệu năng, đánh chỉ mục (indexing) và tối ưu hóa các truy vấn cơ sở dữ liệu quan hệ phức tạp trong MariaDB/MySQL.",
+        "Quản trị hạ tầng máy chủ CentOS, cấu hình Nginx Reverse Proxy và xây dựng quy trình triển khai tự động CI/CD trên nền tảng Git."
+      ],
+      "challengesSolutions": [
+        {
+          "challenge": "Đội ngũ kế toán mất hàng chục giờ mỗi tuần nhập liệu và tính toán phân bổ thủ công, dễ phát sinh sai lệch làm tròn.",
+          "solution": "Xây dựng công cụ tính toán tự động hóa với quy tắc kiểm tra công thức tài chính nghiêm ngặt, tự động đối soát và lưu vết kiểm toán (audit log)."
+        },
+        {
+          "challenge": "Các truy vấn JOIN nhiều bảng trên hàng triệu dòng dữ liệu khiến báo cáo tài chính hàng tháng mất vài phút để phản hồi.",
+          "solution": "Tối ưu hóa bộ chỉ mục cơ sở dữ liệu (indexing), tái cấu trúc khóa tổng hợp và tạo bảng tổng hợp sẵn theo ngày, giúp giảm 63% thời gian truy vấn."
+        },
+        {
+          "challenge": "Mỗi lần deploy phiên bản mới gây gián đoạn công việc của bộ phận kinh doanh và kế toán trong giờ làm việc.",
+          "solution": "Xây dựng quy trình CI/CD với kịch bản Zero-Downtime reload qua Nginx upstream và cơ chế tự động rollback migration khi có sự cố."
+        }
+      ],
+      "achievements": [
+        "Giảm <b>63% thời gian tạo báo cáo tài chính</b> hàng tháng.",
+        "Tiết kiệm <b>10–12 giờ mỗi tuần</b> nhập liệu thủ công cho bộ phận kế toán, đưa tỷ lệ sai sót tính toán về mức <b>xấp xỉ bằng không</b>.",
+        "Đạt <b>100% triển khai tự động không gián đoạn dịch vụ (Zero-Downtime)</b> cho tất cả các bản phát hành."
+      ],
+      "highlights": [
+        "Xây dựng mô-đun phân bổ dòng tiền tự động chia tách tổng số tiền thu được theo công thức tài chính.",
+        "Tối ưu hóa các truy vấn CSDL quan hệ phức tạp, giảm 63% thời gian xuất báo cáo.",
+        "Xóa bỏ hoàn toàn việc nhập liệu thủ công, tiết kiệm 10-12 giờ mỗi tuần với CI/CD Zero-Downtime."
+      ],
+      "githubUrl": "https://github.com/ga2631",
+      "featured": false
+    }
+  ],
+  "skillCategories": [
+    {
+      "title": "Lập trình & Kiến trúc Cốt lõi",
+      "description": "Phát triển backend đa ngôn ngữ, clean architecture và microservices hiện đại",
+      "skills": [
+        {
+          "name": "Golang",
+          "level": 4
+        },
+        {
+          "name": "Java (Spring Boot, WebFlux, Batch)",
+          "level": 4
+        },
+        {
+          "name": "Python (Django, Flask, Scripting)",
+          "level": 4
+        },
+        {
+          "name": "JavaScript / TypeScript (Node.js, VueJS, ReactJS)",
+          "level": 4
+        },
+        {
+          "name": "PHP (Laravel, CodeIgniter)",
+          "level": 5
+        },
+        {
+          "name": "Rust",
+          "level": 3
+        }
+      ]
+    },
+    {
+      "title": "Cơ sở Dữ liệu & Hạ tầng",
+      "description": "Mô hình hóa CSDL quan hệ, hàng đợi thông điệp và triển khai container hóa",
+      "skills": [
+        {
+          "name": "PostgreSQL (Indexing & Tối ưu hóa)",
+          "level": 5
+        },
+        {
+          "name": "MySQL / MariaDB",
+          "level": 5
+        },
+        {
+          "name": "Redis (Caching & Rate Limiting)",
+          "level": 4
+        },
+        {
+          "name": "RabbitMQ / Apache Kafka",
+          "level": 4
+        },
+        {
+          "name": "Docker & Docker Compose",
+          "level": 5
+        },
+        {
+          "name": "Linux / CentOS Server Administration",
+          "level": 4
+        },
+        {
+          "name": "CI/CD Pipelines & Nginx",
+          "level": 4
+        }
+      ]
+    },
+    {
+      "title": "Phân tích Sản phẩm & Kỹ thuật Dữ liệu",
+      "description": "Kiến trúc Data Warehouse, theo dõi phễu chuyển đổi và bảng điều khiển BI",
+      "skills": [
+        {
+          "name": "Google Analytics 4 (GA4)",
+          "level": 5
+        },
+        {
+          "name": "Google Tag Manager (GTM)",
+          "level": 5
+        },
+        {
+          "name": "Looker Studio Reporting",
+          "level": 5
+        },
+        {
+          "name": "Google BigQuery & Advanced SQL",
+          "level": 4
+        },
+        {
+          "name": "Medallion Data Architecture (Bronze-Silver-Gold)",
+          "level": 4
+        },
+        {
+          "name": "Change Data Capture (CDC) Pipelines",
+          "level": 4
+        }
+      ]
+    },
+    {
+      "title": "Quản trị Sản phẩm, Agile & Quy trình AI",
+      "description": "Dẫn dắt kỹ thuật, viết đặc tả PRD và ứng dụng Generative AI tăng năng suất",
+      "skills": [
+        {
+          "name": "Viết PRD & User Stories",
+          "level": 5
+        },
+        {
+          "name": "Sprint Planning & Agile / Scrum",
+          "level": 5
+        },
+        {
+          "name": "Quản lý Stakeholder Liên chức năng",
+          "level": 5
+        },
+        {
+          "name": "SDLC & Kiểm thử Nghiệm thu (UAT)",
+          "level": 5
+        },
+        {
+          "name": "Gemini & Antigravity (Quy trình AI hàng ngày)",
+          "level": 5
+        },
+        {
+          "name": "Tiếng Anh & Tiếng Việt (Song ngữ)",
+          "level": 5
+        }
+      ]
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu-1",
+      "degree": "Sư phạm Tin học",
+      "institution": "Trường Đại học Sư phạm TP.HCM (HCMUE)",
+      "location": "TP. Hồ Chí Minh, Việt Nam",
+      "period": "2018 - 2022",
+      "gpaOrHonors": "Hoàn thành 100% chương trình chuyên ngành • Bắt đầu làm việc từ sớm",
+      "details": [
+        "Nền tảng Khoa học Máy tính Toàn diện: Nắm vững Cấu trúc Dữ liệu & Giải thuật (DSA), Lập trình Hướng đối tượng (OOP), Cơ sở Dữ liệu (DBMS / Relational SQL), Kiến trúc Máy tính, Hệ điều hành, Mạng máy tính và Phương pháp luận Kỹ thuật Phần mềm.",
+        "Lợi thế Sư phạm & Kỹ năng Truyền đạt: Đào tạo sư phạm chính quy rèn luyện năng lực vượt trội trong việc viết tài liệu kỹ thuật, phân rã bài toán phức tạp, cố vấn chuyên môn (mentoring) và kết nối giao tiếp hiệu quả giữa đội ngũ kỹ thuật và khối kinh doanh.",
+        "Bắt đầu làm việc từ sớm: Được thôi thúc bởi đam mê mạnh mẽ với kỹ thuật phần mềm thực tế, tham gia thị trường lao động từ đầu năm 2021 để xây dựng các hệ thống quy mô lớn, tích lũy hơn 5 năm kinh nghiệm thực chiến và lãnh đạo kỹ thuật."
+      ]
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert-1",
+      "name": "Google Cloud Professional Data Engineer",
+      "issuer": "Google Cloud",
+      "issueDate": "Mục tiêu 2027",
+      "status": "Đang theo học"
+    }
+  ]
+}

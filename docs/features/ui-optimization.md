@@ -145,35 +145,78 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
       - Sử dụng kỹ thuật CSS Mask (`-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;`) với `padding: 1.5px` và `border-radius: inherit`.
       - Khóa chặt độ dày viền chính xác ở mức **1.5px**, ôm sát hoàn hảo mọi đường cong bo góc `18px` của Profile Card kết hợp hào quang tỏa nhẹ (`filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.45))`).
 
-16. **Anti-Scraping Phone Number & Sensitive Contact Protection (`obfuscation.tsx`, `Contact.tsx`, `Hero.tsx`, `DrawerMenu.tsx`, `PrintCV.tsx`, `cvData.ts`)**:
+16. **Anti-Scraping Phone Number & Sensitive Contact Protection (`obfuscation.tsx`, `Contact.tsx`, `Hero.tsx`, `DrawerMenu.tsx`, `PrintCV.tsx`, `cvData.ts`, `en/cv.json`, `vi/cv.json`)**:
     - **Bảo vệ chống công cụ quét số điện thoại & Email tự động (Bot & Crawler Defense)**:
-      - Loại bỏ hoàn toàn các chuỗi email (`tanhuynh2631@gmail.com`), số điện thoại (`+84-963684520`) và đường dẫn Zalo (`https://zalo.me/0963684520`) dạng văn bản thuần khỏi bundle JavaScript tĩnh và các thuộc tính DOM tĩnh (`title`, `href="mailto:..."`, `href="tel:..."`, `href="https://zalo.me/..."`).
-      - Mã hóa phân mảnh chuỗi Base64 (`OBFUSCATED_EMAIL_CHUNKS`, `OBFUSCATED_PHONE_CHUNKS`, `OBFUSCATED_ZALO_CHUNKS`) và giải mã động tại runtime trong vòng đời React (`useEffect`), vô hiệu hóa hoàn toàn các công cụ regex scraping hoặc web crawler quét HTML tĩnh.
-    - **Hiển thị tự nhiên 100% không yêu cầu người dùng thao tác thêm (Seamless Zero-Interaction Display)**:
-      - Tích hợp components `<SecureEmail />` và `<SecurePhone />` với kỹ thuật bóc tách thẻ con (`split-span token rendering`) và chữ đảo chiều CSS honeypot (`unicode-bidi: bidi-override`).
-      - Người dùng thật khi truy cập trang web sẽ **ngay lập tức nhìn thấy đầy đủ Email `tanhuynh2631@gmail.com` và số điện thoại `+84-963684520`** mà không cần phải bấm nút hiện thông tin, nhập captcha hay thực hiện bất kỳ thao tác nào khác.
-    - **Cơ chế kích hoạt email, cuộc gọi & nhắn tin Zalo an toàn (Dynamic Action Handlers)**:
-      - Các nút **Soạn Email (Compose)**, **Sao chép Email (Copy Email)**, **Gọi điện (Call)** và **Nhắn tin Zalo (Chat via Zalo)** được trang bị bộ xử lý động `onClick` và `onMouseEnter` tự động kích hoạt `window.location.href = getSecureMailtoUrl()`, `window.location.href = getSecureTelUrl()` và `window.open(getSecureZaloUrl())`, đảm bảo người dùng chỉ cần click là mở ngay ứng dụng email, trình quay số hoặc Zalo như thông thường.
+      - Loại bỏ hoàn toàn các chuỗi email (`email`), số điện thoại (`phone`) và đường dẫn liên hệ Zalo (`zaloUrl`) dạng văn bản thuần khỏi cả mã nguồn tĩnh, file JSON dữ liệu (`src/data/locales/en/cv.json`, `src/data/locales/vi/cv.json`), bundle JavaScript tĩnh và các thuộc tính DOM tĩnh (`title`, `href="mailto:..."`, `href="tel:..."`, `href="https://zalo.me/..."`).
+      - Dữ liệu trong các file JSON được mã hóa Base64 và giải mã an toàn ở runtime thông qua hàm `decodeBase64Safe()`.
+      - Kết hợp kỹ thuật render phân tách (`split tokens`), bidi-override honeypot và sự kiện động để bảo vệ 100% dữ liệu liên lạc cá nhân.
+14. **Brand Logo Streamlining (`Header.tsx`, `DrawerMenu.tsx`, `Hero.tsx`, `favicon.svg`)**:
+    - Chuyển đổi toàn bộ biểu tượng logo thương hiệu viết tắt từ `TN` sang chữ cái đơn `T` tinh gọn, hiện đại và tạo điểm nhấn thị giác sắc nét hơn.
+    - Cập nhật đồng bộ trên [Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx), [DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx), ảnh đại diện fallback [Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx) và file vector favicon [public/favicon.svg](file:///Users/tanhn/Projects/ga2631.github.io/public/favicon.svg).
+
+18. **Data-Driven Architecture & Comprehensive UI Localization Audit (`cvData.ts`, `DrawerMenu.tsx`, `Header.tsx`, `Projects.tsx`, `Experience.tsx`, `EducationCertifications.tsx`, `FloatingActions.tsx`, `Footer.tsx`, `PrintCV.tsx`, `ArticleToc.tsx`, `BlogSection.tsx`, `BlogPage.tsx`, `App.tsx`)**:
+    - **Triệt tiêu 100% chuỗi tĩnh và điều kiện ngôn ngữ phân tán (Zero Hardcoded Strings)**:
+      - Rà soát toàn bộ các component và view trong repository.
+      - Mở rộng hợp đồng dữ liệu `UITranslation` trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) bổ sung đầy đủ các danh mục con: `common`, `drawer`, `printCv`, cùng các nhãn `currentPosition`, `featuredProject`, `team`, `credentialId`, `article`, `showingArticles`, `resetFilters`, `allRightsReserved`.
+    - **DrawerMenu Dynamic Integration ([DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx))**:
+      - Nhận đầy đủ các props từ dữ liệu thật: `personalInfo`, `tNav`, `tDrawer`, `tCommon`.
+      - Toàn bộ tên lập trình viên, chức danh, tiêu đề các phân đoạn (`NAVIGATION`, `PREFERENCES & ACTIONS`), nhãn ngôn ngữ (`Language:`), chế độ giao diện (`Theme Mode:`), các nút chuyển đổi sáng/tối (`Switch to Light/Dark Mode`), huy hiệu bài viết (`Articles`), thông tin bản quyền và liên kết mạng xã hội được nạp tự động từ `cvData.ts` tương ứng theo ngôn ngữ được chọn.
+    - **Đồng bộ hóa toàn bộ các component còn lại**:
+      - [Projects.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Projects.tsx): Chuyển `+N more`, `Featured Project`, `Team:` sang `tCommon.more`, `t.featuredProject`, `t.team`.
+      - [Experience.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Experience.tsx): Chuyển nhãn vị trí hiện tại sang `t.currentPosition`.
+      - [EducationCertifications.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/EducationCertifications.tsx): Chuyển `Credential ID:` sang `t.credentialId`.
+      - [FloatingActions.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/FloatingActions.tsx): Chuyển tooltip cuộn trang và xuất PDF sang `tCommon.scrollToTop`, `tCommon.exportPdf`.
+      - [Footer.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Footer.tsx): Nạp `fullName` và `t.allRightsReserved`.
+      - [PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx): Chuyển toàn bộ tiêu đề mục in và đoạn mô tả bổ sung sang nạp trực tiếp từ `t: UITranslation['printCv']`.
+      - [ArticleToc.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ArticleToc.tsx), [BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx), [BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Tự động nạp `tCommon.tableOfContents`, `tCommon.copiedLink`, `tCommon.shareLink`, `tCommon.overview`, `t.showingArticles`, `t.article`, `t.resetFilters`.
+
+18. **JSON-Based Modular Localization & Data Decoupling (`src/data/locales/`)**:
+    - **Tách biệt hoàn toàn dữ liệu tĩnh sang file JSON theo ngôn ngữ**:
+      - Chuyển đổi toàn bộ từ điển giao diện, dữ liệu hồ sơ năng lực và bài viết blog từ mã TypeScript tĩnh sang cấu trúc JSON thuần túy:
+        - `src/data/locales/en/ui.json` & `src/data/locales/vi/ui.json`: Quản lý toàn bộ nhãn giao diện, nút điều hướng, drawer menu, modal controls, tiêu đề in ATS.
+        - `src/data/locales/en/cv.json` & `src/data/locales/vi/cv.json`: Quản lý toàn bộ thông tin cá nhân, kinh nghiệm làm việc, dự án tiêu biểu, kỹ năng, học vấn và chứng chỉ.
+        - `src/data/locales/en/blog.json` & `src/data/locales/vi/blog.json`: Quản lý danh sách các bài viết kỹ thuật chuyên sâu và nội dung HTML.
+    - **Mở rộng đa ngôn ngữ trong tương lai (Future-Proof Scalability)**:
+      - Khi cần bổ sung ngôn ngữ mới (ví dụ `ja`, `fr`, `de`), chỉ cần tạo thư mục `src/data/locales/{lang}/` với bộ 3 file `ui.json`, `cv.json`, `blog.json` mà không cần sửa đổi bất kỳ logic giao diện hay component JSX nào.
+    - **TypeScript Data Loader & Runtime Security Injection**:
+      - [cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) và [blogData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/blogData.ts) đóng vai trò Loader tầng dữ liệu có kiểm tra kiểu chặt chẽ (`Type Guard`), đồng thời tự động tiêm các token bảo mật chống bot crawler `getSecureEmail()`, `getSecurePhone()`, `getSecureZaloUrl()` vào `personalInfo`.
+
+19. **Standardized 5-Section Enterprise Project Case Study Architecture & Metric Highlighting (`Projects.tsx`, `Experience.tsx`, `PrintCV.tsx`, `types/index.ts`, `cvData.ts`, `en/cv.json`, `vi/cv.json`)**:
+    - Chuẩn hóa cấu trúc mô tả chi tiết của toàn bộ các dự án kiến trúc tiêu biểu thành **5 thành phần chuyên sâu và chuyên nghiệp**:
+      1. **Project Objective (Mục tiêu Dự án)**: Trình bày bài toán kinh doanh và mục tiêu kỹ thuật cốt lõi cần giải quyết.
+      2. **Key Responsibilities & Strengths (Trách nhiệm chính & Thế mạnh cốt lõi)**: Mô tả vai trò kỹ thuật chuyên sâu, lãnh đạo kiến trúc, thiết kế tầng dịch vụ và thế mạnh chuyên môn.
+      3. **Challenges & Solutions (Thách thức Kỹ thuật & Giải pháp Thực thi)**: Cấu trúc từng cặp Thách thức (`Challenge`) và Giải pháp kỹ thuật (`Solution`) với thiết kế trực quan nổi bật.
+      4. **Key Achievements & Metrics (Thành tựu & Kết quả định lượng)**: Làm nổi bật các chỉ số đo lường hiệu năng (`96% reconciliation rate`, `zero data loss`, `>70% latency reduction`, `1,000+ CCU`, `63% report time`, `10-12 hours/week saved`) bằng thẻ `<b>` và cơ chế render HTML an toàn `dangerouslySetInnerHTML`.
+      5. **Technology Stack (Hệ sinh thái Công nghệ & Ngăn xếp)**: Bộ thẻ tag công nghệ, công cụ và nền tảng hạ tầng thực tế được áp dụng.
 
 ---
 
 ## 2. Database & Schema Changes
 - Cập nhật hợp đồng dữ liệu [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts):
   - Bổ sung trường `zaloUrl?: string;` vào interface `PersonalInfo`.
+  - Mở rộng interface `ProjectItem` với các trường cấu trúc chuẩn hóa: `responsibilities?: string[];`, `challengesSolutions?: { challenge: string; solution: string }[];`, `achievements?: string[];`.
   - Loại bỏ trường không còn sử dụng `companyUrl?: string;` khỏi interface `ExperienceItem`.
-- Cập nhật dữ liệu tĩnh trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts):
-  - Bổ sung `call: string;` và `zalo: string;` vào interface `UITranslation['contact']` và từ điển bản dịch EN/VI.
+- Cập nhật từ điển dịch thuật [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts):
+  - Bổ sung các nhãn 5 thành phần dự án: `responsibilities`, `challengesSolutions`, `achievements`, `techStack`, `challengeLabel`, `solutionLabel`.
+- Cập nhật dữ liệu tĩnh trong [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) & [src/data/locales/](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/):
+  - Khởi tạo cấu trúc lưu trữ localization dạng JSON độc lập cho từng ngôn ngữ:
+    - [src/data/locales/en/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/ui.json) & [src/data/locales/vi/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/ui.json)
+    - [src/data/locales/en/cv.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/cv.json) & [src/data/locales/vi/cv.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/cv.json)
+    - [src/data/locales/en/blog.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/blog.json) & [src/data/locales/vi/blog.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/blog.json)
   - Tích hợp các hàm giải mã động `getSecureEmail()`, `getSecurePhone()`, và `getSecureZaloUrl()` thay thế chuỗi tĩnh cho `email`, `phone`, và `zaloUrl` trong `personalInfo` của cả `cvDataEn` và `cvDataVi`.
   - Tách bỏ hoàn toàn các ký tự emoji ra khỏi chuỗi nhãn và mảng dữ liệu (`workingTreeClean`, `objective`, `challenges`, `fullStack`, `keyImpacts`).
-  - Loại bỏ các trường `companyUrl` khỏi danh sách kinh nghiệm làm việc của cả 2 ngôn ngữ EN và VI.
 
 ---
 
 ## 3. Technical Optimizations
+- **JSON-Based Modular Localization Engine**: Tách rời toàn bộ nội dung tĩnh ra các file JSON theo từng ngôn ngữ trong `src/data/locales/`, đảm bảo khả năng mở rộng thêm ngôn ngữ mới mà không làm phình to mã nguồn TypeScript.
+- **Data-Driven Architecture & Localization Engine**: Centralized 100% UI texts and metadata with strict TypeScript contracts (`UITranslation`), ensuring complete separation of concerns and eliminating inline ternary language switches across JSX templates.
 - **Streamlined Modal Navigation UX**: Loại bỏ các nút đóng dư thừa, chỉ duy trì 2 điểm chạm đóng trực quan (góc phải trên và góc phải dưới), giảm thiểu sự lộn xộn thị giác và tăng tính chuyên nghiệp của giao diện.
 - **Modal Lifecycle & Scroll Lock Management**: Sử dụng React Hooks (`useEffect`) quản lý tự động `document.body.style.overflow` và phím tắt `Escape`.
 - **Single-Row 4-Column Desktop Grid Consistency**: Đồng bộ `grid-template-columns: repeat(4, 1fr)` cho tất cả các vùng chứa 4 box trên Desktop (`.hero-stats-banner`, `.principles-grid`, `.skills-compact-grid`, `.contact-cards-grid`).
 - **Unified Action Element Geometry**: Thiết lập quy chuẩn kích thước hình học đồng nhất (`height: 40px` - `42px`, `border-radius: var(--radius-md)`, `box-sizing: border-box`) cho toàn bộ các nút bấm trong `.contact-card-actions` và Drawer Menu (`.drawer-cv-btn`, `.drawer-lang-pill`, `.drawer-theme-toggle-btn`, `.drawer-social-btn`).
+- **Unified Project Badge & Tag Geometry**: Đồng bộ hóa 100% hình học, kích thước, hiệu ứng hover và cơ chế hiển thị `+N more` giữa GitHub Repositories và Enterprise Case Studies, loại bỏ sự phân mảnh về phong cách tag trong phần Projects.
+- **Clockwise Sequential Border Animation Preservation**: Chuẩn hóa lớp hover của `.github-repo-card` kế thừa trực tiếp từ `.glass-panel`, loại bỏ `border-color` tĩnh giúp khôi phục hiệu ứng viền chạy theo chiều kim đồng hồ mượt mà.
 - **Flexbox Equal Distribution & Zero Overflow**: Tối ưu `.project-actions-compact` và `.contact-card-actions` với thuộc tính `flex: 1 1 0` và `min-width: 0`.
 - **Semantic SVG Icon Mapping Engine**: Cơ chế `getImpactIcon()`, `getCategoryConfig()`, và `getPrincipleConfig()` ánh xạ chính xác 1-1 từng chỉ số kỹ thuật và triết lý với biểu tượng mang đúng ý nghĩa nguyên bản, đảm bảo 100% chuẩn nét SVG trên mọi thiết bị và hệ điều hành.
 - **Responsive Profile Card Geometric Balancing**: Tối ưu tỷ lệ co giãn của Profile Card trên Tablet (`max-width: 540px`) và Mobile (`max-width: 100%`), kết hợp chuyển đổi pill trạng thái nhận việc dưới tên cá nhân giúp trải nghiệm xem CV trên thiết bị cầm tay đạt độ hoàn thiện cao nhất.
@@ -186,23 +229,36 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
 ---
 
 ## 4. Impacted Files
+- [public/favicon.svg](file:///Users/tanhn/Projects/ga2631.github.io/public/favicon.svg): Cập nhật logo chữ cái `T` trên favicon trình duyệt.
+- [src/data/locales/en/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/ui.json): File JSON từ điển UI tiếng Anh.
+- [src/data/locales/en/cv.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/cv.json): File JSON hồ sơ CV tiếng Anh.
+- [src/data/locales/en/blog.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/en/blog.json): File JSON bài viết blog tiếng Anh.
+- [src/data/locales/vi/ui.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/ui.json): File JSON từ điển UI tiếng Việt.
+- [src/data/locales/vi/cv.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/cv.json): File JSON hồ sơ CV tiếng Việt.
+- [src/data/locales/vi/blog.json](file:///Users/tanhn/Projects/ga2631.github.io/src/data/locales/vi/blog.json): File JSON bài viết blog tiếng Việt.
+- [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts): Data loader nạp `ui.json` và `cv.json` theo ngôn ngữ và inject obfuscation.
+- [src/data/blogData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/blogData.ts): Data loader nạp `blog.json` theo ngôn ngữ.
 - [src/utils/obfuscation.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/utils/obfuscation.tsx): Bộ tiện ích bảo mật thông tin liên hệ và các components `<SecureEmail />`, `<SecurePhone />` chống scraping tự động.
 - [src/components/Icons.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Icons.tsx): Bổ sung các vector SVG icon `CalendarIcon`, `ClockIcon`, `GlobeIcon`, `TargetIcon`, `ZapIcon`, `ToolsIcon`, `LockIcon`, `RocketIcon`, `ShieldIcon`, `UsersIcon`, `TrendingDownIcon`, `PuzzleIcon`, `HourglassIcon`, `RefreshCwIcon`, `VietnamFlagIcon`, `UKFlagIcon`.
-- [src/components/ArticleToc.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ArticleToc.tsx): Component bóc tách mục lục tự động (tối đa 2 cấp thẻ heading) và hiển thị sidebar TOC cố định.
-- [src/components/Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx): Tinh gọn thanh Header Desktop, tích hợp `VietnamFlagIcon` và `UKFlagIcon` SVG.
-- [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Tích hợp nút Zalo với bộ xử lý bảo mật URL, SVG flags cho bộ chuyển ngôn ngữ trên mobile/tablet.
-- [src/pages/BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Tinh gọn nút đóng bài viết, thay thế emoji ngày/thời gian bằng vector icon.
-- [src/components/BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx): Đồng bộ giao diện popup bài viết với nút đóng và vector icon.
-- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo, cấu hình border top mặc định và hiệu ứng chạy viền xung quanh toàn bộ khung cho các thẻ, cấu hình viền xoay liên tục đối xứng 1.5px cho Profile Card.
+- [src/components/ArticleToc.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ArticleToc.tsx): Component bóc tách mục lục tự động và hiển thị sidebar TOC với tiêu đề động `tocTitle`.
+- [src/components/Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx): Nạp `personalInfo` và `t: UITranslation`, cập nhật logo `T` và tên thương hiệu động.
+- [src/components/DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx): Nạp dữ liệu động 100% từ `personalInfo`, `tNav`, `tDrawer`, `tCommon`.
+- [src/pages/BlogPage.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/BlogPage.tsx): Nạp dữ liệu động cho breadcrumb, nhãn kết quả bài viết, nút reset và modal actions.
+- [src/components/BlogSection.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/BlogSection.tsx): Chuyển đổi TOC title sang nạp động từ `tCommon`.
+- [src/styles/index.css](file:///Users/tanhn/Projects/ga2631.github.io/src/styles/index.css): Thêm animation `modalFadeIn`, cấu hình 4 box 1 hàng trên Desktop, căn chỉnh icon cho `.impact-pill`, mở rộng kích thước Profile Card và pill trạng thái trên mobile/tablet, cấu hình `.timeline-title-row` và `.timeline-company` hỗ trợ căn lề thời gian làm việc góc phải trên, cấu hình hiệu ứng hover chuyển màu tiêu đề sang màu chủ đạo, cấu hình border top mặc định và hiệu ứng chạy viền xung quanh toàn bộ khung cho các thẻ, cấu hình viền xoay liên tục đối xứng 1.5px cho Profile Card, bổ sung `.badge-purple`, `.badge:hover` và đồng bộ giao diện tag, phục hồi hiệu ứng viền clockwise cho GitHub cards.
 - [src/components/About.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/About.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và ánh xạ icon ngữ nghĩa cho từng triết lý kỹ thuật.
 - [src/components/Contact.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Contact.tsx): Tích hợp `<SecureEmail />`, `<SecurePhone />` và bộ kích hoạt mở email / gọi điện / chat Zalo bảo mật chống scraping.
-- [src/components/Projects.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Projects.tsx): Tích hợp hàm `getImpactIcon()` và render vector icons chuẩn ngữ nghĩa cho impact badges và modal headers.
+- [src/components/Projects.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Projects.tsx): Nạp động nhãn `more`, `featuredProject`, `team`, render vector icons chuẩn ngữ nghĩa cho impact badges và modal headers, đồng nhất định dạng thẻ tag `.badge`.
 - [src/components/Skills.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Skills.tsx): Cấu hình `.principles-grid` 4 cột trên Desktop và chuẩn hóa logic nhận diện icon/màu sắc chính xác cho 4 danh mục kỹ năng.
-- [src/components/Experience.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Experience.tsx): Tái cấu trúc `.timeline-title-row` cố định thời gian làm việc ở góc phải trên ngang hàng Job title, loại bỏ liên kết ngoài tới website công ty.
-- [src/components/EducationCertifications.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/EducationCertifications.tsx): Bổ sung `className="cert-title"` hỗ trợ hover effect cho tiêu đề chứng chỉ.
+- [src/components/Experience.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Experience.tsx): Nạp động `t.currentPosition`, cố định thời gian làm việc ở góc phải trên.
+- [src/components/EducationCertifications.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/EducationCertifications.tsx): Nạp động `t.credentialId`.
+- [src/components/FloatingActions.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/FloatingActions.tsx): Nạp động tooltip từ `tCommon.scrollToTop` và `tCommon.exportPdf`.
+- [src/components/Footer.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Footer.tsx): Nạp động `fullName` và `t.allRightsReserved`.
+- [src/components/Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx): Nạp động thông tin cá nhân và bản dịch giao diện.
+- [src/components/PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx): Nạp động 100% tiêu đề các phần và mô tả từ `t: UITranslation['printCv']`.
+- [src/App.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/App.tsx): Điều phối dữ liệu tập trung và truyền props `personalInfo`, `t`, `tCommon` xuống toàn bộ cây component.
 - [src/types/index.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/types/index.ts): Khai báo kiểu `zaloUrl?: string;` trong `PersonalInfo`, loại bỏ `companyUrl?: string;` trong `ExperienceItem`.
-- [src/data/cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts): Chuẩn hóa chuỗi dữ liệu, loại bỏ emoji trong translations và project impacts, loại bỏ các trường `companyUrl`.
-- [src/components/Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx): Bổ sung `CheckIcon` cho terminal status, nút Zalo và hỗ trợ hiển thị thích ứng pill trạng thái nhận việc.
-- [src/components/PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx): Thay thế emoji bằng vector icon cho bản in ATS.
 - [docs/features/ui-optimization.md](file:///Users/tanhn/Projects/ga2631.github.io/docs/features/ui-optimization.md): Tài liệu kỹ thuật chi tiết của task tối ưu hóa giao diện.
+
+
 

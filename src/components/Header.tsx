@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SunIcon, MoonIcon, MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { PersonalInfo } from '../types/index.ts';
 import { DrawerMenu, NavItem } from './DrawerMenu.tsx';
 
 interface HeaderProps {
@@ -8,7 +9,8 @@ interface HeaderProps {
   toggleTheme: () => void;
   lang: 'vi' | 'en';
   setLang: (lang: 'vi' | 'en') => void;
-  t: UITranslation['nav'];
+  t: UITranslation;
+  personalInfo: PersonalInfo;
   currentRoute?: 'home' | 'blog';
 }
 
@@ -18,6 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
   lang,
   setLang,
   t,
+  personalInfo,
   currentRoute = 'home',
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,21 +41,21 @@ export const Header: React.FC<HeaderProps> = ({
   const navItems: NavItem[] =
     currentRoute === 'blog'
       ? [
-          { label: t.about, href: '#about' },
-          { label: t.experience, href: '#experience' },
-          { label: t.projects, href: '#projects' },
-          { label: t.skills, href: '#skills' },
-          { label: t.education, href: '#education' },
-          { label: t.blog, href: '#/blog', isActive: true },
+          { label: t.nav.about, href: '#about' },
+          { label: t.nav.experience, href: '#experience' },
+          { label: t.nav.projects, href: '#projects' },
+          { label: t.nav.skills, href: '#skills' },
+          { label: t.nav.education, href: '#education' },
+          { label: t.nav.blog, href: '#/blog', isActive: true },
         ]
       : [
-          { label: t.about, href: '#about' },
-          { label: t.experience, href: '#experience' },
-          { label: t.projects, href: '#projects' },
-          { label: t.skills, href: '#skills' },
-          { label: t.education, href: '#education' },
-          { label: t.contact, href: '#contact' },
-          { label: t.blog, href: '#/blog' },
+          { label: t.nav.about, href: '#about' },
+          { label: t.nav.experience, href: '#experience' },
+          { label: t.nav.projects, href: '#projects' },
+          { label: t.nav.skills, href: '#skills' },
+          { label: t.nav.education, href: '#education' },
+          { label: t.nav.contact, href: '#contact' },
+          { label: t.nav.blog, href: '#/blog' },
         ];
 
   const handleNavClick = (href: string) => {
@@ -109,8 +112,8 @@ export const Header: React.FC<HeaderProps> = ({
               handleNavClick('#/');
             }}
           >
-            <div className="logo-badge">TN</div>
-            <span className="logo-text">Tan Huynh Nhat</span>
+            <div className="logo-badge">T</div>
+            <span className="logo-text">{personalInfo.fullName}</span>
           </a>
 
           {/* Desktop Navigation Links */}
@@ -190,7 +193,10 @@ export const Header: React.FC<HeaderProps> = ({
         toggleTheme={toggleTheme}
         lang={lang}
         setLang={setLang}
-        tNav={t}
+        tNav={t.nav}
+        tDrawer={t.drawer}
+        tCommon={t.common}
+        personalInfo={personalInfo}
         onPrint={handlePrint}
       />
     </>
