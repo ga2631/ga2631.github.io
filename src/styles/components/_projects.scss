@@ -232,6 +232,9 @@
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
 .badge-tech-tag {
   display: inline-flex;
   align-items: center;
