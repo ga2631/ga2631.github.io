@@ -416,6 +416,13 @@ p {
   background: var(--bg-tertiary);
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.badge:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
 }
 
 .badge-cyan {
@@ -429,6 +436,13 @@ p {
   color: #10b981;
   border-color: rgba(16, 185, 129, 0.25);
 }
+
+.badge-purple {
+  background: rgba(168, 85, 247, 0.12);
+  color: #c084fc;
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
 
 
 /* ==========================================================================

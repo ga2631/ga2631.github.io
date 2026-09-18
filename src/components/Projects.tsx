@@ -339,94 +339,107 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
 
           {/* 3. Live GitHub Public Repositories */}
           {showRepos &&
-            repos.map((repo) => (
-              <div key={repo.id} className="glass-panel github-repo-card">
-                <div className="project-card-header">
-                  <div className="project-meta-row">
-                    <span className="repo-source-badge">
-                      <GitRepoIcon size={14} /> {t.publicRepo}
-                    </span>
-                    <span className="repo-date">{formatDate(repo.updated_at)}</span>
+            repos.map((repo) => {
+              const repoTags = repo.topics && repo.topics.length > 0
+                ? repo.topics
+                : (repo.language ? [repo.language] : []);
+
+              return (
+                <div key={repo.id} className="glass-panel github-repo-card">
+                  <div className="project-card-header">
+                    <div className="project-meta-row">
+                      <span className="badge badge-cyan">
+                        <GitRepoIcon size={13} /> {t.publicRepo}
+                      </span>
+                      <span className="badge" style={{ fontSize: '0.75rem' }}>
+                        {formatDate(repo.updated_at)}
+                      </span>
+                    </div>
+
+                    <h3 className="project-card-title repo-title">
+                      <a
+                        href={repo.html_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="repo-link-title"
+                      >
+                        {repo.name}
+                      </a>
+                    </h3>
+
+                    <p className="project-card-desc repo-desc">
+                      {repo.description || 'Public GitHub repository by @ga2631 with active source code and configuration.'}
+                    </p>
                   </div>
 
-                  <h3 className="project-card-title repo-title">
-                    <a
-                      href={repo.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="repo-link-title"
-                    >
-                      {repo.name}
-                    </a>
-                  </h3>
+                  <div className="project-card-footer">
+                    <div className="repo-stats-row">
+                      {repo.language && (
+                        <div className="repo-lang-pill">
+                          <span
+                            className="lang-color-dot"
+                            style={{ backgroundColor: getLanguageColor(repo.language) }}
+                          />
+                          <span>{repo.language}</span>
+                        </div>
+                      )}
 
-                  <p className="project-card-desc repo-desc">
-                    {repo.description || 'Public GitHub repository by @ga2631 with active source code and configuration.'}
-                  </p>
-
-                  {/* Topic Tags */}
-                  {repo.topics && repo.topics.length > 0 && (
-                    <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                      {repo.topics.slice(0, 4).map((topic) => (
-                        <span key={topic} className="badge badge-topic">
-                          #{topic}
+                      <div className="repo-counts">
+                        <span className="repo-count-item" title="Stars">
+                          <StarIcon size={14} />
+                          <span>{repo.stargazers_count}</span>
                         </span>
-                      ))}
+                        <span className="repo-count-item" title="Forks">
+                          <GitForkIcon size={14} />
+                          <span>{repo.forks_count}</span>
+                        </span>
+                      </div>
                     </div>
-                  )}
-                </div>
 
-                <div className="project-card-footer">
-                  <div className="repo-stats-row">
-                    {repo.language && (
-                      <div className="repo-lang-pill">
-                        <span
-                          className="lang-color-dot"
-                          style={{ backgroundColor: getLanguageColor(repo.language) }}
-                        />
-                        <span>{repo.language}</span>
+                    {/* Unified Tech Tags List */}
+                    {repoTags.length > 0 && (
+                      <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
+                        {repoTags.slice(0, 4).map((tag) => (
+                          <span key={tag} className="badge">
+                            {tag}
+                          </span>
+                        ))}
+                        {repoTags.length > 4 && (
+                          <span className="badge" style={{ color: 'var(--text-accent)' }}>
+                            +{repoTags.length - 4} more
+                          </span>
+                        )}
                       </div>
                     )}
 
-                    <div className="repo-counts">
-                      <span className="repo-count-item" title="Stars">
-                        <StarIcon size={14} />
-                        <span>{repo.stargazers_count}</span>
-                      </span>
-                      <span className="repo-count-item" title="Forks">
-                        <GitForkIcon size={14} />
-                        <span>{repo.forks_count}</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="project-actions-compact">
-                    <a
-                      href={repo.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-outline btn-sm"
-                    >
-                      <GithubIcon size={15} />
-                      <span>{t.sourceCode}</span>
-                    </a>
-
-                    {repo.homepage && (
+                    <div className="project-actions-compact">
                       <a
-                        href={repo.homepage}
+                        href={repo.html_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-secondary btn-sm"
-                        title="Live Preview"
+                        className="btn btn-outline btn-sm"
                       >
-                        <ExternalLinkIcon size={14} />
-                        <span>{t.demo}</span>
+                        <GithubIcon size={15} />
+                        <span>{t.sourceCode}</span>
                       </a>
-                    )}
+
+                      {repo.homepage && (
+                        <a
+                          href={repo.homepage}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-secondary btn-sm"
+                          title="Live Preview"
+                        >
+                          <ExternalLinkIcon size={14} />
+                          <span>{t.demo}</span>
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
 
         {/* Detailed Architecture & Case Study Modal */}
