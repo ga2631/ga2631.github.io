@@ -103,6 +103,7 @@
     "badge": "Skills Matrix",
     "title": "Skills & Technologies",
     "subtitle": "Comprehensive technical toolkit spanning distributed backend engineering, modern data platforms, and cloud infrastructure.",
+    "legendTitle": "Proficiency Levels",
     "expert": "Expert",
     "advanced": "Advanced",
     "proficient": "Proficient"

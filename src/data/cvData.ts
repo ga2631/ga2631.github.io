@@ -94,6 +94,7 @@ export interface UITranslation {
     badge: string;
     title: string;
     subtitle: string;
+    legendTitle: string;
     expert: string;
     advanced: string;
     proficient: string;

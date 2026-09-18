@@ -1901,8 +1901,58 @@ p {
 }
 
 /* ==========================================================================
-   Skills Matrix
+   Skills Matrix & Interactive Proficiency Tooltips
    ========================================================================== */
+
+.skills-legend-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 0 auto 36px auto;
+  padding: 8px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  width: fit-content;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+}
+
+.skills-legend-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.skills-legend-items {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.skills-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.skills-legend-item:hover {
+  color: var(--text-primary);
+  border-color: var(--border-color-hover);
+  transform: translateY(-1px);
+}
 
 .skills-compact-grid {
   display: grid;
@@ -1917,11 +1967,15 @@ p {
   flex-direction: column;
   justify-content: flex-start;
   transition: all var(--transition-smooth);
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
 }
 
 .skill-card-compact:hover {
   transform: translateY(-3px);
   box-shadow: var(--border-glow);
+  z-index: 10;
 }
 
 .skill-card-header {
@@ -1971,6 +2025,7 @@ p {
 }
 
 .skill-pill-tag {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1981,14 +2036,47 @@ p {
   font-size: 0.88rem;
   font-weight: 500;
   color: var(--text-primary);
+  cursor: default;
   transition: all var(--transition-fast);
 }
 
-.skill-pill-tag:hover {
-  border-color: var(--border-color-hover);
+.skill-pill-tag:hover,
+.skill-pill-tag:focus-visible {
   background: var(--bg-card-hover);
   transform: translateY(-2px);
-  color: var(--text-accent);
+  color: var(--text-primary);
+  z-index: 20;
+}
+
+/* Level-specific hover glow and borders */
+.skill-pill-tag.skill-tag-expert:hover,
+.skill-pill-tag.skill-tag-expert:focus-visible {
+  border-color: rgba(239, 68, 68, 0.55);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+}
+
+.skill-pill-tag.skill-tag-expert:hover .skill-level-dot {
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
+}
+
+.skill-pill-tag.skill-tag-advanced:hover,
+.skill-pill-tag.skill-tag-advanced:focus-visible {
+  border-color: rgba(251, 113, 133, 0.55);
+  box-shadow: 0 4px 14px rgba(251, 113, 133, 0.2);
+}
+
+.skill-pill-tag.skill-tag-advanced:hover .skill-level-dot {
+  box-shadow: 0 0 10px rgba(251, 113, 133, 0.9);
+}
+
+.skill-pill-tag.skill-tag-proficient:hover,
+.skill-pill-tag.skill-tag-proficient:focus-visible {
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+}
+
+.skill-pill-tag.skill-tag-proficient:hover .skill-level-dot {
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.9);
 }
 
 .skill-level-dot {
@@ -1996,6 +2084,7 @@ p {
   height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
 .skill-level-dot.level-expert {
@@ -2011,6 +2100,55 @@ p {
 .skill-level-dot.level-proficient {
   background-color: var(--accent-amber);
   box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
+/* Interactive Floating Skill Level Tooltip */
+.skill-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color-hover);
+  color: var(--text-primary);
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 100;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.2s;
+}
+
+.skill-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--border-color-hover) transparent transparent transparent;
+}
+
+.skill-pill-tag:hover .skill-tooltip,
+.skill-pill-tag:focus-visible .skill-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.skill-tooltip-text {
+  line-height: 1;
 }
 
 
@@ -3188,6 +3326,28 @@ p {
   .contact-cards-grid {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .skills-legend-bar {
+    width: 100%;
+    padding: 10px 14px;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .skills-legend-title {
+    width: 100%;
+    text-align: center;
+  }
+
+  .skills-legend-items {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .skills-legend-item {
+    padding: 3px 8px;
+    font-size: 0.78rem;
   }
 
   .hero-stat-card::after {

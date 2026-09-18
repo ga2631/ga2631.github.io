@@ -57,6 +57,26 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     };
   };
 
+  const getLevelInfo = (level: string) => {
+    const lower = level.toLowerCase();
+    if (lower === 'expert') {
+      return {
+        label: t.expert,
+        colorClass: 'level-expert',
+      };
+    }
+    if (lower === 'advanced') {
+      return {
+        label: t.advanced,
+        colorClass: 'level-advanced',
+      };
+    }
+    return {
+      label: t.proficient,
+      colorClass: 'level-proficient',
+    };
+  };
+
   return (
     <section className="section" id="skills">
       <div className="container">
@@ -68,6 +88,25 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           <p className="section-subtitle">
             {t.subtitle}
           </p>
+        </div>
+
+        {/* Proficiency Level Legend Explanation Bar */}
+        <div className="skills-legend-bar">
+          <span className="skills-legend-title">{t.legendTitle}:</span>
+          <div className="skills-legend-items">
+            <div className="skills-legend-item">
+              <span className="skill-level-dot level-expert" />
+              <span>{t.expert}</span>
+            </div>
+            <div className="skills-legend-item">
+              <span className="skill-level-dot level-advanced" />
+              <span>{t.advanced}</span>
+            </div>
+            <div className="skills-legend-item">
+              <span className="skill-level-dot level-proficient" />
+              <span>{t.proficient}</span>
+            </div>
+          </div>
         </div>
 
         {/* Optimized Compact Skills Grid */}
@@ -93,14 +132,29 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                   </div>
                 </div>
 
-                {/* Wrapping Skill Badges Cluster */}
+                {/* Wrapping Skill Badges Cluster with Level Tooltips */}
                 <div className="skills-pill-cluster">
-                  {category.skills.map((skill) => (
-                    <div key={skill.name} className="skill-pill-tag">
-                      <span className="skill-pill-name">{skill.name}</span>
-                      <span className={`skill-level-dot level-${skill.level.toLowerCase()}`} title={skill.level} />
-                    </div>
-                  ))}
+                  {category.skills.map((skill) => {
+                    const levelInfo = getLevelInfo(skill.level);
+                    return (
+                      <div
+                        key={skill.name}
+                        className={`skill-pill-tag skill-tag-${skill.level.toLowerCase()}`}
+                        tabIndex={0}
+                        role="tooltip"
+                        aria-label={`${skill.name} - ${levelInfo.label}`}
+                      >
+                        <span className="skill-pill-name">{skill.name}</span>
+                        <span className={`skill-level-dot ${levelInfo.colorClass}`} />
+
+                        {/* Interactive Tooltip showing proficiency level */}
+                        <div className="skill-tooltip" role="presentation">
+                          <span className={`skill-level-dot ${levelInfo.colorClass}`} />
+                          <span className="skill-tooltip-text">{levelInfo.label}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
