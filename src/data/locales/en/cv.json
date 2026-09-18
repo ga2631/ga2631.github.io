@@ -352,27 +352,27 @@
       "skills": [
         {
           "name": "Golang",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "Java (Spring Boot, WebFlux, Batch)",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "Python (Django, Flask, Scripting)",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "JavaScript / TypeScript (Node.js, VueJS, ReactJS)",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "PHP (Laravel, CodeIgniter)",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Rust",
-          "level": "Proficient"
+          "level": 3
         }
       ]
     },
@@ -382,31 +382,31 @@
       "skills": [
         {
           "name": "PostgreSQL (Indexing & Optimization)",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "MySQL / MariaDB",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Redis (Caching & Rate Limiting)",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "RabbitMQ / Apache Kafka",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "Docker & Docker Compose",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Linux / CentOS Server Administration",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "CI/CD Pipelines & Nginx",
-          "level": "Advanced"
+          "level": 4
         }
       ]
     },
@@ -416,27 +416,27 @@
       "skills": [
         {
           "name": "Google Analytics 4 (GA4)",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Google Tag Manager (GTM)",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Looker Studio Reporting",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Google BigQuery & Advanced SQL",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "Medallion Data Architecture (Bronze-Silver-Gold)",
-          "level": "Advanced"
+          "level": 4
         },
         {
           "name": "Change Data Capture (CDC) Pipelines",
-          "level": "Advanced"
+          "level": 4
         }
       ]
     },
@@ -446,27 +446,27 @@
       "skills": [
         {
           "name": "PRD Writing & User Stories",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Sprint Planning & Agile / Scrum",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Cross-functional Stakeholder Management",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "SDLC & User Acceptance Testing (UAT)",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "Gemini & Antigravity (Daily AI Workflows)",
-          "level": "Expert"
+          "level": 5
         },
         {
           "name": "English & Vietnamese (Bilingual)",
-          "level": "Expert"
+          "level": 5
         }
       ]
     }
