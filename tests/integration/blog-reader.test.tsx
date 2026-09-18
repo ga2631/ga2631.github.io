@@ -34,8 +34,9 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
     const dataEngButtons = screen.getAllByRole('button', { name: /Data Engineering & Analytics/i });
     fireEvent.click(dataEngButtons[0]);
 
-    // Post 1 (Medallion CDC) is Data Engineering and should be in the document
-    expect(screen.getByText(blogPostsEn[0].title)).toBeInTheDocument();
+    // Data Engineering article should be in the document
+    const dataEngPost = blogPostsEn.find((p) => p.category === 'data-engineering-analytics');
+    expect(screen.getByText(dataEngPost!.title)).toBeInTheDocument();
   });
 
   it('should filter articles dynamically as search query is typed', () => {
