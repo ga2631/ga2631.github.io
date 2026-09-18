@@ -27,25 +27,28 @@ describe('TS-14: Year/Month Blog Storage & Dynamic Loader Verification', () => {
     }
   });
 
-  it('should load initial blog posts starting from newest month and respect max 2 months limit when under 20 posts', async () => {
-    const initialResultVi = await loadInitialBlogPosts('vi', 20, 2);
-    const initialResultEn = await loadInitialBlogPosts('en', 20, 2);
+  it('should load 20 most recent blog posts by default on initial page load', async () => {
+    const initialResultVi = await loadInitialBlogPosts('vi', 20);
+    const initialResultEn = await loadInitialBlogPosts('en', 20);
 
-    expect(initialResultVi.posts.length).toBeGreaterThan(0);
-    expect(initialResultEn.posts.length).toBeGreaterThan(0);
+    expect(initialResultVi.posts.length).toBeGreaterThanOrEqual(20);
+    expect(initialResultEn.posts.length).toBeGreaterThanOrEqual(20);
 
-    // Initial load must not load more than 2 months when total posts < 20
-    expect(initialResultVi.loadedMonthKeys.length).toBeLessThanOrEqual(2);
-    expect(initialResultEn.loadedMonthKeys.length).toBeLessThanOrEqual(2);
+    // Verify posts are sorted descending by date
+    for (let i = 0; i < initialResultVi.posts.length - 1; i++) {
+      const current = new Date(initialResultVi.posts[i].date || 0).getTime();
+      const next = new Date(initialResultVi.posts[i + 1].date || 0).getTime();
+      expect(current).toBeGreaterThanOrEqual(next);
+    }
 
-    // The loaded months should be the most recent ones
+    // The loaded months should start with the most recent one
     const allArchivesVi = getAvailableMonthArchives('vi');
     const expectedFirstMonth = allArchivesVi[0]?.key;
     expect(initialResultVi.loadedMonthKeys[0]).toBe(expectedFirstMonth);
   });
 
   it('should load the next month batch when requested (pagination / load more)', async () => {
-    const initialResult = await loadInitialBlogPosts('vi', 20, 2);
+    const initialResult = await loadInitialBlogPosts('vi', 20);
     
     if (initialResult.hasMore) {
       const nextBatch = await loadNextMonthBatch('vi', initialResult.loadedMonthKeys, 20);

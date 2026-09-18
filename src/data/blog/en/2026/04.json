@@ -1,28 +1,78 @@
 [
   {
-    "id": "post-2",
-    "slug": "building-reactive-event-tracking-spring-webflux-kafka",
-    "category": "architecture-system-design",
-    "title": "Architecting High-Throughput Event Ingestion with Spring WebFlux, Kafka & Automated PII Masking",
-    "summary": "Building a privacy-compliant MarTech analytics gateway that handles thousands of real-time e-commerce conversion events with sub-second latency.",
-    "publishedAt": "Apr 2026",
-    "date": "2026-04-20",
-    "readTime": "6 min read",
-    "tags": [
-      "Java 17",
-      "Spring Boot",
-      "Spring WebFlux",
-      "Kafka",
-      "Google Analytics 4",
-      "Privacy"
-    ],
-    "author": "Tan Huynh Nhat",
+    "id": "post-5",
+    "slug": "evaluating-rust-in-production-backend-systems-tech-radar-2026",
+    "category": "tech-radar-career-insights",
+    "title": "Tech Radar 2026: Pragmatic Evaluation of Adopting Rust in Enterprise Backend Systems",
+    "summary": "Multi-dimensional analysis on memory safety, CPU throughput, developer learning curve, and lessons learned from deploying Rust in production microservices.",
+    "publishedAt": "Apr 24, 2026",
+    "date": "2026-04-24",
+    "readTime": "7 min read",
+    "tags": ["Rust", "Tech Radar", "Backend Architecture", "Performance", "Engineering Mindset"],
+    "author": "Huỳnh Nhật Tân",
     "sections": {
-      "context-problem": "<p>During flash sales and peak marketing campaigns, e-commerce traffic surges by 15x–20x. The tracking gateway must reliably capture tens of thousands of customer micro-events per second (cart additions, voucher clicks, product views) and relay them to Google Analytics 4 and Facebook Conversions API. Traditional synchronous architectures caused thread exhaustion and sluggish checkout experiences.</p>",
-      "system-requirements": "<ul><li><strong>Functional:</strong> Ingest, validate, cleanse, and route tracking events in real time to external marketing partners.</li><li><strong>Non-Functional:</strong> p99 API response time &lt; 15ms, sustain 10,000 RPS throughput, strict PII privacy compliance (Decree 13/2023/ND-CP), and zero message loss during partner outages.</li></ul>",
-      "architecture-design": "<p>We designed an asynchronous, non-blocking Reactive Event-Driven architecture:</p><ul><li><strong>Ingestion Layer:</strong> Spring WebFlux (Project Reactor over Netty) ingests requests asynchronously and immediately buffers payloads to an Apache Kafka cluster.</li><li><strong>Privacy & Sanitization:</strong> Custom Spring AOP interceptors and Jackson serializers recursively mask sensitive PII (emails, phone numbers, identity numbers) using salted SHA-256 hashing.</li><li><strong>Outbound Delivery:</strong> Consumer microservices read from Kafka and dispatch payload batches via non-blocking Spring WebClient.</li></ul>",
-      "trade-offs-analysis": "<p>Evaluating Synchronous MVC vs. Reactive WebFlux:</p><ul><li><strong>Traditional Spring MVC (Thread-per-request):</strong> Straightforward debugging, but high concurrency leads to thread starvation and memory bloat under 5,000+ concurrent connections.</li><li><strong>Reactive Non-Blocking (Spring WebFlux):</strong> Steeper learning curve for reactive stream debugging, but scales effortlessly across 20,000+ RPS using minimal CPU threads and 60% less heap memory.</li></ul>",
-      "lessons-best-practices": "<p>Integrate <strong>Resilience4j Circuit Breakers</strong> and rate limiters on outbound ad connectors to isolate upstream latency. Never invoke blocking JDBC or file I/O operations directly within the reactive Event Loop.</p>"
+      "introduction": "<p>In the 2026 technology landscape, Rust has emerged as a premier language for critical infrastructure. This article shares practical engineering insights from prototyping and shipping a high-throughput microservice in Rust (Actix-web / Tokio) in enterprise production.</p>",
+      "multi-dimensional-evaluation": "<p>Comprehensive evaluation across core criteria:</p><ul><li><strong>Strengths:</strong> Memory safety without Garbage Collection overhead, remarkably low memory footprint (&lt; 15MB for active web instances), and nearly zero runtime bugs due to the expressive type system and borrow checker.</li><li><strong>Challenges:</strong> Longer compilation times, higher hiring and training costs, and fewer turnkey enterprise ORM integrations compared to mature Java or Go ecosystems.</li></ul>",
+      "case-study-experience": "<p>Rewrote a high-volume JWT token verification and rate-limiting gateway from Node.js to Rust. Outcome: p99 latency dropped from 18ms to 1.2ms, CPU utilization reduced by 75%, and GC latency jitter was completely eliminated.</p>",
+      "actionable-recommendations": "<p>Recommendation: Avoid wholesale rewrites. Begin adoption on performance-sensitive edge proxies, cryptographic engines, or CPU-intensive data pipelines before expanding to team-wide initiatives.</p>",
+      "open-questions-discussion": "<p>Will the rise of Java Virtual Threads and Go concurrency diminish the performance advantage of Rust for standard CRUD web backends? We invite your thoughts.</p>"
+    }
+  },
+  {
+    "id": "post-6",
+    "slug": "scaling-customer-reporting-portal-high-concurrency-redis",
+    "category": "architecture-system-design",
+    "title": "Scaling ERP Reporting Portal for 1,000+ Concurrent Users with Redis & Node.js",
+    "summary": "Heavy reporting query caching techniques, asynchronous batch processing, and modular interface design strategies.",
+    "publishedAt": "Apr 20, 2026",
+    "date": "2026-04-20",
+    "readTime": "5 min read",
+    "tags": ["Architecture", "Redis", "Node.js", "ERP", "Scalability"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "context-problem": "<p>During end-of-month financial closing periods, over 1,000 enterprise clients simultaneously requested ledger balance and inventory reports. The relational database suffered severe I/O bottlenecks, causing API response times to exceed 12 seconds.</p>",
+      "system-requirements": "<ul><li><strong>Throughput & Latency:</strong> Serve 1,000+ concurrent enterprise users while keeping 95th percentile API response times under 800ms.</li><li><strong>Data Freshness:</strong> Financial reports must reflect ledger changes within 5 minutes.</li></ul>",
+      "architecture-design": "<p>Layered caching and asynchronous worker architecture:</p><ul><li><strong>Multi-Level Caching:</strong> Redis Cluster storing serialized JSON aggregates with 5-minute TTLs and proactive cache warm-up cron jobs.</li><li><strong>Asynchronous Export Queue:</strong> Large Excel/PDF reporting jobs offloaded to background BullMQ workers, delivering download URLs via WebSocket on completion.</li></ul>",
+      "trade-offs-analysis": "<p>Balancing Immediate Consistency vs High Availability:</p><ul><li>Accepted a 5-minute data staleness window on cached reporting views in exchange for an 85% reduction in direct database query load.</li><li>Implemented event-driven cache invalidation when high-priority ledger settlements occurred.</li></ul>",
+      "lessons-best-practices": "<p>Implement distributed <strong>Mutex Locks (Redlock)</strong> to prevent Cache Stampedes and Cache Avalanches when hot cache keys expire under heavy traffic spikes.</p>"
+    }
+  },
+  {
+    "id": "post-7",
+    "slug": "clickhouse-financial-ledger-realtime-aggregation",
+    "category": "data-engineering-analytics",
+    "title": "Building Real-time Financial Ledger Aggregation Pipeline with ClickHouse for Millions of Transactions",
+    "summary": "Leveraging ClickHouse columnar storage and SummingMergeTree engines to calculate ledger reconciliation balances in under 50ms.",
+    "publishedAt": "Apr 15, 2026",
+    "date": "2026-04-15",
+    "readTime": "6 min read",
+    "tags": ["ClickHouse", "Financial Ledger", "OLAP", "SQL Optimization", "Data Engineering"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "business-data-requirements": "<p>The financial department required instantaneous balance sheet analysis across 50+ million monthly retail transactions. PostgreSQL <code>GROUP BY</code> and <code>SUM</code> queries took over 25 seconds per chart refresh.</p>",
+      "data-modeling": "<p>Optimized table schema in ClickHouse:</p><ul><li><strong>SummingMergeTree Engine:</strong> Automatically aggregates debit/credit amounts during background merge passes, eliminating 90% of row scans during query time.</li><li><strong>Partitioning:</strong> Monthly partitioning with <code>toYYYYMM(transaction_date)</code> and primary key ordering by <code>(account_id, currency, transaction_date)</code>.</li></ul>",
+      "pipeline-construction": "<p>Streaming pipeline architecture:</p><ul><li>Real-time event streaming from Kafka via ClickHouse Kafka Engine tables.</li><li>Direct ingestion and data transformation via Materialized Views without requiring intermediate worker application layers.</li></ul>",
+      "testing-optimization": "<p>Performance benchmarks across 100 million ledger rows: Query execution dropped from 28 seconds to <strong>38ms</strong>. Achieved a 6.5x data compression ratio over raw SSD disk usage.</p>",
+      "summary-recommendations": "<p>ClickHouse is exceptionally suited for high-volume financial analytics. Recommendation: Avoid single-row inserts; always batch writes between 10,000 and 100,000 records.</p>"
+    }
+  },
+  {
+    "id": "post-8",
+    "slug": "blue-green-zero-downtime-deployments-docker-compose-nginx",
+    "category": "devops-cloud-tooling",
+    "title": "Zero-Downtime Blue-Green Deployments with Docker Compose & Nginx Reverse Proxy",
+    "summary": "Production release architecture using alternating environments and automated Nginx upstream switching via shell scripts.",
+    "publishedAt": "Apr 10, 2026",
+    "date": "2026-04-10",
+    "readTime": "5 min read",
+    "tags": ["Docker Compose", "Nginx", "Blue-Green", "CI/CD", "DevOps"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "article-objectives": "<p>Implement zero-downtime release automation for medium-scale enterprise web services using Blue-Green deployments with instant rollback safety.</p>",
+      "architecture-principles": "<p>Two identical containerized environments:</p><ul><li><strong>Blue (Live):</strong> Actively serving production traffic on port 8081.</li><li><strong>Green (Idle):</strong> Receives new version releases on port 8082, executes migrations, and validates smoke tests.</li><li><strong>Nginx Proxy:</strong> Routes traffic and issues <code>nginx -s reload</code> for seamless upstream switching.</li></ul>",
+      "step-by-step-setup": "<p>Deployment pipeline stages:</p><ul><li><strong>Step 1:</strong> Pull updated Docker image and spin up the idle environment (Green).</li><li><strong>Step 2:</strong> Execute health check validation on <code>/healthz</code> until HTTP 200 is verified.</li><li><strong>Step 3:</strong> Atomically update Nginx upstream configuration and execute reload.</li><li><strong>Step 4:</strong> Gracefully stop the previous environment after a 60-second in-flight draining window.</li></ul>",
+      "troubleshooting-pitfalls": "<ul><li><strong>Database Schema Incompatibility:</strong> Occurs when migrations remove columns still read by the old version. Solve via the <strong>Expand and Contract</strong> pattern.</li><li><strong>Dropped TCP Connections:</strong> Ensure Nginx is reloaded with <code>HUP</code> signal so old worker processes finish existing requests before terminating.</li></ul>",
+      "evaluation-scaling": "<p>Eliminated midnight maintenance windows, allowing continuous deployments 5-10 times daily with confidence and zero user disruption.</p>"
     }
   }
 ]

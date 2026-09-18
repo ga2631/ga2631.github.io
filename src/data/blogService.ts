@@ -136,18 +136,17 @@ export interface BlogLoadResult {
 
 /**
  * Initial load:
- * Loads the most recent month. If fewer than 20 articles, loads up to a maximum of 2 months.
+ * Loads the most recent months until targetMinPosts (default 20) is reached or all archives are exhausted.
  */
 export async function loadInitialBlogPosts(
   lang: 'vi' | 'en',
-  targetMinPosts = 20,
-  maxInitialMonths = 2
+  targetMinPosts = 20
 ): Promise<BlogLoadResult> {
   const archives = getAvailableMonthArchives(lang);
   const posts: BlogPost[] = [];
   const loadedMonthKeys: string[] = [];
 
-  for (let i = 0; i < archives.length && i < maxInitialMonths; i++) {
+  for (let i = 0; i < archives.length; i++) {
     const archive = archives[i];
     const monthPosts = await loadMonthPosts(archive.path, lang);
     posts.push(...monthPosts);

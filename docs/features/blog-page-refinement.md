@@ -68,10 +68,10 @@ The 5 standard section keys per category:
 ### 5. Year/Month Partitioned JSON Storage & On-Demand Loader
 - **Directory Structure:** Articles are partitioned by language, year, and month under `src/data/blog/{lang}/{YYYY}/{MM}.json` (e.g. `src/data/blog/vi/2026/05.json`).
 - **Initial Load Behavior:** 
-  - Loads 20 most recent posts starting from the current / newest month.
-  - If the newest month contains fewer than 20 articles, it fetches backwards for a **maximum of 2 months** (`maxInitialMonths = 2`).
+  - Automatically loads the 20 most recent articles across month archives starting from the newest month (`loadInitialBlogPosts(lang, 20)`).
+  - Guarantees 20 full articles are displayed on initial page load by default.
 - **On-Demand Pagination ("Load More"):**
-  - Displays a "Tải thêm bài viết" button with a loading spinner if older archives exist.
+  - Displays a "Tải thêm bài viết" button with a loading spinner if older archives exist beyond the initial 20 articles.
   - Loads the next batch of month archives without reloading already fetched posts.
 - **Search & Filter Auto-Fetch:**
   - When the user searches or selects a category/tag filter, `loadAllArchivePosts(lang)` is automatically invoked in the background to ensure searches cover the entire historical archive.

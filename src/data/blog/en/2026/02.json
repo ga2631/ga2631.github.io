@@ -1,27 +1,78 @@
 [
   {
-    "id": "post-5",
-    "slug": "distributed-idempotency-concurrency-control-golang-redis",
+    "id": "post-13",
+    "slug": "kubernetes-ingress-cert-manager-production-tls-automation",
+    "category": "devops-cloud-tooling",
+    "title": "Configuring Production Kubernetes Ingress & Automated SSL/TLS with Cert-Manager and Let's Encrypt",
+    "summary": "Step-by-step setup of Ingress-Nginx, automated zero-touch certificate issuance and renewals with Let's Encrypt ACME ClusterIssuers.",
+    "publishedAt": "Feb 25, 2026",
+    "date": "2026-02-25",
+    "readTime": "6 min read",
+    "tags": ["Kubernetes", "Ingress", "Cert-Manager", "SSL/TLS", "DevOps"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "article-objectives": "<p>Fully automate SSL/TLS certificate issuance, provisioning, and renewals for production Kubernetes clusters, eliminating the risk of operational downtime from expired certificates.</p>",
+      "architecture-principles": "<p>Ingress security architecture:</p><ul><li><strong>Ingress-Nginx Controller:</strong> Edge proxy routing external HTTP/HTTPS traffic to internal Kubernetes Services.</li><li><strong>Cert-Manager Operator:</strong> Kubernetes Custom Controller monitoring Certificate CRDs and solving Let's Encrypt ACME HTTP-01/DNS-01 challenges.</li><li><strong>Kubernetes Secrets:</strong> Storing TLS keypairs (<code>tls.crt</code>, <code>tls.key</code>) mounted into Ingress resources.</li></ul>",
+      "step-by-step-setup": "<p>Implementation roadmap:</p><ul><li><strong>Step 1:</strong> Deploy Cert-Manager via official Helm charts with <code>installCRDs=true</code>.</li><li><strong>Step 2:</strong> Configure production <code>ClusterIssuer</code> pointing to Let's Encrypt ACME v2 endpoints.</li><li><strong>Step 3:</strong> Annotate Ingress manifests with <code>cert-manager.io/cluster-issuer: letsencrypt-prod</code>.</li></ul>",
+      "troubleshooting-pitfalls": "<ul><li><strong>HTTP-01 Challenge Failed:</strong> Cloud Security Groups blocking inbound port 80 (Let's Encrypt requires port 80 for domain validation).</li><li><strong>Let's Encrypt Rate Limits:</strong> Always validate configurations against Let's Encrypt Staging issuers first.</li></ul>",
+      "evaluation-scaling": "<p>Automated SSL certificate renewals across 50+ enterprise subdomains 30 days prior to expiration with zero human intervention.</p>"
+    }
+  },
+  {
+    "id": "post-14",
+    "slug": "clean-code-refactoring-eliminating-god-objects-anemic-models",
     "category": "code-craftsmanship-languages",
-    "title": "Idempotency & Concurrency Control in Distributed Workers with Go & Redis",
-    "summary": "Reliable message processing with Distributed Locks, Dedup Keys, and graceful failure handling without goroutine leaks.",
-    "publishedAt": "Feb 2026",
+    "title": "Crafting Clean Code: Eliminating God Objects and Refactoring Anemic Domain Models",
+    "summary": "Strategies for decomposing bloated multi-thousand line classes into cohesive Aggregate Roots adhering to Clean Code and Object-Oriented principles.",
+    "publishedAt": "Feb 18, 2026",
     "date": "2026-02-18",
     "readTime": "6 min read",
-    "tags": [
-      "Golang",
-      "Redis",
-      "Concurrency",
-      "Distributed Systems",
-      "Clean Code"
-    ],
-    "author": "Tan Huynh Nhat",
+    "tags": ["Refactoring", "Clean Code", "OOP", "Domain Modeling", "Software Craftsmanship"],
+    "author": "Huỳnh Nhật Tân",
     "sections": {
-      "problem-statement": "<p>In distributed worker architectures, messaging systems (RabbitMQ, Kafka) operate on At-Least-Once delivery semantics. During transient network hiccups or consumer pod restarts, payment and order update messages can be delivered multiple times, risking race conditions and duplicate financial deductions.</p>",
-      "initial-approach": "<p>A simple \"Check-then-Act\" pattern checks database state prior to execution. In multi-worker environments, however, concurrent goroutines frequently read the \"PENDING\" status simultaneously, both proceeding to process the duplicate event and corrupting state.</p>",
-      "optimization-thinking": "<p>We engineered a resilient, two-tiered idempotency model:</p><ul><li><strong>Distributed Locks via Redis:</strong> Atomic <code>SET lock_key worker_id NX PX 5000</code> operations ensure only a single worker executes the transaction block for a specific deduplication key.</li><li><strong>Atomic State Transitions:</strong> Database updates enforce conditional state guards: <code>UPDATE orders SET status = 'PAID' WHERE id = ? AND status = 'PENDING'</code>.</li><li><strong>Graceful Shutdown:</strong> Goroutine lifecycles are bound to <code>sync.WaitGroup</code> and cancelable contexts, preventing abrupt termination of in-flight business transactions.</li></ul>",
-      "code-implementation": "<p>Go implementation of the idempotent distributed worker:</p><pre><code>func (w *PaymentWorker) Process(ctx context.Context, msg Message) error {\n    lockKey := fmt.Sprintf(\"lock:payment:%s\", msg.PaymentID)\n    acquired, err := w.redis.SetNX(ctx, lockKey, w.workerID, 10*time.Second).Result()\n    if err != nil || !acquired {\n        return nil // Skip processing if another worker holds the lock\n    }\n    defer w.redis.Del(ctx, lockKey)\n\n    return w.db.Transaction(func(tx *sql.Tx) error {\n        res, err := tx.ExecContext(ctx, \"UPDATE payments SET status = 'COMPLETED' WHERE id = ? AND status = 'PENDING'\", msg.PaymentID)\n        if err != nil { return err }\n        rows, _ := res.RowsAffected()\n        if rows == 0 { return nil } // Already processed idempotently\n        return w.dispatchReceipt(ctx, msg)\n    })\n}</code></pre>",
-      "complexity-applications": "<p>Time Complexity: O(1) Redis lock acquisition and O(1) indexed SQL execution. Widely applicable to e-commerce payment gateways, financial ledger syncs, ticketing platforms, and mission-critical event-driven architectures.</p>"
+      "problem-statement": "<p>In legacy codebases, service classes like <code>OrderService</code> frequently explode beyond 3,000 lines with dozens of dependencies. Entities degenerate into dumb data bags with public getters/setters (Anemic Domain Model), scattering critical business logic throughout the application.</p>",
+      "initial-approach": "<p>Developers often append more conditional <code>if/else</code> branches or create static utility classes, worsening coupling and violating the Single Responsibility Principle.</p>",
+      "optimization-thinking": "<p>Transition to a <strong>Rich Domain Model</strong>:</p><ul><li>Encapsulate domain validations and state transitions directly within Entities.</li><li>Eliminate public setters and enforce invariant constraints upon entity creation.</li><li>Employ Domain Events for cross-aggregate communication instead of direct service coupling.</li></ul>",
+      "code-implementation": "<p>Refactoring domain logic into encapsulated entities:</p><pre><code>public class Order {\n  private OrderStatus status;\n  private List<OrderItem> items;\n\n  public void applyDiscount(DiscountCode code) {\n    if (this.status != OrderStatus.DRAFT) {\n      throw new IllegalStateException(\"Cannot discount confirmed order\");\n    }\n    // Encapsulated domain logic\n  }\n}</code></pre>",
+      "complexity-applications": "<p>Decreased Cyclomatic Complexity by 60%, boosted unit test coverage beyond 85%, and allowed new engineering team members to comprehend domain rules intuitively.</p>"
+    }
+  },
+  {
+    "id": "post-15",
+    "slug": "evolution-of-backend-architecture-monolith-to-modular-monolith",
+    "category": "tech-radar-career-insights",
+    "title": "Backend Architecture Evolution: From Monolith to Microservices and the Rise of Modular Monolith",
+    "summary": "A 10-year retrospective on architectural trends, evaluating the hidden operational costs of microservices and why Modular Monoliths represent the pragmatic choice for modern engineering teams.",
+    "publishedAt": "Feb 12, 2026",
+    "date": "2026-02-12",
+    "readTime": "7 min read",
+    "tags": ["Modular Monolith", "Microservices", "Software Architecture", "Tech Radar", "System Design"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "introduction": "<p>The rush to adopt Microservices dominated the past decade. By 2026, leading engineering organizations are pragmatically consolidating systems into <strong>Modular Monoliths</strong> to reduce distributed network friction and cloud operational overhead.</p>",
+      "multi-dimensional-evaluation": "<p>Comparative analysis of architectural paradigms:</p><ul><li><strong>Traditional Monolith:</strong> Simple deployment, but risks becoming an unmaintainable Big Ball of Mud without strict code boundaries.</li><li><strong>Microservices:</strong> Autonomous team deployments, yet incurs high network latency, distributed transaction complexity (Sagas), and observability friction.</li><li><strong>Modular Monolith:</strong> Strict Bounded Context boundaries within a single deployable artifact. Leverages ultra-fast in-memory calls with seamless readiness for future microservice extraction.</li></ul>",
+      "case-study-experience": "<p>Consolidated 6 fragmented microservices into a unified Go Modular Monolith. AWS infrastructure costs dropped 65%, inter-service gRPC timeouts disappeared, and feature development throughput doubled.</p>",
+      "actionable-recommendations": "<p>Start with a well-bounded Modular Monolith. Only decompose into Microservices when independent hardware scaling or organizational boundaries (>50 engineers) truly necessitate it.</p>",
+      "open-questions-discussion": "<p>Has your engineering team experienced 'Microservices Fatigue'? What architectural boundaries have worked best in your domain?</p>"
+    }
+  },
+  {
+    "id": "post-16",
+    "slug": "domain-driven-design-hexagonal-architecture-go-microservices",
+    "category": "architecture-system-design",
+    "title": "Applying Domain-Driven Design (DDD) & Hexagonal Architecture in Golang Microservices",
+    "summary": "Structuring Go services with Ports & Adapters to decouple core domain business rules from external frameworks, SQL drivers, and transport protocols.",
+    "publishedAt": "Feb 05, 2026",
+    "date": "2026-02-05",
+    "readTime": "8 min read",
+    "tags": ["Golang", "DDD", "Hexagonal Architecture", "Clean Architecture", "Microservices"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "context-problem": "<p>In naive Golang projects, SQL queries and HTTP JSON parsing often intermingle inside handlers. Swapping databases or adding gRPC interfaces forces intrusive rewrites across business logic.</p>",
+      "system-requirements": "<ul><li><strong>Technology Independence:</strong> Core domain rules must remain free from external libraries and database drivers.</li><li><strong>Testability:</strong> 100% unit test coverage for use cases using mock interfaces without live database connections.</li></ul>",
+      "architecture-design": "<p>Ports & Adapters (Hexagonal Architecture) structure:</p><ul><li><strong>Domain Core:</strong> Pure entities and domain services importing standard Go libraries only.</li><li><strong>Ports:</strong> Contracts defined as Go interfaces (e.g. <code>UserRepository</code>, <code>PaymentGateway</code>).</li><li><strong>Adapters:</strong> Concrete implementations (HTTP Handlers, gRPC Servers, PostgreSQL Repositories, Redis Caches).</li></ul>",
+      "trade-offs-analysis": "<p>Initial boilerplate vs long-term maintainability:</p><ul><li>Hexagonal architecture requires additional interface declarations and data transfer mappings up front.</li><li>In exchange, long-term maintenance costs drop by 50% as underlying database drivers and cloud infrastructure evolve.</li></ul>",
+      "lessons-best-practices": "<p>Define Port interfaces in the consumer package (Consumer Interface pattern in Go) rather than bundling them alongside the adapter implementations.</p>"
     }
   }
 ]

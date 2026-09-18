@@ -1,28 +1,78 @@
 [
   {
-    "id": "post-2",
-    "slug": "building-reactive-event-tracking-spring-webflux-kafka",
-    "category": "architecture-system-design",
-    "title": "Kiến trúc Thu thập Sự kiện Thông lượng cao với Spring WebFlux, Kafka & Ẩn danh PII Tự động",
-    "summary": "Xây dựng cổng MarTech tuân thủ quyền riêng tư dữ liệu, xử lý hàng nghìn sự kiện phễu chuyển đổi TMĐT thời gian thực với độ trễ dưới 1 giây.",
-    "publishedAt": "Tháng 4, 2026",
-    "date": "2026-04-20",
-    "readTime": "6 phút đọc",
-    "tags": [
-      "Java 17",
-      "Spring Boot",
-      "Spring WebFlux",
-      "Kafka",
-      "Google Analytics 4",
-      "Privacy"
-    ],
+    "id": "post-5",
+    "slug": "evaluating-rust-in-production-backend-systems-tech-radar-2026",
+    "category": "tech-radar-career-insights",
+    "title": "Tech Radar 2026: Đánh giá Thực tế khi Đưa Rust vào Hệ thống Backend Doanh nghiệp",
+    "summary": "Phân tích đa chiều về độ an toàn bộ nhớ, hiệu năng CPU, đường cong học tập (Learning Curve) và bài học kinh nghiệm khi áp dụng Rust cho các dịch vụ cốt lõi.",
+    "publishedAt": "24/04/2026",
+    "date": "2026-04-24",
+    "readTime": "7 phút đọc",
+    "tags": ["Rust", "Tech Radar", "Backend Architecture", "Performance", "Engineering Mindset"],
     "author": "Huỳnh Nhật Tân",
     "sections": {
-      "context-problem": "<p>Trong các chiến dịch Marketing cao điểm của sàn thương mại điện tử, lưu lượng truy cập tăng đột biến 15-20 lần. Cổng theo dõi hành vi người dùng cần thu thập hàng chục nghìn vi sự kiện/giây (bỏ giỏ hàng, xem chi tiết sản phẩm, click khuyến mãi) để chuyển tiếp cho Google Analytics 4 và Facebook Conversions API. Mô hình đồng bộ truyền thống gây nghẽn luồng xử lý và làm chậm trải nghiệm mua sắm của khách hàng.</p>",
-      "system-requirements": "<ul><li><strong>Yêu cầu chức năng:</strong> Thu thập, xác thực, phân loại sự kiện theo thời gian thực và đồng bộ dữ liệu tới các nền tảng AdTech ngoài.</li><li><strong>Yêu cầu phi chức năng:</strong> Độ trễ API p99 &lt; 15ms, chịu tải thông lượng 10,000 RPS, tuân thủ tuyệt đối quy định ẩn danh dữ liệu cá nhân (PII) theo Nghị định 13/2023/NĐ-CP và zero-data-loss khi bên thứ ba gặp sự cố.</li></ul>",
-      "architecture-design": "<p>Hệ thống được thiết kế theo mô hình Reactive Event-Driven phi phong tỏa (Non-blocking):</p><ul><li><strong>Ingestion Layer:</strong> Ứng dụng Spring WebFlux (Project Reactor + Netty) tiếp nhận HTTP request bất đồng bộ và đẩy ngay vào Apache Kafka cluster.</li><li><strong>Privacy & Sanitization:</strong> Module Spring AOP và Jackson Custom Serializer quét đệ quy các trường nhạy cảm (Email, Số điện thoại, CMND/CCCD) để băm SHA-256 kèm Salt trước khi xuất ra ngoài.</li><li><strong>Outbox & Delivery:</strong> Worker tiêu thụ sự kiện từ Kafka và gọi External API qua Spring WebClient non-blocking.</li></ul>",
-      "trade-offs-analysis": "<p>Chúng tôi cân nhắc giữa kiến trúc Đồng bộ vs Bất đồng bộ Reactive:</p><ul><li><strong>Đồng bộ (Spring MVC + Tomcat):</strong> Dễ debug, nhưng mỗi request chiếm 1 Thread. Khi tải cao 5,000 concurrent, thread pool bị cạn kiệt (Thread Starvation).</li><li><strong>Reactive Non-Blocking (Spring WebFlux):</strong> Phức tạp hơn trong xử lý luồng dữ liệu (Reactive Streams) và quản lý Backpressure, nhưng chỉ cần số lượng Thread bằng số lõi CPU mà vẫn đáp ứng 20,000+ RPS ổn định với mức RAM tiết kiệm 60%.</li></ul>",
-      "lessons-best-practices": "<p>Kết hợp <strong>Resilience4j Circuit Breaker</strong> và Retry có Exponential Backoff tại tầng tích hợp API ngoài để cô lập lỗi khi hạ tầng bên thứ 3 chậm trễ. Tuyệt đối không thực hiện các tác vụ Blocking I/O trong Event Loop của WebFlux.</p>"
+      "introduction": "<p>Trong bức tranh công nghệ 2026, Rust nổi lên như một ngôn ngữ hàng đầu cho hạ tầng hiệu năng cao. Bài viết chia sẻ góc nhìn thực tế từ quá trình thử nghiệm và triển khai một microservice xử lý dữ liệu vi mô bằng Rust (Actix-web / Tokio) trong môi trường sản xuất thực tế.</p>",
+      "multi-dimensional-evaluation": "<p>Đánh giá toàn diện các tiêu chí cốt lõi:</p><ul><li><strong>Ưu điểm:</strong> Memory Safety không cần Garbage Collector, mức tiêu thụ RAM cực thấp (dưới 15MB cho một web server), lỗi runtime gần như bị triệt tiêu nhờ hệ thống kiểu tĩnh và borrow checker.</li><li><strong>Thách thức:</strong> Thời gian biên dịch (compile time) lâu, chi phí tuyển dụng và đào tạo nhân sự cao, hệ sinh thái thư viện kết nối một số CSDL doanh nghiệp cũ chưa hoàn thiện như Java hay Go.</li></ul>",
+      "case-study-experience": "<p>Chúng tôi viết lại một module xác thực token và phân quyền lưu lượng cao từ Node.js sang Rust. Kết quả: Độ trễ p99 giảm từ 18ms xuống 1.2ms, CPU server giảm tải 75% và hoàn toàn không xảy ra hiện tượng spike độ trễ do Garbage Collection.</p>",
+      "actionable-recommendations": "<p>Khuyến nghị cho doanh nghiệp: Không nên chuyển đổi đại trà toàn bộ hệ thống sang Rust. Hãy bắt đầu từ các service có yêu cầu đặc thù về hiệu năng (I/O proxy, cryptography, CPU-bound calculation) trước khi mở rộng cho toàn bộ đội ngũ.</p>",
+      "open-questions-discussion": "<p>Liệu sự phát triển của Java Virtual Threads (Project Loom) và Go Concurrency có thu hẹp khoảng cách hiệu năng với Rust trong các ứng dụng Web thông thường? Cùng thảo luận góc nhìn của bạn.</p>"
+    }
+  },
+  {
+    "id": "post-6",
+    "slug": "scaling-customer-reporting-portal-high-concurrency-redis",
+    "category": "architecture-system-design",
+    "title": "Mở rộng Cổng Báo cáo ERP chịu tải 1,000+ Người dùng đồng thời với Redis & Node.js",
+    "summary": "Kỹ thuật đệm truy vấn báo cáo nặng, đồng bộ dữ liệu theo lô và thiết kế kiến trúc component giao diện dạng mô-đun.",
+    "publishedAt": "20/04/2026",
+    "date": "2026-04-20",
+    "readTime": "5 phút đọc",
+    "tags": ["Architecture", "Redis", "Node.js", "ERP", "Scalability"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "context-problem": "<p>Vào các ngày chốt sổ cuối tháng, hơn 1,000 khách hàng doanh nghiệp đồng loạt truy cập cổng báo cáo để trích xuất số liệu công nợ và tồn kho. Hệ thống cơ sở dữ liệu quan hệ bị nghẽn I/O, thời gian phản hồi API tăng vọt lên hơn 12 giây, gây trải nghiệm xấu cho người dùng.</p>",
+      "system-requirements": "<ul><li><strong>Thông lượng & Độ trễ:</strong> Đáp ứng 1,000+ người dùng đồng thời (concurrent users), giữ độ trễ phản hồi API dưới 800ms cho 95% yêu cầu.</li><li><strong>Tính nhất quán:</strong> Dữ liệu báo cáo tài chính phải đảm bảo tính toàn vẹn và phản ánh dữ liệu mới nhất trong vòng 5 phút.</li></ul>",
+      "architecture-design": "<p>Giải pháp kiến trúc phân tầng kết hợp Caching & Background Processing:</p><ul><li><strong>Tầng Cache Đa Cấp (Multi-Level Caching):</strong> Sử dụng Redis Cluster lưu trữ kết quả truy vấn tổng hợp dạng JSON với TTL 5 phút và kỹ thuật Cache Warming định kỳ.</li><li><strong>Queue Xử lý Bất đồng bộ:</strong> Các báo cáo trích xuất Excel/PDF dung lượng lớn được chuyển cho Worker xử lý ngầm qua BullMQ, gửi link tải qua WebSocket khi hoàn tất.</li></ul>",
+      "trade-offs-analysis": "<p>Đánh đổi giữa Tính nhất quán tức thì (Strong Consistency) và Tính sẵn sàng cao (High Availability):</p><ul><li>Chấp nhận độ trễ dữ liệu tối đa 5 phút trên cache báo cáo để đổi lại việc giảm 85% tải truy vấn trực tiếp vào CSDL chính.</li><li>Áp dụng cơ chế Cache Invalidation chủ động khi có giao dịch phát sinh trên các tài khoản trọng điểm.</li></ul>",
+      "lessons-best-practices": "<p>Áp dụng kỹ thuật <strong>Mutex Lock (Redlock)</strong> để ngăn chặn hiện tượng Cache Avalanche và Cache Stampede khi một khóa cache phổ biến hết hạn đồng thời lúc tải cao.</p>"
+    }
+  },
+  {
+    "id": "post-7",
+    "slug": "clickhouse-financial-ledger-realtime-aggregation",
+    "category": "data-engineering-analytics",
+    "title": "Xây dựng Pipeline Tính toán Báo cáo Tài chính Realtime Hàng triệu Giao dịch với ClickHouse",
+    "summary": "Tận dụng sức mạnh Columnar Storage của ClickHouse và SummingMergeTree để tính toán đối soát số dư tài chính tức thì với độ trễ dưới 50ms.",
+    "publishedAt": "15/04/2026",
+    "date": "2026-04-15",
+    "readTime": "6 phút đọc",
+    "tags": ["ClickHouse", "Financial Ledger", "OLAP", "SQL Optimization", "Data Engineering"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "business-data-requirements": "<p>Bộ phận Tài chính cần xem bảng cân đối kế toán tức thời cho hơn 50 triệu giao dịch bán lẻ mỗi tháng. Các câu lệnh <code>GROUP BY</code> và <code>SUM</code> trên PostgreSQL truyền thống mất hơn 25 giây cho mỗi lần tải biểu đồ.</p>",
+      "data-modeling": "<p>Thiết kế bảng dữ liệu tối ưu trên ClickHouse:</p><ul><li><strong>Engine SummingMergeTree:</strong> Tự động cộng dồn các cột số tiền (credit/debit) trong quá trình merge dữ liệu ngầm, giảm 90% số dòng cần quét khi query.</li><li><strong>Partitioning:</strong> Phân vùng dữ liệu theo <code>toYYYYMM(transaction_date)</code> và sắp xếp khóa chính theo <code>(account_id, currency, transaction_date)</code>.</li></ul>",
+      "pipeline-construction": "<p>Luồng đồng bộ dữ liệu bao gồm:</p><ul><li>Trích xuất giao dịch từ Kafka qua ClickHouse Kafka Table Engine.</li><li>Tự động chuyển đổi và nạp vào bảng đích thông qua Materialized View mà không cần qua tầng ứng dụng trung gian.</li></ul>",
+      "testing-optimization": "<p>Kiểm thử truy vấn tính toán số dư trên 100 triệu dòng bản ghi: Thời gian phản hồi giảm từ 28 giây xuống còn <strong>38ms</strong>. Tỷ lệ nén dữ liệu đạt 6.5x so với dung lượng thô trên ổ đĩa SSD.</p>",
+      "summary-recommendations": "<p>ClickHouse là lựa chọn vượt trội cho các bài toán phân tích số liệu tài chính thời gian thực. Khuyến nghị: Tránh chèn dữ liệu từng bản ghi riêng lẻ; luôn gom lô (batching) từ 10,000 - 100,000 bản ghi mỗi lần ghi vào ClickHouse.</p>"
+    }
+  },
+  {
+    "id": "post-8",
+    "slug": "blue-green-zero-downtime-deployments-docker-compose-nginx",
+    "category": "devops-cloud-tooling",
+    "title": "Triển khai Blue-Green Zero-Downtime với Docker Compose & Nginx Reverse Proxy",
+    "summary": "Mô hình triển khai sản xuất không gián đoạn dịch vụ bằng 2 môi trường luân phiên và chuyển đổi upstream Nginx tự động qua shell script.",
+    "publishedAt": "10/04/2026",
+    "date": "2026-04-10",
+    "readTime": "5 phút đọc",
+    "tags": ["Docker Compose", "Nginx", "Blue-Green", "CI/CD", "DevOps"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "article-objectives": "<p>Thiết lập quy trình phát hành sản phẩm an toàn cho các hệ thống vừa và nhỏ bằng phương pháp Blue-Green Deployment, đảm bảo 0 giây downtime và khả năng rollback tức thì khi xảy ra sự cố phát hành phiên bản mới.</p>",
+      "architecture-principles": "<p>Kiến trúc gồm hai môi trường container giống hệt nhau:</p><ul><li><strong>Môi trường Blue (Live):</strong> Đang phục vụ toàn bộ người dùng thực tế tại cổng 8081.</li><li><strong>Môi trường Green (Idle):</strong> Nhận phiên bản mới tại cổng 8082, thực thi database migration và chạy kiểm thử tự động (Smoke Test).</li><li><strong>Nginx Proxy:</strong> Điều hướng lưu lượng người dùng và thực hiện <code>nginx -s reload</code> chuyển đổi cổng khi môi trường mới đã sẵn sàng.</li></ul>",
+      "step-by-step-setup": "<p>Quy trình triển khai tự động bằng Bash Script:</p><ul><li><strong>Bước 1:</strong> Pull Docker image mới và khởi động container môi trường nhàn rỗi (Green).</li><li><strong>Bước 2:</strong> Thực hiện Health Check endpoint <code>/healthz</code> cho đến khi trả về HTTP 200.</li><li><strong>Bước 3:</strong> Cập nhật upstream trong file cấu hình Nginx và thực thi reload không gián đoạn kết nối.</li><li><strong>Bước 4:</strong> Dừng container môi trường cũ sau 60 giây chờ kết nối đang xử lý kết thúc.</li></ul>",
+      "troubleshooting-pitfalls": "<ul><li><strong>Lỗi không tương thích Database Schema:</strong> Xảy ra khi migration xóa cột mà phiên bản cũ vẫn đang đọc. Khắc phục bằng chiến lược <strong>Expand and Contract</strong> (Thêm mới trước, xóa sau).</li><li><strong>Nginx reload bị rớt kết nối:</strong> Đảm bảo sử dụng tín hiệu <code>HUP</code> để các worker process cũ hoàn tất request trước khi tắt.</li></ul>",
+      "evaluation-scaling": "<p>Hệ thống loại bỏ hoàn toàn tình trạng bảo trì định kỳ lúc nửa đêm, cho phép đội ngũ phát hành tính năng liên tục 5-10 lần/ngày một cách an toàn và tự tin.</p>"
     }
   }
 ]

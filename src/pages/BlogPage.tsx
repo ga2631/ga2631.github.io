@@ -64,10 +64,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
     }
   }, [posts]);
 
-  // Initial load: 20 latest articles, maximum 2 months if month count < 20
+  // Initial load: 20 latest articles by default
   useEffect(() => {
     let isMounted = true;
-    loadInitialBlogPosts(langKey, 20, 2).then((res) => {
+    loadInitialBlogPosts(langKey, 20).then((res) => {
       if (isMounted) {
         setAllPosts(res.posts);
         setLoadedMonthKeys(res.loadedMonthKeys);

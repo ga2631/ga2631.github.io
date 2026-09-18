@@ -1,51 +1,78 @@
 [
   {
-    "id": "post-3",
-    "slug": "scaling-customer-reporting-portal-high-concurrency-redis",
-    "category": "architecture-system-design",
-    "title": "Scaling an ERP Customer Reporting Portal to 1,000+ Concurrent Users with Redis & Node.js",
-    "summary": "Techniques for caching heavy reporting queries, batch synchronization, and designing modular UI component architectures.",
-    "publishedAt": "Jan 2026",
-    "date": "2026-01-25",
-    "readTime": "5 min read",
-    "tags": [
-      "Node.js",
-      "Redis",
-      "Vue.js",
-      "High Concurrency",
-      "Architecture"
-    ],
-    "author": "Tan Huynh Nhat",
+    "id": "post-17",
+    "slug": "postgresql-partitioning-brin-indexes-multi-billion-rows",
+    "category": "data-engineering-analytics",
+    "title": "PostgreSQL Optimization for Multi-Billion Row Tables: Monthly Partitioning & BRIN Indexes",
+    "summary": "Partitioning strategy for massive audit/event tables and utilizing Block Range Indexes (BRIN) to cut index memory footprint by 95% compared to conventional B-Trees.",
+    "publishedAt": "Jan 26, 2026",
+    "date": "2026-01-26",
+    "readTime": "7 min read",
+    "tags": ["PostgreSQL", "Database Optimization", "BRIN Index", "Partitioning", "Data Engineering"],
+    "author": "Huỳnh Nhật Tân",
     "sections": {
-      "context-problem": "<p>An enterprise reporting portal served over 1,000 corporate clients logging in concurrently between 08:00 and 09:30 AM. Each client requested multi-dimensional performance reports. Under morning peak load, database CPU utilization reached 100%, page response times degraded beyond 10 seconds, and users experienced frequent HTTP 504 Gateway Timeouts.</p>",
-      "system-requirements": "<ul><li><strong>Functional:</strong> Render customizable reporting views, dynamic date filters, channel breakdowns, and interactive data visualizations.</li><li><strong>Non-Functional:</strong> Sub-second page load times (&lt; 800ms), support 1,000+ active concurrent clients, maximum data staleness under 5 minutes, and efficient cloud resource utilization.</li></ul>",
-      "architecture-design": "<p>We engineered a decoupled caching and asynchronous rendering architecture:</p><ul><li><strong>Cache-Aside with Redis:</strong> Heavy analytical aggregations are cached in a Redis Cluster with structured key namespacing and dynamic TTLs aligned with data refresh frequencies.</li><li><strong>Modular UI Components:</strong> Independent Vue.js charting widgets render asynchronously using skeleton loaders, preventing blocking UI render cascades.</li><li><strong>Query Batching & Deduplication:</strong> Node.js backend batches identical queries within a 50ms window (DataLoader pattern), collapsing redundant database requests into a single query execution.</li></ul>",
-      "trade-offs-analysis": "<p>Comparing Database Read Replicas vs. Distributed Redis Caching:</p><ul><li><strong>Read Replicas:</strong> High infrastructure overhead and still vulnerable to expensive full-table aggregation spikes without proper caching.</li><li><strong>Redis Caching + Query Batching:</strong> Cut infrastructure costs by 80%, eliminated 90% of direct database load, with an acceptable 2-minute cache invalidation window for analytical metrics.</li></ul>",
-      "lessons-best-practices": "<p>Implement <strong>Cache Stampede Prevention</strong> via distributed mutexes or probabilistic early expiration (XFetch) to prevent simultaneous database hammering on cache misses. Always enforce strict connection pool timeouts.</p>"
+      "business-data-requirements": "<p>User telemetry and GPS tracking systems logged over 2 billion rows annually. When table size exceeded 500GB, traditional B-Tree indexes consumed 120GB of RAM, exceeding database buffer cache and causing severe analytical query degradation.</p>",
+      "data-modeling": "<p>Relational partitioning architecture:</p><ul><li><strong>Declarative Partitioning:</strong> Splitting the primary table by monthly time ranges via <code>PARTITION BY RANGE (created_at)</code>.</li><li><strong>Partition Pruning:</strong> Allowing the PostgreSQL query planner to completely bypass non-relevant child tables during range filter evaluations.</li></ul>",
+      "pipeline-construction": "<p>Implementing Block Range Indexes (BRIN):</p><ul><li>Because time-series data is written monotonically in ascending physical block order, BRIN only tracks min/max summaries per 128 disk pages (<code>pages_per_range = 128</code>).</li><li>Automated upcoming month partition creation using the pg_partman extension.</li></ul>",
+      "testing-optimization": "<p>Performance gains: Total index size plummeted from <strong>120GB to just 450MB</strong> (over 99% reduction). Range scan throughput accelerated by 5x due to precise Partition Pruning.</p>",
+      "summary-recommendations": "<p>BRIN indexes are ideal for append-only time-series datasets in PostgreSQL. Recommendation: Schedule periodic <code>VACUUM ANALYZE</code> maintenance to preserve BRIN block metadata accuracy.</p>"
     }
   },
   {
-    "id": "post-6",
-    "slug": "from-developer-to-system-architect-practical-mindset",
-    "category": "tech-radar-career-insights",
-    "title": "From Software Engineer to System Architect: Mindset, Trade-offs & Practical Lessons",
-    "summary": "Field-tested reflections on balancing technical excellence with business value, making responsible architectural decisions, and sustained engineering growth.",
-    "publishedAt": "Jan 2026",
-    "date": "2026-01-10",
-    "readTime": "8 min read",
-    "tags": [
-      "Career Growth",
-      "System Architecture",
-      "Engineering Mindset",
-      "Tech Radar"
-    ],
-    "author": "Tan Huynh Nhat",
+    "id": "post-18",
+    "slug": "distributed-tracing-opentelemetry-prometheus-grafana-spring-boot",
+    "category": "devops-cloud-tooling",
+    "title": "End-to-End Distributed Tracing with OpenTelemetry, Prometheus and Grafana for Spring Boot",
+    "summary": "Tracking distributed request lifecycles across microservice clusters, diagnosing latency bottlenecks, and rendering live Service Dependency Graphs.",
+    "publishedAt": "Jan 20, 2026",
+    "date": "2026-01-20",
+    "readTime": "6 min read",
+    "tags": ["OpenTelemetry", "Prometheus", "Grafana", "Observability", "DevOps"],
+    "author": "Huỳnh Nhật Tân",
     "sections": {
-      "introduction": "<p>Transitioning from a Senior Software Engineer to a System Architect is not just a matter of accumulating years of experience. It represents a fundamental mindset shift: evolving from asking \"How do I implement this code?\" to \"Why should we choose this approach, and what are its systemic consequences three years down the line?\".</p>",
-      "multi-dimensional-evaluation": "<p>Key differences between the two roles:</p><ul><li><strong>Problem Solving:</strong> Senior engineers strive for algorithm efficiency; architects navigate multi-dimensional trade-offs between cost, time-to-market, maintainability, and team capabilities.</li><li><strong>Scope of Impact:</strong> Expands from individual microservices to the entire technical ecosystem and cross-functional alignment (Product, DevOps, Security).</li><li><strong>Primary Toolkit:</strong> Evolves from IDEs and debuggers to Architecture Decision Records (ADRs), C4 Model diagrams, and clear technical articulation.</li></ul>",
-      "case-study-experience": "<p>A real-world lesson from a premature microservice migration: Our team initially split a system into 20 microservices to \"follow modern trends\". The result was quadrupled operational overhead, distributed tracing complexity, and team fatigue. Re-evaluating the business reality, we consolidated into a clean Modular Monolith with targeted Event-Driven workers, cutting cloud expenses by 50% while doubling feature velocity.</p>",
-      "actionable-recommendations": "<p>Three daily habits to cultivate architectural thinking:</p><ul><li><strong>Document ADRs for Major Decisions:</strong> Record the context, evaluated alternatives, decision rationale, and accepted compromises.</li><li><strong>Study Industry Engineering Blogs:</strong> Read real-world architectural case studies from Netflix, Stripe, and Uber to understand high-scale patterns.</li><li><strong>Practice System Design Reviews:</strong> Regularly sketch distributed architectures, challenge single points of failure, and analyze bottleneck resiliency.</li></ul>",
-      "open-questions-discussion": "<p>In the era of rapid AI and cloud-native acceleration, should architects focus primarily on mastering low-level core engineering, or cultivate technical leadership and product strategy? Share your perspectives and real-world experiences!</p>"
+      "article-objectives": "<p>Establish a comprehensive Observability ecosystem for Spring Boot microservices, enabling engineering teams to identify and resolve distributed latency spikes within minutes.</p>",
+      "architecture-principles": "<p>Unified three pillars of Observability (Tracing, Metrics, Logs):</p><ul><li><strong>OpenTelemetry Java Agent:</strong> Automatically injects and propagates Trace and Span IDs across asynchronous HTTP calls via W3C Trace Context headers.</li><li><strong>OpenTelemetry Collector:</strong> Ingests telemetry, sanitizes sensitive parameters, and routes data to Prometheus and Grafana Tempo.</li><li><strong>Grafana Dashboard:</strong> Visualizes live Service Dependency Graphs and facilitates seamless jumps from Metric Alerts directly into correlated Traces.</li></ul>",
+      "step-by-step-setup": "<p>Configuration details:</p><ul><li><strong>Step 1:</strong> Attach <code>opentelemetry-javaagent.jar</code> inside the production Spring Boot Dockerfile.</li><li><strong>Step 2:</strong> Set environment variable <code>OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317</code>.</li><li><strong>Step 3:</strong> Configure Prometheus alert rules utilizing the RED method (Rate, Errors, Duration).</li></ul>",
+      "troubleshooting-pitfalls": "<ul><li><strong>Context Propagation Loss in Async Threads:</strong> Occurs when switching threads without wrapping <code>Context.current()</code>. Fixed via custom Spring TaskDecorators.</li><li><strong>Network Bandwidth Bloat:</strong> Configure <strong>Tail-based Sampling</strong> on Otel Collector to capture 100% of error traces while sampling only 5% of healthy traces.</li></ul>",
+      "evaluation-scaling": "<p>Decreased Mean Time to Detection (MTTD) and Mean Time to Resolution (MTTR) from 45 minutes down to under 3 minutes across production fleets.</p>"
+    }
+  },
+  {
+    "id": "post-19",
+    "slug": "typescript-advanced-types-discriminated-unions-type-guards",
+    "category": "code-craftsmanship-languages",
+    "title": "Mastering Advanced TypeScript: Discriminated Unions, Type Guards and Generic Constraints in Practice",
+    "summary": "Leveraging TypeScript's expressive type system to eliminate impossible UI states at compile-time and design rock-solid Type-Safe application interfaces.",
+    "publishedAt": "Jan 14, 2026",
+    "date": "2026-01-14",
+    "readTime": "6 min read",
+    "tags": ["TypeScript", "Frontend", "Clean Code", "Type Safety", "Software Craftsmanship"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>In complex frontend applications, managing asynchronous state using fragmented boolean flags (<code>isLoading</code>, <code>hasError</code>, <code>data</code>) inevitably yields impossible states (e.g. rendering both loading spinner and error alert simultaneously).</p>",
+      "initial-approach": "<p>Naive approaches often resort to <code>any</code> or unsafe <code>as Type</code> assertions, circumventing TypeScript's safety guarantees entirely.</p>",
+      "optimization-thinking": "<p>Model application state with <strong>Discriminated Unions</strong>:</p><ul><li>Every state variant possesses a single discriminator property (e.g. <code>status: 'success' | 'error'</code>).</li><li>Custom Type Guards provide foolproof, safe type narrowing.</li><li>Apply the <code>never</code> type for exhaustive compile-time pattern matching.</li></ul>",
+      "code-implementation": "<p>Type-safe asynchronous state management:</p><pre><code>type AsyncState<T> =\n  | { status: 'idle' }\n  | { status: 'loading' }\n  | { status: 'success'; data: T }\n  | { status: 'error'; error: Error };\n\nfunction renderState(state: AsyncState<User>) {\n  switch (state.status) {\n    case 'success': return renderUser(state.data);\n    case 'error': return renderError(state.error);\n    case 'loading': return <Spinner />;\n    case 'idle': return null;\n  }\n}</code></pre>",
+      "complexity-applications": "<p>Eliminated 100% of runtime <code>Cannot read properties of undefined</code> exceptions and elevated engineering velocity through rich IDE IntelliSense autocomplete.</p>"
+    }
+  },
+  {
+    "id": "post-20",
+    "slug": "effective-system-design-interview-frameworks-mental-models",
+    "category": "tech-radar-career-insights",
+    "title": "System Design Interview Playbook for Senior & Lead: 4-Step Framework and Trade-off Mental Models",
+    "summary": "Essential guide to mastering large-scale system design interviews: From clarifying ambiguities and back-of-the-envelope calculations to rigorous trade-off evaluations.",
+    "publishedAt": "Jan 08, 2026",
+    "date": "2026-01-08",
+    "readTime": "8 min read",
+    "tags": ["System Design", "Tech Interview", "Career Insights", "Engineering Mindset", "Architecture"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "introduction": "<p>System design interviews evaluate an engineer's technical depth, structured problem solving, and practical trade-off intuition. This guide distills learnings from evaluating dozens of Senior and Lead candidates.</p>",
+      "multi-dimensional-evaluation": "<p>Standard 4-step framework for tackling system design challenges:</p><ul><li><strong>Step 1: Clarify Scope & Requirements:</strong> Delineate functional vs non-functional constraints (QPS, DAU, latency SLA, consistency models).</li><li><strong>Step 2: Back-of-the-Envelope Estimation:</strong> Calculate read/write throughput, 5-year storage capacity, and network egress bandwidth.</li><li><strong>Step 3: High-Level Architecture:</strong> Diagram end-to-end data flows from Client -&gt; CDN / API Gateway -&gt; Microservices -&gt; Cache -&gt; Database.</li><li><strong>Step 4: Deep Dive & Bottlenecks:</strong> Address single points of failure, partition sharding schemes, and CAP theorem consistency boundaries.</li></ul>",
+      "case-study-experience": "<p>URL Shortener case study: Rather than immediately pitching Redis or Kafka, exceptional candidates first calculate the Read:Write ratio (100:1) to mathematically justify the caching layer.</p>",
+      "actionable-recommendations": "<p>There are no silver bullets in distributed systems. Always proactively articulate the trade-offs of your chosen architectural decisions.</p>",
+      "open-questions-discussion": "<p>What was the most challenging system design interview scenario you have encountered? What architectural trade-offs stood out?</p>"
     }
   }
 ]

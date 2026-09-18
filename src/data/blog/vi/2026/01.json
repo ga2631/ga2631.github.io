@@ -1,51 +1,78 @@
 [
   {
-    "id": "post-3",
-    "slug": "scaling-customer-reporting-portal-high-concurrency-redis",
-    "category": "architecture-system-design",
-    "title": "Mở rộng Cổng Báo cáo ERP chịu tải 1,000+ Người dùng đồng thời với Redis & Node.js",
-    "summary": "Kỹ thuật đệm truy vấn báo cáo nặng, đồng bộ dữ liệu theo lô và thiết kế kiến trúc component giao diện dạng mô-đun.",
-    "publishedAt": "Tháng 1, 2026",
-    "date": "2026-01-25",
-    "readTime": "5 phút đọc",
-    "tags": [
-      "Node.js",
-      "Redis",
-      "Vue.js",
-      "High Concurrency",
-      "Architecture"
-    ],
+    "id": "post-17",
+    "slug": "postgresql-partitioning-brin-indexes-multi-billion-rows",
+    "category": "data-engineering-analytics",
+    "title": "Tối ưu Hóa PostgreSQL cho Bảng Hàng Tỷ Bản Ghi: Partitioning theo Tháng và Chỉ mục BRIN",
+    "summary": "Chiến lược phân vùng bảng giao dịch khổng lồ và sử dụng chỉ mục Block Range Index (BRIN) để giảm 95% dung lượng index so với B-Tree truyền thống.",
+    "publishedAt": "26/01/2026",
+    "date": "2026-01-26",
+    "readTime": "7 phút đọc",
+    "tags": ["PostgreSQL", "Database Optimization", "BRIN Index", "Partitioning", "Data Engineering"],
     "author": "Huỳnh Nhật Tân",
     "sections": {
-      "context-problem": "<p>Cổng thông tin báo cáo khách hàng doanh nghiệp phục vụ hơn 1,000 đối tác truy cập cùng lúc trong khung giờ 08:00 - 09:30 sáng. Mỗi đối tác yêu cầu xuất dữ liệu báo cáo chi tiết nhiều chiều. Khi tải đồng thời tăng cao, CSDL quan hệ chính bị quá tải CPU (chạm 100%), thời gian phản hồi giao diện kéo dài trên 10 giây và gây sập dịch vụ (HTTP 504 Gateway Timeout).</p>",
-      "system-requirements": "<ul><li><strong>Yêu cầu chức năng:</strong> Cung cấp báo cáo động, lọc theo nhiều tiêu chí (thời gian, chiến dịch, kênh bán hàng) và xuất biểu đồ tương tác.</li><li><strong>Yêu cầu phi chức năng:</strong> Thời gian tải trang dưới 800ms, phục vụ 1,000+ người dùng đồng thời (concurrent users), dữ liệu không trễ quá 5 phút so với thực tế và chi phí hạ tầng tối ưu.</li></ul>",
-      "architecture-design": "<p>Kiến trúc giải pháp kết hợp bộ nhớ đệm phân tán và tách biệt khối truy vấn:</p><ul><li><strong>Cache-Aside với Redis:</strong> Kết quả truy vấn báo cáo nặng được đệm vào Redis Cluster với cơ chế phân tầng khóa (Key Namespacing) và thời gian sống (TTL) linh hoạt theo tần suất cập nhật dữ liệu.</li><li><strong>Thư viện Component Mô-đun:</strong> Giao diện xây dựng bằng Vue.js / TypeScript với các widget biểu đồ độc lập tải dữ liệu bất đồng bộ qua Skeleton Loader.</li><li><strong>Gom lô truy vấn (Query Batching):</strong> Node.js Backend gom các truy vấn có cùng bộ lọc trong cửa sổ 50ms (Dataloader pattern) để chỉ thực thi một query duy nhất tới CSDL.</li></ul>",
-      "trade-offs-analysis": "<p>Phân tích đánh đổi giữa Caching vs Read Replica:</p><ul><li><strong>Mở rộng Read Replica:</strong> Tăng chi phí máy chủ CSDL đáng kể và vẫn bị nghẽn nếu truy vấn chưa được tối ưu hóa chỉ mục.</li><li><strong>Redis Caching + Batching:</strong> Tiết kiệm hơn 80% chi phí phần cứng, giảm 90% số lượng query vào database, chấp nhận độ trễ dữ liệu tối đa 2-3 phút cho các báo cáo thống kê lịch sử.</li></ul>",
-      "lessons-best-practices": "<p>Sử dụng cơ chế <strong>Cache Stampede Prevention</strong> (khóa phân tán Redis Mutex hoặc Early Refresh) để ngăn hàng trăm request cùng truy vấn database khi cache vừa hết hạn. Luôn đặt kích thước timeout chặt chẽ cho mọi kết nối ngoại vi.</p>"
+      "business-data-requirements": "<p>Hệ thống ghi nhận sự kiện người dùng và lịch sử vị trí GPS lưu trữ hơn 2 tỷ bản ghi mỗi năm. Khi kích thước bảng vượt quá 500GB, các chỉ mục B-Tree truyền thống chiếm tới 120GB RAM, vượt quá bộ nhớ của máy chủ CSDL, gây nghẽn truy vấn phân tích định kỳ.</p>",
+      "data-modeling": "<p>Thiết kế phân vùng bảng quan hệ:</p><ul><li><strong>Declarative Partitioning:</strong> Phân chia bảng chính thành các partition con theo dải thời gian hàng tháng: <code>PARTITION BY RANGE (created_at)</code>.</li><li><strong>Partition Pruning:</strong> Cho phép PostgreSQL Optimizer tự động loại bỏ các partition không liên quan khi thực thi câu lệnh WHERE có điều kiện ngày tháng.</li></ul>",
+      "pipeline-construction": "<p>Triển khai chỉ mục BRIN (Block Range Index):</p><ul><li>Vì dữ liệu được ghi tuần tự theo thời gian tăng dần (Monotonically Increasing), chỉ mục BRIN chỉ lưu giá trị Min/Max cho từng block 128 trang đĩa (<code>pages_per_range = 128</code>).</li><li>Tự động hóa việc tạo partition mới cho các tháng tiếp theo bằng pg_partman extension.</li></ul>",
+      "testing-optimization": "<p>Kết quả tối ưu: Kích thước chỉ mục giảm từ <strong>120GB xuống chỉ còn 450MB</strong> (giảm hơn 99%). Tốc độ quét dải thời gian tăng gấp 5 lần nhờ Partition Pruning chính xác.</p>",
+      "summary-recommendations": "<p>Chỉ mục BRIN là giải pháp tối ưu cho dữ liệu chuỗi thời gian (Time-series / Append-only) trên PostgreSQL. Khuyến nghị: Thực thi lệnh <code>VACUUM ANALYZE</code> định kỳ để duy trì tính chính xác của metadata chỉ mục BRIN.</p>"
     }
   },
   {
-    "id": "post-6",
-    "slug": "from-developer-to-system-architect-practical-mindset",
-    "category": "tech-radar-career-insights",
-    "title": "Hành trình từ Kỹ sư Phần mềm đến Kiến trúc Hệ thống: Tư duy, Trade-offs và Bài học Thực tế",
-    "summary": "Những đúc kết thực chiến về việc cân bằng giữa sự hoàn hảo kỹ thuật và giá trị kinh doanh, cách ra quyết định kỹ thuật có trách nhiệm và thói quen học tập bền vững.",
-    "publishedAt": "Tháng 1, 2026",
-    "date": "2026-01-10",
-    "readTime": "8 phút đọc",
-    "tags": [
-      "Career Growth",
-      "System Architecture",
-      "Engineering Mindset",
-      "Tech Radar"
-    ],
+    "id": "post-18",
+    "slug": "distributed-tracing-opentelemetry-prometheus-grafana-spring-boot",
+    "category": "devops-cloud-tooling",
+    "title": "Thiết lập Distributed Tracing Toàn diện với OpenTelemetry, Prometheus và Grafana cho Spring Boot",
+    "summary": "Theo dõi hành trình request xuyên suốt cụm microservices, xác định chính xác điểm nghẽn độ trễ và trực quan hóa bản đồ dịch vụ (Service Graph).",
+    "publishedAt": "20/01/2026",
+    "date": "2026-01-20",
+    "readTime": "6 phút đọc",
+    "tags": ["OpenTelemetry", "Prometheus", "Grafana", "Observability", "DevOps"],
     "author": "Huỳnh Nhật Tân",
     "sections": {
-      "introduction": "<p>Bước chuyển từ một Kỹ sư Phần mềm giỏi (Senior Engineer) lên vị trí Kiến trúc sư Hệ thống (System Architect) không đơn thuần là sự nâng cấp về số năm kinh nghiệm, mà là sự thay đổi căn bản về tư duy: từ việc tập trung \"viết code như thế nào\" sang \"tại sao chọn giải pháp này và hậu quả của nó trong 3 năm tới là gì\".</p>",
-      "multi-dimensional-evaluation": "<p>Sự khác biệt then chốt giữa hai vai trò:</p><ul><li><strong>Tư duy giải quyết:</strong> Senior Engineer tìm kiếm thuật toán tối ưu nhất; Architect tìm kiếm điểm cân bằng tối ưu giữa chi phí, thời gian ra mắt (Time-to-Market), khả năng bảo trì và nguồn lực đội ngũ.</li><li><strong>Phạm vi ảnh hưởng:</strong> Từ cấp độ module/service mở rộng ra toàn bộ hệ sinh thái kỹ thuật và sự đồng thuận liên phòng ban (Business, DevOps, Security).</li><li><strong>Công cụ chính:</strong> Từ IDE và Debugger sang Architecture Decision Records (ADR), sơ đồ C4 Model và khả năng giao tiếp kỹ thuật mạch lạc.</li></ul>",
-      "case-study-experience": "<p>Bài học từ một dự án Microservices tái cấu trúc: Ban đầu, đội ngũ quyết định chia nhỏ hệ thống thành 20 microservices để \"bắt kịp xu hướng\". Kết quả là chi phí vận hành tăng gấp 4 lần, khó khăn trong việc trace bug và phân tán nhân lực. Sau khi đánh giá lại bài toán kinh doanh, chúng tôi tái cấu trúc về mô hình Modular Monolith kết hợp Event-Driven, giúp giảm 50% chi phí hạ tầng và tăng tốc độ release tính năng mới lên gấp đôi.</p>",
-      "actionable-recommendations": "<p>Ba thói quen rèn luyện tư duy kiến trúc mỗi ngày:</p><ul><li><strong>Viết ADR cho mọi quyết định lớn:</strong> Ghi lại bối cảnh, các phương án đã xem xét và lý do lựa chọn kèm các đánh đổi chấp nhận.</li><li><strong>Đọc mã nguồn và tài liệu kiến trúc thực tế:</strong> Nghiên cứu engineering blog của Netflix, Uber, Stripe để hiểu cách họ giải quyết các bài toán quy mô lớn.</li><li><strong>Thực hành System Design định kỳ:</strong> Tự đặt đề bài và vẽ thiết kế hệ thống chịu tải cao, phân tích các điểm nghẽn (Single Point of Failure).</li></ul>",
-      "open-questions-discussion": "<p>Trong bối cảnh AI và Cloud-native phát triển vũ bão, vai trò của người làm kiến trúc nên tập trung vào chiều sâu công nghệ lõi hay mở rộng kỹ năng lãnh đạo kỹ thuật và định hình chiến lược sản phẩm? Hãy cùng thảo luận và chia sẻ góc nhìn của bạn!</p>"
+      "article-objectives": "<p>Xây dựng hệ sinh thái Observability hoàn chỉnh cho cụm ứng dụng Spring Boot, giúp đội ngũ kỹ sư phát hiện và khắc phục sự cố hiệu năng phân tán chỉ trong vài phút.</p>",
+      "architecture-principles": "<p>Ba trụ cột quan sát (Tracing, Metrics, Logs) được tích hợp thống nhất:</p><ul><li><strong>OpenTelemetry Java Agent:</strong> Tự động thu thập Trace IDs, Span IDs và truyền ngữ cảnh phân tán qua HTTP Header W3C Trace Context.</li><li><strong>OpenTelemetry Collector:</strong> Tiếp nhận dữ liệu đo lường, lọc bỏ dữ liệu nhạy cảm và chuyển tiếp tới Prometheus & Tempo.</li><li><strong>Grafana Dashboard:</strong> Trực quan hóa bản đồ liên kết dịch vụ (Service Dependency Graph) và liên kết chéo từ Alert sang Trace tương ứng.</li></ul>",
+      "step-by-step-setup": "<p>Các bước cấu hình:</p><ul><li><strong>Bước 1:</strong> Đính kèm <code>opentelemetry-javaagent.jar</code> vào Dockerfile runtime của Spring Boot.</li><li><strong>Bước 2:</strong> Cấu hình biến môi trường <code>OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317</code>.</li><li><strong>Bước 3:</strong> Thiết lập quy tắc cảnh báo (Alerting Rules) trên Prometheus dựa trên chuẩn độ trễ RED (Rate, Errors, Duration).</li></ul>",
+      "troubleshooting-pitfalls": "<ul><li><strong>Đứt gãy Trace Context khi gọi Async:</strong> Khi chuyển thread mà không dùng <code>Context.current().wrap(...)</code>. Khắc phục bằng cấu hình TaskDecorator trong Spring Async.</li><li><strong>Tốn băng thông do lưu trữ 100% traces:</strong> Cấu hình <strong>Tail-based Sampling</strong> trên Otel Collector để chỉ giữ lại 100% traces lỗi và 5% traces bình thường.</li></ul>",
+      "evaluation-scaling": "<p>Rút ngắn thời gian xác định nguyên nhân gốc rễ sự cố (MTTD & MTTR) từ 45 phút xuống dưới 3 phút trên toàn bộ môi trường sản xuất.</p>"
+    }
+  },
+  {
+    "id": "post-19",
+    "slug": "typescript-advanced-types-discriminated-unions-type-guards",
+    "category": "code-craftsmanship-languages",
+    "title": "Làm chủ TypeScript Nâng cao: Discriminated Unions, Type Guards và Generic Constraints trong Thực tế",
+    "summary": "Tận dụng hệ thống kiểu tĩnh nâng cao của TypeScript để biến các lỗi runtime tiềm ẩn thành lỗi lúc biên dịch, xây dựng API Type-Safe tuyệt đối.",
+    "publishedAt": "14/01/2026",
+    "date": "2026-01-14",
+    "readTime": "6 phút đọc",
+    "tags": ["TypeScript", "Frontend", "Clean Code", "Type Safety", "Software Craftsmanship"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Trong các ứng dụng giao diện phức tạp, việc xử lý trạng thái API (Idle, Loading, Success, Error) bằng các biến cờ boolean rời rạc (<code>isLoading</code>, <code>hasError</code>, <code>data</code>) thường xuyên dẫn đến các trạng thái vô lý (Impossible States), ví dụ vừa hiển thị Loading vừa hiển thị Error.</p>",
+      "initial-approach": "<p>Cách tiếp cận cũ thường dùng kiểu <code>any</code> hoặc ép kiểu <code>as Type</code>, làm vô hiệu hóa hoàn toàn sức mạnh kiểm tra an toàn của trình biên dịch TypeScript.</p>",
+      "optimization-thinking": "<p>Sử dụng <strong>Discriminated Unions (Kiểu Hợp có Phân biệt)</strong> để mô hình hóa trạng thái:</p><ul><li>Mỗi trạng thái có một trường phân biệt duy nhất (ví dụ: <code>status: 'success' | 'error'</code>).</li><li>Sử dụng Type Guards tự định nghĩa để thu hẹp phạm vi kiểu (Type Narrowing) an toàn tuyệt đối.</li><li>Áp dụng <code>never</code> type để bảo đảm xử lý đầy đủ mọi trường hợp (Exhaustiveness Checking).</li></ul>",
+      "code-implementation": "<p>Triển khai kiểu trạng thái API Type-Safe:</p><pre><code>type AsyncState<T> =\n  | { status: 'idle' }\n  | { status: 'loading' }\n  | { status: 'success'; data: T }\n  | { status: 'error'; error: Error };\n\nfunction renderState(state: AsyncState<User>) {\n  switch (state.status) {\n    case 'success': return renderUser(state.data);\n    case 'error': return renderError(state.error);\n    case 'loading': return <Spinner />;\n    case 'idle': return null;\n  }\n}</code></pre>",
+      "complexity-applications": "<p>Loại bỏ 100% lỗi không xác định <code>Cannot read properties of undefined</code> lúc runtime, nâng cao năng suất lập trình nhờ tính năng tự động gợi ý code (IntelliSense) hoàn hảo.</p>"
+    }
+  },
+  {
+    "id": "post-20",
+    "slug": "effective-system-design-interview-frameworks-mental-models",
+    "category": "tech-radar-career-insights",
+    "title": "Bí quyết Phỏng vấn System Design cho Senior & Lead: Framework 4 Bước và Tư duy Đánh đổi",
+    "summary": "Cẩm nang chinh phục các vòng phỏng vấn thiết kế hệ thống lớn: Từ làm rõ yêu cầu, ước tính dung lượng (Back-of-envelope) đến phân tích đánh đổi chuyên sâu.",
+    "publishedAt": "08/01/2026",
+    "date": "2026-01-08",
+    "readTime": "8 phút đọc",
+    "tags": ["System Design", "Tech Interview", "Career Insights", "Engineering Mindset", "Architecture"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "introduction": "<p>Vòng phỏng vấn System Design là bài kiểm tra toàn diện về chiều sâu kỹ thuật, khả năng giao tiếp và tư duy thực tế của các ứng viên Senior/Lead. Bài viết đúc kết kinh nghiệm phỏng vấn và đánh giá hàng chục ứng viên kỹ thuật.</p>",
+      "multi-dimensional-evaluation": "<p>Framework 4 bước chuẩn mực để giải quyết mọi bài toán thiết kế hệ thống:</p><ul><li><strong>Bước 1: Hiểu rõ phạm vi (Scope & Requirements):</strong> Đặt câu hỏi làm rõ Functional và Non-functional Requirements (QPS, DAU, độ trễ, tính nhất quán).</li><li><strong>Bước 2: Ước lượng dung lượng (Back-of-the-envelope estimation):</strong> Tính toán thông lượng ghi/đọc, dung lượng lưu trữ trong 5 năm và băng thông mạng.</li><li><strong>Bước 3: Thiết kế mức cao (High-Level Architecture):</strong> Vẽ sơ đồ luồng dữ liệu từ Client -&gt; Load Balancer -&gt; App Services -&gt; Cache -&gt; Database.</li><li><strong>Bước 4: Đi sâu vào chi tiết & Đánh đổi (Deep Dive & Bottlenecks):</strong> Giải quyết các điểm nghẽn đơn lẻ (Single Point of Failure), chiến lược phân mảnh dữ liệu (Sharding) và tính nhất quán (CAP Theorem).</li></ul>",
+      "case-study-experience": "<p>Phân tích bài toán thiết kế hệ thống URL Shortener (Bitly): Thay vì ngay lập tức đề xuất Redis hay Kafka, ứng viên xuất sắc luôn bắt đầu bằng việc tính toán tỉ lệ Đọc:Ghi (100:1) để chứng minh tính cần thiết của tầng Caching.</p>",
+      "actionable-recommendations": "<p>Lời khuyên cốt lõi: Không có giải pháp nào hoàn hảo tuyệt đối trong thiết kế hệ thống. Hãy luôn chủ động trình bày các phương án đánh đổi (Trade-offs) và lý do bạn đưa ra quyết định kỹ thuật đó.</p>",
+      "open-questions-discussion": "<p>Kinh nghiệm hoặc bài toán phỏng vấn System Design nào từng khiến bạn ấn tượng nhất? Cùng trao đổi thảo luận nhé!</p>"
     }
   }
 ]

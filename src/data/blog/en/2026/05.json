@@ -3,26 +3,76 @@
     "id": "post-1",
     "slug": "migrating-legacy-erp-to-medallion-data-warehouse-cdc",
     "category": "data-engineering-analytics",
-    "title": "Migrating a 7-Year Legacy ERP to a Medallion Data Warehouse using CDC and Zero Data Loss",
-    "summary": "How we extracted MySQL binlogs with Change Data Capture, leveraged RabbitMQ idempotent workers, and reduced analytical query times by >70% with zero downtime.",
-    "publishedAt": "May 2026",
-    "date": "2026-05-15",
+    "title": "Migrating 7-Year Legacy ERP to Medallion Data Warehouse with CDC & Zero Data Loss",
+    "summary": "Extracting MySQL binlogs via Change Data Capture, implementing idempotent Go workers on RabbitMQ, and cutting analytics query latency by 70% with zero downtime.",
+    "publishedAt": "May 19, 2026",
+    "date": "2026-05-19",
     "readTime": "7 min read",
-    "tags": [
-      "Golang",
-      "CDC",
-      "Medallion Architecture",
-      "PostgreSQL",
-      "RabbitMQ",
-      "Data Engineering"
-    ],
-    "author": "Tan Huynh Nhat",
+    "tags": ["Golang", "CDC", "Medallion Architecture", "PostgreSQL", "RabbitMQ", "Data Engineering"],
+    "author": "Huỳnh Nhật Tân",
     "sections": {
-      "business-data-requirements": "<p>Operating for over 7 years, our legacy ERP database accumulated millions of retail and fulfillment transactions. The Business Intelligence (BI) team and executives required near-realtime dashboards to optimize inventory and marketing budgets. However, the operational MySQL database relied heavily on an Entity-Attribute-Value (EAV) schema. Running heavy multi-table joins on OLTP exhausted CPU resources and threatened order processing throughput.</p>",
-      "data-modeling": "<p>Rather than querying transactional tables directly, we adopted a multi-tier Medallion Architecture separating OLAP from OLTP:</p><ul><li><strong>Bronze Layer (Raw Ingestion):</strong> Append-only tables preserving unmodified JSON payload events captured from MySQL binlogs.</li><li><strong>Silver Layer (Cleaned & Conformed):</strong> Validated 3NF schemas with normalized types, deduplicated events, and cleansed foreign key references.</li><li><strong>Gold Layer (Dimensional Star Schema):</strong> High-performance Fact and Dimension tables optimized for analytical reporting in Looker Studio.</li></ul>",
-      "pipeline-construction": "<p>The CDC ingestion pipeline was built without touching legacy ERP monolith code:</p><ul><li><strong>Binary Log Ingestion:</strong> Debezium/Canal captures MySQL row-based binlogs and streams change events into RabbitMQ topic exchanges.</li><li><strong>Idempotent Go Workers:</strong> High-throughput Go consumers decode payloads and execute atomic PostgreSQL <code>INSERT ... ON CONFLICT DO UPDATE</code> (UPSERT) operations.</li><li><strong>Dead Letter Queue (DLX):</strong> Corrupted events or transient network issues route to a DLX with automated exponential backoff retries.</li></ul>",
-      "testing-optimization": "<p>Key validation and tuning strategies included:</p><ul><li><strong>Automated Reconciliation:</strong> Nightly checksum audits at 02:00 AM comparing record counts and aggregate hashes between MySQL and PostgreSQL.</li><li><strong>Performance Tuning:</strong> Monthly table partitioning, BRIN indexes on timestamp columns, and micro-batching worker writes (500 records/batch).</li><li><strong>Pipeline Latency:</strong> End-to-end sync latency from OLTP commit to DW availability remained under 1.8 seconds under peak load.</li></ul>",
-      "summary-recommendations": "<p>The solution achieved a <strong>96% data reconciliation rate with 0% data loss</strong>, decreased analytical query times by <strong>over 70%</strong>, and eliminated ERP database locking. Recommendation: Always enforce idempotent consumer writes and schema versioning when designing event-driven CDC architectures.</p>"
+      "business-data-requirements": "<p>An ERP system running for 7 years accumulated massive retail transactions. The Business Intelligence (BI) and executive teams required hourly near-real-time reports. However, the legacy OLTP MySQL database with bloated Entity-Attribute-Value (EAV) tables suffered 100% CPU spikes during heavy reporting queries.</p>",
+      "data-modeling": "<p>We decoupled OLAP from OLTP by implementing a Medallion Architecture (Data Lakehouse) on PostgreSQL/ClickHouse:</p><ul><li><strong>Bronze Tier (Raw Ingestion):</strong> Append-only tables preserving original JSON event payloads extracted from MySQL binlogs.</li><li><strong>Silver Tier (Cleaned & Conformed):</strong> Normalized Third Normal Form (3NF) models with sanitized types and foreign key relationships.</li><li><strong>Gold Tier (Dimensional Star Schema):</strong> Fact tables for sales/inventory and Dimension tables for customers and products optimized for BI tools.</li></ul>",
+      "pipeline-construction": "<p>The CDC pipeline operated non-intrusively without touching legacy ERP application code:</p><ul><li><strong>Binary Log Ingestion (CDC):</strong> Debezium/Canal listening to MySQL row-based binlogs and dispatching events to RabbitMQ.</li><li><strong>Idempotent Go Workers:</strong> High-concurrency Golang workers consuming queue messages and executing upserts with <code>ON CONFLICT (id, version) DO UPDATE</code>.</li><li><strong>Dead Letter Exchange (DLX):</strong> Corrupted records or network failures routed to retry queues with exponential backoff.</li></ul>",
+      "testing-optimization": "<p>Verification and performance tuning included:</p><ul><li><strong>Data Reconciliation:</strong> Automated nightly checksum and row count validation between MySQL OLTP and PostgreSQL Warehouse.</li><li><strong>Tuning:</strong> Monthly table partitioning, BRIN indexes on query timestamps, and micro-batching writes at 500 records per transaction.</li><li><strong>End-to-End Latency:</strong> Transaction commit to warehouse availability reduced to under 1.8 seconds.</li></ul>",
+      "summary-recommendations": "<p>Achieved <strong>96% data reconciliation accuracy with 0% data loss</strong> and slashed <strong>analytics query execution time by 70%</strong>. Recommendation: Always enforce Idempotency Keys and Schema Registries from day one.</p>"
+    }
+  },
+  {
+    "id": "post-2",
+    "slug": "building-reactive-event-tracking-spring-webflux-kafka",
+    "category": "architecture-system-design",
+    "title": "High-Throughput Event Ingestion Architecture with Spring WebFlux, Kafka & Automated PII Anonymization",
+    "summary": "Building a privacy-compliant MarTech ingestion gateway handling tens of thousands of real-time e-commerce events per second with sub-second latency.",
+    "publishedAt": "May 18, 2026",
+    "date": "2026-05-18",
+    "readTime": "6 min read",
+    "tags": ["Java 17", "Spring Boot", "Spring WebFlux", "Kafka", "Google Analytics 4", "Privacy"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "context-problem": "<p>During peak e-commerce promotional events, user traffic surges 15-20x. The tracking gateway must ingest tens of thousands of micro-events/sec (cart adds, product views, checkout clicks) for real-time dispatch to Google Analytics 4 and Facebook Conversions API without degrading user browsing performance.</p>",
+      "system-requirements": "<ul><li><strong>Functional:</strong> Real-time ingestion, validation, categorization, and dispatch to downstream ad-tech platforms.</li><li><strong>Non-Functional:</strong> p99 API latency &lt; 15ms, throughput capacity of 10,000 RPS, automated PII sanitization, and zero data loss on third-party outages.</li></ul>",
+      "architecture-design": "<p>Designed as a non-blocking Reactive Event-Driven pipeline:</p><ul><li><strong>Ingestion Layer:</strong> Spring WebFlux (Project Reactor + Netty) receiving asynchronous HTTP requests and streaming directly to Apache Kafka clusters.</li><li><strong>Privacy & Sanitization:</strong> Spring AOP and custom Jackson serializers recursively detecting sensitive fields (emails, phones, IDs) and applying Salted SHA-256 hashing before outbound dispatch.</li><li><strong>Outbox & Delivery:</strong> Kafka worker services consuming events and communicating with external APIs via non-blocking WebClient.</li></ul>",
+      "trade-offs-analysis": "<p>Comparing Synchronous vs Reactive architectures:</p><ul><li><strong>Synchronous (Spring MVC + Tomcat):</strong> Straightforward debugging, but thread-per-request model leads to thread exhaustion under 5,000 concurrent connections.</li><li><strong>Reactive Non-Blocking (Spring WebFlux):</strong> Steeper learning curve for stream operations and backpressure management, but sustains 20,000+ RPS stably on minimal CPU cores with 60% lower RAM utilization.</li></ul>",
+      "lessons-best-practices": "<p>Integrate <strong>Resilience4j Circuit Breakers</strong> and exponential backoff retries at the outbound gateway layer. Never perform blocking I/O operations on WebFlux event loop threads.</p>"
+    }
+  },
+  {
+    "id": "post-3",
+    "slug": "docker-multi-stage-github-actions-zero-downtime-cicd",
+    "category": "devops-cloud-tooling",
+    "title": "Optimizing Multi-Stage Docker (<25MB) & Building Zero-Downtime CI/CD Pipeline with GitHub Actions",
+    "summary": "Lightweight Alpine packaging strategies, Nginx SPA fallback configurations, and automated static typechecks in continuous release pipelines.",
+    "publishedAt": "May 15, 2026",
+    "date": "2026-05-15",
+    "readTime": "5 min read",
+    "tags": ["Docker", "CI/CD", "GitHub Actions", "Nginx", "DevOps"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "article-objectives": "<p>Guide to building ultra-lightweight SPA web container images (&lt; 25MB) using Docker Multi-Stage Builds on Alpine Linux, coupled with automated GitHub Actions CI/CD for Zero-Downtime Deployments.</p>",
+      "architecture-principles": "<p>Two distinct deployment stages:</p><ul><li><strong>Stage 1 (Builder):</strong> <code>node:20-alpine</code> image installs dependencies, executes linting/typechecking, and produces optimized static assets in <code>/dist</code>.</li><li><strong>Stage 2 (Production Runner):</strong> Only the compiled <code>/dist</code> folder is copied into <code>nginx:alpine-slim</code> (&lt; 15MB) with gzip compression and secure HTTP headers.</li><li><strong>GitHub Actions Pipeline:</strong> Automatically triggered on PR/Push to <code>main</code>: Lint -&gt; Test -&gt; Build -&gt; Docker Push -&gt; Deploy.</li></ul>",
+      "step-by-step-setup": "<p>Configuration details:</p><ul><li><strong>Step 1:</strong> Multi-stage <code>Dockerfile</code> with non-root user and <code>.dockerignore</code> excluding node_modules and extraneous docs.</li><li><strong>Step 2:</strong> <code>nginx.conf</code> configured with <code>try_files $uri $uri/ /index.html;</code> and static cache headers.</li><li><strong>Step 3:</strong> Workflow <code>.github/workflows/deploy.yml</code> leveraging Docker Buildx cache to speed up CI runs by 3x.</li></ul>",
+      "troubleshooting-pitfalls": "<ul><li><strong>404 on page refresh in SPA:</strong> Missing Nginx fallback to <code>index.html</code>. Resolved with <code>try_files</code> directive.</li><li><strong>Bloated images:</strong> Caused by copying devDependencies into the final image without multi-stage builds.</li><li><strong>Security risks:</strong> Running containers as root. Fixed by specifying <code>USER nginx</code>.</li></ul>",
+      "evaluation-scaling": "<p>Reduced Docker image size from 850MB to 22MB and deployment time from 6 minutes to under 45 seconds. Future roadmap: Integrate Trivy container vulnerability scanning and Kubernetes canary rollouts.</p>"
+    }
+  },
+  {
+    "id": "post-4",
+    "slug": "golang-concurrent-worker-pool-context-cancellation",
+    "category": "code-craftsmanship-languages",
+    "title": "Building High-Performance Concurrent Worker Pool in Golang with Context & Graceful Shutdown",
+    "summary": "Bounded concurrent job queue pattern using fixed goroutines, context.Context timeout control, and graceful OS signal handling.",
+    "publishedAt": "May 12, 2026",
+    "date": "2026-05-12",
+    "readTime": "6 min read",
+    "tags": ["Golang", "Concurrency", "Goroutines", "Channels", "Clean Code"],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>When processing millions of database I/O records or dispatching batch email notifications, spawning an unbounded goroutine per task (<code>go processTask(t)</code>) rapidly causes out-of-memory crashes and database connection pool exhaustion.</p>",
+      "initial-approach": "<p>Initial naive implementations often rely on <code>sync.WaitGroup</code> across unbounded goroutines. Under a spike of 50,000 tasks, the server consumes multiple Gigabytes of memory and the database rejects connection requests.</p>",
+      "optimization-thinking": "<p>Designed a <strong>Bounded Concurrency Worker Pool</strong>:</p><ul><li>Buffered channels act as task queues to prevent memory bloat.</li><li>Fixed N worker goroutines continuously listen on the task channel.</li><li><code>context.WithCancel</code> or <code>context.WithTimeout</code> enables graceful task abortion on long-running timeouts.</li></ul>",
+      "code-implementation": "<p>Implemented a <code>WorkerPool</code> struct managing channels and graceful shutdown:</p><pre><code>type WorkerPool struct {\n  workers int\n  tasks   chan Task\n  wg      sync.WaitGroup\n  ctx     context.Context\n  cancel  context.CancelFunc\n}</code></pre><p>Upon receiving SIGTERM, the pool closes the task channel and waits for active workers to finish pending work before exiting.</p>",
+      "complexity-applications": "<p>Maintains fixed <strong>O(N)</strong> memory complexity relative to worker count, sustaining 8,000 tasks/sec throughput under 50MB RAM. Widely applicable in data ingestion, batch ETL, and webhook dispatch engines.</p>"
     }
   }
 ]
