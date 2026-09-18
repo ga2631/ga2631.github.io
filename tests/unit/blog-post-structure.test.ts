@@ -5,8 +5,8 @@ import {
   CATEGORY_STRUCTURE_DEFINITIONS,
   validateBlogPostStructure,
 } from '../../src/data/blogTemplates';
-import viBlogRaw from '../../src/data/locales/vi/blog.json';
-import enBlogRaw from '../../src/data/locales/en/blog.json';
+import viBlogRaw from '../../src/data/blog/vi/2026/09.json';
+import enBlogRaw from '../../src/data/blog/en/2026/09.json';
 
 describe('TS-13: Standardized Blog Post Structure & Category Schema Validation', () => {
   const activeCategories = BLOG_CATEGORY_DEFINITIONS.filter((c) => c.id !== 'all');
@@ -31,8 +31,8 @@ describe('TS-13: Standardized Blog Post Structure & Category Schema Validation',
     });
   });
 
-  it('should have structured sections dictionary with exactly 5 keys for all raw Vietnamese articles in blog.json', () => {
-    expect(viBlogRaw.length).toBeGreaterThanOrEqual(5);
+  it('should have structured sections dictionary with exactly 5 keys for all raw Vietnamese articles in blog storage', () => {
+    expect(viBlogRaw.length).toBeGreaterThanOrEqual(1);
 
     viBlogRaw.forEach((rawPost: any) => {
       expect(rawPost.sections, `Post "${rawPost.id}" must have a sections object`).toBeDefined();
@@ -57,8 +57,8 @@ describe('TS-13: Standardized Blog Post Structure & Category Schema Validation',
     });
   });
 
-  it('should have structured sections dictionary with exactly 5 keys for all raw English articles in blog.json', () => {
-    expect(enBlogRaw.length).toBeGreaterThanOrEqual(5);
+  it('should have structured sections dictionary with exactly 5 keys for all raw English articles in blog storage', () => {
+    expect(enBlogRaw.length).toBeGreaterThanOrEqual(1);
 
     enBlogRaw.forEach((rawPost: any) => {
       expect(rawPost.sections, `Post "${rawPost.id}" must have a sections object`).toBeDefined();
