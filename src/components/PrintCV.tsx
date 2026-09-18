@@ -106,7 +106,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
 
                 <ul className="print-exp-bullets">
                   {exp.achievements.map((item, idx) => (
-                    <li key={idx}>{item}</li>
+                    <li key={idx} dangerouslySetInnerHTML={{ __html: item }} />
                   ))}
                 </ul>
 
@@ -139,8 +139,8 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
                 <p className="print-proj-desc">{proj.shortDescription || proj.description}</p>
 
                 <ul className="print-proj-highlights">
-                  {proj.highlights.slice(0, 3).map((hl, idx) => (
-                    <li key={idx}>{hl}</li>
+                  {(proj.achievements || proj.highlights).slice(0, 3).map((hl, idx) => (
+                    <li key={idx} dangerouslySetInnerHTML={{ __html: hl }} />
                   ))}
                 </ul>
 

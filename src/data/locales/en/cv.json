@@ -48,8 +48,8 @@
       "summary": "Formulated product analytics specifications and built high-impact data pipelines and reporting solutions for cross-platform marketing and e-commerce conversion funnels.",
       "achievements": [
         "Formulated product analytics tracking specifications (GA4) for e-commerce conversion funnels to identify drop-offs and optimize revenue strategies.",
-        "Built automated reporting dashboards utilizing Looker Studio and AI integrations to ground product prioritization decisions.",
-        "Engineered secure data protocols for PII before Google Analytics transmission, ensuring strict privacy compliance."
+        "Built automated reporting dashboards utilizing Looker Studio and AI integrations, accelerating report delivery by <b>over 40%</b>.",
+        "Engineered secure data protocols for PII before Google Analytics transmission, ensuring <b>100% strict privacy compliance</b>."
       ],
       "technologies": [
         "Google Analytics 4 (GA4)",
@@ -73,7 +73,7 @@
       "achievements": [
         "Led technical delivery for a team of 4-5 engineers maintaining and scaling core ERP platforms.",
         "Integrated Zalo Notification Service (ZNS) end-to-end and designed an automated accounts receivable management feature.",
-        "Translated business requirements into actionable PRDs and User Stories, and conducted rigorous code/API reviews to prevent scope drift and ensure system stability."
+        "Translated business requirements into actionable PRDs and User Stories, and conducted rigorous code/API reviews to eliminate scope drift and ensure <b>99.9% system uptime</b>."
       ],
       "technologies": [
         "Golang",
@@ -98,8 +98,8 @@
       "summary": "Directed a team of 8 in end-to-end development of ad reporting modules, performance optimization, and CI/CD automation.",
       "achievements": [
         "Directed a team of 8 in the end-to-end development of ad reporting modules, aggregating data across Google, Facebook, and TikTok into centralized dashboards.",
-        "Optimized application performance, established CI/CD pipelines, and implemented system caching, drastically improving response times.",
-        "Developed accounting and affiliate management modules and maintained the company WordPress website."
+        "Optimized application performance, established CI/CD pipelines, and implemented system caching, decreasing report generation time by <b>63%</b>.",
+        "Developed accounting and affiliate management modules saving <b>10–12 hours/week</b> of manual data entry, and maintained the company WordPress website."
       ],
       "technologies": [
         "PHP (Laravel, CodeIgniter)",
@@ -160,9 +160,9 @@
         }
       ],
       "achievements": [
-        "Achieved a 96% data reconciliation rate between legacy source and target warehouse with zero data loss.",
-        "Reduced complex analytical query execution time by over 70% by eliminating multi-level EAV table joins in favor of structured data marts.",
-        "Maintained near real-time CDC synchronization with pipeline latency under 2 seconds, ensuring 100% compliance with data privacy regulations (Decree 13/2023/ND-CP)."
+        "Achieved a <b>96% data reconciliation rate</b> between legacy source and target warehouse with <b>zero data loss</b>.",
+        "Reduced complex analytical query execution time by <b>over 70%</b> by eliminating multi-level EAV table joins in favor of structured data marts.",
+        "Maintained near real-time CDC synchronization with pipeline latency <b>under 2 seconds</b>, ensuring <b>100% compliance with data privacy regulations</b> (Decree 13/2023/ND-CP)."
       ],
       "highlights": [
         "Bypassed slow-to-modify legacy ERP source code by implementing Change Data Capture (CDC) reading directly from MySQL binlogs, completely decoupling extraction.",
@@ -219,9 +219,9 @@
         }
       ],
       "achievements": [
-        "Successfully ingested thousands of daily conversion funnel events with sub-second latency without impacting checkout performance.",
-        "Achieved 100% PII privacy compliance across all analytics pipelines.",
-        "Decreased daily cross-channel marketing report generation time by over 40%, enabling immediate campaign ROAS decision-making."
+        "Successfully ingested <b>thousands of daily conversion funnel events</b> with <b>sub-second latency</b> without impacting checkout performance.",
+        "Achieved <b>100% PII privacy compliance</b> across all analytics pipelines via automated Spring AOP masking.",
+        "Decreased daily cross-channel marketing report generation time by <b>over 40%</b>, enabling immediate campaign ROAS decision-making."
       ],
       "highlights": [
         "Developed high-throughput event tracking service using Spring WebFlux and Apache Kafka to capture real-time user journey events.",
@@ -277,9 +277,9 @@
         }
       ],
       "achievements": [
-        "Scaled smoothly and maintained high availability under 1,000+ peak concurrent enterprise users.",
-        "Reduced manual ad data extraction and support requests from clients by over 40%.",
-        "Accelerated release cycles for new reporting metrics from 2 weeks down to 2 days via modular architecture."
+        "Scaled smoothly and maintained high availability under <b>1,000+ peak concurrent enterprise users (CCU)</b>.",
+        "Reduced manual ad data extraction and support requests from clients by <b>over 40%</b>.",
+        "Accelerated release cycles for new reporting metrics from 2 weeks down to <b>2 days</b> via modular architecture."
       ],
       "highlights": [
         "Managed full SDLC and resource allocation from system design phase to User Acceptance Testing (UAT).",
@@ -335,9 +335,9 @@
         }
       ],
       "achievements": [
-        "Decreased monthly financial report generation time by 63%.",
-        "Saved 10-12 hours per week of manual accounting data entry, reducing human calculation errors to near zero.",
-        "Achieved 100% zero-downtime automated deployments across all production releases."
+        "Decreased monthly financial report generation time by <b>63%</b>.",
+        "Saved <b>10–12 hours per week</b> of manual accounting data entry, reducing human calculation errors to <b>near zero</b>.",
+        "Achieved <b>100% zero-downtime automated deployments</b> across all production releases."
       ],
       "highlights": [
         "Developed dynamic cash inflow module that automatically splits total received amounts into discrete accounting components.",

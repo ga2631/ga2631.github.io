@@ -1541,6 +1541,21 @@ p {
   padding-left: 20px;
   color: var(--text-secondary);
   font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.achievement-point b,
+.achievement-point strong,
+.article-body b,
+.article-body strong,
+.timeline-achievements b,
+.timeline-achievements strong,
+.print-exp-bullets b,
+.print-exp-bullets strong,
+.print-proj-highlights b,
+.print-proj-highlights strong {
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .achievement-point::before {

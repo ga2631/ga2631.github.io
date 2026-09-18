@@ -52,9 +52,11 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
 
                 <div className="timeline-achievements">
                   {item.achievements.map((ach, idx) => (
-                    <div key={idx} className="achievement-point">
-                      {ach}
-                    </div>
+                    <div
+                      key={idx}
+                      className="achievement-point"
+                      dangerouslySetInnerHTML={{ __html: ach }}
+                    />
                   ))}
                 </div>
 

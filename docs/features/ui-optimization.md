@@ -181,12 +181,12 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
     - **TypeScript Data Loader & Runtime Security Injection**:
       - [cvData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/cvData.ts) và [blogData.ts](file:///Users/tanhn/Projects/ga2631.github.io/src/data/blogData.ts) đóng vai trò Loader tầng dữ liệu có kiểm tra kiểu chặt chẽ (`Type Guard`), đồng thời tự động tiêm các token bảo mật chống bot crawler `getSecureEmail()`, `getSecurePhone()`, `getSecureZaloUrl()` vào `personalInfo`.
 
-19. **Standardized 5-Section Enterprise Project Case Study Architecture (`Projects.tsx`, `types/index.ts`, `cvData.ts`, `en/cv.json`, `vi/cv.json`)**:
+19. **Standardized 5-Section Enterprise Project Case Study Architecture & Metric Highlighting (`Projects.tsx`, `Experience.tsx`, `PrintCV.tsx`, `types/index.ts`, `cvData.ts`, `en/cv.json`, `vi/cv.json`)**:
     - Chuẩn hóa cấu trúc mô tả chi tiết của toàn bộ các dự án kiến trúc tiêu biểu thành **5 thành phần chuyên sâu và chuyên nghiệp**:
       1. **Project Objective (Mục tiêu Dự án)**: Trình bày bài toán kinh doanh và mục tiêu kỹ thuật cốt lõi cần giải quyết.
       2. **Key Responsibilities & Strengths (Trách nhiệm chính & Thế mạnh cốt lõi)**: Mô tả vai trò kỹ thuật chuyên sâu, lãnh đạo kiến trúc, thiết kế tầng dịch vụ và thế mạnh chuyên môn.
       3. **Challenges & Solutions (Thách thức Kỹ thuật & Giải pháp Thực thi)**: Cấu trúc từng cặp Thách thức (`Challenge`) và Giải pháp kỹ thuật (`Solution`) với thiết kế trực quan nổi bật.
-      4. **Key Achievements & Metrics (Thành tựu & Kết quả định lượng)**: Các chỉ số đo lường hiệu năng, tỷ lệ khớp nối dữ liệu, thời gian tiết kiệm và mức độ sẵn sàng của hệ thống.
+      4. **Key Achievements & Metrics (Thành tựu & Kết quả định lượng)**: Làm nổi bật các chỉ số đo lường hiệu năng (`96% reconciliation rate`, `zero data loss`, `>70% latency reduction`, `1,000+ CCU`, `63% report time`, `10-12 hours/week saved`) bằng thẻ `<b>` và cơ chế render HTML an toàn `dangerouslySetInnerHTML`.
       5. **Technology Stack (Hệ sinh thái Công nghệ & Ngăn xếp)**: Bộ thẻ tag công nghệ, công cụ và nền tảng hạ tầng thực tế được áp dụng.
 
 ---

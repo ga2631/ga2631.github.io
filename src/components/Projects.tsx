@@ -511,9 +511,11 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                       </h3>
                       <ul style={{ paddingLeft: '20px', margin: 0 }}>
                         {activeProject.responsibilities.map((resp, idx) => (
-                          <li key={idx} style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                            {resp}
-                          </li>
+                          <li
+                            key={idx}
+                            style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                            dangerouslySetInnerHTML={{ __html: resp }}
+                          />
                         ))}
                       </ul>
                     </div>
@@ -541,13 +543,13 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                               <span style={{ color: 'var(--accent-red, #ef4444)', marginRight: '6px' }}>
                                 [{t.challengeLabel}]:
                               </span>
-                              {item.challenge}
+                              <span dangerouslySetInnerHTML={{ __html: item.challenge }} />
                             </div>
                             <div style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
                               <span style={{ color: 'var(--accent-emerald, #10b981)', marginRight: '6px', fontWeight: 600 }}>
                                 → [{t.solutionLabel}]:
                               </span>
-                              {item.solution}
+                              <span dangerouslySetInnerHTML={{ __html: item.solution }} />
                             </div>
                           </div>
                         ))}
@@ -562,9 +564,11 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                         </h3>
                         <ul style={{ paddingLeft: '20px', margin: 0 }}>
                           {activeProject.highlights.map((item, idx) => (
-                            <li key={idx} style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                              {item}
-                            </li>
+                            <li
+                              key={idx}
+                              style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                              dangerouslySetInnerHTML={{ __html: item }}
+                            />
                           ))}
                         </ul>
                       </div>
@@ -580,9 +584,11 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                       </h3>
                       <ul style={{ paddingLeft: '20px', margin: 0 }}>
                         {activeProject.achievements.map((ach, idx) => (
-                          <li key={idx} style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                            {ach}
-                          </li>
+                          <li
+                            key={idx}
+                            style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                            dangerouslySetInnerHTML={{ __html: ach }}
+                          />
                         ))}
                       </ul>
                     </div>
