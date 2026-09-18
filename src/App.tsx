@@ -13,13 +13,17 @@ import { Footer } from './components/Footer.tsx';
 import { PrintCV } from './components/PrintCV.tsx';
 import { FloatingActions } from './components/FloatingActions.tsx';
 import { BlogPage } from './pages/BlogPage.tsx';
+import {
+  ThemeMode,
+  getInitialTheme,
+  saveManualThemeOverride,
+  getTodayDateString,
+  getTimeBasedDefaultTheme,
+  THEME_OVERRIDE_DATE_KEY,
+} from './utils/theme.ts';
 
 export const App: React.FC = () => {
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    const saved = localStorage.getItem('app-theme');
-    if (saved === 'light' || saved === 'dark') return saved;
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  });
+  const [theme, setTheme] = useState<ThemeMode>(() => getInitialTheme());
 
   const [lang, setLang] = useState<'vi' | 'en'>(() => {
     const saved = localStorage.getItem('app-lang');
@@ -34,13 +38,34 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('app-theme', theme);
   }, [theme]);
 
   useEffect(() => {
     document.documentElement.setAttribute('lang', lang);
     localStorage.setItem('app-lang', lang);
   }, [lang]);
+
+  // Periodically verify real-time day/night theme if not manually overridden today
+  useEffect(() => {
+    const checkRealTimeTheme = () => {
+      const overrideDate = localStorage.getItem(THEME_OVERRIDE_DATE_KEY);
+      const today = getTodayDateString();
+
+      // If user manually chose a theme for today, do not auto-switch
+      if (overrideDate === today) return;
+
+      const expectedTheme = getTimeBasedDefaultTheme();
+      setTheme((current) => (current !== expectedTheme ? expectedTheme : current));
+    };
+
+    const interval = setInterval(checkRealTimeTheme, 60000);
+    window.addEventListener('focus', checkRealTimeTheme);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', checkRealTimeTheme);
+    };
+  }, []);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -57,7 +82,11 @@ export const App: React.FC = () => {
   }, []);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme((prev) => {
+      const next: ThemeMode = prev === 'dark' ? 'light' : 'dark';
+      saveManualThemeOverride(next);
+      return next;
+    });
   };
 
   const currentCvData = lang === 'vi' ? cvDataVi : cvDataEn;
@@ -110,14 +139,18 @@ export const App: React.FC = () => {
           )}
         </main>
 
-        <Footer t={t.footer} fullName={currentCvData.personalInfo.fullName} />
+        {route !== 'blog' && (
+          <Footer t={t.footer} fullName={currentCvData.personalInfo.fullName} />
+        )}
 
         {/* Floating Quick Action Button (FAB) */}
-        <FloatingActions
-          onPrint={() => window.print()}
-          saveCvLabel={t.nav.saveCv}
-          tCommon={t.common}
-        />
+        {route !== 'blog' && (
+          <FloatingActions
+            onPrint={() => window.print()}
+            saveCvLabel={t.nav.saveCv}
+            tCommon={t.common}
+          />
+        )}
       </div>
 
       {/* Dedicated Standard ATS / Executive Print CV Document */}

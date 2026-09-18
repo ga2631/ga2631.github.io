@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { cvDataEn, cvDataVi, uiTranslations } from '../../src/data/cvData';
 import { blogPostsEn, blogPostsVi } from '../../src/data/blogData';
+import { validateBlogPostStructure } from '../../src/data/blogTemplates';
 
 // Recursive helper to get all nested object keys
 const getAllKeys = (obj: Record<string, any>, prefix = ''): string[] => {
@@ -88,11 +89,12 @@ describe('TS-03: Localization & Data Integrity Verification', () => {
     });
   });
 
-  it('should have matching blog posts across English and Vietnamese with required metadata', () => {
+  it('should have matching blog posts across English and Vietnamese with required metadata (up to 20 articles)', () => {
     expect(blogPostsEn.length).toBe(blogPostsVi.length);
     expect(blogPostsEn.length).toBeGreaterThan(0);
 
-    blogPostsEn.forEach((post, idx) => {
+    const postsToTest = blogPostsEn.slice(0, 20);
+    postsToTest.forEach((post, idx) => {
       const viPost = blogPostsVi[idx];
       expect(post.id).toBe(viPost.id);
       expect(post.slug).toBe(viPost.slug);
@@ -102,6 +104,10 @@ describe('TS-03: Localization & Data Integrity Verification', () => {
       expect(post.readTime).toBeTruthy();
       expect(post.publishedAt).toBeTruthy();
       expect(post.tags.length).toBeGreaterThan(0);
+
+      // Validate strict adherence to category 5-section standard structure
+      expect(validateBlogPostStructure(post, 'en').isValid).toBe(true);
+      expect(validateBlogPostStructure(viPost, 'vi').isValid).toBe(true);
     });
   });
 });

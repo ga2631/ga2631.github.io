@@ -92,10 +92,23 @@ export interface BlogPost {
   title: string;
   summary: string;
   publishedAt: string;
+  date?: string;
   readTime: string;
   tags: string[];
   author: string;
+  category?: string;
+  sections?: Record<string, string>;
   contentHtml: string;
+}
+
+export interface BlogCategoryItem {
+  id: string;
+  dayCode: string;
+  scheduleDay: string;
+  scheduleFull: string;
+  title: string;
+  description: string;
+  iconName?: string;
 }
 
 export interface PrincipleItem {
