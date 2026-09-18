@@ -120,13 +120,6 @@
   color: var(--text-primary);
 }
 
-.blog-sidebar-reset-wrapper {
-  flex-shrink: 0;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border-color);
-}
-
 /* Category Theme Colors Map */
 $category-colors: (
   'all': (
@@ -406,13 +399,30 @@ $category-colors: (
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 20px $glow;
   }
 
-  /* Article Card Hover Accent */
-  .blog-card.card-day-#{$day}:hover {
-    border-color: $border-hover;
-    box-shadow: 0 0 22px $glow;
+  /* Article Card Border & Hover Accent in Category Theme Color */
+  .blog-card.card-day-#{$day} {
+    border-color: $border-alpha;
 
-    .blog-title {
-      color: $accent;
+    &::before {
+      border-top-color: $accent;
+      border-right-color: $accent;
+    }
+
+    &::after {
+      border-bottom-color: $accent;
+    }
+
+    &:hover {
+      border-color: $border-hover;
+      box-shadow: 0 0 24px $glow;
+
+      &::after {
+        border-left-color: $accent;
+      }
+
+      .blog-title {
+        color: $accent;
+      }
     }
   }
 }
@@ -462,11 +472,28 @@ $category-colors: (
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 0 16px rgba(0, 0, 0, 0.06);
     }
 
-    .blog-card.card-day-#{$day}:hover {
-      border-color: $accent-light;
+    .blog-card.card-day-#{$day} {
+      border-color: rgba(0, 0, 0, 0.08);
 
-      .blog-title {
-        color: $accent-light;
+      &::before {
+        border-top-color: $accent-light;
+        border-right-color: $accent-light;
+      }
+
+      &::after {
+        border-bottom-color: $accent-light;
+      }
+
+      &:hover {
+        border-color: $accent-light;
+
+        &::after {
+          border-left-color: $accent-light;
+        }
+
+        .blog-title {
+          color: $accent-light;
+        }
       }
     }
   }
@@ -604,8 +631,11 @@ $category-colors: (
   }
 }
 
-/* Search Box Panel (Clean layout, no top animated border) */
+/* Search Box Panel (Sticky Glass Box, clean layout, no top animated border) */
 .blog-controls-panel {
+  position: sticky;
+  top: 16px;
+  z-index: 25;
   background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -615,11 +645,33 @@ $category-colors: (
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: none;
+  transition: box-shadow var(--transition-normal), background var(--transition-normal), border-color var(--transition-normal);
 
   /* No top border pseudo-elements */
   &::before,
   &::after {
     display: none !important;
+  }
+
+  &.is-stuck {
+    background: rgba(17, 24, 39, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-color: var(--border-color);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+  }
+}
+
+[data-theme="light"] {
+  .blog-controls-panel {
+    box-shadow: none;
+
+    &.is-stuck {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: var(--border-color);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    }
   }
 }
 

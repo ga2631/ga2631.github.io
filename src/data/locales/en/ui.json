@@ -104,7 +104,6 @@
     "credentialId": "Credential ID"
   },
   "blog": {
-    "badge": "Technical Insights & Engineering Blog",
     "title": "System Architecture & Engineering Notes",
     "subtitle": "Technical writings on Change Data Capture, event-driven microservices, database performance, and distributed systems.",
     "readArticle": "Read Full Article",

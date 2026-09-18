@@ -4,7 +4,6 @@ import { BlogPost } from '../types/index.ts';
 import {
   BookOpenIcon,
   CloseIcon,
-  ExternalLinkIcon,
   SearchIcon,
   SparklesIcon,
   CopyIcon,
@@ -42,6 +41,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
   } | null>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
+  const [isFilterStuck, setIsFilterStuck] = useState(false);
 
   // Detect language: VI or EN based on translation string
   const langKey = useMemo<'vi' | 'en'>(() => {
@@ -392,25 +392,13 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
               })}
             </div>
           </div>
-
-          {/* Reset Filter Action if active */}
-          {(selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery) && (
-            <div className="blog-sidebar-reset-wrapper">
-              <button
-                type="button"
-                className="btn btn-outline btn-sm"
-                style={{ width: '100%', justifyContent: 'center' }}
-                onClick={handleResetFilters}
-              >
-                <CloseIcon size={14} />
-                <span>{t.clearAll || 'Xóa tất cả bộ lọc'}</span>
-              </button>
-            </div>
-          )}
         </aside>
 
         {/* ================= RIGHT MAIN CONTENT (Full Height, Independent Scroll) ================= */}
-        <main className="blog-main-scroll-area">
+        <main
+          className="blog-main-scroll-area"
+          onScroll={(e) => setIsFilterStuck(e.currentTarget.scrollTop > 40)}
+        >
           <div className="blog-main-inner-content">
             
             {/* Header Hero */}
@@ -423,8 +411,8 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
               </p>
             </div>
 
-            {/* Search Input Panel */}
-            <div className="blog-controls-panel">
+            {/* Search Input Panel (Sticky Glass Box) */}
+            <div className={`blog-controls-panel ${isFilterStuck ? 'is-stuck' : ''}`}>
               <div className="blog-search-wrapper">
                 <SearchIcon size={18} className="search-input-icon" />
                 <input
@@ -455,7 +443,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                   {selectedCategory !== 'all' && (
                     <span className="filter-chip">
                       <span className="chip-key">{t.filterByCategory || 'Chuyên đề'}:</span>
-                      <strong>{currentCategoryDef.scheduleDay[langKey]} • {currentCategoryDef.title[langKey]}</strong>
+                      <strong>{currentCategoryDef.title[langKey]}</strong>
                       <button
                         onClick={() => setSelectedCategory('all')}
                         aria-label="Remove category filter"
@@ -505,13 +493,6 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
               )}
             </div>
 
-            {/* Results Count Meta */}
-            <div className="blog-results-meta">
-              <span>
-                {t.showingArticles.replace('{count}', String(filteredPosts.length)).replace('{total}', String(posts.length))}
-              </span>
-            </div>
-
             {/* Articles Grid */}
             {filteredPosts.length > 0 ? (
               <div className="blog-grid">
@@ -529,7 +510,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                           {postCatDef && postCatDef.id !== 'all' ? (
                             <span className={`schedule-day-badge badge-${postCatDef.dayCode.toLowerCase()}`} style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
-                              {postCatDef.scheduleDay[langKey]} • {postCatDef.title[langKey]}
+                              {postCatDef.title[langKey]}
                             </span>
                           ) : (
                             <span className="badge badge-purple" style={{ fontSize: '0.72rem' }}>
@@ -546,33 +527,19 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                         <p className="blog-summary">{post.summary}</p>
                       </div>
 
-                      <div>
-                        <div className="tech-tags-list" style={{ marginBottom: '16px' }}>
-                          {post.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className={`badge ${selectedTag === tag ? 'badge-cyan' : ''}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedTag(tag);
-                              }}
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-
-                        <button
-                          className="btn btn-primary btn-sm"
-                          style={{ width: '100%' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenPost(post);
-                          }}
-                        >
-                          <span>{t.readArticle}</span>
-                          <ExternalLinkIcon size={14} />
-                        </button>
+                      <div className="tech-tags-list" style={{ marginTop: 'auto', paddingTop: '10px' }}>
+                        {post.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className={`badge ${selectedTag === tag ? 'badge-cyan' : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedTag(tag);
+                            }}
+                          >
+                            #{tag}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   );

@@ -62,11 +62,11 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
     expect(screen.getByText(blogPostsEn[0].title)).toBeInTheDocument();
   });
 
-  it('should open article reader modal and display table of contents', () => {
+  it('should open article reader modal and display table of contents when clicking article card', () => {
     render(<BlogPage {...defaultProps} />);
 
-    const readButtons = screen.getAllByRole('button', { name: new RegExp(uiTranslations.en.blog.readArticle, 'i') });
-    fireEvent.click(readButtons[0]);
+    const articleCard = screen.getByText(blogPostsEn[0].title);
+    fireEvent.click(articleCard);
 
     // Modal dialog should be open
     const modalDialog = screen.getByRole('dialog');
@@ -127,5 +127,23 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
     expect(document.querySelector('.blog-sidebar-tags-section')).toBeInTheDocument();
     expect(document.querySelector('.sidebar-tags-cloud')).toBeInTheDocument();
     expect(screen.getByText(uiTranslations.en.blog.tagsTitle)).toBeInTheDocument();
+  });
+
+  it('should render sticky filter controls panel and toggle is-stuck class on scroll', () => {
+    render(<BlogPage {...defaultProps} />);
+
+    const controlsPanel = document.querySelector('.blog-controls-panel');
+    const scrollContainer = document.querySelector('.blog-main-scroll-area');
+
+    expect(controlsPanel).toBeInTheDocument();
+    expect(controlsPanel).not.toHaveClass('is-stuck');
+
+    if (scrollContainer) {
+      fireEvent.scroll(scrollContainer, { target: { scrollTop: 60 } });
+      expect(controlsPanel).toHaveClass('is-stuck');
+
+      fireEvent.scroll(scrollContainer, { target: { scrollTop: 0 } });
+      expect(controlsPanel).not.toHaveClass('is-stuck');
+    }
   });
 });
