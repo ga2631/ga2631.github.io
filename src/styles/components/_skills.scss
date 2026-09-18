@@ -1,0 +1,367 @@
+/* ==========================================================================
+   Skills Matrix & Interactive Proficiency Tooltips
+   ========================================================================== */
+
+.skills-legend-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 0 auto 36px auto;
+  padding: 8px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  width: fit-content;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+}
+
+.skills-legend-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.skills-legend-items {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.skills-legend-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  user-select: none;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-red);
+    outline-offset: 2px;
+  }
+
+  /* Legend: All Button */
+  &.legend-all {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+
+    &:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-color-hover);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    &.active {
+      background: var(--gradient-primary);
+      border-color: var(--accent-red);
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(225, 29, 72, 0.4);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Legend: Level 5 */
+  &.legend-level-5 {
+    background: var(--skill-5-bg);
+    border: 1px solid var(--skill-5-border);
+    color: var(--skill-5-text);
+
+    &:hover {
+      background: var(--skill-5-hover-bg);
+      border-color: var(--skill-5-hover-border);
+      box-shadow: 0 4px 14px var(--skill-5-glow);
+      transform: translateY(-1px);
+    }
+
+    &.active {
+      background: rgba(168, 85, 247, 0.32);
+      border-color: #a855f7;
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.55), inset 0 0 0 1px #a855f7;
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Legend: Level 4 */
+  &.legend-level-4 {
+    background: var(--skill-4-bg);
+    border: 1px solid var(--skill-4-border);
+    color: var(--skill-4-text);
+
+    &:hover {
+      background: var(--skill-4-hover-bg);
+      border-color: var(--skill-4-hover-border);
+      box-shadow: 0 4px 14px var(--skill-4-glow);
+      transform: translateY(-1px);
+    }
+
+    &.active {
+      background: rgba(6, 182, 212, 0.32);
+      border-color: #06b6d4;
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.55), inset 0 0 0 1px #06b6d4;
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Legend: Level 3 */
+  &.legend-level-3 {
+    background: var(--skill-3-bg);
+    border: 1px solid var(--skill-3-border);
+    color: var(--skill-3-text);
+
+    &:hover {
+      background: var(--skill-3-hover-bg);
+      border-color: var(--skill-3-hover-border);
+      box-shadow: 0 4px 14px var(--skill-3-glow);
+      transform: translateY(-1px);
+    }
+
+    &.active {
+      background: rgba(16, 185, 129, 0.32);
+      border-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.55), inset 0 0 0 1px #10b981;
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Legend: Level 2 */
+  &.legend-level-2 {
+    background: var(--skill-2-bg);
+    border: 1px solid var(--skill-2-border);
+    color: var(--skill-2-text);
+
+    &:hover {
+      background: var(--skill-2-hover-bg);
+      border-color: var(--skill-2-hover-border);
+      box-shadow: 0 4px 14px var(--skill-2-glow);
+      transform: translateY(-1px);
+    }
+
+    &.active {
+      background: rgba(245, 158, 11, 0.32);
+      border-color: #f59e0b;
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(245, 158, 11, 0.55), inset 0 0 0 1px #f59e0b;
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Legend: Level 1 */
+  &.legend-level-1 {
+    background: var(--skill-1-bg);
+    border: 1px solid var(--skill-1-border);
+    color: var(--skill-1-text);
+
+    &:hover {
+      background: var(--skill-1-hover-bg);
+      border-color: var(--skill-1-hover-border);
+      box-shadow: 0 4px 14px var(--skill-1-glow);
+      transform: translateY(-1px);
+    }
+
+    &.active {
+      background: rgba(148, 163, 184, 0.32);
+      border-color: #94a3b8;
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(148, 163, 184, 0.55), inset 0 0 0 1px #94a3b8;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.skills-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.skill-card-compact {
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: all var(--transition-smooth);
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--border-glow);
+    z-index: 10;
+
+    .skill-card-title {
+      color: var(--text-accent);
+    }
+  }
+}
+
+.skill-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.skill-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.skill-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  transition: color var(--transition-fast);
+}
+
+.skill-card-desc {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.skills-pill-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skills-empty-state {
+  padding: 18px 12px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-color);
+  width: 100%;
+}
+
+.skill-pill-tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: default;
+  transition: all var(--transition-fast);
+
+  /* Level 5 (5/5 • Expert) Badge Styling */
+  &.skill-tag-5,
+  &.skill-tag-expert {
+    background: var(--skill-5-bg);
+    border: 1px solid var(--skill-5-border);
+    color: var(--skill-5-text);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--skill-5-hover-bg);
+      border-color: var(--skill-5-hover-border);
+      box-shadow: 0 4px 18px var(--skill-5-glow);
+      transform: translateY(-2px);
+      z-index: 20;
+    }
+  }
+
+  /* Level 4 (4/5 • Advanced) Badge Styling */
+  &.skill-tag-4,
+  &.skill-tag-advanced {
+    background: var(--skill-4-bg);
+    border: 1px solid var(--skill-4-border);
+    color: var(--skill-4-text);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--skill-4-hover-bg);
+      border-color: var(--skill-4-hover-border);
+      box-shadow: 0 4px 18px var(--skill-4-glow);
+      transform: translateY(-2px);
+      z-index: 20;
+    }
+  }
+
+  /* Level 3 (3/5 • Proficient) Badge Styling */
+  &.skill-tag-3,
+  &.skill-tag-proficient {
+    background: var(--skill-3-bg);
+    border: 1px solid var(--skill-3-border);
+    color: var(--skill-3-text);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--skill-3-hover-bg);
+      border-color: var(--skill-3-hover-border);
+      box-shadow: 0 4px 18px var(--skill-3-glow);
+      transform: translateY(-2px);
+      z-index: 20;
+    }
+  }
+
+  /* Level 2 (2/5 • Familiar) Badge Styling */
+  &.skill-tag-2,
+  &.skill-tag-familiar {
+    background: var(--skill-2-bg);
+    border: 1px solid var(--skill-2-border);
+    color: var(--skill-2-text);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--skill-2-hover-bg);
+      border-color: var(--skill-2-hover-border);
+      box-shadow: 0 4px 18px var(--skill-2-glow);
+      transform: translateY(-2px);
+      z-index: 20;
+    }
+  }
+
+  /* Level 1 (1/5 • Fundamental) Badge Styling */
+  &.skill-tag-1,
+  &.skill-tag-fundamental {
+    background: var(--skill-1-bg);
+    border: 1px solid var(--skill-1-border);
+    color: var(--skill-1-text);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--skill-1-hover-bg);
+      border-color: var(--skill-1-hover-border);
+      box-shadow: 0 4px 18px var(--skill-1-glow);
+      transform: translateY(-2px);
+      z-index: 20;
+    }
+  }
+}

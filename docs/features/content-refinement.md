@@ -68,10 +68,40 @@ Cập nhật hợp đồng dữ liệu tĩnh (Static Data Contract) tại `src/t
   - Tối ưu cấu trúc phân mục Dự án: Vai trò hiển thị trước bên trái, tên công ty đặt bên phải vai trò (`<Vai trò> | <Tên công ty>`).
   - Tách bạch phần Học vấn / Nền tảng chuyên môn (`Academic Background`) thành từng dòng/bullet point rõ ràng (`.print-edu-gpa`, `.print-edu-bullets`) thay vì gộp thành đoạn văn liền khối.
   - Chuẩn hóa hiển thị Chứng chỉ chuyên môn (`Certifications`) đồng bộ với cấu trúc Học vấn (`.print-edu-header`, `.print-cert-item`), hiển thị tên chứng chỉ, đơn vị cấp, thời hạn/mục tiêu và trạng thái theo chuẩn nhất quán.
+- **Sass (SCSS) Modular Stylesheet Architecture**: Tái cấu trúc file đơn khối `src/styles/index.css` (~3,600 dòng) thành kiến trúc Sass module hóa chuẩn 7-1 pattern:
+  - `abstracts/`: `_variables.scss` (Design tokens, Dark/Light mode theme tokens, skill level colors), `_mixins.scss` (Responsive mixins, glassmorphism helper).
+  - `base/`: `_reset.scss` (HTML/body reset, ambient glow keyframes, typography reset), `_layout.scss` (Container, section titles, badges, glass-panel borders & animations, button styles).
+  - `components/`: `_header.scss`, `_drawer.scss`, `_floating-actions.scss`, `_hero.scss`, `_about.scss`, `_experience.scss`, `_projects.scss`, `_skills.scss`, `_education.scss`, `_contact.scss`, `_footer.scss`.
+  - `pages/`: `_blog.scss`, `_article-modal.scss`.
+  - `print/`: `_print.scss` (Định dạng in ấn ATS 2-page A4 print stylesheet).
+  - `responsive/`: `_responsive.scss` (Media queries cho Mobile & Tablet breakpoints).
+  - `index.scss`: Master SCSS entry point nạp toàn bộ partials theo thứ tự cascade chuẩn xác.
 
 ---
 
 ## 4. Impacted Files
+- `package.json`: Bổ sung dependency `sass` vào `devDependencies`.
+- `src/main.tsx`: Chuyển đổi import từ `src/styles/index.css` sang `src/styles/index.scss`.
+- `src/styles/index.scss`: Master entry point cho Sass stylesheet.
+- `src/styles/abstracts/_variables.scss`: Tokens màu sắc, font, radius, transitions, dark/light theme variables.
+- `src/styles/abstracts/_mixins.scss`: Breakpoints và glassmorphism mixins.
+- `src/styles/base/_reset.scss`: Reset rules và ambient background glow animation.
+- `src/styles/base/_layout.scss`: Glass panel, clockwise border animations, button & badge styles.
+- `src/styles/components/_header.scss`: Header navbar, navigation links, brand logo.
+- `src/styles/components/_drawer.scss`: Mobile drawer slide-over navigation và settings.
+- `src/styles/components/_floating-actions.scss`: Floating action buttons (FAB) và scroll-to-top.
+- `src/styles/components/_hero.scss`: Hero visual profile, stats banner và headline typography.
+- `src/styles/components/_about.scss`: About principles grid và principle cards.
+- `src/styles/components/_experience.scss`: Experience timeline, badges và achievement bullets.
+- `src/styles/components/_projects.scss`: Project cards, filter tabs, repo cards và case study dialog.
+- `src/styles/components/_skills.scss`: Skills matrix, level badges và legend filter.
+- `src/styles/components/_education.scss`: Education và certifications cards.
+- `src/styles/components/_contact.scss`: Contact cards và interactive actions.
+- `src/styles/components/_footer.scss`: Footer và screen-view print-cv-document toggle.
+- `src/styles/pages/_blog.scss`: Blog page, search bar và topic tags.
+- `src/styles/pages/_article-modal.scss`: Modal reader popup và sticky table of contents.
+- `src/styles/print/_print.scss`: ATS 2-page print layout rules.
+- `src/styles/responsive/_responsive.scss`: Mobile/tablet responsive breakpoints.
 - `src/types/index.ts`: Bổ sung `PrincipleItem`, `PrintCvData` và cập nhật `CVData`.
 - `src/data/locales/vi/cv.json`: Bổ sung `principles` và `printCv` (nội dung tiếng Việt); cập nhật thông tin học vấn.
 - `src/data/locales/en/cv.json`: Bổ sung `principles` và `printCv` (nội dung tiếng Anh); cập nhật thông tin học vấn.
@@ -80,6 +110,5 @@ Cập nhật hợp đồng dữ liệu tĩnh (Static Data Contract) tại `src/t
 - `src/data/cvData.ts`: Cập nhật interface `UITranslation` tương ứng.
 - `src/components/About.tsx`: Cập nhật props để nhận `principles` từ `CVData`.
 - `src/components/PrintCV.tsx`: Đọc `summaryExtension` và `academicDetails` từ `data.printCv`; tách thông tin liên hệ thành 2 dòng; sắp xếp `<Vai trò> | <Tên công ty>`; tách Academic Background thành các dòng bullet; chuẩn hóa hiển thị Certification đồng bộ với Education.
-- `src/styles/index.css`: Bổ sung và cập nhật quy tắc CSS cho `@page`, `.print-name`, `.print-contact-row`, `.print-contact-links`, `.print-section-heading`, `.print-exp-role`, `.print-exp-company`, `.print-proj-title`, `.print-proj-role`, `.print-proj-company`, `.print-edu-degree`, `.print-edu-inst`, `.print-edu-bullets`, `.print-edu-gpa`, `.print-cert-item` trong `@media print`.
 - `src/App.tsx`: Truyền `principles` từ `currentCvData` vào `<About />`.
-- `docs/features/content-refinement.md`: Tài liệu kỹ thuật chi tiết cho tính năng tái cấu trúc dữ liệu và tối ưu hiển thị in ấn.
+- `docs/features/content-refinement.md`: Tài liệu kỹ thuật chi tiết cho tính năng tái cấu trúc dữ liệu, tối ưu in ấn và module hóa Sass.
