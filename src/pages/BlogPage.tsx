@@ -20,10 +20,9 @@ interface BlogPageProps {
   posts: BlogPost[];
   t: UITranslation['blog'];
   tCommon: UITranslation['common'];
-  lang: 'vi' | 'en';
 }
 
-export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon, lang }) => {
+export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('all');
   const [activePost, setActivePost] = useState<BlogPost | null>(null);

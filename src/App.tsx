@@ -84,7 +84,6 @@ export const App: React.FC = () => {
               posts={currentBlogPosts}
               t={t.blog}
               tCommon={t.common}
-              lang={lang}
             />
           ) : (
             <>
