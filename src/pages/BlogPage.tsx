@@ -475,92 +475,93 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
               </p>
             </div>
 
-            {/* Search Input Panel (Sticky Glass Box) */}
-            <div className={`blog-controls-panel ${isFilterStuck ? 'is-stuck' : ''}`}>
-              <div className="blog-search-wrapper">
-                <SearchIcon size={18} className="search-input-icon" />
-                <input
-                  type="text"
-                  className="blog-search-input"
-                  placeholder={t.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                {searchQuery && (
-                  <button
-                    className="search-clear-btn"
-                    onClick={() => setSearchQuery('')}
-                    aria-label="Clear search"
-                  >
-                    <CloseIcon size={14} />
-                  </button>
+            {/* Articles Grid (Wraps Sticky Filter Controls & Article Cards) */}
+            <div className="blog-grid">
+              {/* Search Input Panel (Sticky Glass Box) */}
+              <div className={`blog-controls-panel ${isFilterStuck ? 'is-stuck' : ''}`}>
+                <div className="blog-search-wrapper">
+                  <SearchIcon size={18} className="search-input-icon" />
+                  <input
+                    type="text"
+                    className="blog-search-input"
+                    placeholder={t.searchPlaceholder}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  {searchQuery && (
+                    <button
+                      className="search-clear-btn"
+                      onClick={() => setSearchQuery('')}
+                      aria-label="Clear search"
+                    >
+                      <CloseIcon size={14} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Active Filter Chips */}
+                {(selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery) && (
+                  <div className="blog-active-chips-bar">
+                    <span className="active-chips-label">
+                      <FilterIcon size={13} /> {t.activeFilters || 'Đang lọc:'}
+                    </span>
+
+                    {selectedCategory !== 'all' && (
+                      <span className="filter-chip">
+                        <span className="chip-key">{t.filterByCategory || 'Chuyên đề'}:</span>
+                        <strong>{currentCategoryDef.title[langKey]}</strong>
+                        <button
+                          onClick={() => setSelectedCategory('all')}
+                          aria-label="Remove category filter"
+                          className="chip-remove-btn"
+                        >
+                          <CloseIcon size={12} />
+                        </button>
+                      </span>
+                    )}
+
+                    {selectedTag !== 'all' && (
+                      <span className="filter-chip">
+                        <span className="chip-key">{t.filterByTag || 'Thẻ'}:</span>
+                        <strong>#{selectedTag}</strong>
+                        <button
+                          onClick={() => setSelectedTag('all')}
+                          aria-label="Remove tag filter"
+                          className="chip-remove-btn"
+                        >
+                          <CloseIcon size={12} />
+                        </button>
+                      </span>
+                    )}
+
+                    {searchQuery && (
+                      <span className="filter-chip">
+                        <span className="chip-key">Search:</span>
+                        <strong>"{searchQuery}"</strong>
+                        <button
+                          onClick={() => setSearchQuery('')}
+                          aria-label="Remove search query"
+                          className="chip-remove-btn"
+                        >
+                          <CloseIcon size={12} />
+                        </button>
+                      </span>
+                    )}
+
+                    <button
+                      className="btn-text-reset"
+                      onClick={handleResetFilters}
+                      style={{ marginLeft: 'auto' }}
+                    >
+                      {t.resetFilters}
+                    </button>
+                  </div>
                 )}
               </div>
 
-              {/* Active Filter Chips */}
-              {(selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery) && (
-                <div className="blog-active-chips-bar">
-                  <span className="active-chips-label">
-                    <FilterIcon size={13} /> {t.activeFilters || 'Đang lọc:'}
-                  </span>
-
-                  {selectedCategory !== 'all' && (
-                    <span className="filter-chip">
-                      <span className="chip-key">{t.filterByCategory || 'Chuyên đề'}:</span>
-                      <strong>{currentCategoryDef.title[langKey]}</strong>
-                      <button
-                        onClick={() => setSelectedCategory('all')}
-                        aria-label="Remove category filter"
-                        className="chip-remove-btn"
-                      >
-                        <CloseIcon size={12} />
-                      </button>
-                    </span>
-                  )}
-
-                  {selectedTag !== 'all' && (
-                    <span className="filter-chip">
-                      <span className="chip-key">{t.filterByTag || 'Thẻ'}:</span>
-                      <strong>#{selectedTag}</strong>
-                      <button
-                        onClick={() => setSelectedTag('all')}
-                        aria-label="Remove tag filter"
-                        className="chip-remove-btn"
-                      >
-                        <CloseIcon size={12} />
-                      </button>
-                    </span>
-                  )}
-
-                  {searchQuery && (
-                    <span className="filter-chip">
-                      <span className="chip-key">Search:</span>
-                      <strong>"{searchQuery}"</strong>
-                      <button
-                        onClick={() => setSearchQuery('')}
-                        aria-label="Remove search query"
-                        className="chip-remove-btn"
-                      >
-                        <CloseIcon size={12} />
-                      </button>
-                    </span>
-                  )}
-
-                  <button
-                    className="btn-text-reset"
-                    onClick={handleResetFilters}
-                    style={{ marginLeft: 'auto' }}
-                  >
-                    {t.resetFilters}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Articles Grid */}
-            {filteredPosts.length > 0 ? (
-              <div className="blog-grid">
-                {filteredPosts.map((post) => {
+              {/* Cards or Empty State */}
+              {filteredPosts.length > 0 ? (
+                filteredPosts.map((post) => {
                   const postCatDef = BLOG_CATEGORY_DEFINITIONS.find((c) => c.id === post.category);
 
                   return (
@@ -607,9 +608,28 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                       </div>
                     </div>
                   );
-                })}
-              </div>
-            ) : null}
+                })
+              ) : (
+                <div className="glass-panel" style={{ gridColumn: '1 / -1', padding: '48px 24px', textAlign: 'center', marginTop: '12px' }}>
+                  <BookOpenIcon size={40} style={{ color: 'var(--text-muted)', margin: '0 auto 16px' }} />
+                  <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{t.noArticlesFound}</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '450px', margin: '0 auto 16px' }}>
+                    {selectedCategory !== 'all' ? (
+                      <>
+                        {t.filterByCategory || 'Chuyên đề'}: <strong>{currentCategoryDef.title[langKey]}</strong> ({currentCategoryDef.scheduleFull[langKey]})
+                      </>
+                    ) : null}
+                  </p>
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    style={{ marginTop: '8px' }}
+                    onClick={handleResetFilters}
+                  >
+                    {t.resetFilters}
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Load More Button if more month archives exist */}
             {hasMoreMonths && filteredPosts.length > 0 && (
@@ -640,27 +660,6 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                   ) : (
                     <span>{t.loadMoreArticles || 'Tải thêm bài viết'}</span>
                   )}
-                </button>
-              </div>
-            )}
-
-            {filteredPosts.length === 0 && (
-              <div className="glass-panel" style={{ padding: '48px 24px', textAlign: 'center', marginTop: '12px' }}>
-                <BookOpenIcon size={40} style={{ color: 'var(--text-muted)', margin: '0 auto 16px' }} />
-                <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{t.noArticlesFound}</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '450px', margin: '0 auto 16px' }}>
-                  {selectedCategory !== 'all' ? (
-                    <>
-                      {t.filterByCategory || 'Chuyên đề'}: <strong>{currentCategoryDef.title[langKey]}</strong> ({currentCategoryDef.scheduleFull[langKey]})
-                    </>
-                  ) : null}
-                </p>
-                <button
-                  className="btn btn-secondary btn-sm"
-                  style={{ marginTop: '8px' }}
-                  onClick={handleResetFilters}
-                >
-                  {t.resetFilters}
                 </button>
               </div>
             )}

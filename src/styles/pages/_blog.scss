@@ -51,6 +51,8 @@
   display: grid;
   grid-template-columns: 310px 1fr;
   height: 100%;
+  flex: 1;
+  min-height: 0;
   width: 100%;
   overflow: hidden;
   position: relative;
@@ -605,6 +607,7 @@ $category-colors: (
 
 .blog-main-inner-content {
   padding: clamp(20px, 3vw, 40px);
+  padding-bottom: clamp(240px, 35vh, 400px);
   max-width: 100%;
   display: flex;
   flex-direction: column;
@@ -633,8 +636,9 @@ $category-colors: (
   }
 }
 
-/* Search Box Panel (Sticky Glass Box, clean layout, no top animated border) */
+/* Search Box Panel (Sticky Glass Box, clean layout, spans full width of grid) */
 .blog-controls-panel {
+  grid-column: 1 / -1;
   position: sticky;
   top: 16px;
   z-index: 25;
