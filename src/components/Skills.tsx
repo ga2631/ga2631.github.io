@@ -134,23 +134,18 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           <span className="skills-legend-title">{t.legendTitle}:</span>
           <div className="skills-legend-items">
             <div className="skills-legend-item legend-level-5" title={t.level5}>
-              <span className="skill-level-dot level-5" />
               <span>{t.level5}</span>
             </div>
             <div className="skills-legend-item legend-level-4" title={t.level4}>
-              <span className="skill-level-dot level-4" />
               <span>{t.level4}</span>
             </div>
             <div className="skills-legend-item legend-level-3" title={t.level3}>
-              <span className="skill-level-dot level-3" />
               <span>{t.level3}</span>
             </div>
             <div className="skills-legend-item legend-level-2" title={t.level2}>
-              <span className="skill-level-dot level-2" />
               <span>{t.level2}</span>
             </div>
             <div className="skills-legend-item legend-level-1" title={t.level1}>
-              <span className="skill-level-dot level-1" />
               <span>{t.level1}</span>
             </div>
           </div>
@@ -197,11 +192,9 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                         aria-label={`${skill.name} - ${levelCfg.label}`}
                       >
                         <span className="skill-pill-name">{skill.name}</span>
-                        <span className={`skill-level-dot ${levelCfg.levelClass}`} />
 
                         {/* Interactive Tooltip showing 1-5 score and level */}
                         <div className="skill-tooltip" role="presentation">
-                          <span className={`skill-level-dot ${levelCfg.levelClass}`} />
                           <span className="skill-tooltip-score">{levelCfg.scoreText}</span>
                           <span className="skill-tooltip-divider">•</span>
                           <span className="skill-tooltip-text">{levelCfg.label}</span>
