@@ -601,8 +601,8 @@ $category-colors: (
 }
 
 .blog-main-inner-content {
-  padding: clamp(20px, 3vw, 40px);
-  padding-bottom: clamp(240px, 35vh, 400px);
+  padding: 22px clamp(20px, 3vw, 40px);
+  padding-bottom: 22px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
@@ -809,7 +809,6 @@ $category-colors: (
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 22px;
-  padding-bottom: 32px;
 }
 
 .blog-card {
@@ -851,8 +850,8 @@ $category-colors: (
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 24px;
-  padding-bottom: 64px;
+  padding-top: 16px;
+  padding-bottom: 0;
   width: 100%;
 }
 
