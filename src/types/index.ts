@@ -98,8 +98,20 @@ export interface BlogPost {
   contentHtml: string;
 }
 
+export interface PrincipleItem {
+  title: string;
+  description: string;
+}
+
+export interface PrintCvData {
+  summaryExtension?: string;
+  academicDetails?: string;
+}
+
 export interface CVData {
   personalInfo: PersonalInfo;
+  principles: PrincipleItem[];
+  printCv?: PrintCvData;
   experiences: ExperienceItem[];
   projects: ProjectItem[];
   skillCategories: SkillCategory[];

@@ -65,7 +65,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
             {t.summaryHeading}
           </h2>
           <p className="print-summary-text">
-            {personalInfo.bio} {t.summaryExtension}
+            {personalInfo.bio} {data.printCv?.summaryExtension ? ` ${data.printCv.summaryExtension}` : ''}
           </p>
         </section>
 
@@ -169,7 +169,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
               </div>
               <div className="print-edu-highlight">
                 <strong>{t.academicBackground}</strong> {edu.gpaOrHonors}.{' '}
-                {t.academicDetails}
+                {data.printCv?.academicDetails || ''}
               </div>
             </div>
           ))}

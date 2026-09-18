@@ -1,9 +1,9 @@
 {
   "personalInfo": {
     "fullName": "Huỳnh Nhật Tân",
-    "jobTitle": "Kỹ sư Backend & Dữ liệu đa ngôn ngữ | Trưởng nhóm Kỹ thuật",
+    "jobTitle": "Kỹ sư full stack & Dữ liệu đa ngôn ngữ",
     "tagline": "Kiến trúc Hệ thống Phân tán Mở rộng, Medallion Data Warehouse & Đường ống Dữ liệu Tải cao",
-    "bio": "Kỹ sư Backend & Dữ liệu đa ngôn ngữ với hơn 5 năm kinh nghiệm kiến trúc các hệ thống phân tán tải cao và Data Warehouse hiện đại. Năng lực làm chủ kỹ thuật chuyên sâu trên Golang, Java (Spring Boot), Node.js và Python — chuyên trách các đường ống dữ liệu CDC thời gian thực, tối ưu hóa cơ sở dữ liệu và microservices quy mô lớn.",
+    "bio": "Kỹ sư full stack & Dữ liệu đa ngôn ngữ với hơn 5 năm kinh nghiệm kiến trúc các hệ thống phân tán tải cao và Data Warehouse hiện đại. Năng lực làm chủ kỹ thuật chuyên sâu trên Golang, Java (Spring Boot), Node.js, Python và PHP — chuyên trách các đường ống dữ liệu CDC thời gian thực, tối ưu hóa cơ sở dữ liệu và microservices quy mô lớn.",
     "email": "dGFuaHV5bmgyNjMxQGdtYWlsLmNvbQ==",
     "phone": "Kzg0LTk2MzY4NDUyMA==",
     "location": "Phường Tân Khánh, TP. Hồ Chí Minh, Việt Nam",
@@ -17,12 +17,12 @@
       {
         "label": "Năm kinh nghiệm",
         "value": "5+",
-        "subtext": "Backend & Data Pipelines"
+        "subtext": "Full stack & Data Pipelines"
       },
       {
         "label": "Khớp nối dữ liệu",
         "value": "96%",
-        "subtext": "Chuyển đổi không mất dữ liệu"
+        "subtext": "Chuyển đổi hạn chế thất thoát dữ liệu"
       },
       {
         "label": "Hiệu năng truy vấn",
@@ -36,12 +36,34 @@
       }
     ]
   },
+  "principles": [
+    {
+      "title": "Kiến trúc Bền bỉ & Chịu tải",
+      "description": "Thiết kế hệ thống microservices mô-đun hóa và kiến trúc hướng sự kiện (Event-Driven) với tính sẵn sàng cao, chịu lỗi tốt và độ trễ thấp."
+    },
+    {
+      "title": "An toàn Kiểu dữ liệu & Clean Code",
+      "description": "Ứng dụng Golang, Java hiện đại và thiết kế hướng miền (DDD) nhằm đảm bảo tính bảo trì lâu dài, độ bao phủ kiểm thử cao và dữ liệu chuẩn mực."
+    },
+    {
+      "title": "Tự động hóa & DevOps",
+      "description": "Tự động hóa đóng gói container Docker đa tầng và luồng CI/CD giúp quy trình triển khai phần mềm mượt mà, zero-downtime."
+    },
+    {
+      "title": "Tối ưu hóa Hiệu năng & Dữ liệu",
+      "description": "Xây dựng luồng xử lý CDC thời gian thực, tối ưu hóa các điểm nghẽn truy vấn cơ sở dữ liệu và cung cấp báo cáo phân tích tức thì."
+    }
+  ],
+  "printCv": {
+    "summaryExtension": "Có bề dày kinh nghiệm thiết kế hệ thống microservices chịu tải cao, điều phối luồng xử lý CDC đảm bảo zero data loss và tối ưu hóa thời gian thực thi truy vấn phân tích dữ liệu hơn 70%. Đảm nhiệm vai trò Technical Lead dẫn dắt đội ngũ kỹ sư hiện thực hóa các yêu cầu kinh doanh phức tạp thành hệ thống phân tán hiệu năng cao, chuẩn mực chất lượng mã nguồn và tự động hóa quy trình CI/CD.",
+    "academicDetails": "Hoàn thành chương trình nền tảng Khoa học máy tính toàn diện (Cấu trúc dữ liệu & Giải thuật, OOP, Cơ sở dữ liệu quan hệ, Mạng máy tính, Hệ điều hành, Công nghệ phần mềm). Tham gia phát triển phần mềm chuyên nghiệp từ sớm với hơn 5 năm kinh nghiệm thực chiến."
+  },
   "experiences": [
     {
       "id": "exp-1",
       "role": "Kỹ sư Dữ liệu (Data Engineer)",
       "company": "Công ty Cổ phần Công nghệ Adtechnology",
-      "companySubtitle": "Hợp tác cùng Viet Nam Gate Advertising JSC, AdsBase Advertising Technology JSC, bePro.vn Service Company",
+      "companySubtitle": "Hợp tác cùng AdsBase Advertising Technology JSC",
       "location": "Phường Bàn Cờ, TP. Hồ Chí Minh",
       "period": "04/2026 – 06/2026",
       "current": false,

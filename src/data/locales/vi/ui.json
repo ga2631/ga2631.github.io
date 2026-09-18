@@ -45,25 +45,7 @@
   },
   "about": {
     "badge": "Về bản thân",
-    "title": "Triết lý Kỹ thuật & Năng lực Cốt lõi",
-    "principles": [
-      {
-        "title": "Kiến trúc Bền bỉ & Chịu tải",
-        "description": "Thiết kế hệ thống microservices mô-đun hóa và kiến trúc hướng sự kiện (Event-Driven) với tính sẵn sàng cao, chịu lỗi tốt và độ trễ thấp."
-      },
-      {
-        "title": "An toàn Kiểu dữ liệu & Clean Code",
-        "description": "Ứng dụng Golang, Java hiện đại và thiết kế hướng miền (DDD) nhằm đảm bảo tính bảo trì lâu dài, độ bao phủ kiểm thử cao và dữ liệu chuẩn mực."
-      },
-      {
-        "title": "Tự động hóa & DevOps",
-        "description": "Tự động hóa đóng gói container Docker đa tầng và luồng CI/CD giúp quy trình triển khai phần mềm mượt mà, zero-downtime."
-      },
-      {
-        "title": "Tối ưu hóa Hiệu năng & Dữ liệu",
-        "description": "Xây dựng luồng xử lý CDC thời gian thực, tối ưu hóa các điểm nghẽn truy vấn cơ sở dữ liệu và cung cấp báo cáo phân tích tức thì."
-      }
-    ]
+    "title": "Triết lý Kỹ thuật & Năng lực Cốt lõi"
   },
   "experience": {
     "badge": "Lộ trình Nghề nghiệp",
@@ -162,7 +144,6 @@
   },
   "printCv": {
     "summaryHeading": "TÓM TẮT NĂNG LỰC CHUYÊN MÔN",
-    "summaryExtension": "Có bề dày kinh nghiệm thiết kế hệ thống microservices chịu tải cao, điều phối luồng xử lý CDC đảm bảo zero data loss và tối ưu hóa thời gian thực thi truy vấn phân tích dữ liệu hơn 70%. Đảm nhiệm vai trò Technical Lead dẫn dắt đội ngũ kỹ sư hiện thực hóa các yêu cầu kinh doanh phức tạp thành hệ thống phân tán hiệu năng cao, chuẩn mực chất lượng mã nguồn và tự động hóa quy trình CI/CD.",
     "skillsHeading": "KỸ NĂNG CHUYÊN MÔN CỐT LÕI",
     "experienceHeading": "KINH NGHIỆM LÀM VIỆC",
     "technologies": "Công nghệ:",
@@ -170,7 +151,6 @@
     "keyTechnologies": "Công nghệ chính:",
     "educationHeading": "HỌC VẤN & CHỨNG CHỈ CHUYÊN MÔN",
     "academicBackground": "Nền tảng học vấn:",
-    "academicDetails": "Hoàn thành chương trình nền tảng Khoa học máy tính toàn diện (Cấu trúc dữ liệu & Giải thuật, OOP, Cơ sở dữ liệu quan hệ, Mạng máy tính, Hệ điều hành, Công nghệ phần mềm). Tham gia phát triển phần mềm chuyên nghiệp từ sớm với hơn 5 năm kinh nghiệm thực chiến.",
     "certificationsAndBadges": "Chứng chỉ chuyên môn & Huy hiệu:"
   }
 }

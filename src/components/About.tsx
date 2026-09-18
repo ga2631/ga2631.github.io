@@ -1,14 +1,15 @@
 import React from 'react';
-import { PersonalInfo } from '../types/index.ts';
+import { PersonalInfo, PrincipleItem } from '../types/index.ts';
 import { CodeIcon, AwardIcon, LayersIcon, RefreshCwIcon, ZapIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 
 interface AboutProps {
   data: PersonalInfo;
+  principles: PrincipleItem[];
   t: UITranslation['about'];
 }
 
-export const About: React.FC<AboutProps> = ({ data, t }) => {
+export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
   const getPrincipleConfig = (title: string, index: number) => {
     const lower = title.toLowerCase();
     // 1. Architectural Resilience / Kiến trúc Bền bỉ & Chịu tải
@@ -61,7 +62,7 @@ export const About: React.FC<AboutProps> = ({ data, t }) => {
         </div>
 
         <div className="principles-grid">
-          {t.principles.map((item, index) => {
+          {principles.map((item, index) => {
             const config = getPrincipleConfig(item.title, index);
             return (
               <div key={index} className="glass-panel principle-card">

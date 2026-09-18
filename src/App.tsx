@@ -88,7 +88,11 @@ export const App: React.FC = () => {
           ) : (
             <>
               <Hero data={currentCvData.personalInfo} t={t.hero} />
-              <About data={currentCvData.personalInfo} t={t.about} />
+              <About
+                data={currentCvData.personalInfo}
+                principles={currentCvData.principles}
+                t={t.about}
+              />
               <Experience experiences={currentCvData.experiences} t={t.experience} />
               <Projects
                 projects={currentCvData.projects}
