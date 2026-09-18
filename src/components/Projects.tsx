@@ -16,6 +16,28 @@ import {
   RocketIcon,
   ShieldIcon,
 } from './Icons.tsx';
+import { UITranslation } from '../data/cvData.ts';
+
+interface ProjectsProps {
+  projects: ProjectItem[];
+  t: UITranslation['projects'];
+  tCommon: UITranslation['common'];
+}
+
+interface GitHubRepo {
+  id: number;
+  name: string;
+  full_name: string;
+  html_url: string;
+  description: string | null;
+  homepage: string | null;
+  stargazers_count: number;
+  forks_count: number;
+  language: string | null;
+  topics?: string[];
+  updated_at: string;
+  fork: boolean;
+}
 
 const FALLBACK_REPOS: GitHubRepo[] = [
   {
@@ -253,7 +275,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
         <div className="projects-grid">
           {/* 1. Enterprise Architecture Case Studies */}
           {showCaseStudies &&
-            projects.map((project) => (
+            projects.map((project: ProjectItem) => (
               <div
                 key={project.id}
                 className="glass-panel project-card-compact"
@@ -282,7 +304,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
 
                 <div className="project-card-footer">
                   <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                    {project.tags.slice(0, 4).map((tech) => {
+                    {project.tags.slice(0, 4).map((tech: string) => {
                       const info = getTechColorInfo(tech);
                       return (
                         <span
@@ -346,7 +368,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
 
           {/* 3. Live GitHub Public Repositories */}
           {showRepos &&
-            repos.map((repo) => {
+            repos.map((repo: GitHubRepo) => {
               const repoTags = repo.topics && repo.topics.length > 0
                 ? repo.topics
                 : (repo.language ? [repo.language] : []);
@@ -411,7 +433,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                     {/* Unified Tech Tags List with distinct language colors */}
                     {repoTags.length > 0 && (
                       <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                        {repoTags.slice(0, 4).map((tag) => {
+                        {repoTags.slice(0, 4).map((tag: string) => {
                           const info = getTechColorInfo(tag);
                           return (
                             <span
@@ -619,7 +641,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                         <span>{t.techStack}</span>
                       </h3>
                       <div className="tech-tags-list" style={{ marginTop: '8px' }}>
-                        {activeProject.tags.map((tag) => {
+                        {activeProject.tags.map((tag: string) => {
                           const info = getTechColorInfo(tag);
                           return (
                             <span
