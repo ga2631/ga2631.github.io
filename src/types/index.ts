@@ -96,6 +96,17 @@ export interface BlogPost {
   tags: string[];
   author: string;
   contentHtml: string;
+  category?: string;
+}
+
+export interface BlogCategoryItem {
+  id: string;
+  dayCode: string;
+  scheduleDay: string;
+  scheduleFull: string;
+  title: string;
+  description: string;
+  iconName?: string;
 }
 
 export interface PrincipleItem {

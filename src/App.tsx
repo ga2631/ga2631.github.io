@@ -110,7 +110,9 @@ export const App: React.FC = () => {
           )}
         </main>
 
-        <Footer t={t.footer} fullName={currentCvData.personalInfo.fullName} />
+        {route !== 'blog' && (
+          <Footer t={t.footer} fullName={currentCvData.personalInfo.fullName} />
+        )}
 
         {/* Floating Quick Action Button (FAB) */}
         <FloatingActions

@@ -2,6 +2,7 @@
   {
     "id": "post-1",
     "slug": "migrating-legacy-erp-to-medallion-data-warehouse-cdc",
+    "category": "data-engineering-analytics",
     "title": "Chuyển đổi Hệ thống ERP Kế thừa 7 năm sang Medallion Data Warehouse với CDC & Zero Data Loss",
     "summary": "Cách trích xuất MySQL binlog qua Change Data Capture, xây dựng worker Idempotent trên RabbitMQ và giảm hơn 70% thời gian truy vấn phân tích không gây gián đoạn hệ thống.",
     "publishedAt": "Tháng 5, 2026",
@@ -20,6 +21,7 @@
   {
     "id": "post-2",
     "slug": "building-reactive-event-tracking-spring-webflux-kafka",
+    "category": "architecture-system-design",
     "title": "Kiến trúc Thu thập Sự kiện Thông lượng cao với Spring WebFlux, Kafka & Ẩn danh PII Tự động",
     "summary": "Xây dựng cổng MarTech tuân thủ quyền riêng tư dữ liệu, xử lý hàng nghìn sự kiện phễu chuyển đổi TMĐT thời gian thực với độ trễ dưới 1 giây.",
     "publishedAt": "Tháng 4, 2026",
@@ -38,6 +40,7 @@
   {
     "id": "post-3",
     "slug": "scaling-customer-reporting-portal-high-concurrency-redis",
+    "category": "architecture-system-design",
     "title": "Mở rộng Cổng Báo cáo ERP chịu tải 1,000+ Người dùng đồng thời với Redis & Node.js",
     "summary": "Kỹ thuật đệm truy vấn báo cáo nặng, đồng bộ dữ liệu theo lô và thiết kế kiến trúc component giao diện dạng mô-đun.",
     "publishedAt": "Tháng 1, 2026",
@@ -51,5 +54,58 @@
     ],
     "author": "Huỳnh Nhật Tân",
     "contentHtml": "<h3>Thách thức Tải đồng thời Cao</h3><p>Khi nhiều khách hàng doanh nghiệp cùng chạy báo cáo dữ liệu quảng cáo nặng trong giờ cao điểm buổi sáng, CPU của CSDL chạm ngưỡng 100%. Chúng tôi tách rời các truy vấn báo cáo khỏi CSDL vận hành ERP nhờ bộ nhớ đệm Redis và gom lô truy vấn thông minh.</p><h3>Kiến trúc Biểu đồ Mô-đun với Vue.js</h3><p>Bằng cách chia nhỏ các widget báo cáo thành các component biểu đồ độc lập có hợp đồng trạng thái thống nhất, các yêu cầu thêm chỉ số mới từ đối tác được bàn giao trong vài giờ mà không phải can thiệp vào các mô-đun backend lõi.</p>"
+  },
+  {
+    "id": "post-4",
+    "slug": "docker-multi-stage-github-actions-zero-downtime-cicd",
+    "category": "devops-cloud-tooling",
+    "title": "Tối ưu Multi-Stage Docker (<25MB) & Xây dựng Zero-Downtime CI/CD Pipeline với GitHub Actions",
+    "summary": "Chiến lược đóng gói container siêu nhẹ trên nền Alpine, cấu hình Nginx SPA fallback và tự động hóa kiểm thử static typecheck trong luồng phát hành.",
+    "publishedAt": "Tháng 3, 2026",
+    "readTime": "5 phút đọc",
+    "tags": [
+      "Docker",
+      "CI/CD",
+      "GitHub Actions",
+      "Nginx",
+      "DevOps"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "contentHtml": "<h3>1. Tối ưu Multi-Stage Build</h3><p>Việc tách biệt môi trường build (Node.js Alpine) và runtime production (Nginx Alpine) giúp kích thước container giảm từ hơn 800MB xuống dưới 25MB, tăng tốc độ pull image và giảm thiểu bề mặt tấn công bảo mật.</p><h3>2. Tự động hóa CI/CD với GitHub Actions</h3><p>Mỗi commit và pull request đều trải qua bước kiểm tra nghiêm ngặt: TypeScript typecheck (<code>tsc --noEmit</code>), Vitest test suite, và đóng gói production bundle trước khi triển khai không gián đoạn (zero-downtime).</p>"
+  },
+  {
+    "id": "post-5",
+    "slug": "distributed-idempotency-concurrency-control-golang-redis",
+    "category": "code-craftsmanship-languages",
+    "title": "Nghệ thuật Kiểm soát Bất biến (Idempotency) & Race Condition trong Distributed Workers với Go & Redis",
+    "summary": "Mô hình xử lý dữ liệu tin cậy qua Distributed Locks, cơ chế Dedup Key và kỹ thuật xử lý lỗi an toàn không gây nghẽn goroutine.",
+    "publishedAt": "Tháng 2, 2026",
+    "readTime": "6 phút đọc",
+    "tags": [
+      "Golang",
+      "Redis",
+      "Concurrency",
+      "Distributed Systems",
+      "Clean Code"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "contentHtml": "<h3>1. Xử lý Trùng lặp Tin nhắn (Message Duplication)</h3><p>Trong các hệ thống phân tán, cơ chế giao nhận tin nhắn At-Least-Once luôn tiềm ẩn nguy cơ xử lý trùng. Chúng tôi áp dụng kỹ thuật Dedup Key trên Redis với TTL động kết hợp Transactional Outbox pattern.</p><h3>2. Quản lý Goroutine & Graceful Shutdown</h3><p>Sử dụng <code>sync.WaitGroup</code>, Worker Pools có giới hạn buffer và <code>context.WithTimeout</code> giúp worker luôn hoàn tất các tác vụ đang dở dang trước khi container nhận tín hiệu SIGTERM.</p>"
+  },
+  {
+    "id": "post-6",
+    "slug": "from-developer-to-system-architect-practical-mindset",
+    "category": "tech-radar-career-insights",
+    "title": "Hành trình từ Kỹ sư Phần mềm đến Kiến trúc Hệ thống: Tư duy, Trade-offs và Bài học Thực tế",
+    "summary": "Những đúc kết thực chiến về việc cân bằng giữa sự hoàn hảo kỹ thuật và giá trị kinh doanh, cách ra quyết định kỹ thuật có trách nhiệm và thói quen học tập bền vững.",
+    "publishedAt": "Tháng 1, 2026",
+    "readTime": "8 phút đọc",
+    "tags": [
+      "Career Growth",
+      "System Architecture",
+      "Engineering Mindset",
+      "Tech Radar"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "contentHtml": "<h3>1. Bản chất của Kiến trúc là Nghệ thuật Đánh đổi (Trade-offs)</h3><p>Không có công nghệ hay kiến trúc nào là hoàn hảo tuyệt đối. Một kiến trúc sư giỏi không tìm kiếm giải pháp phức tạp nhất, mà tìm kiếm giải pháp phù hợp nhất với nguồn lực, thời gian và bài toán kinh doanh của doanh nghiệp.</p><h3>2. Tầm quan trọng của Kỷ luật Kỹ thuật</h3><p>Documentation rõ ràng, quy chuẩn Git nghiêm ngặt và văn hóa viết test tự động chính là nền móng giúp một đội ngũ kỹ sư mở rộng quy mô mà không bị vướng bẫy nợ kỹ thuật (technical debt).</p>"
   }
 ]

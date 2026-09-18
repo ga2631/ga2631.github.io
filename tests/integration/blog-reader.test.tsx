@@ -5,7 +5,7 @@ import { BlogPage } from '../../src/pages/BlogPage';
 import { blogPostsEn } from '../../src/data/blogData';
 import { uiTranslations } from '../../src/data/cvData';
 
-describe('TS-12: Blog Search & Article Reader Modal Integration', () => {
+describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', () => {
   const defaultProps = {
     posts: blogPostsEn,
     t: uiTranslations.en.blog,
@@ -16,6 +16,25 @@ describe('TS-12: Blog Search & Article Reader Modal Integration', () => {
     render(<BlogPage {...defaultProps} />);
 
     expect(screen.getByPlaceholderText(uiTranslations.en.blog.searchPlaceholder)).toBeInTheDocument();
+    expect(screen.getByText(blogPostsEn[0].title)).toBeInTheDocument();
+  });
+
+  it('should render left sidebar with category tracks and publishing schedule', () => {
+    render(<BlogPage {...defaultProps} />);
+
+    // Should render category tracks
+    expect(screen.getAllByText(/Architecture & System Design/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Data Engineering & Analytics/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/DevOps, Cloud & Tooling/i).length).toBeGreaterThan(0);
+  });
+
+  it('should filter articles dynamically when selecting a category track', () => {
+    render(<BlogPage {...defaultProps} />);
+
+    const dataEngButtons = screen.getAllByRole('button', { name: /Data Engineering & Analytics/i });
+    fireEvent.click(dataEngButtons[0]);
+
+    // Post 1 (Medallion CDC) is Data Engineering and should be in the document
     expect(screen.getByText(blogPostsEn[0].title)).toBeInTheDocument();
   });
 
@@ -60,5 +79,53 @@ describe('TS-12: Blog Search & Article Reader Modal Integration', () => {
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(document.body.style.overflow).toBe('');
+  });
+
+  it('should display rich tooltip with schedule and objectives when hovering over category row', () => {
+    render(<BlogPage {...defaultProps} />);
+
+    const dataEngButton = screen.getByRole('button', { name: /Data Engineering & Analytics/i });
+    fireEvent.mouseEnter(dataEngButton);
+
+    // Tooltip should display schedule
+    expect(screen.getByText(/Every Tuesday/i)).toBeInTheDocument();
+
+    // Mouse leave should dismiss tooltip
+    fireEvent.mouseLeave(dataEngButton);
+    expect(screen.queryByText(/Every Tuesday/i)).not.toBeInTheDocument();
+  });
+
+  it('should apply individual category day classes to category rows, badges, and tooltips', () => {
+    render(<BlogPage {...defaultProps} />);
+
+    const catRows = document.querySelectorAll('.category-item-row');
+    expect(catRows.length).toBe(6);
+
+    // Verify day classes
+    expect(document.querySelector('.category-item-row.day-all')).toBeInTheDocument();
+    expect(document.querySelector('.category-item-row.day-mon')).toBeInTheDocument();
+    expect(document.querySelector('.category-item-row.day-tue')).toBeInTheDocument();
+    expect(document.querySelector('.category-item-row.day-wed')).toBeInTheDocument();
+    expect(document.querySelector('.category-item-row.day-thu')).toBeInTheDocument();
+    expect(document.querySelector('.category-item-row.day-fri')).toBeInTheDocument();
+
+    // Hover over Monday track (Architecture)
+    const archButton = screen.getByRole('button', { name: /Architecture & System Design/i });
+    fireEvent.mouseEnter(archButton);
+
+    const tooltip = document.querySelector('.category-rich-tooltip.tooltip-day-mon');
+    expect(tooltip).toBeInTheDocument();
+    expect(tooltip?.querySelector('.badge-mon')).toBeInTheDocument();
+
+    fireEvent.mouseLeave(archButton);
+  });
+
+  it('should render fixed category section and tags cloud container', () => {
+    render(<BlogPage {...defaultProps} />);
+
+    expect(document.querySelector('.blog-sidebar-categories-section')).toBeInTheDocument();
+    expect(document.querySelector('.blog-sidebar-tags-section')).toBeInTheDocument();
+    expect(document.querySelector('.sidebar-tags-cloud')).toBeInTheDocument();
+    expect(screen.getByText(uiTranslations.en.blog.tagsTitle)).toBeInTheDocument();
   });
 });

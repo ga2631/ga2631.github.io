@@ -120,6 +120,15 @@ export interface UITranslation {
     backToHome: string;
     searchPlaceholder: string;
     allTopics: string;
+    categoriesTitle?: string;
+    categoriesSubtitle?: string;
+    tagsTitle?: string;
+    scheduleWeekly?: string;
+    trackObjective?: string;
+    filterByCategory?: string;
+    filterByTag?: string;
+    clearAll?: string;
+    activeFilters?: string;
     noArticlesFound: string;
     article: string;
     showingArticles: string;

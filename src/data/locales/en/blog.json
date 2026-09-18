@@ -2,6 +2,7 @@
   {
     "id": "post-1",
     "slug": "migrating-legacy-erp-to-medallion-data-warehouse-cdc",
+    "category": "data-engineering-analytics",
     "title": "Migrating a 7-Year Legacy ERP to a Medallion Data Warehouse using CDC and Zero Data Loss",
     "summary": "How we extracted MySQL binlogs with Change Data Capture, leveraged RabbitMQ idempotent workers, and reduced analytical query times by >70% with zero downtime.",
     "publishedAt": "May 2026",
@@ -20,6 +21,7 @@
   {
     "id": "post-2",
     "slug": "building-reactive-event-tracking-spring-webflux-kafka",
+    "category": "architecture-system-design",
     "title": "Architecting High-Throughput Event Ingestion with Spring WebFlux, Kafka & Automated PII Masking",
     "summary": "Building a privacy-compliant MarTech analytics gateway that handles thousands of real-time e-commerce conversion events with sub-second latency.",
     "publishedAt": "Apr 2026",
@@ -38,6 +40,7 @@
   {
     "id": "post-3",
     "slug": "scaling-customer-reporting-portal-high-concurrency-redis",
+    "category": "architecture-system-design",
     "title": "Scaling an ERP Customer Reporting Portal to 1,000+ Concurrent Users with Redis & Node.js",
     "summary": "Techniques for caching heavy reporting queries, batch synchronization, and designing modular UI component architectures.",
     "publishedAt": "Jan 2026",
@@ -51,5 +54,58 @@
     ],
     "author": "Tan Huynh Nhat",
     "contentHtml": "<h3>The Concurrency Challenge</h3><p>When multiple enterprise clients run heavy ad reporting analytics simultaneously during morning rush hours, database CPU usage spikes to 100%. We decoupled direct reporting queries from the transactional ERP database using Redis caching and intelligent query batching.</p><h3>Modular Charting with Vue.js</h3><p>By breaking reporting widgets into independent, reactive chart components with unified state contracts, client requests for new metrics could be rolled out in hours without touching backend core modules.</p>"
+  },
+  {
+    "id": "post-4",
+    "slug": "docker-multi-stage-github-actions-zero-downtime-cicd",
+    "category": "devops-cloud-tooling",
+    "title": "Optimizing Multi-Stage Docker (<25MB) & Building Zero-Downtime CI/CD with GitHub Actions",
+    "summary": "Ultralight container packaging on Alpine, Nginx SPA fallback routing, and automated static typechecks in delivery pipelines.",
+    "publishedAt": "Mar 2026",
+    "readTime": "5 min read",
+    "tags": [
+      "Docker",
+      "CI/CD",
+      "GitHub Actions",
+      "Nginx",
+      "DevOps"
+    ],
+    "author": "Tan Huynh Nhat",
+    "contentHtml": "<h3>1. Multi-Stage Build Optimization</h3><p>Separating the build environment (Node.js Alpine) from the runtime server (Nginx Alpine) shrank container image size from >800MB to <25MB, boosting image pull speeds and reducing security attack surfaces.</p><h3>2. Automated CI/CD with GitHub Actions</h3><p>Every commit and pull request runs through strict verification: TypeScript typechecking (<code>tsc --noEmit</code>), Vitest test suites, and production bundling before zero-downtime deployment.</p>"
+  },
+  {
+    "id": "post-5",
+    "slug": "distributed-idempotency-concurrency-control-golang-redis",
+    "category": "code-craftsmanship-languages",
+    "title": "Idempotency & Concurrency Control in Distributed Workers with Go & Redis",
+    "summary": "Reliable message processing with Distributed Locks, Dedup Keys, and graceful failure handling without goroutine leaks.",
+    "publishedAt": "Feb 2026",
+    "readTime": "6 min read",
+    "tags": [
+      "Golang",
+      "Redis",
+      "Concurrency",
+      "Distributed Systems",
+      "Clean Code"
+    ],
+    "author": "Tan Huynh Nhat",
+    "contentHtml": "<h3>1. Handling Message Duplication</h3><p>In distributed systems with At-Least-Once delivery, message duplicate processing is a critical concern. We leverage Redis Dedup Keys with dynamic TTLs and Transactional Outbox patterns.</p><h3>2. Goroutine Lifecycle & Graceful Shutdown</h3><p>Using <code>sync.WaitGroup</code>, bounded worker pools, and <code>context.WithTimeout</code> ensures that workers cleanly finish inflight tasks before receiving SIGTERM signals.</p>"
+  },
+  {
+    "id": "post-6",
+    "slug": "from-developer-to-system-architect-practical-mindset",
+    "category": "tech-radar-career-insights",
+    "title": "From Software Engineer to System Architect: Mindset, Trade-offs & Practical Lessons",
+    "summary": "Field-tested reflections on balancing technical excellence with business value, making responsible architectural decisions, and sustained engineering growth.",
+    "publishedAt": "Jan 2026",
+    "readTime": "8 min read",
+    "tags": [
+      "Career Growth",
+      "System Architecture",
+      "Engineering Mindset",
+      "Tech Radar"
+    ],
+    "author": "Tan Huynh Nhat",
+    "contentHtml": "<h3>1. Architecture is the Art of Trade-offs</h3><p>There is no silver-bullet architecture. A great architect does not seek the most complex solution, but the most fitting solution for the organization's constraints, timelines, and business goals.</p><h3>2. The Power of Engineering Discipline</h3><p>Clear documentation, rigorous Git standards, and automated test culture provide the foundational bedrock that allows engineering teams to scale without drowning in technical debt.</p>"
   }
 ]
