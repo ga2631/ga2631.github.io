@@ -103,17 +103,12 @@
     "badge": "Ma trận Kỹ năng",
     "title": "Kỹ năng & Công nghệ",
     "subtitle": "Tập hợp toàn diện các kỹ năng từ phát triển Backend phân tán, nền tảng Dữ liệu hiện đại đến Hạ tầng đám mây.",
-    "legendTitle": "Thang điểm Thành thạo (1 - 5)",
-    "level5": "Cấp 5: Chuyên gia (5/5)",
-    "level4": "Cấp 4: Nâng cao (4/5)",
-    "level3": "Cấp 3: Thành thạo (3/5)",
-    "level2": "Cấp 2: Tiếp cận (2/5)",
-    "level1": "Cấp 1: Cơ bản (1/5)",
-    "expert": "Chuyên gia (5/5)",
-    "advanced": "Nâng cao (4/5)",
-    "proficient": "Thành thạo (3/5)",
-    "familiar": "Tiếp cận (2/5)",
-    "fundamental": "Cơ bản (1/5)"
+    "legendTitle": "Thang điểm Thành thạo",
+    "level5": "Chuyên gia",
+    "level4": "Nâng cao",
+    "level3": "Thành thạo",
+    "level2": "Tiếp cận",
+    "level1": "Cơ bản"
   },
   "education": {
     "badge": "Bằng cấp & Chứng chỉ",

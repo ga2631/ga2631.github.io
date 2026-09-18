@@ -77,7 +77,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           score: 5,
           scoreText: '5/5',
           label: t.level5,
-          shortLabel: t.expert,
           levelClass: 'level-5',
           tagClass: 'skill-tag-5',
         };
@@ -86,7 +85,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           score: 4,
           scoreText: '4/5',
           label: t.level4,
-          shortLabel: t.advanced,
           levelClass: 'level-4',
           tagClass: 'skill-tag-4',
         };
@@ -95,7 +93,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           score: 3,
           scoreText: '3/5',
           label: t.level3,
-          shortLabel: t.proficient,
           levelClass: 'level-3',
           tagClass: 'skill-tag-3',
         };
@@ -104,7 +101,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           score: 2,
           scoreText: '2/5',
           label: t.level2,
-          shortLabel: t.familiar,
           levelClass: 'level-2',
           tagClass: 'skill-tag-2',
         };
@@ -114,7 +110,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           score: 1,
           scoreText: '1/5',
           label: t.level1,
-          shortLabel: t.fundamental,
           levelClass: 'level-1',
           tagClass: 'skill-tag-1',
         };
@@ -209,7 +204,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                           <span className={`skill-level-dot ${levelCfg.levelClass}`} />
                           <span className="skill-tooltip-score">{levelCfg.scoreText}</span>
                           <span className="skill-tooltip-divider">•</span>
-                          <span className="skill-tooltip-text">{levelCfg.shortLabel}</span>
+                          <span className="skill-tooltip-text">{levelCfg.label}</span>
                         </div>
                       </div>
                     );

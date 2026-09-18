@@ -100,11 +100,6 @@ export interface UITranslation {
     level3: string;
     level2: string;
     level1: string;
-    expert: string;
-    advanced: string;
-    proficient: string;
-    familiar: string;
-    fundamental: string;
   };
   education: {
     badge: string;
