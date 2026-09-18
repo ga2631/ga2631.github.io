@@ -134,31 +134,25 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           <div className="header-actions">
-            {/* Desktop Language Switcher */}
-            <div
-              className="lang-toggle-group header-lang-group"
-              role="group"
-              aria-label="Language Selector"
+            {/* Desktop Language Switcher Toggle */}
+            <button
+              className="lang-toggle-btn header-lang-btn"
+              onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}
+              title={lang === 'vi' ? 'English' : 'Tiếng Việt'}
+              aria-label="Toggle Language"
             >
-              <button
-                className={`lang-btn ${lang === 'vi' ? 'active' : ''}`}
-                onClick={() => setLang('vi')}
-                title="Tiếng Việt"
-                aria-pressed={lang === 'vi'}
-              >
-                <VietnamFlagIcon size={16} />
-                <span>VI</span>
-              </button>
-              <button
-                className={`lang-btn ${lang === 'en' ? 'active' : ''}`}
-                onClick={() => setLang('en')}
-                title="English"
-                aria-pressed={lang === 'en'}
-              >
-                <UKFlagIcon size={16} />
-                <span>EN</span>
-              </button>
-            </div>
+              {lang === 'vi' ? (
+                <>
+                  <VietnamFlagIcon size={16} />
+                  <span>VI</span>
+                </>
+              ) : (
+                <>
+                  <UKFlagIcon size={16} />
+                  <span>EN</span>
+                </>
+              )}
+            </button>
 
             {/* Theme Toggle Button */}
             <button
@@ -198,7 +192,6 @@ export const Header: React.FC<HeaderProps> = ({
         tCommon={t.common}
         personalInfo={personalInfo}
         onPrint={handlePrint}
-        currentRoute={currentRoute}
       />
     </>
   );
