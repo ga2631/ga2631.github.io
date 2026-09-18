@@ -4,20 +4,36 @@
     "jobTitle": "Polyglot Backend & Data Engineer | Technical Team Lead",
     "tagline": "Architecting Scalable Distributed Systems, Medallion Data Warehouses & High-Concurrency Pipelines",
     "bio": "Polyglot Backend & Data Engineer with 5+ years of experience architecting high-concurrency distributed systems and modern Data Warehouses. Strong technical ownership across Golang, Java (Spring Boot), Node.js, and Python — specializing in real-time CDC pipelines, database optimization, and scalable microservices.",
-    "email": "tanhuynh2631@gmail.com",
-    "phone": "+84-963684520",
+    "email": "dGFuaHV5bmgyNjMxQGdtYWlsLmNvbQ==",
+    "phone": "Kzg0LTk2MzY4NDUyMA==",
     "location": "Tan Khanh Ward, Ho Chi Minh City, Vietnam",
     "birthday": "23 Nov 1999",
     "availability": "Open to work",
     "githubUrl": "https://github.com/ga2631",
     "linkedinUrl": "https://www.linkedin.com/in/tan-huynh-nhat/",
-    "zaloUrl": "https://zalo.me/0963684520",
+    "zaloUrl": "aHR0cHM6Ly96YWxvLm1lLzA5NjM2ODQ1MjA=",
     "avatarUrl": "https://github.com/ga2631.png",
     "stats": [
-      { "label": "Years Experience", "value": "5+", "subtext": "Backend & Data Pipelines" },
-      { "label": "Data Reconciliation", "value": "96%", "subtext": "Zero Data Loss Migration" },
-      { "label": "Query Performance", "value": "70%+", "subtext": "Latency Reduction" },
-      { "label": "Peak Concurrency", "value": "1,000+", "subtext": "Concurrent Users" }
+      {
+        "label": "Years Experience",
+        "value": "5+",
+        "subtext": "Backend & Data Pipelines"
+      },
+      {
+        "label": "Data Reconciliation",
+        "value": "96%",
+        "subtext": "Zero Data Loss Migration"
+      },
+      {
+        "label": "Query Performance",
+        "value": "70%+",
+        "subtext": "Latency Reduction"
+      },
+      {
+        "label": "Peak Concurrency",
+        "value": "1,000+",
+        "subtext": "Concurrent Users"
+      }
     ]
   },
   "experiences": [
@@ -35,7 +51,15 @@
         "Built automated reporting dashboards utilizing Looker Studio and AI integrations to ground product prioritization decisions.",
         "Engineered secure data protocols for PII before Google Analytics transmission, ensuring strict privacy compliance."
       ],
-      "technologies": ["Google Analytics 4 (GA4)", "Google Tag Manager (GTM)", "Looker Studio", "BigQuery", "SQL", "Python", "AI Workflows"]
+      "technologies": [
+        "Google Analytics 4 (GA4)",
+        "Google Tag Manager (GTM)",
+        "Looker Studio",
+        "BigQuery",
+        "SQL",
+        "Python",
+        "AI Workflows"
+      ]
     },
     {
       "id": "exp-2",
@@ -51,7 +75,17 @@
         "Integrated Zalo Notification Service (ZNS) end-to-end and designed an automated accounts receivable management feature.",
         "Translated business requirements into actionable PRDs and User Stories, and conducted rigorous code/API reviews to prevent scope drift and ensure system stability."
       ],
-      "technologies": ["Golang", "Java (Spring Boot)", "Node.js", "PHP (Laravel)", "PostgreSQL", "MySQL", "Redis", "RabbitMQ", "Docker"]
+      "technologies": [
+        "Golang",
+        "Java (Spring Boot)",
+        "Node.js",
+        "PHP (Laravel)",
+        "PostgreSQL",
+        "MySQL",
+        "Redis",
+        "RabbitMQ",
+        "Docker"
+      ]
     },
     {
       "id": "exp-3",
@@ -67,7 +101,17 @@
         "Optimized application performance, established CI/CD pipelines, and implemented system caching, drastically improving response times.",
         "Developed accounting and affiliate management modules and maintained the company WordPress website."
       ],
-      "technologies": ["PHP (Laravel, CodeIgniter)", "JavaScript (VueJS, ReactJS)", "MySQL", "MariaDB", "Redis", "RabbitMQ", "Linux", "Docker", "CI/CD"]
+      "technologies": [
+        "PHP (Laravel, CodeIgniter)",
+        "JavaScript (VueJS, ReactJS)",
+        "MySQL",
+        "MariaDB",
+        "Redis",
+        "RabbitMQ",
+        "Linux",
+        "Docker",
+        "CI/CD"
+      ]
     }
   ],
   "projects": [
@@ -80,7 +124,14 @@
       "shortDescription": "Migrated a 7-year legacy ERP EAV database to a Medallion Data Warehouse (Bronze-Silver-Gold) via MySQL CDC binlogs & RabbitMQ.",
       "description": "Architected and executed the end-to-end migration of a 7-year-old legacy ERP database, transitioning from a complex Entity-Attribute-Value (EAV) model to a centralized Medallion Data Warehouse (Bronze-Silver-Gold) to unlock advanced analytics and reduce operational overhead.",
       "category": "Data / AI",
-      "tags": ["Golang", "MySQL Binlogs", "PostgreSQL", "Medallion CDC", "RabbitMQ", "Docker"],
+      "tags": [
+        "Golang",
+        "MySQL Binlogs",
+        "PostgreSQL",
+        "Medallion CDC",
+        "RabbitMQ",
+        "Docker"
+      ],
       "keyImpacts": [
         "Reduced analytical query times by over 70%",
         "96% reconciliation rate with zero data loss",
@@ -107,7 +158,15 @@
       "shortDescription": "Real-time e-commerce conversion tracking and automated marketing ETL data marts with reactive streaming & automated PII masking.",
       "description": "Engineered a centralized Marketing Technology (MarTech) hub to aggregate cross-platform advertising metrics and process high-volume e-commerce conversion events, feeding structured data into real-time reporting dashboards.",
       "category": "Backend / Cloud",
-      "tags": ["Java 17", "Spring Boot", "Spring WebFlux", "Spring AOP", "Kafka", "BigQuery", "Docker"],
+      "tags": [
+        "Java 17",
+        "Spring Boot",
+        "Spring WebFlux",
+        "Spring AOP",
+        "Kafka",
+        "BigQuery",
+        "Docker"
+      ],
       "keyImpacts": [
         "Sub-second latency for thousands of daily funnel events",
         "100% PII privacy compliance via Spring AOP",
@@ -133,7 +192,14 @@
       "shortDescription": "Enterprise Client Portal handling 1,000+ concurrent users with Redis query caching and modular Vue.js interactive chart widgets.",
       "description": "Led a cross-functional team to build a Client Portal directly integrated with the internal ERP system, delivering a centralized, transparent, and real-time reporting platform for clients to automate ad campaign data retrieval.",
       "category": "Fullstack",
-      "tags": ["Node.js", "Vue.js", "Redis Caching", "ERP Integration", "Docker", "Agile"],
+      "tags": [
+        "Node.js",
+        "Vue.js",
+        "Redis Caching",
+        "ERP Integration",
+        "Docker",
+        "Agile"
+      ],
       "keyImpacts": [
         "Scaled smoothly under 1,000+ peak concurrent users",
         "40% reduction in manual data extraction requests",
@@ -158,7 +224,14 @@
       "shortDescription": "Financial cash inflow automation module, multi-channel ad metrics sync, and zero-downtime CI/CD upgrades for legacy ERP.",
       "description": "Modernized, scaled, and maintained the enterprise ERP system by automating cross-platform marketing data synchronization, streamlining financial workflows, and ensuring high system availability.",
       "category": "Backend / Cloud",
-      "tags": ["PHP (Laravel)", "VueJS", "MariaDB", "RabbitMQ", "CentOS", "CI/CD"],
+      "tags": [
+        "PHP (Laravel)",
+        "VueJS",
+        "MariaDB",
+        "RabbitMQ",
+        "CentOS",
+        "CI/CD"
+      ],
       "keyImpacts": [
         "Decreased report generation time by 63%",
         "Saved 10-12 hours/week in manual accounting entry",
@@ -181,49 +254,124 @@
       "title": "Core Engineering",
       "description": "Polyglot backend development, clean architecture, and modern microservices",
       "skills": [
-        { "name": "Golang", "level": "Advanced" },
-        { "name": "Java (Spring Boot, WebFlux, Batch)", "level": "Advanced" },
-        { "name": "Python (Django, Flask, Scripting)", "level": "Advanced" },
-        { "name": "JavaScript / TypeScript (Node.js, VueJS, ReactJS)", "level": "Advanced" },
-        { "name": "PHP (Laravel, CodeIgniter)", "level": "Expert" },
-        { "name": "Rust", "level": "Proficient" }
+        {
+          "name": "Golang",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java (Spring Boot, WebFlux, Batch)",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python (Django, Flask, Scripting)",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript / TypeScript (Node.js, VueJS, ReactJS)",
+          "level": "Advanced"
+        },
+        {
+          "name": "PHP (Laravel, CodeIgniter)",
+          "level": "Expert"
+        },
+        {
+          "name": "Rust",
+          "level": "Proficient"
+        }
       ]
     },
     {
       "title": "Database & Infrastructure",
       "description": "Relational data modeling, queuing systems, and containerized deployments",
       "skills": [
-        { "name": "PostgreSQL (Indexing & Optimization)", "level": "Expert" },
-        { "name": "MySQL / MariaDB", "level": "Expert" },
-        { "name": "Redis (Caching & Rate Limiting)", "level": "Advanced" },
-        { "name": "RabbitMQ / Apache Kafka", "level": "Advanced" },
-        { "name": "Docker & Docker Compose", "level": "Expert" },
-        { "name": "Linux / CentOS Server Administration", "level": "Advanced" },
-        { "name": "CI/CD Pipelines & Nginx", "level": "Advanced" }
+        {
+          "name": "PostgreSQL (Indexing & Optimization)",
+          "level": "Expert"
+        },
+        {
+          "name": "MySQL / MariaDB",
+          "level": "Expert"
+        },
+        {
+          "name": "Redis (Caching & Rate Limiting)",
+          "level": "Advanced"
+        },
+        {
+          "name": "RabbitMQ / Apache Kafka",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker & Docker Compose",
+          "level": "Expert"
+        },
+        {
+          "name": "Linux / CentOS Server Administration",
+          "level": "Advanced"
+        },
+        {
+          "name": "CI/CD Pipelines & Nginx",
+          "level": "Advanced"
+        }
       ]
     },
     {
       "title": "Product Analytics & Data Engineering",
       "description": "Data warehousing, funnel tracking, and BI dashboard visualization",
       "skills": [
-        { "name": "Google Analytics 4 (GA4)", "level": "Expert" },
-        { "name": "Google Tag Manager (GTM)", "level": "Expert" },
-        { "name": "Looker Studio Reporting", "level": "Expert" },
-        { "name": "Google BigQuery & Advanced SQL", "level": "Advanced" },
-        { "name": "Medallion Data Architecture (Bronze-Silver-Gold)", "level": "Advanced" },
-        { "name": "Change Data Capture (CDC) Pipelines", "level": "Advanced" }
+        {
+          "name": "Google Analytics 4 (GA4)",
+          "level": "Expert"
+        },
+        {
+          "name": "Google Tag Manager (GTM)",
+          "level": "Expert"
+        },
+        {
+          "name": "Looker Studio Reporting",
+          "level": "Expert"
+        },
+        {
+          "name": "Google BigQuery & Advanced SQL",
+          "level": "Advanced"
+        },
+        {
+          "name": "Medallion Data Architecture (Bronze-Silver-Gold)",
+          "level": "Advanced"
+        },
+        {
+          "name": "Change Data Capture (CDC) Pipelines",
+          "level": "Advanced"
+        }
       ]
     },
     {
       "title": "Product, Agile & AI Workflow",
       "description": "Technical leadership, PRD specification, and generative AI productivity",
       "skills": [
-        { "name": "PRD Writing & User Stories", "level": "Expert" },
-        { "name": "Sprint Planning & Agile / Scrum", "level": "Expert" },
-        { "name": "Cross-functional Stakeholder Management", "level": "Expert" },
-        { "name": "SDLC & User Acceptance Testing (UAT)", "level": "Expert" },
-        { "name": "Gemini & Antigravity (Daily AI Workflows)", "level": "Expert" },
-        { "name": "English & Vietnamese (Bilingual)", "level": "Expert" }
+        {
+          "name": "PRD Writing & User Stories",
+          "level": "Expert"
+        },
+        {
+          "name": "Sprint Planning & Agile / Scrum",
+          "level": "Expert"
+        },
+        {
+          "name": "Cross-functional Stakeholder Management",
+          "level": "Expert"
+        },
+        {
+          "name": "SDLC & User Acceptance Testing (UAT)",
+          "level": "Expert"
+        },
+        {
+          "name": "Gemini & Antigravity (Daily AI Workflows)",
+          "level": "Expert"
+        },
+        {
+          "name": "English & Vietnamese (Bilingual)",
+          "level": "Expert"
+        }
       ]
     }
   ],

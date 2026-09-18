@@ -11,13 +11,35 @@ const OBFUSCATED_EMAIL_CHUNKS = ['dGFu', 'aHV5', 'bmgy', 'NjMx', 'QGdt', 'YWls',
 const OBFUSCATED_PHONE_CHUNKS = ['Kzg0', 'LTk2', 'MzY4', 'NDUy', 'MA=='];
 const OBFUSCATED_ZALO_CHUNKS = ['aHR0cHM6', 'Ly96YWxv', 'Lm1lLzA5', 'NjM2ODQ1', 'MjA='];
 
-export const getSecureEmail = (): string => {
+export const decodeBase64Safe = (encoded: string): string => {
+  if (!encoded) return '';
   try {
-    return atob(OBFUSCATED_EMAIL_CHUNKS.join(''));
+    if (typeof window !== 'undefined' && typeof window.atob === 'function') {
+      return window.atob(encoded);
+    }
+    if (typeof Buffer !== 'undefined') {
+      return Buffer.from(encoded, 'base64').toString('utf-8');
+    }
   } catch {
-    return ['tanhuynh', '2631', '@gmail', '.com'].join('');
+    // fallback
+  }
+  try {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+    const str = encoded.replace(/=+$/, '');
+    let output = '';
+    for (let bc = 0, bs = 0, buffer = 0, idx = 0; (buffer = chars.indexOf(str.charAt(idx++))) > -1; ) {
+      bs = bc % 4 ? bs * 64 + buffer : buffer;
+      if (bc++ % 4) {
+        output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6)));
+      }
+    }
+    return output;
+  } catch {
+    return encoded;
   }
 };
+
+export const getSecureEmail = (): string => decodeBase64Safe(OBFUSCATED_EMAIL_CHUNKS.join(''));
 
 export const getSecureMailtoUrl = (subject?: string): string => {
   const email = getSecureEmail();
@@ -25,21 +47,9 @@ export const getSecureMailtoUrl = (subject?: string): string => {
   return `mailto:${email}${query}`;
 };
 
-export const getSecurePhone = (): string => {
-  try {
-    return atob(OBFUSCATED_PHONE_CHUNKS.join(''));
-  } catch {
-    return ['+84-', '9636', '84520'].join('');
-  }
-};
+export const getSecurePhone = (): string => decodeBase64Safe(OBFUSCATED_PHONE_CHUNKS.join(''));
 
-export const getSecureZaloUrl = (): string => {
-  try {
-    return atob(OBFUSCATED_ZALO_CHUNKS.join(''));
-  } catch {
-    return ['https:', '//zalo.me/', '0963684520'].join('');
-  }
-};
+export const getSecureZaloUrl = (): string => decodeBase64Safe(OBFUSCATED_ZALO_CHUNKS.join(''));
 
 export const getSecureTelUrl = (): string => {
   const phone = getSecurePhone();
@@ -55,7 +65,7 @@ interface SecureContactProps {
  * SecureEmail Component:
  * - Employs runtime dynamic decoding and split-span rendering.
  * - Prevents raw email addresses from appearing in static HTML scraper dumps.
- * - Human visitors see the normal "tanhuynh2631@gmail.com" format instantly without any extra interaction.
+ * - Human visitors see the normal decrypted email instantly without any extra interaction.
  */
 export const SecureEmail: React.FC<SecureContactProps> = ({ asLink = false, className = '' }) => {
   const [email, setEmail] = useState<string>('');
@@ -119,7 +129,7 @@ export const SecureEmail: React.FC<SecureContactProps> = ({ asLink = false, clas
  * SecurePhone Component:
  * - Employs runtime dynamic decoding and split-span rendering.
  * - Prevents raw phone numbers from appearing in static HTML scraper dumps.
- * - Human visitors see the normal "+84-963684520" format instantly without any extra interaction.
+ * - Human visitors see the normal decrypted phone number instantly without any extra interaction.
  */
 export const SecurePhone: React.FC<SecureContactProps> = ({ asLink = false, className = '' }) => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -150,9 +160,9 @@ export const SecurePhone: React.FC<SecureContactProps> = ({ asLink = false, clas
     );
   }
 
-  const part1 = phoneNumber.slice(0, 4); // "+84-"
-  const part2 = phoneNumber.slice(4, 7); // "963"
-  const part3 = phoneNumber.slice(7);    // "684520"
+  const part1 = phoneNumber.slice(0, 4);
+  const part2 = phoneNumber.slice(4, 7);
+  const part3 = phoneNumber.slice(7);
 
   if (asLink) {
     return (

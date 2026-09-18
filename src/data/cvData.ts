@@ -1,5 +1,5 @@
 import { CVData, PersonalInfo } from '../types/index.ts';
-import { getSecureEmail, getSecurePhone, getSecureZaloUrl } from '../utils/obfuscation.tsx';
+import { getSecureEmail, getSecurePhone, getSecureZaloUrl, decodeBase64Safe } from '../utils/obfuscation.tsx';
 
 import enUi from './locales/en/ui.json';
 import enCv from './locales/en/cv.json';
@@ -162,9 +162,9 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
 
 const createSecuredPersonalInfo = (rawPersonalInfo: PersonalInfo): PersonalInfo => ({
   ...rawPersonalInfo,
-  email: getSecureEmail(),
-  phone: getSecurePhone(),
-  zaloUrl: getSecureZaloUrl(),
+  email: rawPersonalInfo.email ? decodeBase64Safe(rawPersonalInfo.email) : getSecureEmail(),
+  phone: rawPersonalInfo.phone ? decodeBase64Safe(rawPersonalInfo.phone) : getSecurePhone(),
+  zaloUrl: rawPersonalInfo.zaloUrl ? decodeBase64Safe(rawPersonalInfo.zaloUrl) : getSecureZaloUrl(),
 });
 
 export const cvDataEn: CVData = {

@@ -145,9 +145,11 @@ Hệ thống UI/UX được tối ưu hóa toàn diện, tinh gọn các nút đ
       - Sử dụng kỹ thuật CSS Mask (`-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude;`) với `padding: 1.5px` và `border-radius: inherit`.
       - Khóa chặt độ dày viền chính xác ở mức **1.5px**, ôm sát hoàn hảo mọi đường cong bo góc `18px` của Profile Card kết hợp hào quang tỏa nhẹ (`filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.45))`).
 
-16. **Anti-Scraping Phone Number & Sensitive Contact Protection (`obfuscation.tsx`, `Contact.tsx`, `Hero.tsx`, `DrawerMenu.tsx`, `PrintCV.tsx`, `cvData.ts`)**:
+16. **Anti-Scraping Phone Number & Sensitive Contact Protection (`obfuscation.tsx`, `Contact.tsx`, `Hero.tsx`, `DrawerMenu.tsx`, `PrintCV.tsx`, `cvData.ts`, `en/cv.json`, `vi/cv.json`)**:
     - **Bảo vệ chống công cụ quét số điện thoại & Email tự động (Bot & Crawler Defense)**:
-      - Loại bỏ hoàn toàn các chuỗi email (`tanhuynh2631@gmail.com`), số điện thoại (`+84-963684520`) và đường dẫn Zalo (`https://zalo.me/0963684520`) dạng văn bản thuần khỏi bundle JavaScript tĩnh và các thuộc tính DOM tĩnh (`title`, `href="mailto:..."`, `href="tel:..."`, `href="https://zalo.me/..."`).
+      - Loại bỏ hoàn toàn các chuỗi email (`email`), số điện thoại (`phone`) và đường dẫn liên hệ Zalo (`zaloUrl`) dạng văn bản thuần khỏi cả mã nguồn tĩnh, file JSON dữ liệu (`src/data/locales/en/cv.json`, `src/data/locales/vi/cv.json`), bundle JavaScript tĩnh và các thuộc tính DOM tĩnh (`title`, `href="mailto:..."`, `href="tel:..."`, `href="https://zalo.me/..."`).
+      - Dữ liệu trong các file JSON được mã hóa Base64 và giải mã an toàn ở runtime thông qua hàm `decodeBase64Safe()`.
+      - Kết hợp kỹ thuật render phân tách (`split tokens`), bidi-override honeypot và sự kiện động để bảo vệ 100% dữ liệu liên lạc cá nhân.
 14. **Brand Logo Streamlining (`Header.tsx`, `DrawerMenu.tsx`, `Hero.tsx`, `favicon.svg`)**:
     - Chuyển đổi toàn bộ biểu tượng logo thương hiệu viết tắt từ `TN` sang chữ cái đơn `T` tinh gọn, hiện đại và tạo điểm nhấn thị giác sắc nét hơn.
     - Cập nhật đồng bộ trên [Header.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Header.tsx), [DrawerMenu.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/DrawerMenu.tsx), ảnh đại diện fallback [Hero.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/Hero.tsx) và file vector favicon [public/favicon.svg](file:///Users/tanhn/Projects/ga2631.github.io/public/favicon.svg).
