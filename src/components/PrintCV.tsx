@@ -9,15 +9,15 @@ import {
   GlobeIcon,
 } from './Icons.tsx';
 import { SecureEmail, SecurePhone } from '../utils/obfuscation.tsx';
+import { UITranslation } from '../data/cvData.ts';
 
 interface PrintCVProps {
   data: CVData;
-  lang: 'vi' | 'en';
+  t: UITranslation['printCv'];
 }
 
-export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
+export const PrintCV: React.FC<PrintCVProps> = ({ data, t }) => {
   const { personalInfo, experiences, projects, skillCategories, educations, certifications } = data;
-  const isVi = lang === 'vi';
 
   return (
     <div className="print-cv-document">
@@ -62,20 +62,17 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
         {/* Professional Summary */}
         <section className="print-section">
           <h2 className="print-section-heading">
-            {isVi ? 'TÓM TẮT NĂNG LỰC CHUYÊN MÔN' : 'PROFESSIONAL SUMMARY'}
+            {t.summaryHeading}
           </h2>
           <p className="print-summary-text">
-            {personalInfo.bio}{' '}
-            {isVi
-              ? 'Có bề dày kinh nghiệm thiết kế hệ thống microservices chịu tải cao, điều phối luồng xử lý CDC đảm bảo zero data loss và tối ưu hóa thời gian thực thi truy vấn phân tích dữ liệu hơn 70%. Đảm nhiệm vai trò Technical Lead dẫn dắt đội ngũ kỹ sư hiện thực hóa các yêu cầu kinh doanh phức tạp thành hệ thống phân tán hiệu năng cao, chuẩn mực chất lượng mã nguồn và tự động hóa quy trình CI/CD.'
-              : 'Proven track record of architecting scalable microservices, orchestrating CDC pipelines with zero data loss, and reducing analytical query execution times by over 70%. Experienced Technical Team Lead capable of bridging business specifications into high-performance distributed systems with rigorous code quality and automated CI/CD deployment workflows.'}
+            {personalInfo.bio} {t.summaryExtension}
           </p>
         </section>
 
         {/* Core Technical Competencies */}
         <section className="print-section">
           <h2 className="print-section-heading">
-            {isVi ? 'KỸ NĂNG CHUYÊN MÔN CỐT LÕI' : 'CORE TECHNICAL SKILLS'}
+            {t.skillsHeading}
           </h2>
           <div className="print-skills-table">
             {skillCategories.map((cat, idx) => (
@@ -92,7 +89,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
         {/* Professional Experience */}
         <section className="print-section">
           <h2 className="print-section-heading">
-            {isVi ? 'KINH NGHIỆM LÀM VIỆC' : 'PROFESSIONAL EXPERIENCE'}
+            {t.experienceHeading}
           </h2>
           <div className="print-experience-list">
             {experiences.map((exp) => (
@@ -114,7 +111,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
                 </ul>
 
                 <div className="print-tech-stack">
-                  <strong>{isVi ? 'Công nghệ:' : 'Technologies:'}</strong> {exp.technologies.join(', ')}
+                  <strong>{t.technologies}</strong> {exp.technologies.join(', ')}
                 </div>
               </div>
             ))}
@@ -127,9 +124,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
         {/* Key Enterprise Projects & Architecture Case Studies */}
         <section className="print-section">
           <h2 className="print-section-heading">
-            {isVi
-              ? 'DỰ ÁN KIẾN TRÚC DOANH NGHIỆP TIÊU BIỂU'
-              : 'FEATURED ENGINEERING ARCHITECTURE CASE STUDIES'}
+            {t.projectsHeading}
           </h2>
           <div className="print-projects-list">
             {projects.slice(0, 3).map((proj) => (
@@ -150,7 +145,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
                 </ul>
 
                 <div className="print-tech-stack">
-                  <strong>{isVi ? 'Công nghệ chính:' : 'Key Technologies:'}</strong> {proj.tags.join(', ')}
+                  <strong>{t.keyTechnologies}</strong> {proj.tags.join(', ')}
                 </div>
               </div>
             ))}
@@ -160,7 +155,7 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
         {/* Education & Certifications */}
         <section className="print-section">
           <h2 className="print-section-heading">
-            {isVi ? 'HỌC VẤN & CHỨNG CHỈ CHUYÊN MÔN' : 'EDUCATION & CERTIFICATIONS'}
+            {t.educationHeading}
           </h2>
 
           {educations.map((edu) => (
@@ -173,19 +168,15 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
                 <div className="print-edu-period">{edu.period}</div>
               </div>
               <div className="print-edu-highlight">
-                <strong>{isVi ? 'Nền tảng học vấn:' : 'Academic Background:'}</strong> {edu.gpaOrHonors}.{' '}
-                {isVi
-                  ? 'Hoàn thành chương trình nền tảng Khoa học máy tính toàn diện (Cấu trúc dữ liệu & Giải thuật, OOP, Cơ sở dữ liệu quan hệ, Mạng máy tính, Hệ điều hành, Công nghệ phần mềm). Tham gia phát triển phần mềm chuyên nghiệp từ sớm với hơn 5 năm kinh nghiệm thực chiến.'
-                  : 'Completed comprehensive CS foundation curriculum (Data Structures & Algorithms, OOP, Relational Databases, Computer Networks, Operating Systems, Software Engineering). Early transition into professional software development with 5+ years of verified production engineering.'}
+                <strong>{t.academicBackground}</strong> {edu.gpaOrHonors}.{' '}
+                {t.academicDetails}
               </div>
             </div>
           ))}
 
           <div className="print-cert-row" style={{ marginTop: '6px' }}>
             <strong>
-              {isVi
-                ? 'Chứng chỉ chuyên môn & Huy hiệu:'
-                : 'Professional Certifications & Badges:'}
+              {t.certificationsAndBadges}
             </strong>{' '}
             {certifications.map((c) => `${c.name} (${c.issuer} - ${c.issueDate})`).join(' • ')}
           </div>
@@ -194,3 +185,4 @@ export const PrintCV: React.FC<PrintCVProps> = ({ data, lang }) => {
     </div>
   );
 };
+

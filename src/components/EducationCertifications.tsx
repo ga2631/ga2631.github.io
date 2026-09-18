@@ -106,7 +106,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                 <div style={{ marginTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   {cert.badgeCode && (
                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      Credential ID: {cert.badgeCode}
+                      {t.credentialId}: {cert.badgeCode}
                     </span>
                   )}
 

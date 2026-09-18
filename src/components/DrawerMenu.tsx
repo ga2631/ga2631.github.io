@@ -19,6 +19,7 @@ import {
   UKFlagIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { PersonalInfo } from '../types/index.ts';
 import { getSecureZaloUrl } from '../utils/obfuscation.tsx';
 
 export interface NavItem {
@@ -37,6 +38,9 @@ interface DrawerMenuProps {
   lang: 'vi' | 'en';
   setLang: (lang: 'vi' | 'en') => void;
   tNav: UITranslation['nav'];
+  tDrawer: UITranslation['drawer'];
+  tCommon: UITranslation['common'];
+  personalInfo: PersonalInfo;
   onPrint: () => void;
 }
 
@@ -50,6 +54,9 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
   lang,
   setLang,
   tNav,
+  tDrawer,
+  tCommon,
+  personalInfo,
   onPrint,
 }) => {
   // Lock body scroll when drawer is open
@@ -107,8 +114,8 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
           <div className="drawer-brand">
             <div className="logo-badge">T</div>
             <div className="drawer-brand-text">
-              <span className="drawer-brand-name">Tan Huynh Nhat</span>
-              <span className="drawer-brand-sub">Senior Software Engineer</span>
+              <span className="drawer-brand-name">{personalInfo.fullName}</span>
+              <span className="drawer-brand-sub">{personalInfo.jobTitle.split('|')[0].trim()}</span>
             </div>
           </div>
           <button
@@ -123,7 +130,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
         {/* Drawer Body - Navigation Links */}
         <div className="drawer-body">
           <div className="drawer-section-title">
-            {lang === 'vi' ? 'ĐIỀU HƯỚNG' : 'NAVIGATION'}
+            {tDrawer.navigation}
           </div>
           <nav className="drawer-nav-list">
             {navItems.map((item) => (
@@ -139,7 +146,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                 <div className="drawer-nav-icon">{getItemIcon(item.href)}</div>
                 <span className="drawer-nav-label">{item.label}</span>
                 {item.href.includes('blog') && (
-                  <span className="badge badge-cyan drawer-badge">Articles</span>
+                  <span className="badge badge-cyan drawer-badge">{tCommon.articlesBadge}</span>
                 )}
                 <ChevronRightIcon size={16} className="drawer-nav-arrow" />
               </a>
@@ -148,7 +155,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
 
           {/* Quick Actions in Drawer */}
           <div className="drawer-section-title">
-            {lang === 'vi' ? 'TÙY CHỌN & TIỆN ÍCH' : 'PREFERENCES & ACTIONS'}
+            {tDrawer.preferences}
           </div>
 
           <div className="drawer-actions-card">
@@ -167,7 +174,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
             {/* Language Selection Buttons */}
             <div className="drawer-lang-selector">
               <span className="drawer-label-text">
-                {lang === 'vi' ? 'Ngôn ngữ:' : 'Language:'}
+                {tDrawer.language}
               </span>
               <div className="drawer-lang-pills">
                 <button
@@ -192,7 +199,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
             {/* Theme Mode Toggle */}
             <div className="drawer-theme-selector">
               <span className="drawer-label-text">
-                {lang === 'vi' ? 'Giao diện:' : 'Theme Mode:'}
+                {tDrawer.theme}
               </span>
               <button
                 className="drawer-theme-toggle-btn"
@@ -202,12 +209,12 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                 {theme === 'dark' ? (
                   <>
                     <SunIcon size={18} />
-                    <span>{lang === 'vi' ? 'Chuyển sang Giao diện Sáng' : 'Switch to Light Mode'}</span>
+                    <span>{tDrawer.switchToLight}</span>
                   </>
                 ) : (
                   <>
                     <MoonIcon size={18} />
-                    <span>{lang === 'vi' ? 'Chuyển sang Giao diện Tối' : 'Switch to Dark Mode'}</span>
+                    <span>{tDrawer.switchToDark}</span>
                   </>
                 )}
               </button>
@@ -219,7 +226,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
         <div className="drawer-footer">
           <div className="drawer-social-links">
             <a
-              href="https://github.com/ga2631"
+              href={personalInfo.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="drawer-social-btn"
@@ -228,16 +235,18 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
               <GithubIcon size={18} />
               <span>GitHub</span>
             </a>
-            <a
-              href="https://www.linkedin.com/in/tan-huynh-nhat/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="drawer-social-btn"
-              aria-label="LinkedIn Profile"
-            >
-              <LinkedinIcon size={18} />
-              <span>LinkedIn</span>
-            </a>
+            {personalInfo.linkedinUrl && (
+              <a
+                href={personalInfo.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="drawer-social-btn"
+                aria-label="LinkedIn Profile"
+              >
+                <LinkedinIcon size={18} />
+                <span>LinkedIn</span>
+              </a>
+            )}
             <a
               href="#"
               onClick={(e) => {
@@ -255,7 +264,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
             </a>
           </div>
           <div className="drawer-footer-note">
-            <span>Tan Huynh Nhat • Engineering Portfolio</span>
+            <span>{personalInfo.fullName} • {tDrawer.footerNote}</span>
           </div>
         </div>
       </aside>

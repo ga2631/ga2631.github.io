@@ -33,7 +33,7 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
                     <h3 className="timeline-role">{item.role}</h3>
                     <div className="timeline-period-wrapper">
                       <span className="timeline-period">{item.period}</span>
-                      {item.current && <span className="badge badge-emerald">Current Position</span>}
+                      {item.current && <span className="badge badge-emerald">{t.currentPosition}</span>}
                     </div>
                   </div>
 

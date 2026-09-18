@@ -28,6 +28,7 @@ import { UITranslation } from '../data/cvData.ts';
 interface ProjectsProps {
   projects: ProjectItem[];
   t: UITranslation['projects'];
+  tCommon: UITranslation['common'];
 }
 
 interface GitHubRepo {
@@ -134,7 +135,7 @@ const FALLBACK_REPOS: GitHubRepo[] = [
   },
 ];
 
-export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
+export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'case-studies' | 'github'>('all');
   const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
@@ -302,7 +303,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
                     ))}
                     {project.tags.length > 4 && (
                       <span className="badge" style={{ color: 'var(--text-accent)' }}>
-                        +{project.tags.length - 4} more
+                        +{project.tags.length - 4} {tCommon.more}
                       </span>
                     )}
                   </div>
@@ -406,7 +407,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
                         ))}
                         {repoTags.length > 4 && (
                           <span className="badge" style={{ color: 'var(--text-accent)' }}>
-                            +{repoTags.length - 4} more
+                            +{repoTags.length - 4} {tCommon.more}
                           </span>
                         )}
                       </div>
@@ -457,8 +458,8 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t }) => {
 
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
                   <span className="badge badge-cyan">{activeProject.category}</span>
-                  {activeProject.featured && <span className="badge badge-emerald">Featured Project</span>}
-                  {activeProject.teamSize && <span className="badge">Team: {activeProject.teamSize}</span>}
+                  {activeProject.featured && <span className="badge badge-emerald">{t.featuredProject}</span>}
+                  {activeProject.teamSize && <span className="badge">{t.team}: {activeProject.teamSize}</span>}
                 </div>
 
                 <h2

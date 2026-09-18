@@ -88,14 +88,14 @@ interface ArticleTocSidebarProps {
   tocItems: TocItem[];
   activeHeadingId: string;
   onSelectHeading: (id: string) => void;
-  lang: 'vi' | 'en';
+  tocTitle?: string;
 }
 
 export const ArticleTocSidebar: React.FC<ArticleTocSidebarProps> = ({
   tocItems,
   activeHeadingId,
   onSelectHeading,
-  lang,
+  tocTitle = 'Table of Contents',
 }) => {
   if (tocItems.length === 0) return null;
 
@@ -103,7 +103,7 @@ export const ArticleTocSidebar: React.FC<ArticleTocSidebarProps> = ({
     <aside className="article-toc-sidebar" aria-label="Table of Contents">
       <div className="article-toc-header">
         <ListIcon size={16} />
-        <span>{lang === 'vi' ? 'Mục lục bài viết' : 'Table of Contents'}</span>
+        <span>{tocTitle}</span>
       </div>
       <nav className="article-toc-nav">
         <ul className="article-toc-list">

@@ -8,9 +8,10 @@ import { processArticleToc, ArticleTocSidebar } from './ArticleToc.tsx';
 interface BlogSectionProps {
   posts: BlogPost[];
   t: UITranslation['blog'];
+  tCommon: UITranslation['common'];
 }
 
-export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t }) => {
+export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t, tCommon }) => {
   const [activePost, setActivePost] = useState<BlogPost | null>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
@@ -194,7 +195,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t }) => {
                       tocItems={tocItems}
                       activeHeadingId={activeHeadingId}
                       onSelectHeading={handleSelectHeading}
-                      lang="vi"
+                      tocTitle={tCommon.tableOfContents}
                     />
                   )}
                 </div>

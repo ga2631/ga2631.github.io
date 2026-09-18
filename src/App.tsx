@@ -73,19 +73,29 @@ export const App: React.FC = () => {
           toggleTheme={toggleTheme}
           lang={lang}
           setLang={setLang}
-          t={t.nav}
+          t={t}
+          personalInfo={currentCvData.personalInfo}
           currentRoute={route}
         />
 
         <main>
           {route === 'blog' ? (
-            <BlogPage posts={currentBlogPosts} t={t.blog} lang={lang} />
+            <BlogPage
+              posts={currentBlogPosts}
+              t={t.blog}
+              tCommon={t.common}
+              lang={lang}
+            />
           ) : (
             <>
               <Hero data={currentCvData.personalInfo} t={t.hero} />
               <About data={currentCvData.personalInfo} t={t.about} />
               <Experience experiences={currentCvData.experiences} t={t.experience} />
-              <Projects projects={currentCvData.projects} t={t.projects} />
+              <Projects
+                projects={currentCvData.projects}
+                t={t.projects}
+                tCommon={t.common}
+              />
               <Skills categories={currentCvData.skillCategories} t={t.skills} />
               <EducationCertifications
                 educations={currentCvData.educations}
@@ -97,20 +107,21 @@ export const App: React.FC = () => {
           )}
         </main>
 
-        <Footer t={t.footer} />
+        <Footer t={t.footer} fullName={currentCvData.personalInfo.fullName} />
 
         {/* Floating Quick Action Button (FAB) */}
         <FloatingActions
           onPrint={() => window.print()}
           saveCvLabel={t.nav.saveCv}
-          lang={lang}
+          tCommon={t.common}
         />
       </div>
 
       {/* Dedicated Standard ATS / Executive Print CV Document */}
-      <PrintCV data={currentCvData} lang={lang} />
+      <PrintCV data={currentCvData} t={t.printCv} />
     </div>
   );
 };
 
 export default App;
+

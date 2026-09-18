@@ -2,6 +2,32 @@ import { CVData } from '../types/index.ts';
 import { getSecureEmail, getSecurePhone, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 
 export interface UITranslation {
+  common: {
+    more: string;
+    resetFilters: string;
+    shareLink: string;
+    copiedLink: string;
+    scrollToTop: string;
+    exportPdf: string;
+    articlesBadge: string;
+    overview: string;
+    tableOfContents: string;
+    teamSize: string;
+    featuredProject: string;
+    currentPosition: string;
+    credentialId: string;
+    article: string;
+    showingArticles: string;
+  };
+  drawer: {
+    navigation: string;
+    preferences: string;
+    language: string;
+    theme: string;
+    switchToLight: string;
+    switchToDark: string;
+    footerNote: string;
+  };
   nav: {
     about: string;
     experience: string;
@@ -30,6 +56,7 @@ export interface UITranslation {
     title: string;
     subtitle: string;
     technologies: string;
+    currentPosition: string;
   };
   projects: {
     badge: string;
@@ -43,6 +70,8 @@ export interface UITranslation {
     demo: string;
     publicRepo: string;
     enterpriseSystem: string;
+    featuredProject: string;
+    team: string;
     objective: string;
     challenges: string;
     fullStack: string;
@@ -65,6 +94,7 @@ export interface UITranslation {
     academicBg: string;
     certificationsTitle: string;
     viewCredential: string;
+    credentialId: string;
   };
   blog: {
     badge: string;
@@ -76,6 +106,9 @@ export interface UITranslation {
     searchPlaceholder: string;
     allTopics: string;
     noArticlesFound: string;
+    article: string;
+    showingArticles: string;
+    resetFilters: string;
   };
   contact: {
     badge: string;
@@ -100,11 +133,51 @@ export interface UITranslation {
   };
   footer: {
     hostedOn: string;
+    allRightsReserved: string;
+  };
+  printCv: {
+    summaryHeading: string;
+    summaryExtension: string;
+    skillsHeading: string;
+    experienceHeading: string;
+    technologies: string;
+    projectsHeading: string;
+    keyTechnologies: string;
+    educationHeading: string;
+    academicBackground: string;
+    academicDetails: string;
+    certificationsAndBadges: string;
   };
 }
 
 export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
   en: {
+    common: {
+      more: 'more',
+      resetFilters: 'Reset filters',
+      shareLink: 'Share / Copy Link',
+      copiedLink: 'Copied Link!',
+      scrollToTop: 'Scroll to top',
+      exportPdf: 'Save / Export CV as PDF',
+      articlesBadge: 'Articles',
+      overview: 'Overview',
+      tableOfContents: 'Table of Contents',
+      teamSize: 'Team',
+      featuredProject: 'Featured Project',
+      currentPosition: 'Current Position',
+      credentialId: 'Credential ID',
+      article: 'Article',
+      showingArticles: 'Showing {count} of {total} articles',
+    },
+    drawer: {
+      navigation: 'NAVIGATION',
+      preferences: 'PREFERENCES & ACTIONS',
+      language: 'Language:',
+      theme: 'Theme Mode:',
+      switchToLight: 'Switch to Light Mode',
+      switchToDark: 'Switch to Dark Mode',
+      footerNote: 'Engineering Portfolio',
+    },
     nav: {
       about: 'About',
       experience: 'Experience',
@@ -150,6 +223,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       title: 'Professional Experience',
       subtitle: 'A timeline of engineering leadership, scalable backend architectures, and high-impact data systems.',
       technologies: 'Technologies:',
+      currentPosition: 'Current Position',
     },
     projects: {
       badge: 'Portfolio & Repositories',
@@ -163,6 +237,8 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       demo: 'Demo',
       publicRepo: 'Public Repo',
       enterpriseSystem: 'Enterprise System',
+      featuredProject: 'Featured Project',
+      team: 'Team',
       objective: 'Project Objective',
       challenges: 'Key Engineering Challenges & Technical Solutions',
       fullStack: 'Full Technology Stack',
@@ -185,6 +261,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       academicBg: 'Academic Background',
       certificationsTitle: 'Professional Certifications & Accreditations',
       viewCredential: 'View Credential',
+      credentialId: 'Credential ID',
     },
     blog: {
       badge: 'Technical Insights & Engineering Blog',
@@ -196,6 +273,9 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       searchPlaceholder: 'Search articles by title, tags, or keywords...',
       allTopics: 'All Topics',
       noArticlesFound: 'No engineering articles match your search or filter.',
+      article: 'Article',
+      showingArticles: 'Showing {count} of {total} articles',
+      resetFilters: 'Reset filters',
     },
     contact: {
       badge: 'Get In Touch',
@@ -220,9 +300,49 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
     },
     footer: {
       hostedOn: 'Hosted on GitHub Pages',
+      allRightsReserved: 'All rights reserved',
+    },
+    printCv: {
+      summaryHeading: 'PROFESSIONAL SUMMARY',
+      summaryExtension: 'Proven track record of architecting scalable microservices, orchestrating CDC pipelines with zero data loss, and reducing analytical query execution times by over 70%. Experienced Technical Team Lead capable of bridging business specifications into high-performance distributed systems with rigorous code quality and automated CI/CD deployment workflows.',
+      skillsHeading: 'CORE TECHNICAL SKILLS',
+      experienceHeading: 'PROFESSIONAL EXPERIENCE',
+      technologies: 'Technologies:',
+      projectsHeading: 'FEATURED ENGINEERING ARCHITECTURE CASE STUDIES',
+      keyTechnologies: 'Key Technologies:',
+      educationHeading: 'EDUCATION & CERTIFICATIONS',
+      academicBackground: 'Academic Background:',
+      academicDetails: 'Completed comprehensive CS foundation curriculum (Data Structures & Algorithms, OOP, Relational Databases, Computer Networks, Operating Systems, Software Engineering). Early transition into professional software development with 5+ years of verified production engineering.',
+      certificationsAndBadges: 'Professional Certifications & Badges:',
     },
   },
   vi: {
+    common: {
+      more: 'khác',
+      resetFilters: 'Đặt lại bộ lọc',
+      shareLink: 'Chia sẻ / Sao chép liên kết',
+      copiedLink: 'Đã sao chép liên kết!',
+      scrollToTop: 'Cuộn lên đầu trang',
+      exportPdf: 'Tải / Xuất CV dạng PDF',
+      articlesBadge: 'Bài viết',
+      overview: 'Tổng quan',
+      tableOfContents: 'Mục lục bài viết',
+      teamSize: 'Quy mô',
+      featuredProject: 'Dự án Tiêu biểu',
+      currentPosition: 'Vị trí hiện tại',
+      credentialId: 'Mã chứng chỉ',
+      article: 'Bài viết',
+      showingArticles: 'Hiển thị {count} trên tổng số {total} bài viết',
+    },
+    drawer: {
+      navigation: 'ĐIỀU HƯỚNG',
+      preferences: 'TÙY CHỌN & TIỆN ÍCH',
+      language: 'Ngôn ngữ:',
+      theme: 'Giao diện:',
+      switchToLight: 'Chuyển sang Giao diện Sáng',
+      switchToDark: 'Chuyển sang Giao diện Tối',
+      footerNote: 'Hồ sơ Kỹ sư Phần mềm',
+    },
     nav: {
       about: 'Giới thiệu',
       experience: 'Kinh nghiệm',
@@ -268,6 +388,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       title: 'Kinh nghiệm Làm việc Chuyên nghiệp',
       subtitle: 'Hành trình dẫn dắt kỹ thuật, thiết kế kiến trúc backend mở rộng và xây dựng các hệ thống dữ liệu doanh nghiệp.',
       technologies: 'Công nghệ sử dụng:',
+      currentPosition: 'Vị trí hiện tại',
     },
     projects: {
       badge: 'Dự án & Mã nguồn',
@@ -281,6 +402,8 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       demo: 'Bản thử nghiệm',
       publicRepo: 'Public Repo',
       enterpriseSystem: 'Hệ thống Doanh nghiệp',
+      featuredProject: 'Dự án Tiêu biểu',
+      team: 'Quy mô',
       objective: 'Mục tiêu Dự án',
       challenges: 'Thách thức Kỹ thuật & Giải pháp Thực thi',
       fullStack: 'Toàn bộ Ngăn xếp Công nghệ',
@@ -303,6 +426,7 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       academicBg: 'Nền tảng Học vấn',
       certificationsTitle: 'Chứng chỉ Chuyên môn Quốc tế & Doanh nghiệp',
       viewCredential: 'Xem chứng chỉ',
+      credentialId: 'Mã chứng chỉ',
     },
     blog: {
       badge: 'Góc nhìn Kỹ thuật & Blog Kỹ sư',
@@ -314,6 +438,9 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       searchPlaceholder: 'Tìm kiếm bài viết theo tiêu đề, thẻ công nghệ, từ khóa...',
       allTopics: 'Tất cả chủ đề',
       noArticlesFound: 'Không tìm thấy bài viết nào phù hợp với tìm kiếm hoặc bộ lọc.',
+      article: 'Bài viết',
+      showingArticles: 'Hiển thị {count} trên tổng số {total} bài viết',
+      resetFilters: 'Đặt lại bộ lọc',
     },
     contact: {
       badge: 'Kết nối & Hợp tác',
@@ -337,7 +464,21 @@ export const uiTranslations: Record<'en' | 'vi', UITranslation> = {
       viewProfile: 'Xem hồ sơ',
     },
     footer: {
-      hostedOn: 'Hosted on GitHub Pages',
+      hostedOn: 'Lưu trữ trên GitHub Pages',
+      allRightsReserved: 'Đã đăng ký bản quyền',
+    },
+    printCv: {
+      summaryHeading: 'TÓM TẮT NĂNG LỰC CHUYÊN MÔN',
+      summaryExtension: 'Có bề dày kinh nghiệm thiết kế hệ thống microservices chịu tải cao, điều phối luồng xử lý CDC đảm bảo zero data loss và tối ưu hóa thời gian thực thi truy vấn phân tích dữ liệu hơn 70%. Đảm nhiệm vai trò Technical Lead dẫn dắt đội ngũ kỹ sư hiện thực hóa các yêu cầu kinh doanh phức tạp thành hệ thống phân tán hiệu năng cao, chuẩn mực chất lượng mã nguồn và tự động hóa quy trình CI/CD.',
+      skillsHeading: 'KỸ NĂNG CHUYÊN MÔN CỐT LÕI',
+      experienceHeading: 'KINH NGHIỆM LÀM VIỆC',
+      technologies: 'Công nghệ:',
+      projectsHeading: 'DỰ ÁN KIẾN TRÚC DOANH NGHIỆP TIÊU BIỂU',
+      keyTechnologies: 'Công nghệ chính:',
+      educationHeading: 'HỌC VẤN & CHỨNG CHỈ CHUYÊN MÔN',
+      academicBackground: 'Nền tảng học vấn:',
+      academicDetails: 'Hoàn thành chương trình nền tảng Khoa học máy tính toàn diện (Cấu trúc dữ liệu & Giải thuật, OOP, Cơ sở dữ liệu quan hệ, Mạng máy tính, Hệ điều hành, Công nghệ phần mềm). Tham gia phát triển phần mềm chuyên nghiệp từ sớm với hơn 5 năm kinh nghiệm thực chiến.',
+      certificationsAndBadges: 'Chứng chỉ chuyên môn & Huy hiệu:',
     },
   },
 };
