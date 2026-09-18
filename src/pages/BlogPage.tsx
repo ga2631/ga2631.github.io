@@ -6,8 +6,6 @@ import {
   CloseIcon,
   SearchIcon,
   SparklesIcon,
-  CopyIcon,
-  CheckIcon,
   CalendarIcon,
   ClockIcon,
   LayersIcon,
@@ -41,7 +39,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTag, setSelectedTag] = useState<string>('all');
   const [activePost, setActivePost] = useState<BlogPost | null>(null);
-  const [copiedLink, setCopiedLink] = useState(false);
+  const [isModalHeaderTitleShown, setIsModalHeaderTitleShown] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<{
     cat: BlogCategoryDef;
@@ -118,9 +116,9 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
     return processArticleToc(activePost.contentHtml);
   }, [activePost]);
 
-  // Scrollspy to highlight active TOC heading when scrolling inside modal
+  // Scrollspy to highlight active TOC heading and toggle header title when scrolling inside modal
   useEffect(() => {
-    if (!activePost || tocItems.length === 0) return;
+    if (!activePost) return;
 
     const container = modalContentRef.current;
     if (!container) return;
@@ -129,24 +127,34 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
       const containerRect = container.getBoundingClientRect();
       const offsetThreshold = 140;
 
-      let currentActiveId = tocItems[0]?.id || '';
-
-      for (const item of tocItems) {
-        const el = document.getElementById(item.id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top - containerRect.top <= offsetThreshold) {
-            currentActiveId = item.id;
-          }
-        }
+      // Detect when main article title scrolls past the pinned modal header
+      const titleEl = document.getElementById('article-modal-title');
+      if (titleEl) {
+        const titleRect = titleEl.getBoundingClientRect();
+        setIsModalHeaderTitleShown(titleRect.bottom <= containerRect.top + 60);
+      } else {
+        setIsModalHeaderTitleShown(container.scrollTop > 80);
       }
 
-      setActiveHeadingId(currentActiveId);
+      if (tocItems.length > 0) {
+        let currentActiveId = tocItems[0]?.id || '';
+
+        for (const item of tocItems) {
+          const el = document.getElementById(item.id);
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top - containerRect.top <= offsetThreshold) {
+              currentActiveId = item.id;
+            }
+          }
+        }
+
+        setActiveHeadingId(currentActiveId);
+      }
     };
 
-    handleScroll();
-
     container.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => container.removeEventListener('scroll', handleScroll);
   }, [activePost, tocItems]);
 
@@ -248,23 +256,14 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
   // Open / Close Post helper
   const handleOpenPost = (post: BlogPost) => {
     setActivePost(post);
+    setIsModalHeaderTitleShown(false);
     window.location.hash = `#/blog/${post.slug}`;
   };
 
   const handleClosePost = () => {
     setActivePost(null);
+    setIsModalHeaderTitleShown(false);
     window.location.hash = '#/blog';
-  };
-
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2500);
-    } catch {
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2500);
-    }
   };
 
   // Filter posts based on category, search query, and selected tag
@@ -715,90 +714,77 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
               className="blog-modal-content blog-article-modal"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close Icon Button */}
-              <button
-                className="modal-close-btn"
-                onClick={handleClosePost}
-                aria-label="Close article popup"
-              >
-                <CloseIcon size={20} />
-              </button>
+              {/* Pinned / Sticky Modal Header (Does not scroll away) */}
+              <div className={`modal-sticky-header ${isModalHeaderTitleShown ? 'has-title' : ''}`}>
+                <div className="modal-header-title-wrapper">
+                  <span className="modal-header-article-title" title={activePost.title}>
+                    {activePost.title}
+                  </span>
+                </div>
 
-              {/* Modal Top Nav Bar: Share / Copy Link */}
-              <div className="article-top-nav" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-                <button onClick={handleCopyLink} className="btn btn-outline btn-sm">
-                  {copiedLink ? (
-                    <>
-                      <CheckIcon size={14} style={{ color: 'var(--accent-emerald)' }} />
-                      <span style={{ color: 'var(--accent-emerald)' }}>{tCommon.copiedLink}</span>
-                    </>
-                  ) : (
-                    <>
-                      <CopyIcon size={14} />
-                      <span>{tCommon.shareLink}</span>
-                    </>
-                  )}
+                {/* Clean Close Icon Button */}
+                <button
+                  className="modal-close-btn"
+                  onClick={handleClosePost}
+                  aria-label="Close article popup"
+                >
+                  <CloseIcon size={18} />
                 </button>
               </div>
 
-              {/* Main Article Content & Right Sticky Table of Contents Layout */}
-              <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
-                <div className="article-main-column">
-                  {/* Tag Badges */}
-                  <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
-                    {activePost.tags.map((tag) => (
-                      <span key={tag} className="badge badge-cyan">
-                        {tag}
+              {/* Modal Body Container */}
+              <div className="article-modal-body">
+                {/* Main Article Content & Right Sticky Table of Contents Layout */}
+                <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
+                  <div className="article-main-column">
+                    {/* Tag Badges */}
+                    <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
+                      {activePost.tags.map((tag) => (
+                        <span key={tag} className="badge badge-cyan">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Article Title */}
+                    <h1 id="article-modal-title" className="article-full-title">
+                      {activePost.title}
+                    </h1>
+
+                    {/* Meta info bar */}
+                    <div className="article-meta-bar">
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                        <CalendarIcon size={14} /> {activePost.publishedAt}
                       </span>
-                    ))}
+                      <span>•</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                        <ClockIcon size={14} /> {activePost.readTime}
+                      </span>
+                    </div>
+
+                    {/* Summary Callout */}
+                    <div className="article-summary-callout">
+                      <strong>{tCommon.overview}: </strong>
+                      <span>{activePost.summary}</span>
+                    </div>
+
+                    {/* Full Article Content with Injected Heading IDs */}
+                    <div
+                      className="article-body"
+                      dangerouslySetInnerHTML={{ __html: processedHtml }}
+                    />
                   </div>
 
-                  {/* Article Title */}
-                  <h1 id="article-modal-title" className="article-full-title">
-                    {activePost.title}
-                  </h1>
-
-                  {/* Meta info bar */}
-                  <div className="article-meta-bar">
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                      <CalendarIcon size={14} /> {activePost.publishedAt}
-                    </span>
-                    <span>•</span>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                      <ClockIcon size={14} /> {activePost.readTime}
-                    </span>
-                  </div>
-
-                  {/* Summary Callout */}
-                  <div className="article-summary-callout">
-                    <strong>{tCommon.overview}: </strong>
-                    <span>{activePost.summary}</span>
-                  </div>
-
-                  {/* Full Article Content with Injected Heading IDs */}
-                  <div
-                    className="article-body"
-                    dangerouslySetInnerHTML={{ __html: processedHtml }}
-                  />
-
-                  {/* Bottom Actions Bar: Single Close Button on Bottom-Right */}
-                  <div className="article-bottom-bar" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '36px', paddingTop: '20px', borderTop: '1px solid var(--border-color)' }}>
-                    <button onClick={handleClosePost} className="btn btn-secondary btn-sm">
-                      <CloseIcon size={15} />
-                      <span>{t.closeArticle}</span>
-                    </button>
-                  </div>
+                  {/* Right Sticky Table of Contents Sidebar */}
+                  {tocItems.length > 0 && (
+                    <ArticleTocSidebar
+                      tocItems={tocItems}
+                      activeHeadingId={activeHeadingId}
+                      onSelectHeading={handleSelectHeading}
+                      tocTitle={tCommon.tableOfContents}
+                    />
+                  )}
                 </div>
-
-                {/* Right Sticky Table of Contents Sidebar */}
-                {tocItems.length > 0 && (
-                  <ArticleTocSidebar
-                    tocItems={tocItems}
-                    activeHeadingId={activeHeadingId}
-                    onSelectHeading={handleSelectHeading}
-                    tocTitle={tCommon.tableOfContents}
-                  />
-                )}
               </div>
             </div>
           </div>,
