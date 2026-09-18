@@ -60,17 +60,26 @@ Cập nhật hợp đồng dữ liệu tĩnh (Static Data Contract) tại `src/t
 - **Strict Separation of Concerns (SoC)**: Tách bạch rõ ràng giữa UI Strings (nhãn cố định) và CV Content Data (dữ liệu hồ sơ). Giúp việc quản trị nội dung, cập nhật hồ sơ năng lực hoặc thay đổi giao diện không ảnh hưởng lẫn nhau.
 - **Full Type-Safety Guarantee**: Mọi thay đổi schema được xác thực toàn bộ qua trình biên dịch TypeScript (`tsc --noEmit`), ngăn ngừa runtime undefined errors khi truy cập các trường dữ liệu.
 - **Zero Layout Shift & Backward Compatibility**: Đảm bảo toàn bộ logic hiển thị hiện có của trang chính, trang bài viết và định dạng in A4 ([PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx)) hoạt động mượt mà, không gián đoạn.
+- **ATS Print Layout Optimization**: Tối ưu định dạng in A4 trong [PrintCV.tsx](file:///Users/tanhn/Projects/ga2631.github.io/src/components/PrintCV.tsx):
+  - Chuẩn hóa lề in `@page { size: A4 portrait; margin: 8mm 12mm; }`.
+  - Đồng bộ họ và tên (`.print-name`) cùng các tiêu đề phân mục chính (`.print-section-heading` như *PROFESSIONAL SUMMARY*, *CORE TECHNICAL SKILLS*, *PROFESSIONAL EXPERIENCE*, *FEATURED ENGINEERING ARCHITECTURE CASE STUDIES*, *EDUCATION & CERTIFICATIONS*) sang tông màu đỏ thương hiệu chủ đạo (`#b91c1c`) kèm viền gạch chân hài hòa (`border-bottom: 1.2px solid rgba(185, 28, 28, 0.45)`).
+  - Tách thanh thông tin liên hệ (`.print-contact-row`) thành 2 dòng chuyên nghiệp: Dòng 1 chứa Email, Số điện thoại và Địa chỉ; Dòng 2 chứa liên kết GitHub, LinkedIn và Portfolio Website.
+  - Chuẩn hóa hệ thống màu chữ phân cấp (Color Hierarchy): Các thông tin chức danh (Job Title), tên dự án (Project Title), vai trò (Project Role), tên bằng cấp (Degree) và chứng chỉ (Certifications) sử dụng màu chủ đạo (`#b91c1c`); tên công ty, đơn vị đào tạo, tổ chức cấp chứng chỉ sử dụng màu chữ thông thường (`#0f172a`).
+  - Tối ưu cấu trúc phân mục Dự án: Vai trò hiển thị trước bên trái, tên công ty đặt bên phải vai trò (`<Vai trò> | <Tên công ty>`).
+  - Tách bạch phần Học vấn / Nền tảng chuyên môn (`Academic Background`) thành từng dòng/bullet point rõ ràng (`.print-edu-gpa`, `.print-edu-bullets`) thay vì gộp thành đoạn văn liền khối.
+  - Chuẩn hóa hiển thị Chứng chỉ chuyên môn (`Certifications`) đồng bộ với cấu trúc Học vấn (`.print-edu-header`, `.print-cert-item`), hiển thị tên chứng chỉ, đơn vị cấp, thời hạn/mục tiêu và trạng thái theo chuẩn nhất quán.
 
 ---
 
 ## 4. Impacted Files
 - `src/types/index.ts`: Bổ sung `PrincipleItem`, `PrintCvData` và cập nhật `CVData`.
-- `src/data/locales/vi/cv.json`: Bổ sung `principles` và `printCv` (nội dung tiếng Việt).
-- `src/data/locales/en/cv.json`: Bổ sung `principles` và `printCv` (nội dung tiếng Anh).
+- `src/data/locales/vi/cv.json`: Bổ sung `principles` và `printCv` (nội dung tiếng Việt); cập nhật thông tin học vấn.
+- `src/data/locales/en/cv.json`: Bổ sung `principles` và `printCv` (nội dung tiếng Anh); cập nhật thông tin học vấn.
 - `src/data/locales/vi/ui.json`: Loại bỏ `principles`, `summaryExtension`, `academicDetails` để chuẩn hóa chỉ chứa UI tokens.
 - `src/data/locales/en/ui.json`: Loại bỏ `principles`, `summaryExtension`, `academicDetails` để chuẩn hóa chỉ chứa UI tokens.
 - `src/data/cvData.ts`: Cập nhật interface `UITranslation` tương ứng.
 - `src/components/About.tsx`: Cập nhật props để nhận `principles` từ `CVData`.
-- `src/components/PrintCV.tsx`: Đọc `summaryExtension` và `academicDetails` từ `data.printCv`.
+- `src/components/PrintCV.tsx`: Đọc `summaryExtension` và `academicDetails` từ `data.printCv`; tách thông tin liên hệ thành 2 dòng; sắp xếp `<Vai trò> | <Tên công ty>`; tách Academic Background thành các dòng bullet; chuẩn hóa hiển thị Certification đồng bộ với Education.
+- `src/styles/index.css`: Bổ sung và cập nhật quy tắc CSS cho `@page`, `.print-name`, `.print-contact-row`, `.print-contact-links`, `.print-section-heading`, `.print-exp-role`, `.print-exp-company`, `.print-proj-title`, `.print-proj-role`, `.print-proj-company`, `.print-edu-degree`, `.print-edu-inst`, `.print-edu-bullets`, `.print-edu-gpa`, `.print-cert-item` trong `@media print`.
 - `src/App.tsx`: Truyền `principles` từ `currentCvData` vào `<About />`.
-- `docs/features/content-refinement.md`: Tài liệu kỹ thuật chi tiết cho tính năng tái cấu trúc dữ liệu.
+- `docs/features/content-refinement.md`: Tài liệu kỹ thuật chi tiết cho tính năng tái cấu trúc dữ liệu và tối ưu hiển thị in ấn.

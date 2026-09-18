@@ -1625,7 +1625,9 @@ p {
 .print-exp-bullets b,
 .print-exp-bullets strong,
 .print-proj-highlights b,
-.print-proj-highlights strong {
+.print-proj-highlights strong,
+.print-edu-bullets b,
+.print-edu-bullets strong {
   color: var(--text-primary);
   font-weight: 700;
 }
@@ -3152,7 +3154,7 @@ p {
     font-family: var(--font-heading), -apple-system, sans-serif;
     font-size: 16pt;
     font-weight: 800;
-    color: #0f172a;
+    color: #b91c1c;
     letter-spacing: 0.04em;
     margin-bottom: 2px;
   }
@@ -3170,8 +3172,14 @@ p {
     color: #475569;
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 4px 8px;
+    gap: 2px 8px;
+    line-height: 1.25;
+  }
+
+  .print-contact-links {
+    margin-top: 2px;
   }
 
   .print-section {
@@ -3182,10 +3190,10 @@ p {
     font-family: var(--font-heading), -apple-system, sans-serif;
     font-size: 9.2pt;
     font-weight: 800;
-    color: #0f172a;
+    color: #b91c1c;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    border-bottom: 1px solid #cbd5e1;
+    border-bottom: 1.2px solid rgba(185, 28, 28, 0.45);
     padding-bottom: 1px;
     margin-bottom: 4px;
   }
@@ -3227,8 +3235,13 @@ p {
 
   .print-exp-item,
   .print-proj-item,
-  .print-edu-item {
+  .print-edu-item,
+  .print-cert-item {
     page-break-inside: avoid;
+  }
+
+  .print-cert-item {
+    margin-top: 5px;
   }
 
   .print-exp-header,
@@ -3245,17 +3258,33 @@ p {
   .print-edu-degree {
     font-weight: 700;
     font-size: 8.8pt;
-    color: #0f172a;
+    color: #b91c1c;
   }
 
   .print-exp-company,
-  .print-proj-role,
+  .print-proj-company,
   .print-edu-inst {
     font-weight: 600;
-    color: #b91c1c;
+    color: #0f172a;
     font-size: 8.5pt;
   }
 
+  .print-proj-sub {
+    font-size: 8.4pt;
+    line-height: 1.25;
+    margin-bottom: 2px;
+  }
+
+  .print-proj-role {
+    font-weight: 600;
+    color: #b91c1c;
+    font-size: 8.4pt;
+  }
+
+  .print-proj-separator {
+    color: #94a3b8;
+    margin: 0 2px;
+  }
 
   .print-exp-meta,
   .print-edu-period {
@@ -3274,14 +3303,16 @@ p {
   }
 
   .print-exp-bullets,
-  .print-proj-highlights {
+  .print-proj-highlights,
+  .print-edu-bullets {
     margin: 1px 0 2px 12px;
     padding: 0;
     list-style-type: disc;
   }
 
   .print-exp-bullets li,
-  .print-proj-highlights li {
+  .print-proj-highlights li,
+  .print-edu-bullets li {
     font-size: 8pt;
     color: #1e293b;
     line-height: 1.28;
@@ -3295,12 +3326,14 @@ p {
     margin-top: 1px;
   }
 
+  .print-edu-gpa,
   .print-edu-highlight {
     font-size: 8pt;
     color: #334155;
     line-height: 1.28;
     text-align: justify;
     margin-top: 1px;
+    margin-bottom: 1px;
   }
 
   .print-cert-row {
