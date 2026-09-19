@@ -163,6 +163,42 @@ export interface ModalArticleComponent extends React.FC<ModalArticleProps> {
   TocSidebar: typeof ArticleTocSidebar;
 }
 
+/**
+ * Resilient dynamic loader for Mermaid library
+ * Uses @vite-ignore on ESM CDN module to avoid Vite import-analysis bare module resolution issues
+ */
+async function loadMermaidInstance() {
+  if (typeof (window as any).mermaid !== 'undefined') {
+    return (window as any).mermaid;
+  }
+  if (typeof window !== 'undefined') {
+    try {
+      const cdnUrl = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+      const mod = await import(/* @vite-ignore */ cdnUrl);
+      const instance = mod.default || mod;
+      if (instance) {
+        (window as any).mermaid = instance;
+        return instance;
+      }
+    } catch {
+      // Fallback: UMD script injection
+      await new Promise<void>((resolve, reject) => {
+        const existing = document.querySelector('script[src*="mermaid"]');
+        if (existing) {
+          existing.addEventListener('load', () => resolve());
+          return;
+        }
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
+        script.onload = () => resolve();
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+      return (window as any).mermaid;
+    }
+  }
+}
+
 export const ModalArticle: ModalArticleComponent = ({
   post,
   isOpen,
@@ -189,8 +225,8 @@ export const ModalArticle: ModalArticleComponent = ({
       if (mermaidBlocks.length === 0) return;
 
       try {
-        const { default: mermaid } = await import('mermaid');
-        if (isCancelled) return;
+        const mermaid = await loadMermaidInstance();
+        if (!mermaid || isCancelled) return;
 
         const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
         mermaid.initialize({
