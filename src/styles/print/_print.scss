@@ -1,11 +1,16 @@
 /* ==========================================================================
-   PRINT STYLESHEET (@media print)
+   PRINT STYLESHEET (@media print) - Standard ATS & Executive A4 CV Document
    ========================================================================== */
+
+/* Screen View: Hide Print CV Document */
+.print-cv-document {
+  display: none !important;
+}
 
 @media print {
   @page {
     size: A4 portrait;
-    margin: 10mm 15mm;
+    margin: 6mm 10mm;
   }
 
   html, body {
@@ -13,8 +18,8 @@
     background: #ffffff !important;
     color: #0f172a !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    font-size: 9pt !important;
-    line-height: 1.4 !important;
+    font-size: 8pt !important;
+    line-height: 1.26 !important;
     padding: 0 !important;
     margin: 0 !important;
     -webkit-print-color-adjust: exact !important;
@@ -23,20 +28,36 @@
     text-size-adjust: 100% !important;
   }
 
-  /* Hide interactive widgets during print */
-  .floating-actions-container,
-  .floating-btn,
-  .theme-toggle-btn,
-  .mobile-menu-btn,
-  .drawer-wrapper,
-  .drawer-backdrop,
-  .drawer-panel,
-  .blog-modal-backdrop,
-  body::before {
-    display: none !important;
+  /* Reset layout containers for print */
+  .app-root,
+  .web-only,
+  main,
+  .floating-actions-container {
+    display: block !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    pointer-events: none !important;
   }
 
+  /* Completely hide all interactive and screen-only elements */
   .app-header,
+  .header,
+  .footer,
+  #hero,
+  #about,
+  #experience,
+  #projects,
+  #skills,
+  #education,
+  #blog,
+  #contact,
   .hero-section,
   .about-section,
   .experience-section,
@@ -44,8 +65,269 @@
   .skills-section,
   .education-section,
   .contact-section,
-  .footer {
-    background: transparent !important;
-    box-shadow: none !important;
+  .blog-container,
+  .blog-header,
+  .blog-controls-wrapper,
+  .blog-sidebar,
+  .blog-main,
+  .blog-modal-backdrop,
+  .theme-toggle-btn,
+  .mobile-menu-btn,
+  .drawer-wrapper,
+  .drawer-backdrop,
+  .drawer-panel,
+  .floating-btn,
+  .btn,
+  .button-floating,
+  body::before,
+  body::after {
+    display: none !important;
+  }
+
+  /* Show only the dedicated Print CV Document */
+  .print-cv-document {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Page 1 and Page 2 strict page boundary enforcement */
+  .print-page-1 {
+    page-break-after: always !important;
+    break-after: page !important;
+    box-sizing: border-box !important;
+  }
+
+  .print-page-2 {
+    page-break-before: always !important;
+    break-before: page !important;
+    padding-top: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .print-header {
+    text-align: center;
+    margin-bottom: 5px;
+    padding-bottom: 4px;
+    border-bottom: 1.5px solid #0f172a;
+  }
+
+  .print-name {
+    font-family: var(--font-heading), -apple-system, sans-serif;
+    font-size: 15pt;
+    font-weight: 800;
+    color: #b91c1c;
+    letter-spacing: 0.04em;
+    margin-bottom: 1px;
+  }
+
+  .print-title {
+    font-size: 8.8pt;
+    font-weight: 700;
+    color: #b91c1c;
+    letter-spacing: 0.03em;
+    margin-bottom: 3px;
+  }
+
+  .print-contact-row {
+    font-size: 7.7pt;
+    color: #475569;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px 8px;
+    line-height: 1.22;
+  }
+
+  .print-contact-links {
+    margin-top: 1.5px;
+  }
+
+  .print-section {
+    margin-bottom: 5px;
+  }
+
+  .print-section-heading {
+    font-family: var(--font-heading), -apple-system, sans-serif;
+    font-size: 8.8pt;
+    font-weight: 800;
+    color: #b91c1c;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 1.2px solid rgba(185, 28, 28, 0.45);
+    padding-bottom: 1px;
+    margin-bottom: 3px;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .print-summary-text {
+    font-size: 7.8pt;
+    color: #334155;
+    line-height: 1.27;
+    text-align: justify;
+    margin-bottom: 1px;
+  }
+
+  .print-skills-table {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+  }
+
+  .print-skill-row {
+    font-size: 7.7pt;
+    line-height: 1.22;
+  }
+
+  .print-skill-category {
+    color: #0f172a;
+    margin-right: 4px;
+  }
+
+  .print-skill-list {
+    color: #334155;
+  }
+
+  .print-experience-list,
+  .print-projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .print-exp-item,
+  .print-proj-item,
+  .print-edu-item,
+  .print-cert-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .print-cert-item {
+    margin-top: 3px;
+  }
+
+  .print-exp-header,
+  .print-proj-header,
+  .print-edu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 1px;
+  }
+
+  .print-exp-title-group,
+  .print-edu-title-group {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .print-exp-role,
+  .print-proj-title,
+  .print-edu-degree {
+    font-weight: 700;
+    font-size: 8.4pt;
+    color: #b91c1c;
+  }
+
+  .print-exp-company,
+  .print-proj-company,
+  .print-edu-inst {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 8.2pt;
+  }
+
+  .print-proj-sub {
+    font-size: 8pt;
+    line-height: 1.22;
+    margin-bottom: 1px;
+  }
+
+  .print-proj-role {
+    font-weight: 600;
+    color: #b91c1c;
+    font-size: 8pt;
+  }
+
+  .print-proj-separator {
+    color: #94a3b8;
+    margin: 0 2px;
+  }
+
+  .print-exp-meta,
+  .print-edu-period {
+    flex: 0 0 auto;
+    text-align: right;
+    font-size: 7.5pt;
+    color: #64748b;
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  .print-exp-summary,
+  .print-proj-desc {
+    font-size: 7.7pt;
+    color: #475569;
+    font-style: italic;
+    margin-bottom: 1px;
+    line-height: 1.23;
+  }
+
+  .print-exp-bullets,
+  .print-proj-highlights,
+  .print-edu-bullets {
+    margin: 1px 0 1.5px 10px;
+    padding: 0;
+    list-style-type: disc;
+
+    li {
+      font-size: 7.7pt;
+      color: #1e293b;
+      line-height: 1.24;
+      margin-bottom: 0.5px;
+      text-align: justify;
+    }
+
+    b, strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+  }
+
+  .print-tech-stack {
+    font-size: 7.4pt;
+    color: #475569;
+    margin-top: 0.5px;
+    line-height: 1.22;
+  }
+
+  .print-edu-gpa,
+  .print-edu-highlight {
+    font-size: 7.7pt;
+    color: #334155;
+    line-height: 1.24;
+    text-align: justify;
+    margin-top: 0.5px;
+    margin-bottom: 0.5px;
+  }
+
+  .print-cert-row {
+    font-size: 7.7pt;
+    color: #334155;
+    line-height: 1.24;
+  }
+
+  .print-page-break-avoid {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }

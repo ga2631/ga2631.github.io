@@ -1,9 +1,10 @@
 import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
-import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, DownloadIcon, ExternalLinkIcon, CheckIcon } from './Icons.tsx';
+import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, ExternalLinkIcon, CheckIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 import { Card, Button } from './common';
+import { ButtonPrint } from './composite';
 
 interface HeroProps {
   data: PersonalInfo;
@@ -157,14 +158,13 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 <span>{t.getInTouch}</span>
               </Button>
 
-              <Button
-                variant="secondary"
-                onClick={() => window.print()}
+              <ButtonPrint
+                variant="default"
+                buttonVariant="secondary"
+                label={t.saveCv}
                 title="Save CV as PDF"
-                icon={<DownloadIcon size={16} />}
-              >
-                <span>{t.saveCv}</span>
-              </Button>
+                iconSize={16}
+              />
             </div>
           </div>
         </div>
