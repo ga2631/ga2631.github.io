@@ -14,7 +14,6 @@ import {
   TagIcon,
 } from '../components/Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
-import { processArticleToc } from '../components/ArticleToc.tsx';
 import { BLOG_CATEGORY_DEFINITIONS, BlogCategoryDef } from '../data/blogCategories.ts';
 import {
   loadInitialBlogPosts,
@@ -22,7 +21,7 @@ import {
   loadAllArchivePosts,
 } from '../data/blogService.ts';
 import { Button, Badge, Card } from '../components/common';
-import { SearchInput, FilterChip, ScheduleBadge, ArticleReaderModal } from '../components/ui';
+import { SearchInput, FilterChip, ScheduleBadge, ModalArticle, processArticleToc } from '../components/ui';
 import { EmptyState } from '../components/composite';
 
 interface BlogPageProps {
@@ -646,7 +645,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
         )}
 
       {/* ================= Blog Article Popup / Modal ================= */}
-      <ArticleReaderModal
+      <ModalArticle
         post={activePost}
         isOpen={Boolean(activePost)}
         onClose={handleClosePost}

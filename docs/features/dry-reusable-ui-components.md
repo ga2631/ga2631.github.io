@@ -16,7 +16,7 @@ flowchart TD
 
     subgraph Tier2["Tier 2: Specialized UI Extensions (`src/components/ui/`)"]
         Section["Section + Section.Header\n(Encapsulates section tag, container, title, badge, subtitle, extra)"]
-        ArticleReaderModal["ArticleReaderModal\n(Extends Modal: TOC sidebar, sticky header, progress)"]
+        ModalArticle["ModalArticle + ModalArticle.TocSidebar\n(Extends Modal: TOC sidebar, sticky header, processArticleToc parser)"]
         CaseStudyModal["CaseStudyModal\n(Extends Modal: architecture objectives, challenges, solutions, tech)"]
         SearchInput["SearchInput\n(Extends Input: search icon + clear action)"]
         FloatingButton["FloatingButton\n(Extends Button: FAB styling + glow)"]
@@ -37,8 +37,8 @@ flowchart TD
         Education["Education & Certifications (Section + Card compound)"]
         Contact["Contact (Section + Card compound)"]
         Projects["Projects (Section + Card compound + CaseStudyModal)"]
-        BlogSection["Blog Section (Section + Card compound + ArticleReaderModal)"]
-        BlogPage["Blog Page (Card compound + ArticleReaderModal + SearchInput)"]
+        BlogSection["Blog Section (Section + Card compound + ModalArticle)"]
+        BlogPage["Blog Page (Card compound + ModalArticle + SearchInput)"]
     end
 
     Tier1 --> Tier2
@@ -54,7 +54,7 @@ flowchart TD
 2. **Compound Card Layouts:** All cards use compound subcomponents (`Card.Header`, `Card.Body`, `Card.Footer`). Footers are anchored with `margin-top: auto` so that action buttons and tech tags remain aligned at the bottom when cards stretch in CSS grid or flexbox layouts.
 3. **Specialized Modal Lifecycles:**
    - Architecture case studies open via `<CaseStudyModal>`, rendering categorized meta badges, objectives, challenges & solutions, and tech tags.
-   - Blog articles open via `<ArticleReaderModal>`, rendering sticky headers with dynamic title display, reading time, summary callouts, and interactive Table of Contents sidebars.
+   - Blog articles open via `<ModalArticle>`, rendering sticky headers with dynamic title display, reading time, summary callouts, and interactive Table of Contents sidebars (`ModalArticle.TocSidebar`).
 4. **Polymorphic Action Handling:** `<Button>` renders either `<button>` or `<a>` with automatic loading spinner support and accessible ARIA attributes.
 5. **Auto-Clear Search & Filter Chips:** `<SearchInput>` and `<FilterChip>` handle query changes, clear triggers, and filter dismissals.
 
@@ -68,12 +68,12 @@ flowchart TD
 
 ## 3. Technical Optimizations
 
-1. **Compound Component Pattern (`Card.*`, `Modal.*`, `Section.*`):**
+1. **Compound Component Pattern (`Card.*`, `Modal.*`, `Section.*`, `ModalArticle.*`):**
    - Standardized subcomponents provide clean slot isolation while retaining backward-compatible props.
 2. **Bottom-Anchored Card Footers:**
    - Card footers automatically apply `margin-top: auto`, ensuring consistent vertical alignment across uneven grid cells.
-3. **Dedicated Specialized Modals (`CaseStudyModal`, `ArticleReaderModal`):**
-   - Extracted large modal markup and TOC scroll-spy logic into dedicated Tier 2 UI components, eliminating duplicate code between `Projects.tsx`, `BlogSection.tsx`, and `BlogPage.tsx`.
+3. **Dedicated Specialized Modals (`CaseStudyModal`, `ModalArticle`):**
+   - Extracted large modal markup, Table of Contents parser (`processArticleToc`), and TOC sidebar (`ModalArticle.TocSidebar`) into `src/components/ui/ModalArticle.tsx`.
 4. **Unified Section Architecture:**
    - Merged section headers, containers, and anchor IDs into a single `<Section>` primitive, reducing boilerplate across 7 page sections.
 5. **Zero-Regression Class & ARIA Preservation:**
@@ -95,7 +95,7 @@ flowchart TD
 | `src/components/common/index.ts` | Tier 1 (Common) | Barrel export for Tier 1 base components |
 | `src/components/ui/Section.tsx` | Tier 2 (UI) | Unified section component encapsulating `<section>`, `.container`, and `SectionHeader` |
 | `src/components/ui/CaseStudyModal.tsx` | Tier 2 (UI) | Specialized modal extending `Modal` for project architecture case studies |
-| `src/components/ui/ArticleReaderModal.tsx` | Tier 2 (UI) | Specialized modal extending `Modal` for blog article reading with TOC |
+| `src/components/ui/ModalArticle.tsx` | Tier 2 (UI) | Specialized modal extending `Modal` with embedded TOC parser & `ModalArticle.TocSidebar` |
 | `src/components/ui/SearchInput.tsx` | Tier 2 (UI) | Specialized search input extending `Input` with search icon and clear handler |
 | `src/components/ui/FloatingButton.tsx` | Tier 2 (UI) | Specialized FAB button extending `Button` with glowing backdrop effects |
 | `src/components/ui/FilterChip.tsx` | Tier 2 (UI) | Active filter pill extending `Badge` with key-value pairs and dismiss callback |
@@ -111,10 +111,11 @@ flowchart TD
 | `src/components/Skills.tsx` | Domain View | Refactored with `Section` and `Card.Header`, `Card.Body` |
 | `src/components/EducationCertifications.tsx` | Domain View | Refactored with `Section` and `Card.Header`, `Card.Body`, `Card.Footer` |
 | `src/components/Contact.tsx` | Domain View | Refactored with `Section` and `Card.Header`, `Card.Body`, `Card.Footer` |
-| `src/components/BlogSection.tsx` | Domain View | Refactored with `Section`, `Card` compound, and `ArticleReaderModal` |
-| `src/pages/BlogPage.tsx` | Domain View | Refactored with `Card` compound and `ArticleReaderModal` |
+| `src/components/BlogSection.tsx` | Domain View | Refactored with `Section`, `Card` compound, and `ModalArticle` |
+| `src/pages/BlogPage.tsx` | Domain View | Refactored with `Card` compound and `ModalArticle` |
 | `tests/unit/common/card.test.tsx` | Test Suite | Unit tests for `Card`, `Card.Header`, `Card.Body`, `Card.Footer` |
 | `tests/unit/common/modal.test.tsx` | Test Suite | Unit tests for `Modal`, `Modal.Header`, `Modal.Body`, `Modal.Footer` |
 | `tests/unit/ui/section.test.tsx` | Test Suite | Unit tests for `Section` and `Section.Header` |
 | `tests/unit/ui/case-study-modal.test.tsx` | Test Suite | Unit tests for `CaseStudyModal` |
-| `tests/unit/ui/article-reader-modal.test.tsx` | Test Suite | Unit tests for `ArticleReaderModal` |
+| `tests/unit/ui/modal-article.test.tsx` | Test Suite | Unit tests for `ModalArticle`, `processArticleToc`, and `TocSidebar` |
+

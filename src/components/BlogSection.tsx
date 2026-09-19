@@ -3,7 +3,7 @@ import { BlogPost } from '../types/index.ts';
 import { BookOpenIcon, ExternalLinkIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { Card, Button } from './common';
-import { Section, ArticleReaderModal, TocItem } from './ui';
+import { Section, ModalArticle, processArticleToc, TocItem } from './ui';
 import { TechTagList } from './composite';
 
 interface BlogSectionProps {
@@ -29,32 +29,8 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t, tCommon }) =
       return;
     }
 
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = rawHtml;
-
-    const headings = tempDiv.querySelectorAll('h2, h3');
-    const items: TocItem[] = [];
-
-    headings.forEach((heading, index) => {
-      const text = heading.textContent || `Section ${index + 1}`;
-      let id = heading.id;
-      if (!id) {
-        id = text
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .concat(`-${index}`);
-        heading.id = id;
-      }
-
-      items.push({
-        id,
-        text,
-        level: heading.tagName.toLowerCase() === 'h2' ? 2 : 3,
-      });
-    });
-
-    setProcessedHtml(tempDiv.innerHTML);
+    const { processedHtml: htmlWithIds, tocItems: items } = processArticleToc(rawHtml);
+    setProcessedHtml(htmlWithIds);
     setTocItems(items);
     if (items.length > 0) {
       setActiveHeadingId(items[0].id);
@@ -154,7 +130,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t, tCommon }) =
       </div>
 
       {/* Standardized Modal Reader for HTML Blog Articles */}
-      <ArticleReaderModal
+      <ModalArticle
         post={activePost}
         isOpen={Boolean(activePost)}
         onClose={() => setActivePost(null)}
