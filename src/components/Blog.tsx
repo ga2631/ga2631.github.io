@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BlogPost } from '../types/index.ts';
-import { BookOpenIcon, ExternalLinkIcon } from './Icons.tsx';
+import { BookOpenIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
-import { Card, Button } from './common';
 import { Section } from './ui';
-import { TechTagList, ModalArticle, processArticleToc, TocItem } from './composite';
+import { ModalArticle, processArticleToc, TocItem, BlogItem } from './composite';
 
-interface BlogSectionProps {
+export interface BlogProps {
   posts: BlogPost[];
   t: UITranslation['blog'];
   tCommon: UITranslation['common'];
 }
 
-export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t, tCommon }) => {
+export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   const [activePost, setActivePost] = useState<BlogPost | null>(null);
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
@@ -89,43 +88,12 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t, tCommon }) =
     >
       <div className="blog-grid">
         {posts.map((post) => (
-          <Card
+          <BlogItem
             key={post.id}
-            className="blog-card"
-            onClick={() => setActivePost(post)}
-          >
-            <Card.Header>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                  {post.publishedAt} • {post.readTime}
-                </span>
-              </div>
-
-              <h3 className="blog-title">{post.title}</h3>
-            </Card.Header>
-
-            <Card.Body>
-              <p className="blog-summary">{post.summary}</p>
-            </Card.Body>
-
-            <Card.Footer>
-              <TechTagList tags={post.tags} style={{ marginBottom: '16px' }} />
-
-              <Button
-                variant="outline"
-                size="sm"
-                style={{ width: '100%' }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActivePost(post);
-                }}
-                icon={<ExternalLinkIcon size={14} />}
-                iconPosition="right"
-              >
-                <span>{t.readArticle}</span>
-              </Button>
-            </Card.Footer>
-          </Card>
+            post={post}
+            readArticleLabel={t.readArticle}
+            onSelect={setActivePost}
+          />
         ))}
       </div>
 
@@ -145,3 +113,6 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t, tCommon }) =
     </Section>
   );
 };
+
+Blog.displayName = 'Blog';
+export default Blog;

@@ -5,7 +5,7 @@ import { Home } from '../../../src/pages/Home';
 import { cvDataEn, uiTranslations } from '../../../src/data/cvData';
 
 describe('Home Page Component', () => {
-  it('renders all main portfolio sections (Hero, About, Experience, Projects, Skills, Education, Contact)', () => {
+  it('renders all main portfolio sections (Hero, About, Experience, Projects, Skills, Education, Contact, Footer)', () => {
     render(<Home data={cvDataEn} t={uiTranslations.en} />);
 
     // Hero greeting / title
@@ -30,6 +30,6 @@ describe('Home Page Component', () => {
     expect(screen.getByText(uiTranslations.en.contact.title)).toBeInTheDocument();
 
     // Footer
-    expect(screen.getByText(uiTranslations.en.footer.allRightsReserved)).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(uiTranslations.en.footer.allRightsReserved, 'i'))).toBeInTheDocument();
   });
 });
