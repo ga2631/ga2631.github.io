@@ -52,7 +52,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     // 4. Frontend & Architecture / Architecture & Leadership
     return {
       icon: <LayersIcon size={18} />,
-      color: 'var(--accent-cyan)',
+      color: 'var(--accent-red)',
       bg: 'rgba(255, 77, 109, 0.12)',
       border: 'rgba(255, 77, 109, 0.25)',
     };
@@ -75,32 +75,31 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     switch (score) {
       case 5:
         return {
-          tagClass: 'level-mastery',
+          tagClass: 'level-mastery skill-tag-5 skill-tag-expert',
           label: `${t.level5} (5/5)`,
           dotCount: 5,
         };
       case 4:
         return {
-          tagClass: 'level-advanced',
+          tagClass: 'level-advanced skill-tag-4 skill-tag-advanced',
           label: `${t.level4} (4/5)`,
           dotCount: 4,
         };
       case 3:
         return {
-          tagClass: 'level-proficient',
+          tagClass: 'level-proficient skill-tag-3 skill-tag-proficient',
           label: `${t.level3} (3/5)`,
           dotCount: 3,
         };
       case 2:
         return {
-          tagClass: 'level-intermediate',
+          tagClass: 'level-intermediate skill-tag-2 skill-tag-familiar',
           label: `${t.level2} (2/5)`,
           dotCount: 2,
         };
-      case 1:
       default:
         return {
-          tagClass: 'level-foundational',
+          tagClass: 'level-foundational skill-tag-1 skill-tag-fundamental',
           label: `${t.level1} (1/5)`,
           dotCount: 1,
         };
