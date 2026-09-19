@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { ModalCaseStudy } from '../../../src/components/ui/ModalCaseStudy';
+import { ModalCaseStudy } from '../../../src/components/composite/ModalCaseStudy';
 import { ProjectItem } from '../../../src/types';
 
-describe('Tier 2: ModalCaseStudy Component', () => {
+describe('Tier 3: ModalCaseStudy Composite Component', () => {
   const mockProject: ProjectItem = {
     id: 'erp-medallion',
     title: 'ERP Data Infrastructure Migration',

@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { ModalArticle, processArticleToc } from '../../../src/components/ui/ModalArticle';
+import { ModalArticle, processArticleToc } from '../../../src/components/composite/ModalArticle';
 import { BlogPost, TocItem } from '../../../src/types';
 
-describe('Tier 2: ModalArticle Component & TOC Parser', () => {
+describe('Tier 3: ModalArticle Composite Component & TOC Parser', () => {
   const mockPost: BlogPost = {
     id: 'post-system-design',
     slug: 'post-system-design',

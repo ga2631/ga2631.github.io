@@ -11,7 +11,8 @@ import {
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { Card, Button, Badge } from './common';
-import { Section, ModalCaseStudy } from './ui';
+import { Section } from './ui';
+import { ModalCaseStudy } from './composite';
 
 interface ProjectsProps {
   projects: ProjectItem[];

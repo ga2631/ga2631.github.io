@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { BadgeFilterChip } from '../../../src/components/ui/BadgeFilterChip';
+import { BadgeFilterChip } from '../../../src/components/composite/BadgeFilterChip';
 
-describe('Tier 2: BadgeFilterChip Component', () => {
+describe('Tier 3: BadgeFilterChip Composite Component', () => {
   it('renders filter chip with key and value', () => {
     render(
       <BadgeFilterChip chipKey="Tag" chipValue="Architecture" onRemove={vi.fn()} />

@@ -3,8 +3,8 @@ import { BlogPost } from '../types/index.ts';
 import { BookOpenIcon, ExternalLinkIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { Card, Button } from './common';
-import { Section, ModalArticle, processArticleToc, TocItem } from './ui';
-import { TechTagList } from './composite';
+import { Section } from './ui';
+import { TechTagList, ModalArticle, processArticleToc, TocItem } from './composite';
 
 interface BlogSectionProps {
   posts: BlogPost[];
