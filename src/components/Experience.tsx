@@ -2,6 +2,8 @@ import React from 'react';
 import { ExperienceItem } from '../types/index.ts';
 import { BriefcaseIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { Card, Badge } from './common';
+import { SectionHeader, TechTagList } from './composite';
 
 interface ExperienceProps {
   experiences: ExperienceItem[];
@@ -12,28 +14,25 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
   return (
     <section className="section" id="experience">
       <div className="container">
-        <div className="section-header">
-          <span className="section-badge">
-            <BriefcaseIcon size={14} /> {t.badge}
-          </span>
-          <h2 className="section-title">{t.title}</h2>
-          <p className="section-subtitle">
-            {t.subtitle}
-          </p>
-        </div>
+        <SectionHeader
+          badge={t.badge}
+          badgeIcon={<BriefcaseIcon size={14} />}
+          title={t.title}
+          subtitle={t.subtitle}
+        />
 
         <div className="timeline">
           {experiences.map((item) => (
             <div key={item.id} className="timeline-item">
               <div className="timeline-dot" />
 
-              <div className="glass-panel timeline-card">
+              <Card className="timeline-card">
                 <div className="timeline-header">
                   <div className="timeline-title-row">
                     <h3 className="timeline-role">{item.role}</h3>
                     <div className="timeline-period-wrapper">
                       <span className="timeline-period">{item.period}</span>
-                      {item.current && <span className="badge badge-emerald">{t.currentPosition}</span>}
+                      {item.current && <Badge variant="emerald">{t.currentPosition}</Badge>}
                     </div>
                   </div>
 
@@ -60,14 +59,8 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
                   ))}
                 </div>
 
-                <div className="tech-tags-list">
-                  {item.technologies.map((tech) => (
-                    <span key={tech} className="badge">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                <TechTagList tags={item.technologies} />
+              </Card>
             </div>
           ))}
         </div>
@@ -75,3 +68,4 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
     </section>
   );
 };
+

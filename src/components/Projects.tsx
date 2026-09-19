@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { ProjectItem } from '../types/index.ts';
 import {
   CodeIcon,
   GithubIcon,
   ExternalLinkIcon,
-  CloseIcon,
   GitRepoIcon,
   StarIcon,
   GitForkIcon,
@@ -17,6 +15,8 @@ import {
   ShieldIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { Card, Badge, Button, Modal } from './common';
+import { SectionHeader } from './composite';
 
 interface ProjectsProps {
   projects: ProjectItem[];
@@ -121,29 +121,6 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
       isMounted = false;
     };
   }, []);
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (activeProject) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [activeProject]);
-
-  // Handle escape key to close modal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && activeProject) {
-        setActiveProject(null);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeProject]);
 
   const getTechColorInfo = (name: string | null) => {
     if (!name) {
@@ -254,44 +231,41 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
   return (
     <section className="section" id="projects">
       <div className="container">
-        <div className="section-header">
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
-            <span className="section-badge">
-              <CodeIcon size={14} /> {t.badge}
-            </span>
-          </div>
-
-          <h2 className="section-title">{t.title}</h2>
-          <p className="section-subtitle">
-            {t.subtitle}
-          </p>
-        </div>
+        <SectionHeader
+          badge={t.badge}
+          badgeIcon={<CodeIcon size={14} />}
+          title={t.title}
+          subtitle={t.subtitle}
+        />
 
         {/* Primary View Switcher Tabs */}
         <div className="project-view-tabs">
-          <button
+          <Button
+            variant="unstyled"
             className={`project-view-tab ${activeTab === 'all' ? 'active' : ''}`}
             onClick={() => setActiveTab('all')}
           >
             <span>{t.allWorks}</span>
             <span className="view-tab-count">{projects.length + (repos.length || 3)}</span>
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="unstyled"
             className={`project-view-tab ${activeTab === 'case-studies' ? 'active' : ''}`}
             onClick={() => setActiveTab('case-studies')}
+            icon={<SparklesIcon size={15} />}
           >
-            <SparklesIcon size={15} />
             <span>{t.caseStudies}</span>
             <span className="view-tab-count">{projects.length}</span>
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="unstyled"
             className={`project-view-tab ${activeTab === 'github' ? 'active' : ''}`}
             onClick={() => setActiveTab('github')}
+            icon={<GitRepoIcon size={15} />}
           >
-            <GitRepoIcon size={15} />
             <span>{t.githubRepos}</span>
             <span className="view-tab-count">{repos.length || 'Live'}</span>
-          </button>
+          </Button>
         </div>
 
         {/* Unified Projects Grid */}
@@ -299,17 +273,17 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
           {/* 1. Enterprise Architecture Case Studies */}
           {showCaseStudies &&
             projects.map((project: ProjectItem) => (
-              <div
+              <Card
                 key={project.id}
-                className="glass-panel project-card-compact"
+                className="project-card-compact"
                 onClick={() => setActiveProject(project)}
               >
                 <div className="project-card-header">
                   <div className="project-meta-row">
-                    <span className="badge badge-cyan">{project.category}</span>
-                    <span className="badge badge-purple" style={{ fontSize: '0.75rem' }}>
+                    <Badge variant="cyan">{project.category}</Badge>
+                    <Badge variant="purple" style={{ fontSize: '0.75rem' }}>
                       {t.enterpriseSystem}
-                    </span>
+                    </Badge>
                   </div>
 
                   <h3 className="project-card-title">{project.title}</h3>
@@ -353,38 +327,39 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                       );
                     })}
                     {project.tags.length > 4 && (
-                      <span className="badge" style={{ color: 'var(--text-accent)' }}>
+                      <Badge style={{ color: 'var(--text-accent)' }}>
                         +{project.tags.length - 4} {tCommon.more}
-                      </span>
+                      </Badge>
                     )}
                   </div>
 
                   <div className="project-actions-compact">
-                    <button
-                      className="btn btn-primary btn-sm"
+                    <Button
+                      variant="primary"
+                      size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         setActiveProject(project);
                       }}
+                      icon={<ExternalLinkIcon size={15} />}
                     >
-                      <ExternalLinkIcon size={15} />
                       <span>{t.viewArchitecture}</span>
-                    </button>
+                    </Button>
                   </div>
                 </div>
-              </div>
+              </Card>
             ))}
 
           {/* 2. Loading Skeleton for GitHub Repos */}
           {showRepos && isLoadingRepos && repos.length === 0 && (
             <>
               {[1, 2, 3].map((i) => (
-                <div key={`skeleton-${i}`} className="glass-panel github-repo-card repo-skeleton-card">
+                <Card key={`skeleton-${i}`} className="github-repo-card repo-skeleton-card">
                   <div className="skeleton-line" style={{ width: '60%', height: '22px', marginBottom: '12px' }} />
                   <div className="skeleton-line" style={{ width: '100%', height: '14px', marginBottom: '8px' }} />
                   <div className="skeleton-line" style={{ width: '80%', height: '14px', marginBottom: '20px' }} />
                   <div className="skeleton-line" style={{ width: '40%', height: '18px' }} />
-                </div>
+                </Card>
               ))}
             </>
           )}
@@ -399,15 +374,15 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
               const mainLangInfo = getTechColorInfo(repo.language);
 
               return (
-                <div key={repo.id} className="glass-panel github-repo-card">
+                <Card key={repo.id} className="github-repo-card">
                   <div className="project-card-header">
                     <div className="project-meta-row">
-                      <span className="badge badge-cyan">
-                        <GitRepoIcon size={13} /> {t.publicRepo}
-                      </span>
-                      <span className="badge" style={{ fontSize: '0.75rem' }}>
+                      <Badge variant="cyan" icon={<GitRepoIcon size={13} />}>
+                        {t.publicRepo}
+                      </Badge>
+                      <Badge style={{ fontSize: '0.75rem' }}>
                         {formatDate(repo.updated_at)}
-                      </span>
+                      </Badge>
                     </div>
 
                     <h3 className="project-card-title repo-title">
@@ -482,222 +457,222 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                           );
                         })}
                         {repoTags.length > 4 && (
-                          <span className="badge" style={{ color: 'var(--text-accent)' }}>
+                          <Badge style={{ color: 'var(--text-accent)' }}>
                             +{repoTags.length - 4} {tCommon.more}
-                          </span>
+                          </Badge>
                         )}
                       </div>
                     )}
 
                     <div className="project-actions-compact">
-                      <a
+                      <Button
+                        as="a"
                         href={repo.html_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn btn-outline btn-sm"
+                        variant="outline"
+                        size="sm"
+                        icon={<GithubIcon size={15} />}
                       >
-                        <GithubIcon size={15} />
                         <span>{t.sourceCode}</span>
-                      </a>
+                      </Button>
 
                       {repo.homepage && (
-                        <a
+                        <Button
+                          as="a"
                           href={repo.homepage}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn btn-secondary btn-sm"
+                          variant="secondary"
+                          size="sm"
                           title="Live Preview"
+                          icon={<ExternalLinkIcon size={14} />}
                         >
-                          <ExternalLinkIcon size={14} />
                           <span>{t.demo}</span>
-                        </a>
+                        </Button>
                       )}
                     </div>
                   </div>
-                </div>
+                </Card>
               );
             })}
         </div>
 
         {/* Detailed Architecture & Case Study Modal */}
-        {activeProject &&
-          createPortal(
-            <div className="blog-modal-backdrop" onClick={() => setActiveProject(null)}>
-              <div className="blog-modal-content project-modal-dialog" onClick={(e) => e.stopPropagation()}>
-                {/* Pinned / Fixed Header */}
-                <div className="project-modal-header">
-                  <button
-                    className="modal-close-btn"
-                    onClick={() => setActiveProject(null)}
-                    aria-label="Close Project Details"
-                  >
-                    <CloseIcon size={18} />
-                  </button>
-
-                  <div className="project-modal-header-meta">
-                    <span className="badge badge-cyan">{activeProject.category}</span>
-                    {activeProject.featured && <span className="badge badge-emerald">{t.featuredProject}</span>}
-                    {activeProject.teamSize && <span className="badge">{t.team}: {activeProject.teamSize}</span>}
-                  </div>
-
-                  <h2 className="project-modal-title">
-                    {activeProject.title}
-                  </h2>
-
-                  {(activeProject.company || activeProject.role) && (
-                    <div className="project-modal-subtitle">
-                      {activeProject.company} — {activeProject.role}
-                    </div>
-                  )}
+        <Modal
+          isOpen={Boolean(activeProject)}
+          onClose={() => setActiveProject(null)}
+          closeAriaLabel="Close Project Details"
+          backdropClassName="blog-modal-backdrop"
+          contentClassName="blog-modal-content project-modal-dialog"
+          bodyClassName="project-modal-body"
+        >
+          {activeProject && (
+            <>
+              {/* Header Info */}
+              <div className="project-modal-header">
+                <div className="project-modal-header-meta">
+                  <Badge variant="cyan">{activeProject.category}</Badge>
+                  {activeProject.featured && <Badge variant="emerald">{t.featuredProject}</Badge>}
+                  {activeProject.teamSize && <Badge>{t.team}: {activeProject.teamSize}</Badge>}
                 </div>
 
-                {/* Scrollable Content Body */}
-                <div className="project-modal-body">
-                  <div className="article-body">
-                    {/* 1. Project Objective */}
-                    <div style={{ marginBottom: '24px' }}>
-                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '10px' }}>
-                        <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                        <span>{t.objective}</span>
-                      </h3>
-                      <p style={{ lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
-                        {activeProject.description}
-                      </p>
-                    </div>
+                <h2 className="project-modal-title">
+                  {activeProject.title}
+                </h2>
 
-                    {/* 2. Key Responsibilities & Strengths */}
-                    {activeProject.responsibilities && activeProject.responsibilities.length > 0 && (
-                      <div style={{ marginBottom: '24px' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                          <ShieldIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                          <span>{t.responsibilities}</span>
-                        </h3>
-                        <ul style={{ paddingLeft: '20px', margin: 0 }}>
-                          {activeProject.responsibilities.map((resp, idx) => (
-                            <li
-                              key={idx}
-                              style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
-                              dangerouslySetInnerHTML={{ __html: resp }}
-                            />
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                {(activeProject.company || activeProject.role) && (
+                  <div className="project-modal-subtitle">
+                    {activeProject.company} — {activeProject.role}
+                  </div>
+                )}
+              </div>
 
-                    {/* 3. Challenges & Solutions */}
-                    {activeProject.challengesSolutions && activeProject.challengesSolutions.length > 0 ? (
-                      <div style={{ marginBottom: '24px' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                          <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                          <span>{t.challengesSolutions}</span>
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                          {activeProject.challengesSolutions.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="glass-panel"
-                              style={{
-                                padding: '12px 16px',
-                                borderRadius: 'var(--radius-md)',
-                                borderLeft: '3px solid var(--accent-primary)',
-                              }}
-                            >
-                              <div style={{ marginBottom: '6px', fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
-                                <span style={{ color: 'var(--accent-red, #ef4444)', marginRight: '6px' }}>
-                                  [{t.challengeLabel}]:
-                                </span>
-                                <span dangerouslySetInnerHTML={{ __html: item.challenge }} />
-                              </div>
-                              <div style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
-                                <span style={{ color: 'var(--accent-emerald, #10b981)', marginRight: '6px', fontWeight: 600 }}>
-                                  → [{t.solutionLabel}]:
-                                </span>
-                                <span dangerouslySetInnerHTML={{ __html: item.solution }} />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      activeProject.highlights && activeProject.highlights.length > 0 && (
-                        <div style={{ marginBottom: '24px' }}>
-                          <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                            <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                            <span>{t.challenges}</span>
-                          </h3>
-                          <ul style={{ paddingLeft: '20px', margin: 0 }}>
-                            {activeProject.highlights.map((item, idx) => (
-                              <li
-                                key={idx}
-                                style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
-                                dangerouslySetInnerHTML={{ __html: item }}
-                              />
-                            ))}
-                          </ul>
-                        </div>
-                      )
-                    )}
+              {/* Scrollable Content Body */}
+              <div className="article-body">
+                {/* 1. Project Objective */}
+                <div style={{ marginBottom: '24px' }}>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '10px' }}>
+                    <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                    <span>{t.objective}</span>
+                  </h3>
+                  <p style={{ lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
+                    {activeProject.description}
+                  </p>
+                </div>
 
-                    {/* 4. Achievements */}
-                    {activeProject.achievements && activeProject.achievements.length > 0 && (
-                      <div style={{ marginBottom: '24px' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                          <RocketIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                          <span>{t.achievements}</span>
-                        </h3>
-                        <ul style={{ paddingLeft: '20px', margin: 0 }}>
-                          {activeProject.achievements.map((ach, idx) => (
-                            <li
-                              key={idx}
-                              style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
-                              dangerouslySetInnerHTML={{ __html: ach }}
-                            />
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                {/* 2. Key Responsibilities & Strengths */}
+                {activeProject.responsibilities && activeProject.responsibilities.length > 0 && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                      <ShieldIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                      <span>{t.responsibilities}</span>
+                    </h3>
+                    <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                      {activeProject.responsibilities.map((resp, idx) => (
+                        <li
+                          key={idx}
+                          style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                          dangerouslySetInnerHTML={{ __html: resp }}
+                        />
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-                    {/* 5. Tech Stack */}
-                    <div style={{ marginBottom: '8px' }}>
-                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                        <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                        <span>{t.techStack}</span>
-                      </h3>
-                      <div className="tech-tags-list" style={{ marginTop: '8px' }}>
-                        {activeProject.tags.map((tag: string) => {
-                          const info = getTechColorInfo(tag);
-                          return (
-                            <span
-                              key={tag}
-                              className="badge badge-tech-tag"
-                              style={{
-                                color: info.color,
-                                backgroundColor: info.bg,
-                                borderColor: info.border,
-                              }}
-                            >
-                              <span
-                                className="lang-color-dot"
-                                style={{
-                                  width: '6px',
-                                  height: '6px',
-                                  backgroundColor: info.color,
-                                  marginRight: '2px',
-                                }}
-                              />
-                              {tag}
+                {/* 3. Challenges & Solutions */}
+                {activeProject.challengesSolutions && activeProject.challengesSolutions.length > 0 ? (
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                      <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                      <span>{t.challengesSolutions}</span>
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {activeProject.challengesSolutions.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="glass-panel"
+                          style={{
+                            padding: '12px 16px',
+                            borderRadius: 'var(--radius-md)',
+                            borderLeft: '3px solid var(--accent-primary)',
+                          }}
+                        >
+                          <div style={{ marginBottom: '6px', fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
+                            <span style={{ color: 'var(--accent-red, #ef4444)', marginRight: '6px' }}>
+                              [{t.challengeLabel}]:
                             </span>
-                          );
-                        })}
-                      </div>
+                            <span dangerouslySetInnerHTML={{ __html: item.challenge }} />
+                          </div>
+                          <div style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
+                            <span style={{ color: 'var(--accent-emerald, #10b981)', marginRight: '6px', fontWeight: 600 }}>
+                              → [{t.solutionLabel}]:
+                            </span>
+                            <span dangerouslySetInnerHTML={{ __html: item.solution }} />
+                          </div>
+                        </div>
+                      ))}
                     </div>
+                  </div>
+                ) : (
+                  activeProject.highlights && activeProject.highlights.length > 0 && (
+                    <div style={{ marginBottom: '24px' }}>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                        <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                        <span>{t.challenges}</span>
+                      </h3>
+                      <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                        {activeProject.highlights.map((item, idx) => (
+                          <li
+                            key={idx}
+                            style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                            dangerouslySetInnerHTML={{ __html: item }}
+                          />
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                )}
+
+                {/* 4. Achievements */}
+                {activeProject.achievements && activeProject.achievements.length > 0 && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                      <RocketIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                      <span>{t.achievements}</span>
+                    </h3>
+                    <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                      {activeProject.achievements.map((ach, idx) => (
+                        <li
+                          key={idx}
+                          style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                          dangerouslySetInnerHTML={{ __html: ach }}
+                        />
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* 5. Tech Stack */}
+                <div style={{ marginBottom: '8px' }}>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                    <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+                    <span>{t.techStack}</span>
+                  </h3>
+                  <div className="tech-tags-list" style={{ marginTop: '8px' }}>
+                    {activeProject.tags.map((tag: string) => {
+                      const info = getTechColorInfo(tag);
+                      return (
+                        <span
+                          key={tag}
+                          className="badge badge-tech-tag"
+                          style={{
+                            color: info.color,
+                            backgroundColor: info.bg,
+                            borderColor: info.border,
+                          }}
+                        >
+                          <span
+                            className="lang-color-dot"
+                            style={{
+                              width: '6px',
+                              height: '6px',
+                              backgroundColor: info.color,
+                              marginRight: '2px',
+                            }}
+                          />
+                          {tag}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
-            </div>,
-            document.body
+            </>
           )}
+        </Modal>
       </div>
     </section>
   );
 };
+

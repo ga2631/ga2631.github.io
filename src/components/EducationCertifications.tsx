@@ -2,6 +2,8 @@ import React from 'react';
 import { EducationItem, CertificationItem } from '../types/index.ts';
 import { GraduationCapIcon, AwardIcon, ExternalLinkIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { Card, Badge, Button } from './common';
+import { SectionHeader } from './composite';
 
 interface EducationCertificationsProps {
   educations: EducationItem[];
@@ -17,15 +19,12 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
   return (
     <section className="section" id="education">
       <div className="container">
-        <div className="section-header">
-          <span className="section-badge">
-            <GraduationCapIcon size={14} /> {t.badge}
-          </span>
-          <h2 className="section-title">{t.title}</h2>
-          <p className="section-subtitle">
-            {t.subtitle}
-          </p>
-        </div>
+        <SectionHeader
+          badge={t.badge}
+          badgeIcon={<GraduationCapIcon size={14} />}
+          title={t.title}
+          subtitle={t.subtitle}
+        />
 
         <div className="edu-cert-grid">
           {/* Education Column */}
@@ -44,7 +43,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
             </h3>
 
             {educations.map((edu) => (
-              <div key={edu.id} className="glass-panel edu-card">
+              <Card key={edu.id} className="edu-card">
                 <h4 className="edu-degree">{edu.degree}</h4>
                 <div className="edu-institution">{edu.institution}</div>
                 <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '12px' }}>
@@ -53,7 +52,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
 
                 {edu.gpaOrHonors && (
                   <div style={{ marginBottom: '12px' }}>
-                    <span className="badge badge-emerald">{edu.gpaOrHonors}</span>
+                    <Badge variant="emerald">{edu.gpaOrHonors}</Badge>
                   </div>
                 )}
 
@@ -70,7 +69,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                     })}
                   </div>
                 )}
-              </div>
+              </Card>
             ))}
           </div>
 
@@ -90,7 +89,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
             </h3>
 
             {certifications.map((cert) => (
-              <div key={cert.id} className="glass-panel cert-card">
+              <Card key={cert.id} className="cert-card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
                   <div>
                     <h4 className="cert-title" style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '4px' }}>
@@ -100,7 +99,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                       {cert.issuer}
                     </div>
                   </div>
-                  <span className="badge">{cert.issueDate}</span>
+                  <Badge>{cert.issueDate}</Badge>
                 </div>
 
                 <div style={{ marginTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -111,19 +110,22 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                   )}
 
                   {cert.credentialUrl && (
-                    <a
+                    <Button
+                      as="a"
                       href={cert.credentialUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-outline btn-sm"
+                      variant="outline"
+                      size="sm"
                       style={{ padding: '4px 10px', fontSize: '0.8rem' }}
+                      icon={<ExternalLinkIcon size={12} />}
+                      iconPosition="right"
                     >
                       <span>{t.viewCredential}</span>
-                      <ExternalLinkIcon size={12} />
-                    </a>
+                    </Button>
                   )}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
@@ -131,3 +133,4 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
     </section>
   );
 };
+

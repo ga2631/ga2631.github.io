@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { SkillCategory } from '../types/index.ts';
 import { CodeIcon, DatabaseIcon, ChartIcon, SparklesIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { Card, Button } from './common';
+import { SectionHeader } from './composite';
 
 interface SkillsProps {
   categories: SkillCategory[];
@@ -121,74 +123,71 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
   return (
     <section className="section" id="skills">
       <div className="container">
-        <div className="section-header">
-          <span className="section-badge">
-            <CodeIcon size={14} /> {t.badge}
-          </span>
-          <h2 className="section-title">{t.title}</h2>
-          <p className="section-subtitle">
-            {t.subtitle}
-          </p>
-        </div>
+        <SectionHeader
+          badge={t.badge}
+          badgeIcon={<CodeIcon size={14} />}
+          title={t.title}
+          subtitle={t.subtitle}
+        />
 
         {/* Standardized 1-5 Scale Proficiency Legend & Interactive Filter Bar */}
         <div className="skills-legend-bar">
           <span className="skills-legend-title">{t.legendTitle}:</span>
           <div className="skills-legend-items">
-            <button
-              type="button"
+            <Button
+              variant="unstyled"
               className={`skills-legend-item legend-all ${selectedLevel === null ? 'active' : ''}`}
               onClick={() => setSelectedLevel(null)}
               aria-pressed={selectedLevel === null}
               title={t.all || 'All'}
             >
               <span>{t.all || 'All'}</span>
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="unstyled"
               className={`skills-legend-item legend-level-5 ${selectedLevel === 5 ? 'active' : ''}`}
               onClick={() => setSelectedLevel(selectedLevel === 5 ? null : 5)}
               aria-pressed={selectedLevel === 5}
               title={`${t.level5} (5/5)`}
             >
               <span>{t.level5}</span>
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="unstyled"
               className={`skills-legend-item legend-level-4 ${selectedLevel === 4 ? 'active' : ''}`}
               onClick={() => setSelectedLevel(selectedLevel === 4 ? null : 4)}
               aria-pressed={selectedLevel === 4}
               title={`${t.level4} (4/5)`}
             >
               <span>{t.level4}</span>
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="unstyled"
               className={`skills-legend-item legend-level-3 ${selectedLevel === 3 ? 'active' : ''}`}
               onClick={() => setSelectedLevel(selectedLevel === 3 ? null : 3)}
               aria-pressed={selectedLevel === 3}
               title={`${t.level3} (3/5)`}
             >
               <span>{t.level3}</span>
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="unstyled"
               className={`skills-legend-item legend-level-2 ${selectedLevel === 2 ? 'active' : ''}`}
               onClick={() => setSelectedLevel(selectedLevel === 2 ? null : 2)}
               aria-pressed={selectedLevel === 2}
               title={`${t.level2} (2/5)`}
             >
               <span>{t.level2}</span>
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="unstyled"
               className={`skills-legend-item legend-level-1 ${selectedLevel === 1 ? 'active' : ''}`}
               onClick={() => setSelectedLevel(selectedLevel === 1 ? null : 1)}
               aria-pressed={selectedLevel === 1}
               title={`${t.level1} (1/5)`}
             >
               <span>{t.level1}</span>
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -207,7 +206,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
               : sortedSkills;
 
             return (
-              <div key={category.title} className="glass-panel skill-card-compact">
+              <Card key={category.title} className="skill-card-compact">
                 <div className="skill-card-header">
                   <div
                     className="skill-icon-badge"
@@ -245,7 +244,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                     <span>{t.noSkills || 'No skills at this level.'}</span>
                   </div>
                 )}
-              </div>
+              </Card>
             );
           })}
         </div>
@@ -253,3 +252,4 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     </section>
   );
 };
+

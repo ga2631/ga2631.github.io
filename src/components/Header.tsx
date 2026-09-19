@@ -3,6 +3,7 @@ import { SunIcon, MoonIcon, MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icon
 import { UITranslation } from '../data/cvData.ts';
 import { PersonalInfo } from '../types/index.ts';
 import { DrawerMenu, NavItem } from './DrawerMenu.tsx';
+import { Button } from './common';
 
 interface HeaderProps {
   theme: 'dark' | 'light';
@@ -135,44 +136,36 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="header-actions">
             {/* Desktop Language Switcher Toggle */}
-            <button
+            <Button
+              variant="unstyled"
               className="lang-toggle-btn header-lang-btn"
               onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}
               title={lang === 'vi' ? 'English' : 'Tiếng Việt'}
               aria-label="Toggle Language"
+              icon={lang === 'vi' ? <VietnamFlagIcon size={16} /> : <UKFlagIcon size={16} />}
             >
-              {lang === 'vi' ? (
-                <>
-                  <VietnamFlagIcon size={16} />
-                  <span>VI</span>
-                </>
-              ) : (
-                <>
-                  <UKFlagIcon size={16} />
-                  <span>EN</span>
-                </>
-              )}
-            </button>
+              <span>{lang === 'vi' ? 'VI' : 'EN'}</span>
+            </Button>
 
             {/* Theme Toggle Button */}
-            <button
+            <Button
+              variant="unstyled"
               onClick={toggleTheme}
               className="theme-toggle-btn"
               aria-label="Toggle Theme"
               title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-            >
-              {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
-            </button>
+              icon={theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
+            />
 
             {/* Mobile & Tablet Drawer Trigger Button */}
-            <button
+            <Button
+              variant="unstyled"
               className="mobile-menu-btn"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open Navigation Drawer Menu"
               aria-expanded={mobileMenuOpen}
-            >
-              <MenuIcon size={22} />
-            </button>
+              icon={<MenuIcon size={22} />}
+            />
           </div>
         </div>
       </header>
@@ -196,4 +189,5 @@ export const Header: React.FC<HeaderProps> = ({
     </>
   );
 };
+
 

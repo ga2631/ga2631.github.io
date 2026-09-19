@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DownloadIcon, ArrowUpIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { FloatingButton } from './ui';
 
 interface FloatingActionsProps {
   onPrint: () => void;
@@ -35,29 +36,27 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
     <div className="floating-actions-container" role="region" aria-label="Floating quick actions">
       {/* Scroll to top button */}
       {showScrollTop && (
-        <button
-          className="floating-btn floating-btn-secondary"
+        <FloatingButton
+          floatingVariant="secondary"
           onClick={scrollToTop}
           title={tCommon.scrollToTop}
           aria-label={tCommon.scrollToTop}
-        >
-          <ArrowUpIcon size={18} />
-        </button>
+          icon={<ArrowUpIcon size={18} />}
+        />
       )}
 
       {/* Floating Save CV Button */}
-      <button
-        className="floating-btn floating-btn-primary"
+      <FloatingButton
+        floatingVariant="primary"
         onClick={onPrint}
         title={tCommon.exportPdf}
         aria-label={saveCvLabel}
         id="floating-save-cv-btn"
-      >
-        <div className="floating-btn-glow" />
-        <DownloadIcon size={18} />
-        <span className="floating-btn-text">{saveCvLabel}</span>
-      </button>
+        icon={<DownloadIcon size={18} />}
+        label={saveCvLabel}
+      />
     </div>
   );
 };
+
 

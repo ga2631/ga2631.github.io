@@ -2,6 +2,8 @@ import React from 'react';
 import { PersonalInfo, PrincipleItem } from '../types/index.ts';
 import { CodeIcon, AwardIcon, LayersIcon, RefreshCwIcon, ZapIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { Card } from './common';
+import { SectionHeader } from './composite';
 
 interface AboutProps {
   data: PersonalInfo;
@@ -51,21 +53,18 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
   return (
     <section className="section" id="about">
       <div className="container">
-        <div className="section-header">
-          <span className="section-badge">
-            <AwardIcon size={14} /> {t.badge}
-          </span>
-          <h2 className="section-title">{t.title}</h2>
-          <p className="section-subtitle">
-            {data.tagline}
-          </p>
-        </div>
+        <SectionHeader
+          badge={t.badge}
+          badgeIcon={<AwardIcon size={14} />}
+          title={t.title}
+          subtitle={data.tagline}
+        />
 
         <div className="principles-grid">
           {principles.map((item, index) => {
             const config = getPrincipleConfig(item.title, index);
             return (
-              <div key={index} className="glass-panel principle-card">
+              <Card key={index} className="principle-card">
                 <div className="principle-card-header">
                   <div
                     className="principle-icon-badge"
@@ -84,7 +83,7 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
                 <p className="principle-card-desc">
                   {item.description}
                 </p>
-              </div>
+              </Card>
             );
           })}
         </div>
@@ -92,3 +91,4 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
     </section>
   );
 };
+

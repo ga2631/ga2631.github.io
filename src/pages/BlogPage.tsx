@@ -4,7 +4,6 @@ import { BlogPost } from '../types/index.ts';
 import {
   BookOpenIcon,
   CloseIcon,
-  SearchIcon,
   SparklesIcon,
   CalendarIcon,
   ClockIcon,
@@ -23,6 +22,9 @@ import {
   loadNextMonthBatch,
   loadAllArchivePosts,
 } from '../data/blogService.ts';
+import { Button, Badge, Card, Modal } from '../components/common';
+import { SearchInput, FilterChip, ScheduleBadge } from '../components/ui';
+import { EmptyState } from '../components/composite';
 
 interface BlogPageProps {
   posts: BlogPost[];
@@ -226,32 +228,16 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
     return () => window.removeEventListener('hashchange', checkHashForPost);
   }, [allPosts]);
 
-  // Lock body scroll when popup is open
-  useEffect(() => {
-    if (activePost) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [activePost]);
-
-  // Handle escape key to close popup or mobile drawer
+  // Handle escape key to close mobile drawer when modal is not open
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (activePost) {
-          handleClosePost();
-        } else if (isMobileSidebarOpen) {
-          setIsMobileSidebarOpen(false);
-        }
+      if (e.key === 'Escape' && isMobileSidebarOpen && !activePost) {
+        setIsMobileSidebarOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activePost, isMobileSidebarOpen]);
+  }, [isMobileSidebarOpen, activePost]);
 
   // Open / Close Post helper
   const handleOpenPost = (post: BlogPost) => {
@@ -322,17 +308,19 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
       
       {/* Mobile Top Filter Trigger Bar (Visible on <= 1024px) */}
       <div className="blog-mobile-toggle-bar">
-        <button
-          className="btn btn-secondary btn-sm blog-mobile-filter-btn"
+        <Button
+          variant="secondary"
+          size="sm"
+          className="blog-mobile-filter-btn"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
           aria-expanded={isMobileSidebarOpen}
+          icon={<FilterIcon size={16} />}
         >
-          <FilterIcon size={16} />
           <span>{t.categoriesTitle || 'Chuyên đề'}</span>
-          <span className="badge badge-cyan" style={{ marginLeft: '4px', fontSize: '0.75rem' }}>
+          <Badge variant="cyan" style={{ marginLeft: '4px', fontSize: '0.75rem' }}>
             {selectedCategory !== 'all' || selectedTag !== 'all' ? '1+' : (allPosts.length > 20 ? '20+' : allPosts.length)}
-          </span>
-        </button>
+          </Badge>
+        </Button>
       </div>
 
       {/* Full-Height App Layout */}
@@ -357,6 +345,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
               {t.categoriesTitle || 'Chuyên đề'}
             </span>
             <button
+              type="button"
               className="modal-close-btn"
               onClick={() => setIsMobileSidebarOpen(false)}
               aria-label="Close sidebar"
@@ -425,33 +414,33 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
             </div>
 
             <div className="sidebar-tags-cloud">
-              <button
-                type="button"
-                className={`sidebar-tag-pill ${selectedTag === 'all' ? 'active' : ''}`}
+              <Badge
+                variant="tag-pill"
+                isActive={selectedTag === 'all'}
+                count={allPosts.length > 20 ? '20+' : allPosts.length}
                 onClick={() => {
                   setSelectedTag('all');
                   setIsMobileSidebarOpen(false);
                 }}
               >
-                <span>{t.allTopics}</span>
-                <span className="tag-count">{allPosts.length > 20 ? '20+' : allPosts.length}</span>
-              </button>
+                {t.allTopics}
+              </Badge>
               {allTags.map((tag) => {
                 const count = tagCounts[tag] || 0;
                 const isTagActive = selectedTag === tag;
                 return (
-                  <button
+                  <Badge
                     key={tag}
-                    type="button"
-                    className={`sidebar-tag-pill ${isTagActive ? 'active' : ''}`}
+                    variant="tag-pill"
+                    isActive={isTagActive}
+                    count={count}
                     onClick={() => {
                       setSelectedTag(isTagActive ? 'all' : tag);
                       setIsMobileSidebarOpen(false);
                     }}
                   >
-                    <span>#{tag}</span>
-                    <span className="tag-count">{count}</span>
-                  </button>
+                    #{tag}
+                  </Badge>
                 );
               })}
             </div>
@@ -479,25 +468,11 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
             <div className="blog-grid">
               {/* Search Input Panel (Sticky Glass Box) */}
               <div className={`blog-controls-panel ${isFilterStuck ? 'is-stuck' : ''}`}>
-                <div className="blog-search-wrapper">
-                  <SearchIcon size={18} className="search-input-icon" />
-                  <input
-                    type="text"
-                    className="blog-search-input"
-                    placeholder={t.searchPlaceholder}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  {searchQuery && (
-                    <button
-                      className="search-clear-btn"
-                      onClick={() => setSearchQuery('')}
-                      aria-label="Clear search"
-                    >
-                      <CloseIcon size={14} />
-                    </button>
-                  )}
-                </div>
+                <SearchInput
+                  placeholder={t.searchPlaceholder}
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                />
 
                 {/* Active Filter Chips */}
                 {(selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery) && (
@@ -507,54 +482,39 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                     </span>
 
                     {selectedCategory !== 'all' && (
-                      <span className="filter-chip">
-                        <span className="chip-key">{t.filterByCategory || 'Chuyên đề'}:</span>
-                        <strong>{currentCategoryDef.title[langKey]}</strong>
-                        <button
-                          onClick={() => setSelectedCategory('all')}
-                          aria-label="Remove category filter"
-                          className="chip-remove-btn"
-                        >
-                          <CloseIcon size={12} />
-                        </button>
-                      </span>
+                      <FilterChip
+                        chipKey={t.filterByCategory || 'Chuyên đề'}
+                        chipValue={currentCategoryDef.title[langKey]}
+                        onRemove={() => setSelectedCategory('all')}
+                        removeAriaLabel="Remove category filter"
+                      />
                     )}
 
                     {selectedTag !== 'all' && (
-                      <span className="filter-chip">
-                        <span className="chip-key">{t.filterByTag || 'Thẻ'}:</span>
-                        <strong>#{selectedTag}</strong>
-                        <button
-                          onClick={() => setSelectedTag('all')}
-                          aria-label="Remove tag filter"
-                          className="chip-remove-btn"
-                        >
-                          <CloseIcon size={12} />
-                        </button>
-                      </span>
+                      <FilterChip
+                        chipKey={t.filterByTag || 'Thẻ'}
+                        chipValue={`#${selectedTag}`}
+                        onRemove={() => setSelectedTag('all')}
+                        removeAriaLabel="Remove tag filter"
+                      />
                     )}
 
                     {searchQuery && (
-                      <span className="filter-chip">
-                        <span className="chip-key">Search:</span>
-                        <strong>"{searchQuery}"</strong>
-                        <button
-                          onClick={() => setSearchQuery('')}
-                          aria-label="Remove search query"
-                          className="chip-remove-btn"
-                        >
-                          <CloseIcon size={12} />
-                        </button>
-                      </span>
+                      <FilterChip
+                        chipKey="Search"
+                        chipValue={`"${searchQuery}"`}
+                        onRemove={() => setSearchQuery('')}
+                        removeAriaLabel="Remove search query"
+                      />
                     )}
 
-                    <button
-                      className="btn-text-reset"
+                    <Button
+                      variant="text-reset"
                       onClick={handleResetFilters}
                       style={{ marginLeft: 'auto' }}
                     >
                       {t.resetFilters}
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -565,22 +525,25 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                   const postCatDef = BLOG_CATEGORY_DEFINITIONS.find((c) => c.id === post.category);
 
                   return (
-                    <div
+                    <Card
                       key={post.id}
-                      className={`glass-panel blog-card card-day-${postCatDef ? postCatDef.dayCode.toLowerCase() : 'all'}`}
+                      className={`blog-card card-day-${postCatDef ? postCatDef.dayCode.toLowerCase() : 'all'}`}
                       onClick={() => handleOpenPost(post)}
                     >
                       <div>
                         {/* Top Category Badge & Publishing Schedule Meta */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                           {postCatDef && postCatDef.id !== 'all' ? (
-                            <span className={`schedule-day-badge badge-${postCatDef.dayCode.toLowerCase()}`} style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
+                            <ScheduleBadge
+                              dayCode={postCatDef.dayCode}
+                              style={{ fontSize: '0.72rem', padding: '3px 8px' }}
+                            >
                               {postCatDef.title[langKey]}
-                            </span>
+                            </ScheduleBadge>
                           ) : (
-                            <span className="badge badge-purple" style={{ fontSize: '0.72rem' }}>
-                              <SparklesIcon size={11} /> {t.article}
-                            </span>
+                            <Badge variant="purple" style={{ fontSize: '0.72rem' }} icon={<SparklesIcon size={11} />}>
+                              {t.article}
+                            </Badge>
                           )}
 
                           <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
@@ -594,73 +557,52 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
 
                       <div className="tech-tags-list" style={{ marginTop: 'auto', paddingTop: '10px' }}>
                         {post.tags.map((tag) => (
-                          <span
+                          <Badge
                             key={tag}
-                            className={`badge ${selectedTag === tag ? 'badge-cyan' : ''}`}
+                            variant="default"
+                            className={selectedTag === tag ? 'badge-cyan' : ''}
+                            interactive={true}
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedTag(tag);
                             }}
                           >
                             #{tag}
-                          </span>
+                          </Badge>
                         ))}
                       </div>
-                    </div>
+                    </Card>
                   );
                 })
               ) : (
-                <div className="glass-panel" style={{ gridColumn: '1 / -1', padding: '48px 24px', textAlign: 'center', marginTop: '12px' }}>
-                  <BookOpenIcon size={40} style={{ color: 'var(--text-muted)', margin: '0 auto 16px' }} />
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{t.noArticlesFound}</h3>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '450px', margin: '0 auto 16px' }}>
-                    {selectedCategory !== 'all' ? (
+                <EmptyState
+                  icon={<BookOpenIcon size={40} />}
+                  title={t.noArticlesFound}
+                  description={
+                    selectedCategory !== 'all' ? (
                       <>
                         {t.filterByCategory || 'Chuyên đề'}: <strong>{currentCategoryDef.title[langKey]}</strong> ({currentCategoryDef.scheduleFull[langKey]})
                       </>
-                    ) : null}
-                  </p>
-                  <button
-                    className="btn btn-secondary btn-sm"
-                    style={{ marginTop: '8px' }}
-                    onClick={handleResetFilters}
-                  >
-                    {t.resetFilters}
-                  </button>
-                </div>
+                    ) : null
+                  }
+                  actionText={t.resetFilters}
+                  onAction={handleResetFilters}
+                />
               )}
             </div>
 
             {/* Load More Button if more month archives exist */}
             {hasMoreMonths && filteredPosts.length > 0 && (
               <div className="blog-load-more-container">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
+                <Button
+                  variant="secondary"
                   onClick={handleLoadMore}
-                  disabled={isLoadingMore}
-                  style={{ minWidth: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                  isLoading={isLoadingMore}
+                  loadingText={t.loadingMore || 'Đang tải dữ liệu...'}
+                  style={{ minWidth: '180px' }}
                 >
-                  {isLoadingMore ? (
-                    <>
-                      <span
-                        className="spinner-sm"
-                        style={{
-                          display: 'inline-block',
-                          width: '14px',
-                          height: '14px',
-                          border: '2px solid rgba(255,255,255,0.2)',
-                          borderTopColor: 'currentColor',
-                          borderRadius: '50%',
-                          animation: 'spin 0.8s linear infinite',
-                        }}
-                      />
-                      <span>{t.loadingMore || 'Đang tải dữ liệu...'}</span>
-                    </>
-                  ) : (
-                    <span>{t.loadMoreArticles || 'Tải thêm bài viết'}</span>
-                  )}
-                </button>
+                  <span>{t.loadMoreArticles || 'Tải thêm bài viết'}</span>
+                </Button>
               </div>
             )}
           </div>
@@ -682,9 +624,9 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
             }}
           >
             <div className="tooltip-top-row">
-              <span className={`schedule-day-badge badge-${hoveredCategory.cat.dayCode.toLowerCase()}`}>
-                <CalendarIcon size={12} /> {hoveredCategory.cat.scheduleFull[langKey]}
-              </span>
+              <ScheduleBadge dayCode={hoveredCategory.cat.dayCode} icon={<CalendarIcon size={12} />}>
+                {hoveredCategory.cat.scheduleFull[langKey]}
+              </ScheduleBadge>
             </div>
             <div className="tooltip-title">
               {hoveredCategory.cat.title[langKey]}
@@ -700,96 +642,75 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
         )}
 
       {/* ================= Blog Article Popup / Modal ================= */}
-      {activePost &&
-        createPortal(
-          <div
-            className="blog-modal-backdrop"
-            onClick={handleClosePost}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="article-modal-title"
-          >
-            <div
-              ref={modalContentRef}
-              className="blog-modal-content blog-article-modal"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Pinned / Sticky Modal Header (Does not scroll away) */}
-              <div className={`modal-sticky-header ${isModalHeaderTitleShown ? 'has-title' : ''}`}>
-                <div className="modal-header-title-wrapper">
-                  <span className="modal-header-article-title" title={activePost.title}>
-                    {activePost.title}
+      <Modal
+        isOpen={Boolean(activePost)}
+        onClose={handleClosePost}
+        title={activePost?.title}
+        stickyHeader={true}
+        isStickyTitleShown={isModalHeaderTitleShown}
+        closeAriaLabel="Close article popup"
+        backdropClassName="blog-modal-backdrop"
+        contentClassName="blog-modal-content blog-article-modal"
+        contentRef={modalContentRef}
+        ariaLabelledBy="article-modal-title"
+      >
+        {activePost && (
+          <div className="article-modal-body">
+            {/* Main Article Content & Right Sticky Table of Contents Layout */}
+            <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
+              <div className="article-main-column">
+                {/* Tag Badges */}
+                <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
+                  {activePost.tags.map((tag) => (
+                    <Badge key={tag} variant="cyan">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Article Title */}
+                <h1 id="article-modal-title" className="article-full-title">
+                  {activePost.title}
+                </h1>
+
+                {/* Meta info bar */}
+                <div className="article-meta-bar">
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                    <CalendarIcon size={14} /> {activePost.publishedAt}
+                  </span>
+                  <span>•</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                    <ClockIcon size={14} /> {activePost.readTime}
                   </span>
                 </div>
 
-                {/* Clean Close Icon Button */}
-                <button
-                  className="modal-close-btn"
-                  onClick={handleClosePost}
-                  aria-label="Close article popup"
-                >
-                  <CloseIcon size={18} />
-                </button>
-              </div>
-
-              {/* Modal Body Container */}
-              <div className="article-modal-body">
-                {/* Main Article Content & Right Sticky Table of Contents Layout */}
-                <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
-                  <div className="article-main-column">
-                    {/* Tag Badges */}
-                    <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
-                      {activePost.tags.map((tag) => (
-                        <span key={tag} className="badge badge-cyan">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Article Title */}
-                    <h1 id="article-modal-title" className="article-full-title">
-                      {activePost.title}
-                    </h1>
-
-                    {/* Meta info bar */}
-                    <div className="article-meta-bar">
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                        <CalendarIcon size={14} /> {activePost.publishedAt}
-                      </span>
-                      <span>•</span>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                        <ClockIcon size={14} /> {activePost.readTime}
-                      </span>
-                    </div>
-
-                    {/* Summary Callout */}
-                    <div className="article-summary-callout">
-                      <strong>{tCommon.overview}: </strong>
-                      <span>{activePost.summary}</span>
-                    </div>
-
-                    {/* Full Article Content with Injected Heading IDs */}
-                    <div
-                      className="article-body"
-                      dangerouslySetInnerHTML={{ __html: processedHtml }}
-                    />
-                  </div>
-
-                  {/* Right Sticky Table of Contents Sidebar */}
-                  {tocItems.length > 0 && (
-                    <ArticleTocSidebar
-                      tocItems={tocItems}
-                      activeHeadingId={activeHeadingId}
-                      onSelectHeading={handleSelectHeading}
-                      tocTitle={tCommon.tableOfContents}
-                    />
-                  )}
+                {/* Summary Callout */}
+                <div className="article-summary-callout">
+                  <strong>{tCommon.overview}: </strong>
+                  <span>{activePost.summary}</span>
                 </div>
+
+                {/* Full Article Content with Injected Heading IDs */}
+                <div
+                  className="article-body"
+                  dangerouslySetInnerHTML={{ __html: processedHtml }}
+                />
               </div>
+
+              {/* Right Sticky Table of Contents Sidebar */}
+              {tocItems.length > 0 && (
+                <ArticleTocSidebar
+                  tocItems={tocItems}
+                  activeHeadingId={activeHeadingId}
+                  onSelectHeading={handleSelectHeading}
+                  tocTitle={tCommon.tableOfContents}
+                />
+              )}
             </div>
-          </div>,
-          document.body
+          </div>
         )}
+      </Modal>
     </div>
   );
 };
+
