@@ -25,6 +25,8 @@ flowchart TD
         EmptyState["EmptyState\n(Glass card + icon + message + CTA button)"]
         ButtonFloatingScrollTop["ButtonFloatingScrollTop\n(Scroll-to-top detection + ButtonFloating)"]
         ButtonPrint["ButtonPrint\n(CV Download logic: 'floating' FAB or 'default' Sidebar Button)"]
+        FloatingActions["FloatingActions\n(Combined quick actions container: ScrollTop + Print)"]
+        DrawerMenu["DrawerMenu\n(Sidebar navigation drawer, preferences, language & theme)"]
         BadgeFilterChip["BadgeFilterChip\n(Active filter chip with key-value and dismiss)"]
         BadgeSchedule["BadgeSchedule\n(Publication weekday schedule color indicator)"]
         ModalCaseStudy["ModalCaseStudy\n(Complete project case study architecture dialog)"]
@@ -32,7 +34,8 @@ flowchart TD
     end
 
     subgraph Domain["Application Views & Pages"]
-        Hero["Hero / Header"]
+        Hero["Hero"]
+        Header["Header (incorporates DrawerMenu)"]
         About["About (Section + Card compound)"]
         Skills["Skills (Section + Card compound)"]
         Experience["Experience (Section + Card compound + TechTagList)"]
@@ -42,7 +45,6 @@ flowchart TD
         BlogSection["Blog Section (Section + Card compound + ModalArticle)"]
         BlogPage["Blog Page (Card compound + ModalArticle + InputSearch + BadgeFilterChip + BadgeSchedule + EmptyState)"]
         App["App Root Layout (ButtonFloatingScrollTop + ButtonPrint)"]
-        DrawerMenu["DrawerMenu / Sidebar (ButtonPrint default variant)"]
     end
 
     Tier1 --> Tier2
@@ -67,6 +69,8 @@ flowchart TD
 | **Tier 2 (UI)** | [`Section`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ui/Section.tsx) | Standard section wrapper (`<section>`, `.container`, `SectionHeader`) |
 | **Tier 2 (UI)** | [`InputSearch`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ui/InputSearch.tsx) | Specialized search input extending `Input` |
 | **Tier 2 (UI)** | [`ButtonFloating`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/ui/ButtonFloating.tsx) | Specialized FAB button extending `Button` |
+| **Tier 3 (Composite)** | [`DrawerMenu`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/composite/DrawerMenu.tsx) | Full sidebar drawer menu with nav links, preferences, and ButtonPrint |
+| **Tier 3 (Composite)** | [`FloatingActions`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/composite/FloatingActions.tsx) | Combined floating actions bar (`ButtonFloatingScrollTop` + `ButtonPrint`) |
 | **Tier 3 (Composite)** | [`TechTagList`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/composite/TechTagList.tsx) | Brand-colored interactive tech badge list |
 | **Tier 3 (Composite)** | [`EmptyState`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/composite/EmptyState.tsx) | Complete empty-state container with glass card & CTA |
 | **Tier 3 (Composite)** | [`ButtonFloatingScrollTop`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/composite/ButtonFloatingScrollTop.tsx) | Scroll position listener + scroll-to-top FAB action |

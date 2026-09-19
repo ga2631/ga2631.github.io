@@ -1,6 +1,7 @@
 import React from 'react';
-import { UITranslation } from '../data/cvData.ts';
-import { ButtonFloatingScrollTop, ButtonPrint } from './composite';
+import { UITranslation } from '../../data/cvData.ts';
+import { ButtonFloatingScrollTop } from './ButtonFloatingScrollTop.tsx';
+import { ButtonPrint } from './ButtonPrint.tsx';
 
 export interface FloatingActionsProps {
   onPrint?: () => void;

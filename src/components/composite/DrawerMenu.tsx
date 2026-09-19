@@ -16,11 +16,11 @@ import {
   ZaloIcon,
   VietnamFlagIcon,
   UKFlagIcon,
-} from './Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
-import { PersonalInfo } from '../types/index.ts';
-import { getSecureZaloUrl } from '../utils/obfuscation.tsx';
-import { ButtonPrint } from './composite';
+} from '../Icons.tsx';
+import { UITranslation } from '../../data/cvData.ts';
+import { PersonalInfo } from '../../types/index.ts';
+import { getSecureZaloUrl } from '../../utils/obfuscation.tsx';
+import { ButtonPrint } from './ButtonPrint.tsx';
 
 export interface NavItem {
   label: string;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { FloatingActions } from '../../src/components/FloatingActions';
+import { FloatingActions } from '../../src/components/composite/FloatingActions';
 import { Hero } from '../../src/components/Hero';
 import { About } from '../../src/components/About';
 import { Skills } from '../../src/components/Skills';

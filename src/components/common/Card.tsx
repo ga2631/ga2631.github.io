@@ -151,7 +151,7 @@ export const Card = React.forwardRef<HTMLElement, CardProps>(
         ref={ref as any}
         className={combinedClassName}
         onClick={onClick}
-        style={{ display: 'flex', flexDirection: 'column', ...style }}
+        style={style}
         {...restProps}
       >
         {header && (React.isValidElement(header) && (header.type === CardHeader || (header as any).type?.displayName === 'CardHeader') ? header : <CardHeader>{header}</CardHeader>)}

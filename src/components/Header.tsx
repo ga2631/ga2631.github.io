@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SunIcon, MoonIcon, MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { PersonalInfo } from '../types/index.ts';
-import { DrawerMenu, NavItem } from './DrawerMenu.tsx';
+import { DrawerMenu, NavItem } from './composite';
 import { Button } from './common';
 
 interface HeaderProps {

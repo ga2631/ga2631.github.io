@@ -7,3 +7,5 @@ export * from './BadgeFilterChip';
 export * from './BadgeSchedule';
 export * from './ModalCaseStudy';
 export * from './ModalArticle';
+export * from './DrawerMenu';
+export * from './FloatingActions';
