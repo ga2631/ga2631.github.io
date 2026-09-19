@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { blogPostsEn, blogPostsVi } from '../../src/data/blogData';
-import { BLOG_CATEGORY_DEFINITIONS } from '../../src/data/blog/blogCategories';
+import { blogPostsEn, blogPostsVi } from '../../../src/data/blogData';
+import { BLOG_CATEGORY_DEFINITIONS } from '../../../src/data/blog/blogCategories';
 import {
   CATEGORY_STRUCTURE_DEFINITIONS,
   validateBlogPostStructure,
-} from '../../src/data/blog/blogTemplates';
-import viBlogRaw from '../../src/data/blog/vi/2026/09.json';
-import enBlogRaw from '../../src/data/blog/en/2026/09.json';
+} from '../../../src/data/blog/blogTemplates';
+import viBlogRaw from '../../../src/data/blog/vi/2026/09.json';
+import enBlogRaw from '../../../src/data/blog/en/2026/09.json';
 
-describe('TS-13: Standardized Blog Post Structure & Category Schema Validation', () => {
+describe('TU-DATA-02: Data - Standardized Blog Post Structure & Category Schema Validation', () => {
   const activeCategories = BLOG_CATEGORY_DEFINITIONS.filter((c) => c.id !== 'all');
 
   it('should have standard structure definitions for all 5 active blog categories', () => {

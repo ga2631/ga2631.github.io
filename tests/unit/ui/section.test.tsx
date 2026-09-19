@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Section } from '../../../src/components/ui/Section';
 
-describe('Tier 2: Section Component', () => {
+describe('TU-UI-01: UI - Section Component', () => {
   it('renders section container with id, header, and children', () => {
     const { container } = render(
       <Section

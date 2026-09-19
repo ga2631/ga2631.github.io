@@ -6,9 +6,9 @@ import {
   saveManualThemeOverride,
   THEME_STORAGE_KEY,
   THEME_OVERRIDE_DATE_KEY,
-} from '../../src/utils/theme';
+} from '../../../src/utils/theme';
 
-describe('TS-15: Real-time Day/Night Theme & Daily Override Utility', () => {
+describe('TU-UTILS-01: Utils - Real-time Day/Night Theme & Daily Override Utility', () => {
   beforeEach(() => {
     localStorage.clear();
   });

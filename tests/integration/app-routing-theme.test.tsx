@@ -4,7 +4,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { App } from '../../src/App';
 import { uiTranslations } from '../../src/data/cvData';
 
-describe('TS-01, TS-03, TS-04: App Routing, Theme & Localization Integration', () => {
+describe('TI-01: Integration - App Routing, Theme & Localization', () => {
   beforeEach(() => {
     window.location.hash = '';
     localStorage.clear();

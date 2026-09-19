@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Input } from '../../../src/components/common/Input';
 
-describe('Tier 1: Input Component', () => {
+describe('TU-COMMON-04: Common - Input Component', () => {
   it('renders standard input element without wrapper when no adornments or clearable', () => {
     render(<Input placeholder="Enter username" />);
     const input = screen.getByPlaceholderText('Enter username');

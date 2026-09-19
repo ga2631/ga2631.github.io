@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest';
 import { Projects } from '../../src/components/Projects';
 import { cvDataEn, uiTranslations } from '../../src/data/cvData';
 
-describe('TS-08: Projects & Architecture Modal Integration', () => {
+describe('TI-04: Integration - Architectural Projects & Modal Case Study', () => {
   const defaultProps = {
     projects: cvDataEn.projects,
     t: uiTranslations.en.projects,

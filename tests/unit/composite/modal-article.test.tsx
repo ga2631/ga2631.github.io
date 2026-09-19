@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { ModalArticle, processArticleToc } from '../../../src/components/composite/ModalArticle';
 import { BlogPost, TocItem } from '../../../src/types';
 
-describe('Tier 3: ModalArticle Composite Component & TOC Parser', () => {
+describe('TU-COMPOSITE-09: Composite - ModalArticle Component', () => {
   const mockPost: BlogPost = {
     id: 'post-system-design',
     slug: 'post-system-design',

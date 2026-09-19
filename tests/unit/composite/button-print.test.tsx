@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ButtonPrint } from '../../../src/components/composite/ButtonPrint';
 
-describe('Tier 3: ButtonPrint Composite Component', () => {
+describe('TU-COMPOSITE-05: Composite - ButtonPrint Component', () => {
   const mockTCommon = {
     scrollToTop: 'Scroll to top',
     exportPdf: 'Export PDF',

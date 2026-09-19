@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { BadgeSchedule } from '../../../src/components/composite/BadgeSchedule';
 
-describe('Tier 3: BadgeSchedule Composite Component', () => {
+describe('TU-COMPOSITE-07: Composite - BadgeSchedule Component', () => {
   it('renders schedule badge with day code class', () => {
     render(<BadgeSchedule dayCode="MON">Monday • Tech Deep Dive</BadgeSchedule>);
 

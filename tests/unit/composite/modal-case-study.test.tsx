@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { ModalCaseStudy } from '../../../src/components/composite/ModalCaseStudy';
 import { ProjectItem } from '../../../src/types';
 
-describe('Tier 3: ModalCaseStudy Composite Component', () => {
+describe('TU-COMPOSITE-08: Composite - ModalCaseStudy Component', () => {
   const mockProject: ProjectItem = {
     id: 'erp-medallion',
     title: 'ERP Data Infrastructure Migration',

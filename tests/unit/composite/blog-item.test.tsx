@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { BlogItem } from '../../../src/components/composite/BlogItem';
 import { BlogPost } from '../../../src/types';
 
-describe('Tier 3: BlogItem Composite Component', () => {
+describe('TU-COMPOSITE-10: Composite - BlogItem Component', () => {
   const mockPost: BlogPost = {
     id: 'test-article-1',
     slug: 'test-article-1',

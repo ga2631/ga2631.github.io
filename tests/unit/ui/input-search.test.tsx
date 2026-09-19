@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { InputSearch } from '../../../src/components/ui/InputSearch';
 
-describe('Tier 2: InputSearch Component', () => {
+describe('TU-UI-02: UI - InputSearch Component', () => {
   it('renders search input with default placeholder and search icon', () => {
     render(<InputSearch placeholder="Search articles..." value="" onChange={vi.fn()} />);
 

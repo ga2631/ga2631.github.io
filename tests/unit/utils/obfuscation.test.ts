@@ -6,9 +6,9 @@ import {
   getSecurePhone,
   getSecureZaloUrl,
   getSecureTelUrl,
-} from '../../src/utils/obfuscation';
+} from '../../../src/utils/obfuscation';
 
-describe('TS-11: Contact Anti-Scraping Obfuscation Unit Tests', () => {
+describe('TU-UTILS-02: Utils - Contact Anti-Scraping Obfuscation Utility', () => {
   it('should correctly decode base64 strings safely in all environments', () => {
     const original = 'Hello World';
     const encoded = btoa(original);

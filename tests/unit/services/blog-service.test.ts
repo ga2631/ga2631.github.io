@@ -7,9 +7,9 @@ import {
   assembleArticleHtml,
   hydrateBlogPost,
   sortPostsByDateDesc,
-} from '../../src/services/blogService';
+} from '../../../src/services/blogService';
 
-describe('TS-14: Year/Month Blog Storage & Dynamic Loader Verification', () => {
+describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
   it('should discover and sort month archives descending by year and month for Vietnamese and English', () => {
     const viArchives = getAvailableMonthArchives('vi');
     const enArchives = getAvailableMonthArchives('en');

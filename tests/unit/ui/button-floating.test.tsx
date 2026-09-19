@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ButtonFloating } from '../../../src/components/ui/ButtonFloating';
 
-describe('Tier 2: ButtonFloating Component', () => {
+describe('TU-UI-03: UI - ButtonFloating Component', () => {
   it('renders primary floating button with glow element by default', () => {
     render(
       <ButtonFloating

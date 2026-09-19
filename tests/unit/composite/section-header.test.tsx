@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { SectionHeader } from '../../../src/components/composite/SectionHeader';
 
-describe('Tier 3: SectionHeader Composite Component', () => {
+describe('TU-COMPOSITE-01: Composite - SectionHeader Component', () => {
   it('renders section title, subtitle, and section badge', () => {
     render(
       <SectionHeader

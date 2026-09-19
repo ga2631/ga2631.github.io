@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Modal } from '../../../src/components/common/Modal';
 
-describe('Tier 1: Modal Component', () => {
+describe('TU-COMMON-05: Common - Modal Component', () => {
   it('does not render when isOpen is false', () => {
     render(
       <Modal isOpen={false} onClose={vi.fn()} title="Modal Title">

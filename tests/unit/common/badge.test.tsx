@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Badge } from '../../../src/components/common/Badge';
 
-describe('Tier 1: Badge Component', () => {
+describe('TU-COMMON-02: Common - Badge Component', () => {
   it('renders default badge span element', () => {
     render(<Badge>Frontend</Badge>);
     const badge = screen.getByText('Frontend');

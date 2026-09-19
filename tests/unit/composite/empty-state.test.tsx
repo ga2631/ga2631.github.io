@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { EmptyState } from '../../../src/components/composite/EmptyState';
 
-describe('Tier 3: EmptyState Composite Component', () => {
+describe('TU-COMPOSITE-03: Composite - EmptyState Component', () => {
   it('renders icon, title, and description in glass card container', () => {
     const { container } = render(
       <EmptyState

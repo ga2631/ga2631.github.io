@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { cvDataEn, cvDataVi, uiTranslations } from '../../src/data/cvData';
-import { blogPostsEn, blogPostsVi } from '../../src/data/blogData';
-import { validateBlogPostStructure } from '../../src/data/blog/blogTemplates';
+import { cvDataEn, cvDataVi, uiTranslations } from '../../../src/data/cvData';
+import { blogPostsEn, blogPostsVi } from '../../../src/data/blogData';
+import { validateBlogPostStructure } from '../../../src/data/blog/blogTemplates';
 
 // Recursive helper to get all nested object keys
 const getAllKeys = (obj: Record<string, any>, prefix = ''): string[] => {
@@ -16,7 +16,7 @@ const getAllKeys = (obj: Record<string, any>, prefix = ''): string[] => {
   }, []);
 };
 
-describe('TS-03: Localization & Data Integrity Verification', () => {
+describe('TU-DATA-01: Data - Localization & Data Integrity Verification', () => {
   it('should have identical UI translation dictionary keys between English and Vietnamese', () => {
     const enKeys = getAllKeys(uiTranslations.en).sort();
     const viKeys = getAllKeys(uiTranslations.vi).sort();

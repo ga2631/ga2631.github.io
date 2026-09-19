@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Card } from '../../../src/components/common/Card';
 
-describe('Tier 1: Card Component', () => {
+describe('TU-COMMON-03: Common - Card Component', () => {
   it('renders default glass card as div with flex layout', () => {
     const { container } = render(<Card>Card Body Content</Card>);
     const cardEl = container.firstChild as HTMLElement;

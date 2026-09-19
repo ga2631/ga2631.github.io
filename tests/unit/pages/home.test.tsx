@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest';
 import { Home } from '../../../src/pages/Home';
 import { cvDataEn, uiTranslations } from '../../../src/data/cvData';
 
-describe('Home Page Component', () => {
+describe('TU-PAGES-01: Pages - Home Component', () => {
   it('renders all main portfolio sections (Hero, About, Experience, Projects, Skills, Education, Contact, Footer)', () => {
     render(<Home data={cvDataEn} t={uiTranslations.en} />);
 

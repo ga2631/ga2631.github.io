@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { TechTagList } from '../../../src/components/composite/TechTagList';
 
-describe('Tier 3: TechTagList Composite Component', () => {
+describe('TU-COMPOSITE-02: Composite - TechTagList Component', () => {
   const sampleTags = ['TypeScript', 'React', 'Docker', 'PostgreSQL'];
 
   it('renders list of tags with default badges', () => {

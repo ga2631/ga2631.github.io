@@ -5,7 +5,7 @@ import { Blog } from '../../src/pages/Blog';
 import { blogPostsEn } from '../../src/data/blogData';
 import { uiTranslations } from '../../src/data/cvData';
 
-describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', () => {
+describe('TI-05: Integration - Blog Reader, Filtering & Article Modal', () => {
   const defaultProps = {
     posts: blogPostsEn,
     t: uiTranslations.en.blog,

@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { Header } from '../../src/components/Header';
 import { uiTranslations, cvDataEn } from '../../src/data/cvData';
 
-describe('TS-01, TS-02: Header & Mobile Drawer Navigation Integration', () => {
+describe('TI-02: Integration - Header & Mobile Drawer Navigation', () => {
   const defaultProps = {
     theme: 'dark' as const,
     toggleTheme: vi.fn(),

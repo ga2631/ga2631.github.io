@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ButtonFloatingScrollTop } from '../../../src/components/composite/ButtonFloatingScrollTop';
 
-describe('Tier 3: ButtonFloatingScrollTop Composite Component', () => {
+describe('TU-COMPOSITE-04: Composite - ButtonFloatingScrollTop Component', () => {
   const mockTCommon = {
     scrollToTop: 'Scroll to top',
     exportPdf: 'Export PDF',

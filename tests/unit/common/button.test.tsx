@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Button } from '../../../src/components/common/Button';
 
-describe('Tier 1: Button Component', () => {
+describe('TU-COMMON-01: Common - Button Component', () => {
   it('renders standard button with default secondary variant and md size', () => {
     render(<Button>Click Me</Button>);
     const button = screen.getByRole('button', { name: /click me/i });

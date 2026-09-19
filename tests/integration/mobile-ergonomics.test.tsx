@@ -8,7 +8,7 @@ import { Skills } from '../../src/components/Skills';
 import { EducationCertifications } from '../../src/components/EducationCertifications';
 import { cvDataEn, uiTranslations } from '../../src/data/cvData';
 
-describe('TS-05 to TS-15: Mobile Ergonomics, Sections & Floating Actions', () => {
+describe('TI-03: Integration - Mobile Ergonomics & Responsive UX', () => {
   it('should render Hero CTA buttons with accessible labels and links', () => {
     render(<Hero data={cvDataEn.personalInfo} t={uiTranslations.en.hero} />);
 
