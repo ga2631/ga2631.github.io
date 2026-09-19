@@ -157,7 +157,8 @@ export interface BlogLoadResult {
  * Returns initial batch of posts (or all posts).
  */
 export async function loadInitialBlogPosts(
-  lang: 'vi' | 'en'
+  lang: 'vi' | 'en',
+  _initialBatchCount = 20
 ): Promise<BlogLoadResult> {
   const allPosts = getEagerPosts(lang);
   const archives = getAvailableMonthArchives(lang);
@@ -175,8 +176,8 @@ export async function loadInitialBlogPosts(
  */
 export async function loadNextMonthBatch(
   lang: 'vi' | 'en',
-  currentLoadedMonthKeys: string[],
-  targetBatchCount = 20
+  _currentLoadedMonthKeys: string[],
+  _targetBatchCount = 20
 ): Promise<BlogLoadResult> {
   const allPosts = getEagerPosts(lang);
   const archives = getAvailableMonthArchives(lang);

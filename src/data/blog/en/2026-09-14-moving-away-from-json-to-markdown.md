@@ -37,7 +37,7 @@ The new architecture needed to satisfy the strict constraints of a personal proj
 - **Feature Parity:** Must still support Filtering and Searching by Tags and Categories.
 - **Friendly DX:** Support smooth writing in an IDE, accurate syntax highlighting, and technical diagrams.
 
-## Architectural Design
+## Architecture Design
 
 To solve this, I decided to transition from a **Client-side Rendering (CSR) + JSON** model to a **Static Site Generation (SSG) + Markdown** model.
 

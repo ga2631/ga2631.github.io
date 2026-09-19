@@ -73,7 +73,7 @@ describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
       expect(post.title).toBeTruthy();
       expect(post.category).toBeTruthy();
       expect(post.contentHtml).toBeTruthy();
-      expect(post.contentHtml).toContain('<h3');
+      expect(post.contentHtml).toMatch(/<h[23]/);
     });
 
     enToCheck.forEach((post) => {
@@ -81,7 +81,7 @@ describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
       expect(post.title).toBeTruthy();
       expect(post.category).toBeTruthy();
       expect(post.contentHtml).toBeTruthy();
-      expect(post.contentHtml).toContain('<h3');
+      expect(post.contentHtml).toMatch(/<h[23]/);
     });
   });
 
