@@ -280,9 +280,12 @@
   cursor: default;
   transition: all var(--transition-fast);
 
-  /* Level 5 (5/5 • Expert) Badge Styling */
+  /* Level 5 (5/5 • Mastery / Expert) Badge Styling */
   &.skill-tag-5,
-  &.skill-tag-expert {
+  &.skill-tag-expert,
+  &.skill-tag-mastery,
+  &.level-mastery,
+  &.level-5 {
     background: var(--skill-5-bg);
     border: 1px solid var(--skill-5-border);
     color: var(--skill-5-text);
@@ -299,7 +302,9 @@
 
   /* Level 4 (4/5 • Advanced) Badge Styling */
   &.skill-tag-4,
-  &.skill-tag-advanced {
+  &.skill-tag-advanced,
+  &.level-advanced,
+  &.level-4 {
     background: var(--skill-4-bg);
     border: 1px solid var(--skill-4-border);
     color: var(--skill-4-text);
@@ -316,7 +321,9 @@
 
   /* Level 3 (3/5 • Proficient) Badge Styling */
   &.skill-tag-3,
-  &.skill-tag-proficient {
+  &.skill-tag-proficient,
+  &.level-proficient,
+  &.level-3 {
     background: var(--skill-3-bg);
     border: 1px solid var(--skill-3-border);
     color: var(--skill-3-text);
@@ -331,9 +338,12 @@
     }
   }
 
-  /* Level 2 (2/5 • Familiar) Badge Styling */
+  /* Level 2 (2/5 • Intermediate / Familiar) Badge Styling */
   &.skill-tag-2,
-  &.skill-tag-familiar {
+  &.skill-tag-familiar,
+  &.skill-tag-intermediate,
+  &.level-intermediate,
+  &.level-2 {
     background: var(--skill-2-bg);
     border: 1px solid var(--skill-2-border);
     color: var(--skill-2-text);
@@ -348,9 +358,13 @@
     }
   }
 
-  /* Level 1 (1/5 • Fundamental) Badge Styling */
+  /* Level 1 (1/5 • Foundational / Beginner) Badge Styling */
   &.skill-tag-1,
-  &.skill-tag-fundamental {
+  &.skill-tag-fundamental,
+  &.skill-tag-beginner,
+  &.skill-tag-foundational,
+  &.level-foundational,
+  &.level-1 {
     background: var(--skill-1-bg);
     border: 1px solid var(--skill-1-border);
     color: var(--skill-1-text);

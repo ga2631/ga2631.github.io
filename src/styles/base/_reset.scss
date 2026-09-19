@@ -70,3 +70,16 @@ p {
   text-align: justify;
   text-justify: inter-word;
 }
+
+/* Prevent global text-align: justify from distorting SVG and foreignObject labels */
+svg,
+foreignObject {
+  p,
+  span,
+  div,
+  text {
+    text-align: initial;
+    text-justify: auto;
+  }
+}
+

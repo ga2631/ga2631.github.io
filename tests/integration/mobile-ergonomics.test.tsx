@@ -1,14 +1,14 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { FloatingActions } from '../../src/components/FloatingActions';
+import { FloatingActions } from '../../src/components/composite/FloatingActions';
 import { Hero } from '../../src/components/Hero';
 import { About } from '../../src/components/About';
 import { Skills } from '../../src/components/Skills';
 import { EducationCertifications } from '../../src/components/EducationCertifications';
 import { cvDataEn, uiTranslations } from '../../src/data/cvData';
 
-describe('TS-05 to TS-15: Mobile Ergonomics, Sections & Floating Actions', () => {
+describe('TI-03: Integration - Mobile Ergonomics & Responsive UX', () => {
   it('should render Hero CTA buttons with accessible labels and links', () => {
     render(<Hero data={cvDataEn.personalInfo} t={uiTranslations.en.hero} />);
 

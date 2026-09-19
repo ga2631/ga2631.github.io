@@ -67,6 +67,8 @@
 }
 
 .glass-panel {
+  display: flex;
+  flex-direction: column;
   background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);

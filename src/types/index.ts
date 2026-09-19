@@ -99,6 +99,7 @@ export interface BlogPost {
   category?: string;
   sections?: Record<string, string>;
   contentHtml: string;
+  content?: string;
 }
 
 export interface BlogCategoryItem {

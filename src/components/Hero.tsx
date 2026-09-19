@@ -3,6 +3,7 @@ import { PersonalInfo } from '../types/index.ts';
 import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, DownloadIcon, ExternalLinkIcon, CheckIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
+import { Card, Button } from './common';
 
 interface HeroProps {
   data: PersonalInfo;
@@ -25,7 +26,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
         <div className="hero-grid">
           {/* Left Column: Visual Developer Profile Card */}
           <div className="hero-visual">
-            <div className="glass-panel avatar-card">
+            <Card className="avatar-card">
               <div className="avatar-wrapper">
                 {data.avatarUrl ? (
                   <img
@@ -68,57 +69,57 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
               </div>
 
               <div className="social-links">
-                <a
+                <Button
+                  as="a"
                   href={data.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="social-icon-btn"
+                  variant="social-icon"
                   aria-label="GitHub Profile"
                   title="GitHub @ga2631"
-                >
-                  <GithubIcon size={20} />
-                </a>
+                  icon={<GithubIcon size={20} />}
+                />
 
                 {data.linkedinUrl && (
-                  <a
+                  <Button
+                    as="a"
                     href={data.linkedinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="social-icon-btn"
+                    variant="social-icon"
                     aria-label="LinkedIn Profile"
                     title="LinkedIn"
-                  >
-                    <LinkedinIcon size={20} />
-                  </a>
+                    icon={<LinkedinIcon size={20} />}
+                  />
                 )}
 
                 {data.zaloUrl && (
-                  <a
+                  <Button
+                    as="a"
                     href="#"
                     onClick={handleZaloClick}
-                    onMouseEnter={(e) => { e.currentTarget.href = getSecureZaloUrl(); }}
+                    onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureZaloUrl(); }}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="social-icon-btn"
+                    variant="social-icon"
                     aria-label="Zalo Profile"
                     title="Zalo"
-                  >
-                    <ZaloIcon size={20} />
-                  </a>
+                    icon={<ZaloIcon size={20} />}
+                  />
                 )}
 
-                <a
+                <Button
+                  as="a"
                   href="#"
                   onClick={handleEmailClick}
-                  onMouseEnter={(e) => { e.currentTarget.href = getSecureMailtoUrl(); }}
-                  className="social-icon-btn"
+                  onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureMailtoUrl(); }}
+                  variant="social-icon"
                   aria-label="Send Email"
                   title="Email"
-                >
-                  <MailIcon size={20} />
-                </a>
+                  icon={<MailIcon size={20} />}
+                />
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Right Column: Introduction & CTA */}
@@ -137,30 +138,39 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
             <p className="hero-bio">{data.bio}</p>
 
             <div className="hero-cta-group">
-              <a href="#projects" className="btn btn-primary">
-                <span>{t.viewProjects}</span>
-                <ExternalLinkIcon size={16} />
-              </a>
-
-              <a href="#contact" className="btn btn-secondary">
-                <MailIcon size={16} />
-                <span>{t.getInTouch}</span>
-              </a>
-
-              <button
-                onClick={() => window.print()}
-                className="btn btn-secondary"
-                title="Save CV as PDF"
+              <Button
+                as="a"
+                href="#projects"
+                variant="primary"
+                icon={<ExternalLinkIcon size={16} />}
+                iconPosition="right"
               >
-                <DownloadIcon size={16} />
+                <span>{t.viewProjects}</span>
+              </Button>
+
+              <Button
+                as="a"
+                href="#contact"
+                variant="secondary"
+                icon={<MailIcon size={16} />}
+              >
+                <span>{t.getInTouch}</span>
+              </Button>
+
+              <Button
+                variant="secondary"
+                onClick={() => window.print()}
+                title="Save CV as PDF"
+                icon={<DownloadIcon size={16} />}
+              >
                 <span>{t.saveCv}</span>
-              </button>
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Full-width Standalone Hero Stats Banner */}
-        <div className="glass-panel hero-stats-banner">
+        <Card className="hero-stats-banner">
           {data.stats.map((stat, idx) => (
             <div key={idx} className="hero-stat-card">
               <div className="hero-stat-value gradient-text">{stat.value}</div>
@@ -168,8 +178,9 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
               {stat.subtext && <div className="hero-stat-subtext">{stat.subtext}</div>}
             </div>
           ))}
-        </div>
+        </Card>
       </div>
     </section>
   );
 };
+

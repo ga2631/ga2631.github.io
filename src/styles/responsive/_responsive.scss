@@ -88,7 +88,8 @@
   }
 
   .blog-article-modal {
-    max-width: 800px;
+    max-width: calc(var(--max-width) - 48px);
+    width: 100%;
   }
 
   .article-modal-layout.has-toc {

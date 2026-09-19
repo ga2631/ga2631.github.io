@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { ProjectItem } from '../types/index.ts';
 import {
   CodeIcon,
-  GithubIcon,
-  ExternalLinkIcon,
-  CloseIcon,
+  SparklesIcon,
   GitRepoIcon,
   StarIcon,
   GitForkIcon,
-  SparklesIcon,
-  TargetIcon,
-  ZapIcon,
-  ToolsIcon,
-  RocketIcon,
-  ShieldIcon,
+  GithubIcon,
+  ExternalLinkIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
+import { Card, Button, Badge } from './common';
+import { Section } from './ui';
+import { ModalCaseStudy } from './composite';
 
 interface ProjectsProps {
   projects: ProjectItem[];
@@ -27,92 +23,46 @@ interface ProjectsProps {
 interface GitHubRepo {
   id: number;
   name: string;
-  full_name: string;
+  description: string;
   html_url: string;
-  description: string | null;
-  homepage: string | null;
+  homepage: string;
   stargazers_count: number;
   forks_count: number;
-  language: string | null;
-  topics?: string[];
+  language: string;
+  topics: string[];
   updated_at: string;
-  fork: boolean;
+  pushed_at: string;
 }
 
-const FALLBACK_REPOS: GitHubRepo[] = [
-  {
-    id: 101,
-    name: 'ga2631.github.io',
-    full_name: 'ga2631/ga2631.github.io',
-    html_url: 'https://github.com/ga2631/ga2631.github.io',
-    description: 'Modern Portfolio & Interactive Engineering CV built with React 19, TypeScript, and Vite.',
-    homepage: 'https://ga2631.github.io',
-    stargazers_count: 1,
-    forks_count: 0,
-    language: 'TypeScript',
-    topics: ['react', 'typescript', 'vite', 'portfolio', 'resume'],
-    updated_at: new Date().toISOString(),
-    fork: false,
-  },
-  {
-    id: 102,
-    name: 'microservices-cdc-pipeline',
-    full_name: 'ga2631/microservices-cdc-pipeline',
-    html_url: 'https://github.com/ga2631',
-    description: 'High-throughput CDC pipeline implementation using Debezium, Apache Kafka, and ClickHouse OLAP.',
-    homepage: null,
-    stargazers_count: 3,
-    forks_count: 1,
-    language: 'Go',
-    topics: ['golang', 'kafka', 'clickhouse', 'cdc', 'debezium'],
-    updated_at: new Date().toISOString(),
-    fork: false,
-  },
-  {
-    id: 103,
-    name: 'spring-boot-ecommerce-core',
-    full_name: 'ga2631/spring-boot-ecommerce-core',
-    html_url: 'https://github.com/ga2631',
-    description: 'Enterprise ERP & E-Commerce microservices engine with Spring Boot, Redis Cache, and PostgreSQL.',
-    homepage: null,
-    stargazers_count: 2,
-    forks_count: 0,
-    language: 'Java',
-    topics: ['java', 'spring-boot', 'postgresql', 'redis', 'microservices'],
-    updated_at: new Date().toISOString(),
-    fork: false,
-  },
-];
+type ProjectViewTab = 'all' | 'case-studies' | 'github';
 
 export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'case-studies' | 'github'>('all');
+  const [activeTab, setActiveTab] = useState<ProjectViewTab>('all');
   const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
   const [repos, setRepos] = useState<GitHubRepo[]>([]);
-  const [isLoadingRepos, setIsLoadingRepos] = useState<boolean>(true);
+  const [isLoadingRepos, setIsLoadingRepos] = useState(false);
 
+  // Fetch live public repositories from GitHub
   useEffect(() => {
     let isMounted = true;
     const fetchRepos = async () => {
+      setIsLoadingRepos(true);
       try {
-        setIsLoadingRepos(true);
-        const res = await fetch('https://api.github.com/users/ga2631/repos?sort=updated&per_page=12');
-        if (!res.ok) {
-          throw new Error(`GitHub API returned status ${res.status}`);
-        }
-        const data = await res.json();
-        if (Array.isArray(data) && isMounted) {
-          const userRepos = data.filter((r: GitHubRepo) => !r.fork);
-          setRepos(userRepos.length > 0 ? userRepos : data);
+        const response = await fetch(
+          'https://api.github.com/users/ga2631/repos?sort=updated&per_page=6'
+        );
+        if (response.ok) {
+          const data: GitHubRepo[] = await response.json();
+          if (isMounted) {
+            // Filter out forks or keep all non-forks
+            const ownRepos = data.filter((r: any) => !r.fork);
+            setRepos(ownRepos.length > 0 ? ownRepos : data);
+          }
         }
       } catch (err) {
-        console.warn('GitHub API fetch notice (using curated fallback data):', err);
-        if (isMounted) {
-          setRepos(FALLBACK_REPOS);
-        }
+        console.warn('Could not fetch live github repos, fallback to local data', err);
       } finally {
-        if (isMounted) {
-          setIsLoadingRepos(false);
-        }
+        if (isMounted) setIsLoadingRepos(false);
       }
     };
 
@@ -122,116 +72,70 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
     };
   }, []);
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (activeProject) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [activeProject]);
+  // Distinct language / tech tag badge colors
+  const getTechColorInfo = (name: string = ''): { color: string; bg: string; border: string } => {
+    const n = name.toLowerCase().trim();
 
-  // Handle escape key to close modal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && activeProject) {
-        setActiveProject(null);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeProject]);
-
-  const getTechColorInfo = (name: string | null) => {
-    if (!name) {
-      return { color: 'var(--text-accent)', bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.3)' };
-    }
-    const n = name.trim().toLowerCase();
-
-    // 1. Go / Golang
-    if (n === 'go' || n === 'golang') {
-      return { color: '#00add8', bg: 'rgba(0, 173, 216, 0.12)', border: 'rgba(0, 173, 216, 0.35)' };
-    }
-    // 2. TypeScript / TS
     if (n === 'typescript' || n === 'ts') {
-      return { color: '#3178c6', bg: 'rgba(49, 120, 198, 0.12)', border: 'rgba(49, 120, 198, 0.35)' };
-    }
-    // 3. JavaScript / JS
-    if (n === 'javascript' || n === 'js') {
-      return { color: '#eab308', bg: 'rgba(234, 179, 8, 0.12)', border: 'rgba(234, 179, 8, 0.35)' };
-    }
-    // 4. Python
-    if (n === 'python') {
       return { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.35)' };
     }
-    // 5. Java / Spring Boot
-    if (n === 'java' || n.includes('spring')) {
-      return { color: '#f97316', bg: 'rgba(249, 115, 22, 0.12)', border: 'rgba(249, 115, 22, 0.35)' };
+    if (n === 'javascript' || n === 'js') {
+      return { color: '#facc15', bg: 'rgba(250, 204, 21, 0.12)', border: 'rgba(250, 204, 21, 0.35)' };
     }
-    // 6. PHP / Laravel / CodeIgniter
+    if (n === 'python' || n.includes('fastapi') || n.includes('django')) {
+      return { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.35)' };
+    }
+    if (n === 'go' || n === 'golang') {
+      return { color: '#22d3ee', bg: 'rgba(34, 211, 238, 0.12)', border: 'rgba(34, 211, 238, 0.35)' };
+    }
+    if (n === 'java' || n.includes('spring')) {
+      return { color: '#f87171', bg: 'rgba(248, 113, 113, 0.12)', border: 'rgba(248, 113, 113, 0.35)' };
+    }
     if (n === 'php' || n.includes('laravel') || n.includes('codeigniter')) {
       return { color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.12)', border: 'rgba(167, 139, 250, 0.35)' };
     }
-    // 7. React / ReactJS / Next.js
     if (n.includes('react') || n.includes('next')) {
       return { color: '#22d3ee', bg: 'rgba(34, 211, 238, 0.12)', border: 'rgba(34, 211, 238, 0.35)' };
     }
-    // 8. Vue / VueJS
     if (n.includes('vue')) {
       return { color: '#34d399', bg: 'rgba(52, 211, 153, 0.12)', border: 'rgba(52, 211, 153, 0.35)' };
     }
-    // 9. PostgreSQL
     if (n.includes('postgres')) {
       return { color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.35)' };
     }
-    // 10. MySQL / MariaDB / Binlogs
     if (n.includes('mysql') || n.includes('mariadb') || n.includes('binlog')) {
       return { color: '#0ea5e9', bg: 'rgba(14, 165, 233, 0.12)', border: 'rgba(14, 165, 233, 0.35)' };
     }
-    // 11. Redis
     if (n.includes('redis')) {
       return { color: '#f87171', bg: 'rgba(248, 113, 113, 0.12)', border: 'rgba(248, 113, 113, 0.35)' };
     }
-    // 12. Kafka / RabbitMQ / CDC
     if (n.includes('kafka') || n.includes('rabbitmq') || n.includes('cdc')) {
       return { color: '#fb923c', bg: 'rgba(251, 146, 60, 0.12)', border: 'rgba(251, 146, 60, 0.35)' };
     }
-    // 13. ClickHouse / OLAP / Medallion / Data Warehouse
     if (n.includes('clickhouse') || n.includes('olap') || n.includes('medallion') || n.includes('warehouse')) {
       return { color: '#facc15', bg: 'rgba(250, 204, 21, 0.12)', border: 'rgba(250, 204, 21, 0.35)' };
     }
-    // 14. Docker / Dockerfile / Container
     if (n.includes('docker')) {
       return { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.12)', border: 'rgba(56, 189, 248, 0.35)' };
     }
-    // 15. Kubernetes / K8s
     if (n.includes('kubernetes') || n.includes('k8s')) {
       return { color: '#818cf8', bg: 'rgba(129, 140, 248, 0.12)', border: 'rgba(129, 140, 248, 0.35)' };
     }
-    // 16. Linux / Shell / Bash
     if (n.includes('linux') || n.includes('shell') || n.includes('bash')) {
       return { color: '#a3e635', bg: 'rgba(163, 230, 53, 0.12)', border: 'rgba(163, 230, 53, 0.35)' };
     }
-    // 17. BigQuery / SQL
     if (n.includes('bigquery') || n === 'sql') {
       return { color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.35)' };
     }
-    // 18. HTML / CSS / SCSS
     if (n === 'html' || n === 'css' || n === 'scss') {
       return { color: '#f472b6', bg: 'rgba(244, 114, 182, 0.12)', border: 'rgba(244, 114, 182, 0.35)' };
     }
-    // 19. Rust
     if (n === 'rust') {
       return { color: '#fdba74', bg: 'rgba(253, 186, 116, 0.12)', border: 'rgba(253, 186, 116, 0.35)' };
     }
-    // 20. C++ / C#
     if (n.includes('c++') || n.includes('c#')) {
       return { color: '#fb7185', bg: 'rgba(251, 113, 133, 0.12)', border: 'rgba(251, 113, 133, 0.35)' };
     }
-    // 21. Git / CI/CD / DevOps
     if (n.includes('git') || n.includes('ci/cd') || n.includes('devops')) {
       return { color: '#fb7185', bg: 'rgba(251, 113, 133, 0.12)', border: 'rgba(251, 113, 133, 0.35)' };
     }
@@ -252,452 +156,287 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
   const showRepos = activeTab === 'all' || activeTab === 'github';
 
   return (
-    <section className="section" id="projects">
-      <div className="container">
-        <div className="section-header">
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
-            <span className="section-badge">
-              <CodeIcon size={14} /> {t.badge}
-            </span>
-          </div>
+    <Section
+      id="projects"
+      badge={t.badge}
+      badgeIcon={<CodeIcon size={14} />}
+      title={t.title}
+      subtitle={t.subtitle}
+    >
+      {/* Primary View Switcher Tabs */}
+      <div className="project-view-tabs">
+        <Button
+          variant="unstyled"
+          className={`project-view-tab ${activeTab === 'all' ? 'active' : ''}`}
+          onClick={() => setActiveTab('all')}
+        >
+          <span>{t.allWorks}</span>
+          <span className="view-tab-count">{projects.length + (repos.length || 3)}</span>
+        </Button>
+        <Button
+          variant="unstyled"
+          className={`project-view-tab ${activeTab === 'case-studies' ? 'active' : ''}`}
+          onClick={() => setActiveTab('case-studies')}
+          icon={<SparklesIcon size={15} />}
+        >
+          <span>{t.caseStudies}</span>
+          <span className="view-tab-count">{projects.length}</span>
+        </Button>
+        <Button
+          variant="unstyled"
+          className={`project-view-tab ${activeTab === 'github' ? 'active' : ''}`}
+          onClick={() => setActiveTab('github')}
+          icon={<GitRepoIcon size={15} />}
+        >
+          <span>{t.githubRepos}</span>
+          <span className="view-tab-count">{repos.length || 'Live'}</span>
+        </Button>
+      </div>
 
-          <h2 className="section-title">{t.title}</h2>
-          <p className="section-subtitle">
-            {t.subtitle}
-          </p>
-        </div>
-
-        {/* Primary View Switcher Tabs */}
-        <div className="project-view-tabs">
-          <button
-            className={`project-view-tab ${activeTab === 'all' ? 'active' : ''}`}
-            onClick={() => setActiveTab('all')}
-          >
-            <span>{t.allWorks}</span>
-            <span className="view-tab-count">{projects.length + (repos.length || 3)}</span>
-          </button>
-          <button
-            className={`project-view-tab ${activeTab === 'case-studies' ? 'active' : ''}`}
-            onClick={() => setActiveTab('case-studies')}
-          >
-            <SparklesIcon size={15} />
-            <span>{t.caseStudies}</span>
-            <span className="view-tab-count">{projects.length}</span>
-          </button>
-          <button
-            className={`project-view-tab ${activeTab === 'github' ? 'active' : ''}`}
-            onClick={() => setActiveTab('github')}
-          >
-            <GitRepoIcon size={15} />
-            <span>{t.githubRepos}</span>
-            <span className="view-tab-count">{repos.length || 'Live'}</span>
-          </button>
-        </div>
-
-        {/* Unified Projects Grid */}
-        <div className="projects-grid">
-          {/* 1. Enterprise Architecture Case Studies */}
-          {showCaseStudies &&
-            projects.map((project: ProjectItem) => (
-              <div
-                key={project.id}
-                className="glass-panel project-card-compact"
-                onClick={() => setActiveProject(project)}
-              >
-                <div className="project-card-header">
-                  <div className="project-meta-row">
-                    <span className="badge badge-cyan">{project.category}</span>
-                    <span className="badge badge-purple" style={{ fontSize: '0.75rem' }}>
-                      {t.enterpriseSystem}
-                    </span>
-                  </div>
-
-                  <h3 className="project-card-title">{project.title}</h3>
-
-                  {project.company && (
-                    <div className="project-company-tag">
-                      {project.company} {project.role ? `• ${project.role}` : ''}
-                    </div>
-                  )}
-
-                  <p className="project-card-desc">
-                    {project.shortDescription || project.description}
-                  </p>
+      {/* Unified Projects Grid */}
+      <div className="projects-grid">
+        {/* 1. Enterprise Architecture Case Studies */}
+        {showCaseStudies &&
+          projects.map((project: ProjectItem) => (
+            <Card
+              key={project.id}
+              className="project-card-compact"
+              onClick={() => setActiveProject(project)}
+            >
+              <Card.Header className="project-card-header">
+                <div className="project-meta-row">
+                  <Badge variant="cyan">{project.category}</Badge>
+                  <Badge variant="purple" style={{ fontSize: '0.75rem' }}>
+                    {t.enterpriseSystem}
+                  </Badge>
                 </div>
 
-                <div className="project-card-footer">
-                  <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                    {project.tags.slice(0, 4).map((tech: string) => {
-                      const info = getTechColorInfo(tech);
-                      return (
+                <h3 className="project-card-title">{project.title}</h3>
+
+                {project.company && (
+                  <div className="project-company-tag">
+                    {project.company} {project.role ? `• ${project.role}` : ''}
+                  </div>
+                )}
+              </Card.Header>
+
+              <Card.Body className="project-card-body">
+                <p className="project-card-desc">
+                  {project.shortDescription || project.description}
+                </p>
+              </Card.Body>
+
+              <Card.Footer className="project-card-footer">
+                <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
+                  {project.tags.slice(0, 4).map((tech: string) => {
+                    const info = getTechColorInfo(tech);
+                    return (
+                      <span
+                        key={tech}
+                        className="badge badge-tech-tag"
+                        style={{
+                          color: info.color,
+                          backgroundColor: info.bg,
+                          borderColor: info.border,
+                        }}
+                      >
                         <span
-                          key={tech}
-                          className="badge badge-tech-tag"
+                          className="lang-color-dot"
                           style={{
-                            color: info.color,
-                            backgroundColor: info.bg,
-                            borderColor: info.border,
+                            width: '6px',
+                            height: '6px',
+                            backgroundColor: info.color,
+                            marginRight: '2px',
                           }}
-                        >
-                          <span
-                            className="lang-color-dot"
-                            style={{
-                              width: '6px',
-                              height: '6px',
-                              backgroundColor: info.color,
-                              marginRight: '2px',
-                            }}
-                          />
-                          {tech}
-                        </span>
-                      );
-                    })}
-                    {project.tags.length > 4 && (
-                      <span className="badge" style={{ color: 'var(--text-accent)' }}>
-                        +{project.tags.length - 4} {tCommon.more}
+                        />
+                        {tech}
                       </span>
-                    )}
-                  </div>
-
-                  <div className="project-actions-compact">
-                    <button
-                      className="btn btn-primary btn-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveProject(project);
-                      }}
-                    >
-                      <ExternalLinkIcon size={15} />
-                      <span>{t.viewArchitecture}</span>
-                    </button>
-                  </div>
+                    );
+                  })}
+                  {project.tags.length > 4 && (
+                    <Badge style={{ color: 'var(--text-accent)' }}>
+                      +{project.tags.length - 4} {tCommon.more}
+                    </Badge>
+                  )}
                 </div>
-              </div>
-            ))}
 
-          {/* 2. Loading Skeleton for GitHub Repos */}
-          {showRepos && isLoadingRepos && repos.length === 0 && (
-            <>
-              {[1, 2, 3].map((i) => (
-                <div key={`skeleton-${i}`} className="glass-panel github-repo-card repo-skeleton-card">
+                <div className="project-actions-compact">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveProject(project);
+                    }}
+                    icon={<ExternalLinkIcon size={15} />}
+                  >
+                    <span>{t.viewArchitecture}</span>
+                  </Button>
+                </div>
+              </Card.Footer>
+            </Card>
+          ))}
+
+        {/* 2. Loading Skeleton for GitHub Repos */}
+        {showRepos && isLoadingRepos && repos.length === 0 && (
+          <>
+            {[1, 2, 3].map((i) => (
+              <Card key={`skeleton-${i}`} className="github-repo-card repo-skeleton-card">
+                <Card.Body>
                   <div className="skeleton-line" style={{ width: '60%', height: '22px', marginBottom: '12px' }} />
                   <div className="skeleton-line" style={{ width: '100%', height: '14px', marginBottom: '8px' }} />
                   <div className="skeleton-line" style={{ width: '80%', height: '14px', marginBottom: '20px' }} />
                   <div className="skeleton-line" style={{ width: '40%', height: '18px' }} />
-                </div>
-              ))}
-            </>
-          )}
+                </Card.Body>
+              </Card>
+            ))}
+          </>
+        )}
 
-          {/* 3. Live GitHub Public Repositories */}
-          {showRepos &&
-            repos.map((repo: GitHubRepo) => {
-              const repoTags = repo.topics && repo.topics.length > 0
-                ? repo.topics
-                : (repo.language ? [repo.language] : []);
+        {/* 3. Live GitHub Public Repositories */}
+        {showRepos &&
+          repos.map((repo: GitHubRepo) => {
+            const repoTags = repo.topics && repo.topics.length > 0
+              ? repo.topics
+              : (repo.language ? [repo.language] : []);
 
-              const mainLangInfo = getTechColorInfo(repo.language);
+            const mainLangInfo = getTechColorInfo(repo.language);
 
-              return (
-                <div key={repo.id} className="glass-panel github-repo-card">
-                  <div className="project-card-header">
-                    <div className="project-meta-row">
-                      <span className="badge badge-cyan">
-                        <GitRepoIcon size={13} /> {t.publicRepo}
-                      </span>
-                      <span className="badge" style={{ fontSize: '0.75rem' }}>
-                        {formatDate(repo.updated_at)}
-                      </span>
-                    </div>
-
-                    <h3 className="project-card-title repo-title">
-                      <a
-                        href={repo.html_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="repo-link-title"
-                      >
-                        {repo.name}
-                      </a>
-                    </h3>
-
-                    <p className="project-card-desc repo-desc">
-                      {repo.description || 'Public GitHub repository by @ga2631 with active source code and configuration.'}
-                    </p>
+            return (
+              <Card key={repo.id} className="github-repo-card">
+                <Card.Header className="project-card-header">
+                  <div className="project-meta-row">
+                    <Badge variant="cyan" icon={<GitRepoIcon size={13} />}>
+                      {t.publicRepo}
+                    </Badge>
+                    <Badge style={{ fontSize: '0.75rem' }}>
+                      {formatDate(repo.updated_at)}
+                    </Badge>
                   </div>
 
-                  <div className="project-card-footer">
-                    <div className="repo-stats-row">
-                      {repo.language && (
-                        <div className="repo-lang-pill" style={{ color: mainLangInfo.color }}>
-                          <span
-                            className="lang-color-dot"
-                            style={{
-                              backgroundColor: mainLangInfo.color,
-                              boxShadow: `0 0 8px ${mainLangInfo.color}`,
-                            }}
-                          />
-                          <span style={{ fontWeight: 700 }}>{repo.language}</span>
-                        </div>
-                      )}
+                  <h3 className="project-card-title repo-title">
+                    <a
+                      href={repo.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="repo-link-title"
+                    >
+                      {repo.name}
+                    </a>
+                  </h3>
+                </Card.Header>
 
-                      <div className="repo-counts">
-                        <span className="repo-count-item" title="Stars">
-                          <StarIcon size={14} />
-                          <span>{repo.stargazers_count}</span>
-                        </span>
-                        <span className="repo-count-item" title="Forks">
-                          <GitForkIcon size={14} />
-                          <span>{repo.forks_count}</span>
-                        </span>
-                      </div>
-                    </div>
+                <Card.Body className="project-card-body">
+                  <p className="project-card-desc repo-desc">
+                    {repo.description || 'Public GitHub repository by @ga2631 with active source code and configuration.'}
+                  </p>
+                </Card.Body>
 
-                    {/* Unified Tech Tags List with distinct language colors */}
-                    {repoTags.length > 0 && (
-                      <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
-                        {repoTags.slice(0, 4).map((tag: string) => {
-                          const info = getTechColorInfo(tag);
-                          return (
-                            <span
-                              key={tag}
-                              className="badge badge-tech-tag"
-                              style={{
-                                color: info.color,
-                                backgroundColor: info.bg,
-                                borderColor: info.border,
-                              }}
-                            >
-                              <span
-                                className="lang-color-dot"
-                                style={{
-                                  width: '6px',
-                                  height: '6px',
-                                  backgroundColor: info.color,
-                                  marginRight: '2px',
-                                }}
-                              />
-                              {tag}
-                            </span>
-                          );
-                        })}
-                        {repoTags.length > 4 && (
-                          <span className="badge" style={{ color: 'var(--text-accent)' }}>
-                            +{repoTags.length - 4} {tCommon.more}
-                          </span>
-                        )}
+                <Card.Footer className="project-card-footer">
+                  <div className="repo-stats-row">
+                    {repo.language && (
+                      <div className="repo-lang-pill" style={{ color: mainLangInfo.color }}>
+                        <span
+                          className="lang-color-dot"
+                          style={{
+                            backgroundColor: mainLangInfo.color,
+                            boxShadow: `0 0 8px ${mainLangInfo.color}`,
+                          }}
+                        />
+                        <span style={{ fontWeight: 700 }}>{repo.language}</span>
                       </div>
                     )}
 
-                    <div className="project-actions-compact">
-                      <a
-                        href={repo.html_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-outline btn-sm"
-                      >
-                        <GithubIcon size={15} />
-                        <span>{t.sourceCode}</span>
-                      </a>
-
-                      {repo.homepage && (
-                        <a
-                          href={repo.homepage}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-secondary btn-sm"
-                          title="Live Preview"
-                        >
-                          <ExternalLinkIcon size={14} />
-                          <span>{t.demo}</span>
-                        </a>
-                      )}
+                    <div className="repo-counts">
+                      <span className="repo-count-item" title="Stars">
+                        <StarIcon size={14} />
+                        <span>{repo.stargazers_count}</span>
+                      </span>
+                      <span className="repo-count-item" title="Forks">
+                        <GitForkIcon size={14} />
+                        <span>{repo.forks_count}</span>
+                      </span>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-        </div>
 
-        {/* Detailed Architecture & Case Study Modal */}
-        {activeProject &&
-          createPortal(
-            <div className="blog-modal-backdrop" onClick={() => setActiveProject(null)}>
-              <div className="blog-modal-content project-modal-dialog" onClick={(e) => e.stopPropagation()}>
-                {/* Pinned / Fixed Header */}
-                <div className="project-modal-header">
-                  <button
-                    className="modal-close-btn"
-                    onClick={() => setActiveProject(null)}
-                    aria-label="Close Project Details"
-                  >
-                    <CloseIcon size={18} />
-                  </button>
-
-                  <div className="project-modal-header-meta">
-                    <span className="badge badge-cyan">{activeProject.category}</span>
-                    {activeProject.featured && <span className="badge badge-emerald">{t.featuredProject}</span>}
-                    {activeProject.teamSize && <span className="badge">{t.team}: {activeProject.teamSize}</span>}
-                  </div>
-
-                  <h2 className="project-modal-title">
-                    {activeProject.title}
-                  </h2>
-
-                  {(activeProject.company || activeProject.role) && (
-                    <div className="project-modal-subtitle">
-                      {activeProject.company} — {activeProject.role}
+                  {repoTags.length > 0 && (
+                    <div className="tech-tags-list" style={{ marginBottom: '14px' }}>
+                      {repoTags.slice(0, 4).map((tag: string) => {
+                        const info = getTechColorInfo(tag);
+                        return (
+                          <span
+                            key={tag}
+                            className="badge badge-tech-tag"
+                            style={{
+                              color: info.color,
+                              backgroundColor: info.bg,
+                              borderColor: info.border,
+                            }}
+                          >
+                            <span
+                              className="lang-color-dot"
+                              style={{
+                                width: '6px',
+                                height: '6px',
+                                backgroundColor: info.color,
+                                marginRight: '2px',
+                              }}
+                            />
+                            {tag}
+                          </span>
+                        );
+                      })}
+                      {repoTags.length > 4 && (
+                        <Badge style={{ color: 'var(--text-accent)' }}>
+                          +{repoTags.length - 4} {tCommon.more}
+                        </Badge>
+                      )}
                     </div>
                   )}
-                </div>
 
-                {/* Scrollable Content Body */}
-                <div className="project-modal-body">
-                  <div className="article-body">
-                    {/* 1. Project Objective */}
-                    <div style={{ marginBottom: '24px' }}>
-                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '10px' }}>
-                        <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                        <span>{t.objective}</span>
-                      </h3>
-                      <p style={{ lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
-                        {activeProject.description}
-                      </p>
-                    </div>
+                  <div className="project-actions-compact">
+                    <Button
+                      as="a"
+                      href={repo.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="outline"
+                      size="sm"
+                      icon={<GithubIcon size={15} />}
+                    >
+                      <span>{t.sourceCode}</span>
+                    </Button>
 
-                    {/* 2. Key Responsibilities & Strengths */}
-                    {activeProject.responsibilities && activeProject.responsibilities.length > 0 && (
-                      <div style={{ marginBottom: '24px' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                          <ShieldIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                          <span>{t.responsibilities}</span>
-                        </h3>
-                        <ul style={{ paddingLeft: '20px', margin: 0 }}>
-                          {activeProject.responsibilities.map((resp, idx) => (
-                            <li
-                              key={idx}
-                              style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
-                              dangerouslySetInnerHTML={{ __html: resp }}
-                            />
-                          ))}
-                        </ul>
-                      </div>
+                    {repo.homepage && (
+                      <Button
+                        as="a"
+                        href={repo.homepage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="secondary"
+                        size="sm"
+                        title="Live Preview"
+                        icon={<ExternalLinkIcon size={14} />}
+                      >
+                        <span>{t.demo}</span>
+                      </Button>
                     )}
-
-                    {/* 3. Challenges & Solutions */}
-                    {activeProject.challengesSolutions && activeProject.challengesSolutions.length > 0 ? (
-                      <div style={{ marginBottom: '24px' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                          <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                          <span>{t.challengesSolutions}</span>
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                          {activeProject.challengesSolutions.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="glass-panel"
-                              style={{
-                                padding: '12px 16px',
-                                borderRadius: 'var(--radius-md)',
-                                borderLeft: '3px solid var(--accent-primary)',
-                              }}
-                            >
-                              <div style={{ marginBottom: '6px', fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
-                                <span style={{ color: 'var(--accent-red, #ef4444)', marginRight: '6px' }}>
-                                  [{t.challengeLabel}]:
-                                </span>
-                                <span dangerouslySetInnerHTML={{ __html: item.challenge }} />
-                              </div>
-                              <div style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
-                                <span style={{ color: 'var(--accent-emerald, #10b981)', marginRight: '6px', fontWeight: 600 }}>
-                                  → [{t.solutionLabel}]:
-                                </span>
-                                <span dangerouslySetInnerHTML={{ __html: item.solution }} />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      activeProject.highlights && activeProject.highlights.length > 0 && (
-                        <div style={{ marginBottom: '24px' }}>
-                          <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                            <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                            <span>{t.challenges}</span>
-                          </h3>
-                          <ul style={{ paddingLeft: '20px', margin: 0 }}>
-                            {activeProject.highlights.map((item, idx) => (
-                              <li
-                                key={idx}
-                                style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
-                                dangerouslySetInnerHTML={{ __html: item }}
-                              />
-                            ))}
-                          </ul>
-                        </div>
-                      )
-                    )}
-
-                    {/* 4. Achievements */}
-                    {activeProject.achievements && activeProject.achievements.length > 0 && (
-                      <div style={{ marginBottom: '24px' }}>
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                          <RocketIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                          <span>{t.achievements}</span>
-                        </h3>
-                        <ul style={{ paddingLeft: '20px', margin: 0 }}>
-                          {activeProject.achievements.map((ach, idx) => (
-                            <li
-                              key={idx}
-                              style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
-                              dangerouslySetInnerHTML={{ __html: ach }}
-                            />
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* 5. Tech Stack */}
-                    <div style={{ marginBottom: '8px' }}>
-                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                        <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
-                        <span>{t.techStack}</span>
-                      </h3>
-                      <div className="tech-tags-list" style={{ marginTop: '8px' }}>
-                        {activeProject.tags.map((tag: string) => {
-                          const info = getTechColorInfo(tag);
-                          return (
-                            <span
-                              key={tag}
-                              className="badge badge-tech-tag"
-                              style={{
-                                color: info.color,
-                                backgroundColor: info.bg,
-                                borderColor: info.border,
-                              }}
-                            >
-                              <span
-                                className="lang-color-dot"
-                                style={{
-                                  width: '6px',
-                                  height: '6px',
-                                  backgroundColor: info.color,
-                                  marginRight: '2px',
-                                }}
-                              />
-                              {tag}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
                   </div>
-                </div>
-              </div>
-            </div>,
-            document.body
-          )}
+                </Card.Footer>
+              </Card>
+            );
+          })}
       </div>
-    </section>
+
+      {/* Detailed Architecture & Case Study Modal */}
+      <ModalCaseStudy
+        project={activeProject}
+        isOpen={Boolean(activeProject)}
+        onClose={() => setActiveProject(null)}
+        t={t}
+        getTechColorInfo={getTechColorInfo}
+        closeAriaLabel="Close Project Details"
+      />
+    </Section>
   );
 };
