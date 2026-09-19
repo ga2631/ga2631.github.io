@@ -151,7 +151,7 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
             title="Zoom out (-)"
             aria-label="Zoom out"
           >
-            <ZoomOutIcon size={16} />
+            <ZoomOutIcon size={14} />
           </button>
           <span className="diagram-viewer-zoom-level" title="Current zoom level">
             {Math.round(zoom * 100)}%
@@ -163,7 +163,7 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
             title="Zoom in (+)"
             aria-label="Zoom in"
           >
-            <ZoomInIcon size={16} />
+            <ZoomInIcon size={14} />
           </button>
           <div className="diagram-viewer-divider" />
           <button
@@ -173,7 +173,7 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
             title="Reset view (100%)"
             aria-label="Reset zoom and position"
           >
-            <RotateCcwIcon size={16} />
+            <RotateCcwIcon size={14} />
             <span style={{ marginLeft: '4px' }}>Reset</span>
           </button>
         </div>
@@ -187,7 +187,7 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
             aria-label={closeAriaLabel}
             title={`${closeAriaLabel} (Esc)`}
           >
-            <CloseIcon size={20} />
+            <CloseIcon size={18} />
           </button>
         </div>
       </div>

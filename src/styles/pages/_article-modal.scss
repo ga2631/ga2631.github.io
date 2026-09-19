@@ -361,9 +361,11 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 3px 10px;
-      font-size: 0.72rem;
+      padding: 3px 8px;
+      font-size: 0.68rem;
       font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
       color: var(--text-accent);
       background: var(--bg-glass);
       border: 1px solid var(--border-color);
@@ -375,9 +377,20 @@
       transition: all var(--transition-fast);
       pointer-events: none;
       z-index: 2;
+
+      svg {
+        width: 11px !important;
+        height: 11px !important;
+        min-width: 11px !important;
+        max-width: 11px !important;
+        margin: 0 !important;
+        display: inline-block !important;
+        flex-shrink: 0;
+        stroke: currentColor;
+      }
     }
 
-    svg {
+    > svg {
       width: 100%;
       min-width: 280px;
       max-width: 100%;
@@ -442,21 +455,20 @@
   .diagram-viewer-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 16px;
-    background: var(--bg-glass);
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-full, 9999px);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
     color: var(--text-primary);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    min-width: 0;
     max-width: 100%;
-    cursor: default;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all var(--transition-fast);
 
     &:hover {
       border-color: var(--border-color-hover);
@@ -480,9 +492,9 @@
     display: flex;
     align-items: center;
     justify-self: center;
-    gap: 6px;
+    gap: 4px;
     background: var(--bg-glass);
-    padding: 4px 8px;
+    padding: 3px 6px;
     border-radius: var(--radius-full, 9999px);
     border: 1px solid var(--border-color);
     backdrop-filter: blur(12px);
@@ -495,20 +507,20 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 700;
     font-family: var(--font-mono);
     color: var(--text-accent);
-    min-width: 48px;
+    min-width: 44px;
     text-align: center;
     user-select: none;
   }
 
   .diagram-viewer-divider {
     width: 1px;
-    height: 18px;
+    height: 16px;
     background: var(--border-color);
-    margin: 0 4px;
+    margin: 0 3px;
   }
 
   .diagram-viewer-actions {
@@ -524,13 +536,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 32px;
-  padding: 0 10px;
+  height: 28px;
+  padding: 0 8px;
   border-radius: var(--radius-sm);
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -546,8 +558,8 @@
 }
 
 .diagram-viewer-close-btn {
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--bg-glass);
   border: 1px solid var(--border-color);
@@ -566,7 +578,7 @@
     color: #ffffff;
     border-color: var(--accent-red);
     box-shadow: 0 0 16px rgba(255, 56, 92, 0.4);
-    transform: scale(1.08);
+    transform: scale(1.05);
   }
 
   &:active {
