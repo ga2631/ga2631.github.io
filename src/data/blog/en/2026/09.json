@@ -26,6 +26,137 @@
     }
   },
   {
+    "id": "post-27",
+    "slug": "algorithmic-efficiency-metrics-time-space-complexity-big-o",
+    "category": "code-craftsmanship-languages",
+    "title": "Core Algorithms Series #01: Algorithmic Efficiency Metrics — Time & Space Complexity Analysis and Asymptotic Notations (Big-O, Big-Ω, Big-Θ)",
+    "summary": "Establishing a standardized evaluation framework for algorithmic efficiency: Distinguishing Wall-clock time from the RAM Computation Model, decoupling Time vs Space Complexity (Auxiliary vs Total), and mastering asymptotic notations as the foundation for the entire series.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "9 min read",
+    "tags": [
+      "Algorithms",
+      "Big-O",
+      "Time Complexity",
+      "Space Complexity",
+      "Data Structures",
+      "Computer Science",
+      "Performance"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>In software engineering and systems performance tuning, the critical question every engineer must answer before deploying code to Production is: <em>'How fast does this algorithm run, and how much memory does it consume when user data scales by 1,000x?'</em>.</p><p>A classic beginner pitfall is measuring execution speed with physical wall-clock timers via <code>console.time()</code> or <code>System.nanoTime()</code>. This empirical approach is inherently flawed because wall-clock duration fluctuates wildly based on CPU clock speed, hardware architecture, operating system thread scheduling, and runtime garbage collection. Computer science requires an <strong>abstract mathematical framework</strong> that measures efficiency independently of physical hardware environments.</p>",
+      "initial-approach": "<p>The naive empirical benchmarking approach:</p><ul><li>Run the algorithm on a development machine with a small sample input ($N = 100$) and record the duration in milliseconds.</li><li><em>Why this fails catastrophically:</em> An $O(N^2)$ algorithm might execute in just <code>0.2ms</code> on $N = 100$, giving developers a false sense of speed. But when $N$ scales to $10^6$ on Production, execution time balloons to <strong>over 11 days</strong>, causing complete server starvation.</li></ul><p>We need rigorous <strong>Asymptotic Analysis</strong> to quantify how computational requirements scale as input size $N$ approaches infinity.</p>",
+      "optimization-thinking": "<p>To rigorously benchmark algorithms across the upcoming series, I establish an evaluation model rooted in the <strong>Random Access Machine (RAM) Model of Computation</strong> across three pillar dimensions:</p><ol><li><strong>1. Asymptotic Notation Hierarchy:</strong><ul><li><strong>Big-O ($O$):</strong> Mathematical Upper Bound — Represents the worst-case scenario. This is the primary metric for contractual SLA guarantees.</li><li><strong>Big-Omega ($\Omega$):</strong> Mathematical Lower Bound — Represents the best-case theoretical execution limit.</li><li><strong>Big-Theta ($\Theta$):</strong> Tight Bound — When upper and lower asymptotic bounds coincide, capturing true average behavior.</li></ul></li><li><strong>2. Decoupling Time vs Space Complexity:</strong><ul><li><strong>Time Complexity:</strong> Total count of primitive operations (assignments, comparisons, arithmetic) as a function of input size $N$.</li><li><strong>Space Complexity (Total Space vs Auxiliary Space):</strong> Total memory required during execution. <em>Auxiliary Space</em> specifically denotes the extra temporary memory allocated by the algorithm itself (excluding input storage), encompassing dynamic Heap buffers and recursive Call Stack frames.</li></ul></li></ol>",
+      "code-implementation": "<p>Big-O growth hierarchy diagram and system memory footprints:</p><pre class=\"mermaid\"><code>flowchart TD\n    subgraph BigOComplexity [Big-O Growth Hierarchy]\n        O1[\"O(1) - Constant Time\"]\n        OLogN[\"O(log n) - Logarithmic - Binary Search\"]\n        ON[\"O(n) - Linear - Single Pass\"]\n        ONLogN[\"O(n log n) - Linearithmic - QuickSort, MergeSort\"]\n        ON2[\"O(n2) - Quadratic - Nested Loops\"]\n        O2N[\"O(2^n) - Exponential Recursion\"]\n        ONFact[\"O(n!) - Factorial Permutations\"]\n    end\n\n    subgraph SpaceDimensions [Memory Allocation Dimensions]\n        StackMem[\"Call Stack Memory - Recursive Stack Frames\"]\n        HeapMem[\"Heap Dynamic Memory - Auxiliary Buffers\"]\n    end\n\n    O1 --&gt; OLogN --&gt; ON --&gt; ONLogN --&gt; ON2 --&gt; O2N --&gt; ONFact\n    ONLogN -.-&gt; StackMem\n    ONLogN -.-&gt; HeapMem</code></pre><p><strong>Standard TypeScript Reference Implementations for Big-O Tiers:</strong></p><ul><li><strong>$O(1)$ Constant Time:</strong> Array index access <code>arr[0]</code> or HashMap key lookup.</li><li><strong>$O(\log N)$ Logarithmic Time:</strong> Binary Search halving the problem space at each iteration.</li><li><strong>$O(N)$ Linear Time:</strong> Iterating through $N$ elements in a single sequential pass.</li><li><strong>$O(N \log N)$ Linearithmic Time:</strong> Optimal divide-and-conquer sorting algorithms like QuickSort and MergeSort.</li><li><strong>$O(N^2)$ Quadratic Time:</strong> Two nested loops evaluating all element pairs $(i, j)$.</li></ul>",
+      "complexity-applications": "<p><strong>The Standardized 5-Point Evaluation Framework for the Entire Series:</strong></p><p>Every subsequent article in this series will dissect and score algorithms using this unified standard:</p><ul><li><strong>1. Worst-Case Time Complexity ($O$):</strong> Guarantees system resilience against adversarial inputs.</li><li><strong>2. Best/Average-Case Time ($\Omega / \Theta$):</strong> Real-world operational throughput on random distributions.</li><li><strong>3. Auxiliary Space Complexity:</strong> Transient RAM overhead across Call Stack and Heap buffers.</li><li><strong>4. Stability &amp; In-Place Capability:</strong> Preserving relative order of identical elements with zero auxiliary array allocations.</li><li><strong>5. Scalability Threshold:</strong> Maximum safe input size $N$ to execute under <code>100ms</code> in low-latency production environments.</li></ul>"
+    }
+  },
+  {
+    "id": "post-28",
+    "slug": "binary-search-divide-and-conquer-optimization",
+    "category": "code-craftsmanship-languages",
+    "title": "Core Algorithms Series #02: Binary Search & Divide and Conquer Thinking — Optimizing Lookup from O(n) to O(log n)",
+    "summary": "Deep dive into Binary Search: The 50% search space elimination principle, mitigating integer overflow in midpoint calculation, iterative vs recursive trade-offs, and practical applications in Database B-Tree indexing.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "8 min read",
+    "tags": [
+      "Algorithms",
+      "Binary Search",
+      "Divide and Conquer",
+      "Data Structures",
+      "TypeScript",
+      "Performance"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Data retrieval is the most frequent primitive operation in software systems. Problem statement: Given a sorted array of $N$ integers in ascending order, locate the index of a specified <code>target</code> value, or return <code>-1</code> if not present.</p><p>With massive datasets containing tens of millions of records ($N = 10^7$), a sub-optimal search algorithm will choke throughput and introduce unacceptable latency. The engineering objective is transitioning from naive sequential scanning to a Divide-and-Conquer paradigm with $O(\log N)$ asymptotic efficiency.</p>",
+      "initial-approach": "<p>The naive approach (Linear Search):</p><ul><li>Iterate sequentially from index zero <code>for (let i = 0; i &lt; arr.length; i++)</code> and compare each item against <code>target</code>.</li><li><strong>Performance Evaluation:</strong>\n  <ul>\n    <li><em>Best-case:</em> $\Omega(1)$ when the target resides at index 0.</li>\n    <li><em>Worst-case:</em> $O(N)$ when the target is at the tail or absent. On $N = 1,000,000$, Linear Search requires up to <strong>1,000,000 comparisons</strong>.</li>\n  </ul>\n</li></ul><p>Core flaw: Entirely discards the structural guarantee that the collection is <em>already sorted</em>.</p>",
+      "optimization-thinking": "<p>Applying the Divide-and-Conquer principle:</p><ol><li><strong>50% Search Space Elimination:</strong> Compare the midpoint element <code>arr[mid]</code> with <code>target</code>:<ul><li>If <code>arr[mid] === target</code>: Immediate match found.</li><li>If <code>arr[mid] &lt; target</code>: Because the array is sorted, every element to the left of <code>mid</code> is strictly smaller than target $\to$ Discard 50% of the array and focus on <code>[mid + 1, right]</code>.</li><li>If <code>arr[mid] &gt; target</code>: Every element to the right is strictly larger $\to$ Constrain the search window to <code>[left, mid - 1]</code>.</li></ul></li><li><strong>Integer Overflow Mitigation:</strong> The standard formula <code>mid = Math.floor((left + right) / 2)</code> can overflow 32-bit signed integers when <code>left + right &gt; 2^31 - 1</code>. <em>Robust engineering pattern:</em> Always compute <code>mid = left + Math.floor((right - left) / 2)</code>.</li></ol>",
+      "code-implementation": "<p>Search window halving progression across iterations:</p><pre class=\"mermaid\"><code>flowchart LR\n    subgraph Step1 [Iteration 1 - n = 8 elements]\n        A1[\"Left: 0, Right: 7, Mid: 3 - Discard 4 elements\"]\n    end\n    subgraph Step2 [Iteration 2 - n = 4 elements]\n        A2[\"Left: 4, Right: 7, Mid: 5 - Discard 2 elements\"]\n    end\n    subgraph Step3 [Iteration 3 - n = 2 elements]\n        A3[\"Left: 6, Right: 7, Mid: 6 - Target Located\"]\n    end\n\n    Step1 --&gt; Step2 --&gt; Step3</code></pre><p><strong>Production TypeScript Implementation (Iterative Pattern):</strong></p><ul><li><strong>Iterative Pattern (Recommended):</strong> Manages two pointers <code>left = 0</code> and <code>right = arr.length - 1</code>. Consumes zero stack frames, achieving strict $O(1)$ Auxiliary Space.</li><li><strong>Recursive Pattern:</strong> Recursively invokes <code>binarySearch(arr, left, right, target)</code>. Each invocation pushes a stack frame, consuming $O(\log N)$ Auxiliary Stack Space.</li></ul>",
+      "complexity-applications": "<p><strong>Metrics Scorecard (Applying Framework from Article #01):</strong></p><ul><li><strong>Time Complexity:</strong>\n  <ul>\n    <li><em>Best-case:</em> $\Omega(1)$ (target matches the initial midpoint).</li>\n    <li><em>Worst/Average-case:</em> $O(\log_2 N)$ and $\Theta(\log_2 N)$. For $N = 1,000,000$ elements, Binary Search needs at most <strong>20 comparisons</strong> (compared to 1,000,000 in Linear Search — a <strong>50,000x speedup</strong>).</li>\n  </ul>\n</li><li><strong>Auxiliary Space:</strong> $O(1)$ Iterative, $O(\log N)$ Recursive.</li><li><strong>Real-World Applications:</strong> Database Index lookup (B-Tree and LSM-Tree search), <code>git bisect</code> for automated regression tracking in Git histories, and Binary Search on Answer paradigms in algorithmic optimization.</li></ul>"
+    }
+  },
+  {
+    "id": "post-29",
+    "slug": "quicksort-partitioning-mechanics-stack-depth-analysis",
+    "category": "code-craftsmanship-languages",
+    "title": "Core Algorithms Series #03: QuickSort Deep Dive — Partitioning Mechanics, Stack Depth Trade-offs & Mitigating Worst-Case O(n²)",
+    "summary": "In-depth analysis of QuickSort: Comparing Lomuto vs Hoare partitioning schemes, intelligent pivot selection via Median-of-Three, tail recursion optimization to constrain stack depth, and comparative analysis against MergeSort.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "9 min read",
+    "tags": [
+      "Algorithms",
+      "QuickSort",
+      "Sorting",
+      "Partitioning",
+      "Divide and Conquer",
+      "Optimization"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Sorting is the foundational pillar of computer science, governing search performance, deduplication, and aggregation pipelines. Problem statement: Given an unsorted array of $N$ elements, rearrange them in non-decreasing order.</p><p>The engineering challenge: How can we achieve maximal raw execution speed by maximizing CPU Cache Locality while eliminating the $O(N)$ extra memory allocation required by MergeSort? QuickSort represents one of the most elegant algorithmic solutions ever conceived.</p>",
+      "initial-approach": "<p>Naive sorting approaches (Bubble Sort / Insertion Sort):</p><ul><li>Repeatedly compare and swap adjacent elements.</li><li><strong>Performance Evaluation:</strong>\n  <ul>\n    <li><em>Time Complexity:</em> $O(N^2)$ — On $N = 100,000$, comparison count hits $10^{10}$, taking minutes to complete.</li>\n    <li><em>MergeSort alternative:</em> Reaches $O(N \log N)$ but allocates an auxiliary $O(N)$ buffer on the Heap, placing high pressure on garbage collectors.</li>\n  </ul>\n</li></ul>",
+      "optimization-thinking": "<p>QuickSort leverages the <strong>Partitioning Paradigm</strong>:</p><ol><li><strong>Core Concept:</strong> Select a Pivot element. Partition the array such that all elements smaller than the Pivot are shifted to the left, and all elements larger than or equal to the Pivot are shifted to the right. Recursively sort the sub-arrays.</li><li><strong>Partitioning Schemes (Lomuto vs Hoare):</strong><ul><li><em>Lomuto Partition:</em> Single pointer scanning left-to-right. Intuitive to write, but requires up to 3x more swap operations.</li><li><em>Hoare Partition:</em> Two pointers moving inward from both ends. Minimizes swaps significantly and demonstrates superior real-world performance.</li></ul></li><li><strong>Mitigating the $O(N^2)$ Worst-Case:</strong> Choosing the first or last element on an already-sorted array degenerates the recursion tree into an $O(N^2)$ linked list. <em>Solution:</em> Employ <strong>Median-of-Three</strong> (median of first, middle, last elements) or <strong>Randomized Pivot</strong>.</li></ol>",
+      "code-implementation": "<p>Recursive partition tree and element segregation around pivots:</p><pre class=\"mermaid\"><code>graph TD\n    Root[\"Original Array: 8, 3, 1, 7, 0, 10, 2 - Pivot: 7\"]\n    Left1[\"Left Partition smaller than 7: 3, 1, 0, 2\"]\n    Pivot1[\"Pivot: 7\"]\n    Right1[\"Right Partition larger or equal to 7: 8, 10\"]\n    Left2[\"Sub-left: 0, 1\"]\n    Pivot2[\"Pivot: 2\"]\n    Right2[\"Sub-right: 3\"]\n\n    Root --&gt; Left1\n    Root --&gt; Pivot1\n    Root --&gt; Right1\n    Left1 --&gt; Left2\n    Left1 --&gt; Pivot2\n    Left1 --&gt; Right2</code></pre><p><strong>Production TypeScript Implementation with Hoare Partitioning &amp; Median-of-Three:</strong></p><ul><li>Performs in-place element swapping directly on the original array with zero Heap allocations.</li><li>Tail Recursion Optimization: Always recurses into the shorter partition first, strictly bounding maximum Call Stack depth to $O(\log N)$.</li></ul>",
+      "complexity-applications": "<p><strong>Metrics Scorecard (Applying Framework from Article #01):</strong></p><ul><li><strong>Time Complexity:</strong>\n  <ul>\n    <li><em>Best/Average-case:</em> $\Omega(N \log N)$ and $\Theta(N \log N)$. Excellent hardware cache locality due to sequential in-place memory access.</li>\n    <li><em>Worst-case:</em> $O(N^2)$ (with Median-of-Three Pivot, probability in production is virtually zero).</li>\n  </ul>\n</li><li><strong>Auxiliary Space:</strong> $O(\log N)$ (strictly for recursive stack frames, $0$ byte Heap allocation).</li><li><strong>Characteristics:</strong> In-place and Non-stable.</li><li><strong>Real-World Applications:</strong> Powers <code>Array.prototype.sort()</code> in V8 JavaScript engine, <code>sort.Slice</code> in Golang, and Dual-Pivot QuickSort in standard Java runtime libraries.</li></ul>"
+    }
+  },
+  {
+    "id": "post-30",
+    "slug": "graph-traversal-bfs-dfs-queue-stack-mechanics",
+    "category": "code-craftsmanship-languages",
+    "title": "Core Algorithms Series #04: Graph Traversal Fundamentals (BFS & DFS) — Breadth vs Depth Exploration, Queue vs Stack Mechanics",
+    "summary": "Mastering the two foundational graph & tree traversal paradigms: Level-by-level wavefront exploration with BFS (FIFO Queue) vs deep branch exploration with DFS (LIFO Stack/Recursion), cycle detection, and shortest path algorithms.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "9 min read",
+    "tags": [
+      "Algorithms",
+      "BFS",
+      "DFS",
+      "Graph Theory",
+      "Data Structures",
+      "Tree Traversal"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Graph structures $G = (V, E)$ (vertices $V$ and edges $E$) model real-world networks: social relationships, GPS road networks, and package dependency DAGs.</p><p>Core problem: How do we systematically visit all vertices in a graph, determine the shortest path between two points, or detect cycles without getting trapped in infinite loops when cyclic references exist?</p>",
+      "initial-approach": "<p>Naive unvisited exploration:</p><ul><li>Traversing neighbor edges blindly. When encountering a cycle ($A \to B \to C \to A$), the algorithm loops infinitely until memory exhaustion (Out of Memory).</li><li>Unbounded recursive calls trigger Call Stack Overflow errors.</li></ul><p>Requirements: A robust <strong>Visited State Management</strong> mechanism paired with structured dispatch collections.</p>",
+      "optimization-thinking": "<p>Decoupling the two foundational graph exploration philosophies:</p><ol><li><strong>1. Breadth-First Search (BFS - Level-by-Level):</strong><ul><li><em>Mechanism:</em> Explores outward in concentric wavefronts. Visits all immediate neighbors before advancing to the next depth tier.</li><li><em>Data Structure:</em> <strong>FIFO Queue</strong>.</li><li><em>Core Property:</em> Mathematically guarantees finding the <strong>Shortest Path</strong> on unweighted graphs.</li></ul></li><li><strong>2. Depth-First Search (DFS - Deep Branching):</strong><ul><li><em>Mechanism:</em> Plunges as deep as possible along each branch until a dead end is reached, then backtracks to explore remaining alternatives.</li><li><em>Data Structure:</em> <strong>LIFO Stack</strong> or recursive Call Stack.</li><li><em>Key Strengths:</em> Cycle Detection, Topological Sorting, and Connected Components discovery.</li></ul></li></ol>",
+      "code-implementation": "<p>Standard vertex dispatch lifecycle sequence:</p><pre class=\"mermaid\"><code>sequenceDiagram\n    autonumber\n    actor Engine as Traversal Engine\n    participant Graph as Graph G(V, E)\n    participant DataStruct as FIFO Queue (BFS) / LIFO Stack (DFS)\n    participant Visited as Visited Set (State Tracker)\n\n    Engine-&gt;&gt;DataStruct: 1. Push Root vertex into structure\n    Engine-&gt;&gt;Visited: 2. Mark Root as visited\n    loop While dispatch structure is non-empty\n        DataStruct--&gt;&gt;Engine: 3. Pop current vertex U\n        Engine-&gt;&gt;Graph: 4. Query adjacency list of U\n        Graph--&gt;&gt;Engine: Returns neighbors [V1, V2, V3]\n        opt If neighbor is unvisited\n            Engine-&gt;&gt;Visited: Mark neighbor as visited\n            Engine-&gt;&gt;DataStruct: Push neighbor to Queue / Stack\n        end\n    end</code></pre><p><strong>Production TypeScript Implementation with Adjacency List:</strong></p><ul><li>Utilizes <code>Map&lt;string, string[]&gt;</code> for the adjacency graph and <code>Set&lt;string&gt;</code> for visited state tracking.</li><li>Function <code>bfsShortestPath(graph, start, target)</code> reconstructs optimal path chains efficiently.</li></ul>",
+      "complexity-applications": "<p><strong>Metrics Scorecard (Applying Framework from Article #01):</strong></p><ul><li><strong>Time Complexity:</strong> $O(V + E)$ (where $V$ is vertex count, $E$ is edge count). Every vertex and edge is processed a constant number of times.</li><li><strong>Auxiliary Space Complexity:</strong>\n  <ul>\n    <li><em>BFS:</em> $O(V)$ — In the worst case, the Queue holds all vertices at the graph's Maximum Width tier.</li>\n    <li><em>DFS:</em> $O(V)$ — Call stack consumption is proportional to the graph's Maximum Depth.</li>\n  </ul>\n</li><li><strong>Real-World Applications:</strong> Web Crawlers (BFS), social network connection degrees (Six Degrees of Separation), dependency resolution in <code>npm</code> and <code>cargo</code> (Topological Sort with DFS), and Mark-and-Sweep Garbage Collection in runtime VMs.</li></ul>"
+    }
+  },
+  {
+    "id": "post-31",
+    "slug": "two-pointers-sliding-window-linear-time-optimization",
+    "category": "code-craftsmanship-languages",
+    "title": "Core Algorithms Series #05: Two Pointers & Sliding Window Patterns — Transforming O(n²) Nested Loops to Linear O(n) Efficiency",
+    "summary": "The craft of optimizing contiguous array and string problems: Exploiting monotonicity to transform nested O(n²) loops into linear O(n) passes, symmetric Two Pointers, and dynamic expanding/shrinking Sliding Windows.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "9 min read",
+    "tags": [
+      "Algorithms",
+      "Two Pointers",
+      "Sliding Window",
+      "Optimization",
+      "Arrays",
+      "Clean Code"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>In technical interviews and real-world stream processing, contiguous subarray and substring problems account for over 40% of algorithmic tasks. Examples: <em>Finding pairs with sum $K$, finding the longest substring without repeating characters, or finding minimal subarrays exceeding threshold $S$</em>.</p><p>The engineering challenge: Traditional nested loops get trapped in $O(N^2)$ quadratic complexity, grinding to a halt when $N &gt; 10^5$. Two Pointers and Sliding Window patterns represent the ultimate craft of collapsing quadratic work into strict linear $O(N)$ execution.</p>",
+      "initial-approach": "<p>Naive Brute-Force Nested Loops:</p><ul><li>Use two nested loops <code>for i</code> and <code>for j</code> to evaluate all possible index pairs.</li><li><strong>Performance Evaluation:</strong> Requires $\frac{N(N-1)}{2}$ evaluations $\to O(N^2)$ time complexity. On $N = 100,000$, the CPU must compute <strong>5 billion iterations</strong>, exceeding the 1-second timeout of web servers.</li></ul><p>Root inefficiency: Repeatedly recalculating overlapping subproblems without taking advantage of the monotonicity of pointer movements.</p>",
+      "optimization-thinking": "<p>Mastering two linear optimization patterns:</p><ol><li><strong>1. Symmetric Two Pointers (From Opposite Ends):</strong><ul><li>Applied on sorted arrays: Initialize <code>left = 0</code> and <code>right = n - 1</code>.</li><li>Calculate <code>sum = arr[left] + arr[right]</code>: If <code>sum &lt; target</code> $\to$ Increment <code>left++</code>; if <code>sum &gt; target</code> $\to$ Decrement <code>right--</code>. Each pointer adjustment permanently eliminates candidate space without re-scanning.</li></ul></li><li><strong>2. Dynamic Sliding Window:</strong><ul><li>Maintain an active window $[L, R]$. Expand the right boundary <code>R++</code> to incorporate incoming elements.</li><li>When an invariant is violated (e.g. duplicate character detected), contract the left boundary <code>L++</code> until validity is restored.</li><li>Because both $L$ and $R$ traverse monotonically left-to-right at most $N$ times, total operations are strictly bounded to $2N \to O(N)$.</li></ul></li></ol>",
+      "code-implementation": "<p>Three-phase expand, validate, and contract sliding window lifecycle:</p><pre class=\"mermaid\"><code>flowchart TD\n    subgraph Phase1 [Phase 1 - Expand Right Boundary]\n        Step1[\"Right advances rightward: Ingests new item into window\"]\n    end\n    subgraph Phase2 [Phase 2 - Invariant Validation]\n        Step2{\"Is Window invariant violated?\"}\n    end\n    subgraph Phase3 [Phase 3 - Contract Left Boundary]\n        Step3[\"Left advances rightward: Evicts violating element\"]\n    end\n\n    Step1 --&gt; Step2\n    Step2 -- Yes --&gt; Step3\n    Step3 --&gt; Step2\n    Step2 -- No --&gt; Step1</code></pre><p><strong>Production TypeScript Implementation for Longest Substring Without Repeating Characters:</strong></p><ul><li>Uses a <code>Map&lt;string, number&gt;</code> to track the last seen index of each character.</li><li>Upon collision, jumps <code>left = Math.max(left, lastSeenIndex + 1)</code> directly for maximum throughput.</li></ul>",
+      "complexity-applications": "<p><strong>Metrics Scorecard (Applying Framework from Article #01):</strong></p><ul><li><strong>Time Complexity:</strong> $\Theta(N)$ — Both pointers traverse the collection exactly once. Reduces execution time from <strong>tens of seconds to under 2 milliseconds</strong>.</li><li><strong>Auxiliary Space Complexity:</strong> $O(1)$ for pure Two Pointers, $O(K)$ for Sliding Window (where $K$ is the character charset size, $K \le 128$ for ASCII).</li><li><strong>Real-World Applications:</strong> Streaming Analytics (sliding moving averages), API Rate Limiting (Sliding Window Log &amp; Counter algorithms in API Gateways), and network packet compression protocols.</li></ul>"
+    }
+  },
+  {
     "id": "post-23",
     "slug": "mastering-css-sticky-grid-filter-drift-containment",
     "category": "code-craftsmanship-languages",

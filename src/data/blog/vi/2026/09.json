@@ -26,6 +26,137 @@
     }
   },
   {
+    "id": "post-27",
+    "slug": "algorithmic-efficiency-metrics-time-space-complexity-big-o",
+    "category": "code-craftsmanship-languages",
+    "title": "Series Thuật toán Cốt lõi #01: Thước đo Hiệu quả Thuật toán — Phân tích Độ phức tạp Thời gian (Time Complexity), Không gian (Space Complexity) & Ký hiệu Tiệm cận (Big-O, Big-Ω, Big-Θ)",
+    "summary": "Thiết lập bộ khung đo lường chuẩn hóa hiệu năng thuật toán: Phân biệt Thời gian thực thi (Wall-clock) vs Mô hình tính toán RAM, phân rã Time vs Space Complexity (Auxiliary vs Total) và làm chủ hệ thống ký hiệu tiệm cận làm nền tảng cho toàn bộ series.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "9 phút đọc",
+    "tags": [
+      "Algorithms",
+      "Big-O",
+      "Time Complexity",
+      "Space Complexity",
+      "Data Structures",
+      "Computer Science",
+      "Performance"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Trong phát triển phần mềm và tối ưu hóa hệ thống, câu hỏi cốt tử mà mỗi kỹ sư phải trả lời trước khi đưa bất kỳ đoạn mã nào lên môi trường Production là: <em>'Thuật toán này chạy nhanh đến mức nào, và nó tiêu tốn bao nhiêu tài nguyên khi lượng dữ liệu người dùng tăng trưởng gấp 1,000 lần?'</em>.</p><p>Một sai lầm kinh điển của người mới lập trình là dùng đồng hồ bấm giờ (Wall-clock Time) qua các hàm như <code>console.time()</code> hay <code>System.nanoTime()</code> để đánh giá tốc độ. Cách làm này không thể đưa ra kết luận chuẩn xác vì thời gian chạy vật lý phụ thuộc hoàn toàn vào cấu hình phần cứng CPU, nhiệt độ máy, trình biên dịch, và các tiến trình chạy nền của hệ điều hành. Do đó, khoa học máy tính cần một <strong>hệ thống thước đo toán học chuẩn hóa (Mathematical Framework)</strong> để phân tích độc lập với môi trường phần cứng.</p>",
+      "initial-approach": "<p>Cách tiếp cận thực nghiệm ban đầu (Empirical Benchmarking):</p><ul><li>Chạy thuật toán trên máy tính cá nhân với dữ liệu mẫu nhỏ ($N = 100$) và đo thời gian bằng mili-giây.</li><li><em>Tại sao phương pháp này thất bại?</em> Một thuật toán $O(N^2)$ có thể chạy chỉ mất <code>0.2ms</code> khi $N = 100$, khiến lập trình viên lầm tưởng nó đủ nhanh. Nhưng khi $N$ tăng lên $10^6$ trên Production, thời gian thực thi sẽ bùng nổ lên tới <strong>hơn 11 ngày</strong>, làm tê liệt toàn bộ hệ thống (Server Freeze).</li></ul><p>Chúng ta cần một tư duy định lượng tiệm cận (Asymptotic Analysis) để dự đoán xu hướng tăng trưởng của tài nguyên theo quy mô đầu vào $N$.</p>",
+      "optimization-thinking": "<p>Để đánh giá một thuật toán toàn diện, tôi thiết lập mô hình tính toán chuẩn dựa trên <strong>Mô hình Máy tính RAM (Random Access Machine Model)</strong> và 3 hệ số đo lường trụ cột:</p><ol><li><strong>1. Phân cấp Ký hiệu Tiệm cận (Asymptotic Notations):</strong><ul><li><strong>Big-O ($O$):</strong> Chặn trên (Upper Bound) — Đại diện cho kịch bản xấu nhất (Worst-Case Scenario). Đây là metric quan trọng nhất để cam kết SLA hệ thống.</li><li><strong>Big-Omega ($\Omega$):</strong> Chặn dưới (Lower Bound) — Kịch bản tốt nhất (Best-Case Scenario).</li><li><strong>Big-Theta ($\Theta$):</strong> Chặn chặt (Tight Bound) — Khi chặn trên và chặn dưới tiệm cận trùng nhau, phản ánh hành vi trung bình thực tế.</li></ul></li><li><strong>2. Phân biệt Rạch ròi Time vs Space Complexity:</strong><ul><li><strong>Time Complexity:</strong> Số lượng phép toán nguyên thủy (Primitive Operations: gán, so sánh, số học) theo hàm của $N$.</li><li><strong>Space Complexity (Total Space vs Auxiliary Space):</strong> Tổng dung lượng bộ nhớ thuật toán cần dùng. Trong đó, <em>Auxiliary Space</em> (Bộ nhớ phụ trợ) là phần bộ nhớ tạm do thuật toán tự cấp phát thêm (không tính mảng đầu vào), bao gồm Heap allocations và Call Stack frames trong đệ quy.</li></ul></li></ol>",
+      "code-implementation": "<p>Bản đồ phân cấp tăng trưởng độ phức tạp thuật toán và cấu trúc bộ nhớ:</p><pre class=\"mermaid\"><code>flowchart TD\n    subgraph BigOComplexity [Phan cap Do Phuc Tap Thuat Toan - Big-O Hierarchy]\n        O1[\"O(1) - Hang so - Constant Time\"]\n        OLogN[\"O(log n) - Logarithmic - Binary Search\"]\n        ON[\"O(n) - Tuyen tinh - Single Pass\"]\n        ONLogN[\"O(n log n) - Tuyen tinh Log - QuickSort, MergeSort\"]\n        ON2[\"O(n2) - Da thuc bac 2 - Nested Loops\"]\n        O2N[\"O(2^n) - Ham mu - Exponential Recursion\"]\n        ONFact[\"O(n!) - Giai thua - Factorial Permutations\"]\n    end\n\n    subgraph SpaceDimensions [Khong Gian Bo Nho - Memory Footprint]\n        StackMem[\"Call Stack Memory - Khung ngan xep de quy\"]\n        HeapMem[\"Heap Dynamic Memory - Mang phu tro Auxiliary Space\"]\n    end\n\n    O1 --&gt; OLogN --&gt; ON --&gt; ONLogN --&gt; ON2 --&gt; O2N --&gt; ONFact\n    ONLogN -.-&gt; StackMem\n    ONLogN -.-&gt; HeapMem</code></pre><p><strong>Minh họa mã nguồn TypeScript chuẩn hóa các cấp độ Big-O:</strong></p><ul><li><strong>$O(1)$ Constant Time:</strong> Truy xuất phần tử theo index mảng <code>arr[0]</code> hoặc tra cứu khóa trong HashMap.</li><li><strong>$O(\log N)$ Logarithmic Time:</strong> Thuật toán tìm kiếm nhị phân chia đôi không gian tìm kiếm sau mỗi bước.</li><li><strong>$O(N)$ Linear Time:</strong> Duyệt qua toàn bộ $N$ phần tử trong mảng một lần duy nhất.</li><li><strong>$O(N \log N)$ Linearithmic Time:</strong> Các giải thuật chia để trị tối ưu như QuickSort, MergeSort, TimSort.</li><li><strong>$O(N^2)$ Quadratic Time:</strong> 2 vòng lặp lồng nhau duyệt qua tất cả các cặp $(i, j)$.</li></ul>",
+      "complexity-applications": "<p><strong>Bộ khung Đánh giá Chuẩn mực (Evaluation Framework) cho Toàn bộ Series:</strong></p><p>Từ bài viết này trở đi, mỗi thuật toán trong series sẽ được giải phẫu và chấm điểm dựa trên đúng 5 tiêu chí cốt lõi:</p><ul><li><strong>1. Worst-Case Time Complexity ($O$):</strong> Đảm bảo hệ thống không bị treo khi gặp dữ liệu nghịch đảo.</li><li><strong>2. Best/Average-Case Time ($\Omega / \Theta$):</strong> Hiệu năng thực tế trong điều kiện dữ liệu ngẫu nhiên.</li><li><strong>3. Auxiliary Space Complexity:</strong> Lượng RAM phụ cấp phát thêm trên Heap và Call Stack.</li><li><strong>4. Tính ổn định (Stability) &amp; Khả năng xử lý tại chỗ (In-place):</strong> Có làm thay đổi thứ tự tương đối của các phần tử bằng nhau hay không.</li><li><strong>5. Ngưỡng bùng nổ quy mô (Scalability Threshold):</strong> Giới hạn $N$ an toàn để thực thi trong dưới <code>100ms</code> trên môi trường Production.</li></ul>"
+    }
+  },
+  {
+    "id": "post-28",
+    "slug": "binary-search-divide-and-conquer-optimization",
+    "category": "code-craftsmanship-languages",
+    "title": "Series Thuật toán Cốt lõi #02: Thuật toán Tìm kiếm Nhị phân (Binary Search) & Tư duy Chia để Trị — Tối ưu hóa Tra cứu từ O(n) về O(log n)",
+    "summary": "Mổ xẻ giải thuật Tìm kiếm Nhị phân: Nguyên lý loại trừ 50% không gian tìm kiếm, kỹ thuật xử lý Integer Overflow khi tính Mid, triển khai Iterative vs Recursive và ứng dụng thực tiễn trong Database B-Tree Index.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "8 phút đọc",
+    "tags": [
+      "Algorithms",
+      "Binary Search",
+      "Divide and Conquer",
+      "Data Structures",
+      "TypeScript",
+      "Performance"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Tìm kiếm dữ liệu là thao tác cơ bản nhất nhưng lại chiếm tỷ trọng CPU cao nhất trong mọi hệ thống phần mềm. Đề bài đặt ra: Cho một mảng số nguyên đã được sắp xếp tăng dần gồm $N$ phần tử, hãy tìm vị trí xuất hiện của giá trị <code>target</code> trong mảng, hoặc trả về <code>-1</code> nếu không tồn tại.</p><p>Với các tập dữ liệu lớn hàng triệu bản ghi ($N = 10^7$), một giải thuật tìm kiếm kém hiệu quả có thể làm nghẽn toàn bộ luồng xử lý của hệ thống. Mục tiêu bài viết là phân tích cách thức chuyển đổi từ tìm kiếm tuần tự sang tư duy chia để trị (Divide and Conquer) với độ phức tạp $O(\log N)$.</p>",
+      "initial-approach": "<p>Cách tiếp cận sơ khởi (Linear Search - Tìm kiếm tuyến tính):</p><ul><li>Sử dụng vòng lặp duyệt từ đầu mảng <code>for (let i = 0; i &lt; arr.length; i++)</code> và so sánh từng phần tử với <code>target</code>.</li><li><strong>Đánh giá hiệu năng:</strong>\n  <ul>\n    <li><em>Best-case:</em> $\Omega(1)$ khi phần tử nằm ngay vị trí đầu tiên.</li>\n    <li><em>Worst-case:</em> $O(N)$ khi phần tử nằm ở cuối mảng hoặc không tồn tại. Với $N = 1,000,000$, thuật toán cần tới <strong>1,000,000 phép so sánh</strong>.</li>\n  </ul>\n</li></ul><p>Hạn chế lớn nhất: Hoàn toàn lãng phí thông tin quý giá rằng mảng <em>đã được sắp xếp thứ tự sẵn</em>.</p>",
+      "optimization-thinking": "<p>Áp dụng tư duy Chia để trị (Divide and Conquer):</p><ol><li><strong>Nguyên lý Cắt đôi Không gian Tìm kiếm:</strong> So sánh phần tử nằm chính giữa <code>arr[mid]</code> với <code>target</code>:<ul><li>Nếu <code>arr[mid] === target</code>: Tìm thấy kết quả tức thì.</li><li>Nếu <code>arr[mid] &lt; target</code>: Vì mảng đã sắp xếp, toàn bộ nửa bên trái chắc chắn nhỏ hơn target $\to$ Loại bỏ ngay 50% không gian tìm kiếm, chỉ cần tìm trên đoạn <code>[mid + 1, right]</code>.</li><li>Nếu <code>arr[mid] &gt; target</code>: Toàn bộ nửa bên phải chắc chắn lớn hơn target $\to$ Thu hẹp không gian về đoạn <code>[left, mid - 1]</code>.</li></ul></li><li><strong>Cạm bẫy Tràn số nguyên (Integer Overflow Pitfall):</strong> Công thức tính toán học <code>mid = Math.floor((left + right) / 2)</code> có thể gây tràn số nguyên 32-bit khi <code>left + right &gt; 2^31 - 1</code>. <em>Kỹ thuật chuẩn xác:</em> Áp dụng <code>mid = left + Math.floor((right - left) / 2)</code>.</li></ol>",
+      "code-implementation": "<p>Mô hình thu hẹp không gian tìm kiếm qua từng vòng lặp:</p><pre class=\"mermaid\"><code>flowchart LR\n    subgraph Step1 [Buoc 1 - n = 8 phan tu]\n        A1[\"Left: 0, Right: 7, Mid: 3 - Loai bo 4 phan tu\"]\n    end\n    subgraph Step2 [Buoc 2 - n = 4 phan tu]\n        A2[\"Left: 4, Right: 7, Mid: 5 - Loai bo 2 phan tu\"]\n    end\n    subgraph Step3 [Buoc 3 - n = 2 phan tu]\n        A3[\"Left: 6, Right: 7, Mid: 6 - Tim thay Target\"]\n    end\n\n    Step1 --&gt; Step2 --&gt; Step3</code></pre><p><strong>Triển khai TypeScript hoàn chỉnh phiên bản Vòng lặp tối ưu (Iterative):</strong></p><ul><li><strong>Phiên bản Iterative (Khuyến nghị):</strong> Duy trì con trỏ <code>left = 0</code> và <code>right = arr.length - 1</code>. Không tốn bộ nhớ ngăn xếp, đạt $O(1)$ Auxiliary Space.</li><li><strong>Phiên bản Recursive (Đệ quy):</strong> Gọi đệ quy hàm <code>binarySearch(arr, left, right, target)</code>. Mỗi lần gọi đệ quy tạo 1 stack frame, tiêu tốn $O(\log N)$ Auxiliary Stack Space.</li></ul>",
+      "complexity-applications": "<p><strong>Đánh giá Hiệu năng theo Framework Chuẩn:</strong></p><ul><li><strong>Time Complexity:</strong>\n  <ul>\n    <li><em>Best-case:</em> $\Omega(1)$ (khi target nằm ngay chính giữa mảng ở lần kiểm tra đầu tiên).</li>\n    <li><em>Worst/Average-case:</em> $O(\log_2 N)$ và $\Theta(\log_2 N)$. Với $N = 1,000,000$ phần tử, thuật toán chỉ mất tối đa <strong>20 phép so sánh</strong> (so với 1,000,000 của Linear Search - tăng tốc <strong>50,000 lần</strong>).</li>\n  </ul>\n</li><li><strong>Auxiliary Space:</strong> $O(1)$ cho bản Iterative, $O(\log N)$ cho bản Recursive.</li><li><strong>Ứng dụng Thực chiến:</strong> Tìm kiếm chỉ mục cơ sở dữ liệu (B-Tree/LSM-Tree Indexes), lệnh <code>git bisect</code> để tự động truy tìm commit gây lỗi trong lịch sử Git, và các bài toán Binary Search on Answer (tìm tham số tối ưu thỏa mãn điều kiện kinh doanh).</li></ul>"
+    }
+  },
+  {
+    "id": "post-29",
+    "slug": "quicksort-partitioning-mechanics-stack-depth-analysis",
+    "category": "code-craftsmanship-languages",
+    "title": "Series Thuật toán Cốt lõi #03: Thuật toán Sắp xếp Nhanh (QuickSort) — Phân tích Kỹ thuật Phân hoạch (Partitioning), Đánh đổi Stack Depth & Khắc phục Worst-Case O(n²)",
+    "summary": "Phân tích cơ chế hoạt động của QuickSort: So sánh chiến lược phân hoạch Lomuto vs Hoare, kỹ thuật chọn Pivot thông minh (Median-of-Three), tối ưu đệ quy đuôi (Tail Call) để giới hạn Call Stack và đánh giá so với MergeSort.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "9 phút đọc",
+    "tags": [
+      "Algorithms",
+      "QuickSort",
+      "Sorting",
+      "Partitioning",
+      "Divide and Conquer",
+      "Optimization"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Sắp xếp (Sorting) là nền tảng cốt lõi của khoa học máy tính, quyết định tốc độ của tìm kiếm nhị phân, loại bỏ dữ liệu trùng lặp và tổng hợp báo cáo. Đề bài: Cho một mảng chưa có thứ tự gồm $N$ phần tử, hãy sắp xếp các phần tử theo thứ tự không giảm.</p><p>Thách thức lớn nhất trong kỹ thuật là: Làm thế nào để đạt tốc độ xử lý nhanh nhất trong bộ nhớ chính (In-Memory Cache Locality) mà không tiêu tốn thêm $O(N)$ bộ nhớ phụ trợ như MergeSort? QuickSort chính là câu trả lời xuất sắc nhất của ngành khoa học máy tính.</p>",
+      "initial-approach": "<p>Cách tiếp cận sơ khởi (Bubble Sort / Insertion Sort):</p><ul><li>So sánh từng cặp phần tử liền kề và đổi chỗ liên tục.</li><li><strong>Đánh giá hiệu năng:</strong>\n  <ul>\n    <li><em>Time Complexity:</em> $O(N^2)$ — Khi $N = 100,000$, số phép so sánh lên tới $10^{10}$, mất hàng phút để hoàn thành.</li>\n    <li><em>MergeSort thay thế:</em> Đạt $O(N \log N)$ nhưng đòi hỏi cấp phát thêm mảng phụ trợ $O(N)$ RAM, gây áp lực rác lớn lên bộ dọn rác Garbage Collector.</li>\n  </ul>\n</li></ul>",
+      "optimization-thinking": "<p>Giải thuật Sắp xếp Nhanh (QuickSort) áp dụng cơ chế <strong>Phân hoạch (Partitioning)</strong>:</p><ol><li><strong>Ý tưởng Cốt lõi:</strong> Chọn một phần tử làm điểm tựa (Pivot). Sắp xếp lại mảng sao cho mọi phần tử nhỏ hơn Pivot nằm về bên trái, và mọi phần tử lớn hơn Pivot nằm về bên phải. Sau đó gọi đệ quy sắp xếp hai nửa độc lập.</li><li><strong>So sánh Kỹ thuật Phân hoạch (Lomuto vs Hoare):</strong><ul><li><em>Lomuto Partition:</em> Dùng 1 con trỏ quét từ trái qua phải. Dễ hiểu nhưng số phép hoán đổi (swap) nhiều gấp 3 lần.</li><li><em>Hoare Partition:</em> Dùng 2 con trỏ di chuyển ngược chiều nhau từ hai đầu mảng. Giảm số lần swap tối đa và hoạt động cực nhanh trong thực tế.</li></ul></li><li><strong>Khắc phục Kịch bản Tồi tệ Nhất $O(N^2)$:</strong> Nếu luôn chọn phần tử đầu hoặc cuối làm Pivot trên mảng đã sắp xếp sẵn, QuickSort sẽ bị thoái hóa thành cây đệ quy lệch $O(N^2)$. <em>Giải pháp:</em> Áp dụng kỹ thuật <strong>Randomized Pivot</strong> hoặc <strong>Median-of-Three</strong> (lấy trung vị của 3 phần tử: đầu, giữa, cuối).</li></ol>",
+      "code-implementation": "<p>Cấu trúc cây phân rã đệ quy và dồn phần tử qua Pivot:</p><pre class=\"mermaid\"><code>graph TD\n    Root[\"Mang ban dau: 8, 3, 1, 7, 0, 10, 2 - Pivot: 7\"]\n    Left1[\"Nhanh trai nho hon 7: 3, 1, 0, 2\"]\n    Pivot1[\"Pivot: 7\"]\n    Right1[\"Nhanh phai lon hon bang 7: 8, 10\"]\n    Left2[\"Nhanh con trai: 0, 1\"]\n    Pivot2[\"Pivot: 2\"]\n    Right2[\"Nhanh con phai: 3\"]\n\n    Root --&gt; Left1\n    Root --&gt; Pivot1\n    Root --&gt; Right1\n    Left1 --&gt; Left2\n    Left1 --&gt; Pivot2\n    Left1 --&gt; Right2</code></pre><p><strong>Triển khai TypeScript hoàn chỉnh với Hoare Partitioning &amp; Median-of-Three:</strong></p><ul><li>Thuật toán sắp xếp trực tiếp trên mảng gốc (In-place Swap), không tạo thêm mảng tạm thời trên Heap.</li><li>Tối ưu đệ quy đuôi (Tail Recursion Optimization): Luôn gọi đệ quy trên phân đoạn ngắn hơn trước để khóa độ sâu Call Stack tối đa là $O(\log N)$.</li></ul>",
+      "complexity-applications": "<p><strong>Đánh giá Toàn diện theo Framework Metrics:</strong></p><ul><li><strong>Time Complexity:</strong>\n  <ul>\n    <li><em>Best/Average-case:</em> $\Omega(N \log N)$ và $\Theta(N \log N)$. Tận dụng tối đa bộ đệm CPU Cache L1/L2 nhờ tính liên tục của bộ nhớ.</li>\n    <li><em>Worst-case:</em> $O(N^2)$ (với Median-of-Three Pivot, xác suất xuất hiện kịch bản này trong thực tế là xấp xỉ 0).</li>\n  </ul>\n</li><li><strong>Auxiliary Space:</strong> $O(\log N)$ (chỉ tốn cho Call Stack, $0$ byte cấp phát Heap).</li><li><strong>Tính chất:</strong> In-place (Tại chỗ) nhưng Non-stable (Không giữ nguyên thứ tự phần tử có giá trị bằng nhau).</li><li><strong>Ứng dụng Thực chiến:</strong> Là thuật toán nền tảng trong hàm <code>Array.prototype.sort()</code> của V8 JavaScript Engine, <code>sort.Slice</code> trong Golang, và Dual-Pivot QuickSort trong thư viện chuẩn Java.</li></ul>"
+    }
+  },
+  {
+    "id": "post-30",
+    "slug": "graph-traversal-bfs-dfs-queue-stack-mechanics",
+    "category": "code-craftsmanship-languages",
+    "title": "Series Thuật toán Cốt lõi #04: Duyệt Đồ thị Cơ bản (BFS & DFS) — Khám phá Chiều rộng vs Chiều sâu, Ứng dụng Hàng đợi (Queue) & Ngăn xếp (Stack)",
+    "summary": "Khám phá hai trụ cột duyệt đồ thị & cây: Cơ chế lan tỏa từng tầng của BFS bằng FIFO Queue vs đào sâu nhánh của DFS bằng LIFO Stack/Đệ quy, bài toán phát hiện chu trình và tìm đường đi ngắn nhất.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "9 phút đọc",
+    "tags": [
+      "Algorithms",
+      "BFS",
+      "DFS",
+      "Graph Theory",
+      "Data Structures",
+      "Tree Traversal"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Cấu trúc dữ liệu đồ thị $G = (V, E)$ (gồm tập đỉnh $V$ và tập cạnh $E$) là mô hình trừu tượng hóa cho hầu hết các bài toán thực tế: từ mạng lưới bạn bè mạng xã hội, bản đồ giao thông GPS, đến cây phụ thuộc của các gói phần mềm (Dependency Trees).</p><p>Bài toán cốt lõi: Làm thế nào để duyệt qua toàn bộ các đỉnh trong đồ thị một cách có hệ thống, tìm đường đi ngắn nhất giữa 2 điểm hoặc kiểm tra xem đồ thị có chu trình (Cycles) hay không mà không bị rơi vào vòng lặp vô tận khi đồ thị có liên kết vòng?</p>",
+      "initial-approach": "<p>Cách tiếp cận ngây thơ không lưu vết (Unvisited Exploration):</p><ul><li>Đi theo các cạnh liên kết ngẫu nhiên. Khi gặp đồ thị có chu trình kín ($A \to B \to C \to A$), thuật toán sẽ duyệt vòng tròn mãi mãi gây tràn bộ nhớ (Infinite Loop / Out of Memory).</li><li>Duyệt đệ quy không giới hạn độ sâu dẫn đến lỗi tràn ngăn xếp (Call Stack Overflow).</li></ul><p>Yêu cầu đặt ra là phải có cơ chế <strong>Lưu vết trạng thái (Visited State Management)</strong> và cấu trúc điều phối thứ tự duyệt rõ ràng.</p>",
+      "optimization-thinking": "<p>Phân định rõ ràng 2 trường phái duyệt đồ thị nền tảng:</p><ol><li><strong>1. Breadth-First Search (BFS - Duyệt theo Chiều rộng):</strong><ul><li><em>Cơ chế:</em> Khám phá đồng tâm theo từng lớp sóng (Level-by-Level). Thăm toàn bộ các đỉnh kề trực tiếp trước khi tiến sang tầng tiếp theo.</li><li><em>Cấu trúc dữ liệu:</em> <strong>Hàng đợi FIFO (Queue)</strong>.</li><li><em>Đặc tính vô giá:</em> Luôn tìm thấy <strong>đường đi ngắn nhất (Shortest Path)</strong> tính theo số lượng cạnh trên đồ thị không trọng số.</li></ul></li><li><strong>2. Depth-First Search (DFS - Duyệt theo Chiều sâu):</strong><ul><li><em>Cơ chế:</em> Đi sâu hết mức theo một nhánh cho tới khi chạm đáy (Dead End), sau đó quay lui (Backtrack) để khám phá các nhánh rẽ khác.</li><li><em>Cấu trúc dữ liệu:</em> <strong>Ngăn xếp LIFO (Stack)</strong> hoặc Call Stack của đệ quy.</li><li><em>Thế mạnh:</em> Phát hiện chu trình (Cycle Detection), Sắp xếp topo (Topological Sort), và tìm kiếm thành phần liên thông mạnh.</li></ul></li></ol>",
+      "code-implementation": "<p>Quy trình điều phối vòng lặp duyệt đỉnh chuẩn:</p><pre class=\"mermaid\"><code>sequenceDiagram\n    autonumber\n    actor Engine as Thuat toan Duyet\n    participant Graph as Do thi G(V, E)\n    participant DataStruct as Queue FIFO (BFS) / Stack LIFO (DFS)\n    participant Visited as Visited Set (Luu vet dinh)\n\n    Engine-&gt;&gt;DataStruct: 1. Push dinh nguon Root vao cau truc\n    Engine-&gt;&gt;Visited: 2. Danh dau Root da tham\n    loop Khi cau truc dieu phoi chua rong\n        DataStruct--&gt;&gt;Engine: 3. Pop dinh hien tai U\n        Engine-&gt;&gt;Graph: 4. Lay danh sach dinh ke cua U\n        Graph--&gt;&gt;Engine: Danh sach ke [V1, V2, V3]\n        opt Neu dinh ke chua nam trong Visited\n            Engine-&gt;&gt;Visited: Danh dau da tham\n            Engine-&gt;&gt;DataStruct: Push vao Queue / Stack\n        end\n    end</code></pre><p><strong>Triển khai TypeScript mẫu mực cho Đồ thị Biểu diễn bằng Danh sách Kề (Adjacency List):</strong></p><ul><li>Sử dụng <code>Map&lt;string, string[]&gt;</code> để lưu trữ danh sách kề và <code>Set&lt;string&gt;</code> làm bộ nhớ lưu vết đỉnh đã thăm <code>visited</code>.</li><li>Hàm <code>bfsShortestPath(graph, start, target)</code> trả về mảng đường đi ngắn nhất với thời gian tối ưu.</li></ul>",
+      "complexity-applications": "<p><strong>Đánh giá Hiệu năng theo Framework Metrics:</strong></p><ul><li><strong>Time Complexity:</strong> $O(V + E)$ (với $V$ là số lượng đỉnh, $E$ là số lượng cạnh). Mỗi đỉnh và mỗi cạnh được xét đúng một hằng số lần.</li><li><strong>Auxiliary Space Complexity:</strong>\n  <ul>\n    <li><em>BFS:</em> $O(V)$ — Trong trường hợp xấu nhất, hàng đợi Queue phải chứa toàn bộ đỉnh ở tầng có độ rộng lớn nhất (Maximum Width).</li>\n    <li><em>DFS:</em> $O(V)$ — Bộ nhớ Call Stack tiêu tốn tỷ lệ thuận với chiều sâu tối đa của đồ thị (Maximum Depth / Height).</li>\n  </ul>\n</li><li><strong>Ứng dụng Thực tế:</strong> Thuật toán Crawler web (BFS), mạng xã hội tính khoảng cách kết nối bạn bè (Six Degrees of Separation), giải quyết bài toán phụ thuộc gói tin trong <code>npm install</code> / <code>cargo build</code> (Topological Sort với DFS), và thuật toán gom rác Mark-and-Sweep trong Virtual Machines.</li></ul>"
+    }
+  },
+  {
+    "id": "post-31",
+    "slug": "two-pointers-sliding-window-linear-time-optimization",
+    "category": "code-craftsmanship-languages",
+    "title": "Series Thuật toán Cốt lõi #05: Kỹ thuật Hai Con trỏ (Two Pointers) & Cửa sổ Trượt (Sliding Window) — Nghệ thuật Biến đổi Độ phức tạp từ O(n²) thành O(n)",
+    "summary": "Nghệ thuật tối ưu mảng và chuỗi liên tục: Khai thác tính đơn điệu để chuyển đổi 2 vòng lặp lồng nhau O(n²) thành tuyến tính O(n), kỹ thuật Two Pointers đối xứng và Dynamic Sliding Window co giãn linh hoạt.",
+    "publishedAt": "17/09/2026",
+    "date": "2026-09-17",
+    "readTime": "9 phút đọc",
+    "tags": [
+      "Algorithms",
+      "Two Pointers",
+      "Sliding Window",
+      "Optimization",
+      "Arrays",
+      "Clean Code"
+    ],
+    "author": "Huỳnh Nhật Tân",
+    "sections": {
+      "problem-statement": "<p>Trong các kỳ phỏng vấn thuật toán và bài toán xử lý chuỗi dữ liệu thực tế, các bài toán thao tác trên mảng hoặc chuỗi con liên tục (Subarray/Substring) chiếm tới hơn 40% khối lượng. Điển hình như: <em>Tìm cặp phần tử có tổng bằng $K$, tìm chuỗi con dài nhất không chứa ký tự lặp, hoặc tìm đoạn con có tổng lớn hơn ngưỡng $S$</em>.</p><p>Thách thức lớn nhất: Các cách tiếp cận thông thường sử dụng vòng lặp lồng nhau đều bị chặn lại ở mức $O(N^2)$, không thể xử lý nổi dữ liệu khi $N &gt; 10^5$. Kỹ thuật Two Pointers và Sliding Window chính là nghệ thuật tối ưu hóa đưa thời gian chạy về đường thẳng tuyến tính $O(N)$.</p>",
+      "initial-approach": "<p>Cách tiếp cận vét cạn (Brute-Force Nested Loops):</p><ul><li>Dùng 2 vòng lặp lồng nhau <code>for i</code> và <code>for j</code> để duyệt qua tất cả các cặp chỉ số có thể có.</li><li><strong>Đánh giá hiệu năng:</strong> Có tổng cộng $\frac{N(N-1)}{2}$ cặp cần kiểm tra $\to$ Thời gian thực thi là $O(N^2)$. Khi $N = 100,000$, CPU cần thực hiện khoảng <strong>5 tỷ phép tính</strong>, vượt quá giới hạn 1 giây của mọi server.</li></ul><p>Nguyên nhân lãng phí: Lặp lại các phép tính toán trên vùng giao thoa (Overlapping Subproblems) mà không tận dụng tính chất đơn điệu (Monotonicity) của mảng.</p>",
+      "optimization-thinking": "<p>Khai phá 2 mô hình tối ưu hóa tuyến tính:</p><ol><li><strong>1. Kỹ thuật Hai Con trỏ Đối xứng (Two Pointers from Both Ends):</strong><ul><li>Áp dụng trên mảng đã sắp xếp: Đặt con trỏ <code>left = 0</code> và <code>right = n - 1</code>.</li><li>Tính tổng <code>sum = arr[left] + arr[right]</code>: Nếu <code>sum &lt; target</code> $\to$ Cần tăng tổng, chỉ có thể dịch <code>left++</code>; nếu <code>sum &gt; target</code> $\to$ Cần giảm tổng, dịch <code>right--</code>. Mỗi bước dịch con trỏ loại bỏ vĩnh viễn $1$ phần tử mà không cần kiểm tra lại.</li></ul></li><li><strong>2. Kỹ thuật Cửa sổ Trượt Động (Dynamic Sliding Window):</strong><ul><li>Duy trì một cửa sổ con trỏ $[L, R]$. Mở rộng biên phải <code>R++</code> để đưa thêm dữ liệu vào cửa sổ.</li><li>Khi cửa sổ vi phạm điều kiện bài toán (ví dụ: phát hiện ký tự trùng lặp), co rút biên trái <code>L++</code> cho tới khi cửa sổ trở lại trạng thái hợp lệ.</li><li>Vì $L$ và $R$ đều chỉ di chuyển từ trái sang phải tối đa $N$ lần, tổng số bước thực thi luôn bị chặn ở mức $2N \to O(N)$.</li></ul></li></ol>",
+      "code-implementation": "<p>Chu trình 3 pha mở rộng và co rút của Sliding Window:</p><pre class=\"mermaid\"><code>flowchart TD\n    subgraph Phase1 [Pha 1 - Mo rong bien phai Right]\n        Step1[\"Right dich chuyen sang phai: Nap phan tu moi vao Window\"]\n    end\n    subgraph Phase2 [Pha 2 - Kiem tra tinh hop le]\n        Step2{\"Dieu kien Window co bi vi pham?\"}\n    end\n    subgraph Phase3 [Pha 3 - Co rut bien trai Left]\n        Step3[\"Left dich chuyen sang phai: Loai bo phan tu vi pham\"]\n    end\n\n    Step1 --&gt; Step2\n    Step2 -- Co --&gt; Step3\n    Step3 --&gt; Step2\n    Step2 -- Khong --&gt; Step1</code></pre><p><strong>Mã nguồn TypeScript tối ưu bài toán Chuỗi con dài nhất không lặp ký tự (Longest Substring Without Repeating Characters):</strong></p><ul><li>Sử dụng cấu trúc <code>Map&lt;string, number&gt;</code> lưu trữ vị trí xuất hiện gần nhất của ký tự.</li><li>Khi gặp ký tự trùng, nhảy ngay con trỏ <code>left = Math.max(left, lastSeenIndex + 1)</code> để đạt tốc độ xử lý nhanh nhất mà không cần co từng bước.</li></ul>",
+      "complexity-applications": "<p><strong>Đánh giá Hiệu năng theo Framework Metrics:</strong></p><ul><li><strong>Time Complexity:</strong> $\Theta(N)$ — Cả con trỏ trái và phải đều chỉ duyệt qua mảng đúng 1 lần duy nhất. Giảm thời gian xử lý từ <strong>hàng chục giây xuống dưới 2 mili-giây</strong>.</li><li><strong>Auxiliary Space Complexity:</strong> $O(1)$ cho Two Pointers thuần, $O(K)$ cho Sliding Window (với $K$ là kích thước bảng mã ký tự, $K \le 128$ cho bảng mã ASCII).</li><li><strong>Ứng dụng Thực tiễn:</strong> Xử lý dữ liệu dòng (Streaming Analytics - tính toán giá trị trung bình trượt Moving Average), thuật toán giới hạn tần suất truy cập API (Sliding Window Log &amp; Counter Rate Limiting trong API Gateway), và các thuật toán nén giải nén dữ liệu mạng.</li></ul>"
+    }
+  },
+  {
     "id": "post-23",
     "slug": "mastering-css-sticky-grid-filter-drift-containment",
     "category": "code-craftsmanship-languages",
