@@ -1,8 +1,9 @@
-# Feature: core-algorithms-series (Basic Algorithms Series)
+# Feature: core-algorithms-series (Basic Algorithms)
 
 ## 1. End-to-End System Flow
+
 - **Client / Blog Data Layer:**
-  - Published the 8-part foundational **Basic Algorithms Series** under the `code-craftsmanship-languages` track (scheduled for Thursdays / `THU`), dated to the most recent Thursday (`17/09/2026`).
+  - Published the 8-part foundational **Basic Algorithms** under the `code-craftsmanship-languages` track (scheduled for Thursdays / `THU`), dated to the most recent Thursday (`17/09/2026`).
   - **Standardized Evaluation Framework (Article #01):**
     - Established an abstract, hardware-independent evaluation framework rooted in the RAM Model of Computation.
     - Defined metrics: Time Complexity ($O, \Omega, \Theta$), Space Complexity (Total vs Auxiliary Space, Call Stack vs Heap allocations), Stability, In-Place execution, and Scalability Thresholds.
@@ -24,13 +25,15 @@
     - Bilingual parity across Vietnamese (`src/data/blog/vi/2026/09.json`) and English (`src/data/blog/en/2026/09.json`).
 
 ## 2. Technical Optimizations
+
 - **Asymptotic Metric Anchoring:** Every algorithm article explicitly benchmarks Time and Space Complexity back to the Article #01 metrics framework.
 - **Dynamic ESM & Responsive Diagrams:** All Mermaid diagrams render responsively with interactive dark mode support and full-screen Fit View pan/zoom modal integration.
 - **Strict In-Place & Memory Safety:** C++ code samples emphasize reference semantics (`std::vector<int>&`), const correctness, and overflow prevention (`left + (right - left) / 2`).
 
 ## 3. Impacted Files
-- `src/data/blog/vi/2026/09.json`: Complete 8-part Basic Algorithms Series in Vietnamese with Mermaid diagrams and C++ implementations.
-- `src/data/blog/en/2026/09.json`: Complete 8-part Basic Algorithms Series in English with Mermaid diagrams and C++ implementations.
+
+- `src/data/blog/vi/2026/09.json`: Complete 8-part Basic Algorithms in Vietnamese with Mermaid diagrams and C++ implementations.
+- `src/data/blog/en/2026/09.json`: Complete 8-part Basic Algorithms in English with Mermaid diagrams and C++ implementations.
 - `src/styles/pages/_article-modal.scss`: Responsive list indentation and nested list styles for `<ol>` and `<ul>`.
 - `src/styles/base/_reset.scss`: Global list reset for `ul, ol`.
-- `docs/features/core-algorithms-series.md`: Technical documentation for the Basic Algorithms Series.
+- `docs/features/core-algorithms-series.md`: Technical documentation for the Basic Algorithms.
