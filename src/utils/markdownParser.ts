@@ -107,9 +107,9 @@ export function markdownToHtml(markdown: string): string {
       blockHtml = `<pre><code>${escapeHtml(trimmedCode)}</code></pre>`;
     }
 
-    const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
+    const placeholder = `\x1aCB${codeBlocks.length}\x1a`;
     codeBlocks.push(blockHtml);
-    return placeholder;
+    return `\n\n${placeholder}\n\n`;
   });
 
   // Split into block paragraphs
@@ -121,7 +121,7 @@ export function markdownToHtml(markdown: string): string {
     if (!trimmedBlock) continue;
 
     // Check if it's a code block placeholder
-    if (trimmedBlock.startsWith('__CODE_BLOCK_') && trimmedBlock.endsWith('__')) {
+    if (trimmedBlock.startsWith('\x1aCB') && trimmedBlock.endsWith('\x1a')) {
       htmlParagraphs.push(trimmedBlock);
       continue;
     }
@@ -191,7 +191,7 @@ export function markdownToHtml(markdown: string): string {
 
   // Restore code blocks
   codeBlocks.forEach((block, idx) => {
-    finalHtml = finalHtml.replace(`__CODE_BLOCK_${idx}__`, block);
+    finalHtml = finalHtml.replace(`\x1aCB${idx}\x1a`, () => block);
   });
 
   return finalHtml;
@@ -199,21 +199,36 @@ export function markdownToHtml(markdown: string): string {
 
 /**
  * Converts inline Markdown (bold, italic, links, code) to HTML.
+ * Stashes and escapes inline code to prevent raw HTML evaluation.
  */
-function formatInlineMarkdown(text: string): string {
+export function formatInlineMarkdown(text: string): string {
   if (!text) return '';
 
-  return text
-    // Inline code: `code`
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    // Bold: **text** or __text__
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/__([^_]+)__/g, '<strong>$1</strong>')
-    // Italic: *text* or _text_
-    .replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, '$1<em>$2</em>$3')
-    .replace(/(^|[^_])_([^_]+)_([^_]|$)/g, '$1<em>$2</em>$3')
+  // 1. Stash and HTML-escape inline code snippets (`code`)
+  const inlineCodes: string[] = [];
+  let stashed = text.replace(/`([^`]+)`/g, (_match, code) => {
+    const placeholder = `\x1aIC${inlineCodes.length}\x1a`;
+    inlineCodes.push(`<code>${escapeHtml(code)}</code>`);
+    return placeholder;
+  });
+
+  // 2. Format links, bold, italic on text outside of code
+  stashed = stashed
     // Links: [label](url)
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`)
+    // Bold: **text** or __text__
+    .replace(/\*\*([^*]+)\*\*/g, (_m, p1) => `<strong>${p1}</strong>`)
+    .replace(/__([^_]+)__/g, (_m, p1) => `<strong>${p1}</strong>`)
+    // Italic: *text* or _text_
+    .replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, (_m, p1, p2, p3) => `${p1}<em>${p2}</em>${p3}`)
+    .replace(/(^|[^_])_([^_]+)_([^_]|$)/g, (_m, p1, p2, p3) => `${p1}<em>${p2}</em>${p3}`);
+
+  // 3. Restore stashed inline code
+  inlineCodes.forEach((codeHtml, idx) => {
+    stashed = stashed.replace(`\x1aIC${idx}\x1a`, () => codeHtml);
+  });
+
+  return stashed;
 }
 
 /**

@@ -5,6 +5,7 @@ import {
   CATEGORY_STRUCTURE_DEFINITIONS,
   validateBlogPostStructure,
 } from '../../../src/data/blog/blogTemplates';
+import { markdownToHtml } from '../../../src/utils/markdownParser';
 
 describe('TU-DATA-02: Data - Standardized Blog Post Structure & Category Schema Validation', () => {
   const activeCategories = BLOG_CATEGORY_DEFINITIONS.filter((c) => c.id !== 'all');
@@ -112,5 +113,14 @@ describe('TU-DATA-02: Data - Standardized Blog Post Structure & Category Schema 
       return sum + blogPostsEn.filter((p) => p.category === cat.id).length;
     }, 0);
     expect(enCategorySum).toBe(39);
+  });
+
+  it('should safely escape HTML tags and generic types inside inline code backticks', () => {
+    const rawMd = 'Sample with `<div class="card">`, `std::vector<int>`, and `> svg` selector.';
+    const html = markdownToHtml(rawMd);
+    expect(html).toContain('<code>&lt;div class=&quot;card&quot;&gt;</code>');
+    expect(html).toContain('<code>std::vector&lt;int&gt;</code>');
+    expect(html).toContain('<code>&gt; svg</code>');
+    expect(html).not.toContain('<code><div class="card"></code>');
   });
 });
