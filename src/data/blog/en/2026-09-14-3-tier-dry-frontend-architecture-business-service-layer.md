@@ -98,7 +98,6 @@ graph TD
 
 </li><li>**Trade-off Costs:**
 
-
 - _Increased File Count:_ Requires rigorous directory discipline and maintained barrel exports (`index.ts`).
 - _Team Discipline:_ Strict prohibition of upward imports (a lower tier component must never import from an upper tier).
 
