@@ -22,15 +22,21 @@ import {
 } from '../data/blogService.ts';
 import { Button, Badge, Card } from '../components/common';
 import { InputSearch } from '../components/ui';
-import { EmptyState, BadgeFilterChip, BadgeSchedule, ModalArticle, processArticleToc } from '../components/composite';
+import { 
+  EmptyState,
+  BadgeFilterChip,
+  BadgeSchedule,
+  ModalArticle,
+  processArticleToc,
+} from '../components/composite';
 
-interface BlogPageProps {
+export interface BlogProps {
   posts: BlogPost[];
   t: UITranslation['blog'];
   tCommon: UITranslation['common'];
 }
 
-export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
+export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   const [allPosts, setAllPosts] = useState<BlogPost[]>(posts);
   const [loadedMonthKeys, setLoadedMonthKeys] = useState<string[]>([]);
   const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(false);
@@ -661,4 +667,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
     </div>
   );
 };
+
+Blog.displayName = 'Blog';
+export default Blog;
 

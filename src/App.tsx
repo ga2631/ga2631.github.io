@@ -2,16 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { cvDataVi, cvDataEn, uiTranslations } from './data/cvData.ts';
 import { blogPostsVi, blogPostsEn } from './data/blogData.ts';
 import { Header } from './components/Header.tsx';
-import { Hero } from './components/Hero.tsx';
-import { About } from './components/About.tsx';
-import { Experience } from './components/Experience.tsx';
-import { Projects } from './components/Projects.tsx';
-import { Skills } from './components/Skills.tsx';
-import { EducationCertifications } from './components/EducationCertifications.tsx';
-import { Contact } from './components/Contact.tsx';
-import { Footer } from './components/Footer.tsx';
-import { ButtonFloatingScrollTop, ButtonPrint } from './components/composite';
-import { BlogPage } from './pages/BlogPage.tsx';
+import { Home, Blog } from './pages';
 import {
   ThemeMode,
   getInitialTheme,
@@ -108,56 +99,18 @@ export const App: React.FC = () => {
 
         <main>
           {route === 'blog' ? (
-            <BlogPage
+            <Blog
               posts={currentBlogPosts}
               t={t.blog}
               tCommon={t.common}
             />
           ) : (
-            <>
-              <Hero data={currentCvData.personalInfo} t={t.hero} />
-              <About
-                data={currentCvData.personalInfo}
-                principles={currentCvData.principles}
-                t={t.about}
-              />
-              <Experience experiences={currentCvData.experiences} t={t.experience} />
-              <Projects
-                projects={currentCvData.projects}
-                t={t.projects}
-                tCommon={t.common}
-              />
-              <Skills categories={currentCvData.skillCategories} t={t.skills} />
-              <EducationCertifications
-                educations={currentCvData.educations}
-                certifications={currentCvData.certifications}
-                t={t.education}
-              />
-              <Contact data={currentCvData.personalInfo} t={t.contact} />
-            </>
+            <Home data={currentCvData} t={t} />
           )}
         </main>
-
-        {route !== 'blog' && (
-          <Footer t={t.footer} fullName={currentCvData.personalInfo.fullName} />
-        )}
-
-        {/* Floating Quick Action Button (FAB) */}
-        {route !== 'blog' && (
-          <div className="floating-actions-container" role="region" aria-label="Floating quick actions">
-            <ButtonFloatingScrollTop tCommon={t.common} />
-            <ButtonPrint
-              variant="floating"
-              onPrint={() => window.print()}
-              label={t.nav.saveCv}
-              tCommon={t.common}
-            />
-          </div>
-        )}
       </div>
     </div>
   );
 };
 
 export default App;
-

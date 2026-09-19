@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { BlogPage } from '../../src/pages/BlogPage';
+import { Blog } from '../../src/pages/Blog';
 import { blogPostsEn } from '../../src/data/blogData';
 import { uiTranslations } from '../../src/data/cvData';
 
@@ -13,14 +13,14 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   };
 
   it('should render search input and all blog articles initially', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     expect(screen.getByPlaceholderText(uiTranslations.en.blog.searchPlaceholder)).toBeInTheDocument();
     expect(screen.getByText(blogPostsEn[0].title)).toBeInTheDocument();
   });
 
   it('should render left sidebar with category tracks and publishing schedule', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     // Should render category tracks
     expect(screen.getAllByText(/Architecture & System Design/i).length).toBeGreaterThan(0);
@@ -29,7 +29,7 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   });
 
   it('should filter articles dynamically when selecting a category track', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     const archButtons = screen.getAllByRole('button', { name: /Architecture & System Design/i });
     fireEvent.click(archButtons[0]);
@@ -42,7 +42,7 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   });
 
   it('should filter articles dynamically as search query is typed', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     const searchInput = screen.getByPlaceholderText(uiTranslations.en.blog.searchPlaceholder);
     fireEvent.change(searchInput, { target: { value: blogPostsEn[0].title.slice(0, 10) } });
@@ -51,7 +51,7 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   });
 
   it('should display friendly empty state when no articles match search query', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     const searchInput = screen.getByPlaceholderText(uiTranslations.en.blog.searchPlaceholder);
     fireEvent.change(searchInput, { target: { value: 'nonexistentkeyword99999' } });
@@ -66,7 +66,7 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   });
 
   it('should open article reader modal and display table of contents when clicking article card', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     const articleCard = screen.getByText(blogPostsEn[0].title);
     fireEvent.click(articleCard);
@@ -85,7 +85,7 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   });
 
   it('should display rich tooltip with schedule and objectives when hovering over category row', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     const dataEngButton = screen.getByRole('button', { name: /Data Engineering & Analytics/i });
     fireEvent.mouseEnter(dataEngButton);
@@ -99,7 +99,7 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   });
 
   it('should apply individual category day classes to category rows, badges, and tooltips', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     const catRows = document.querySelectorAll('.category-item-row');
     expect(catRows.length).toBe(6);
@@ -124,7 +124,7 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   });
 
   it('should render fixed category section and tags cloud container', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     expect(document.querySelector('.blog-sidebar-categories-section')).toBeInTheDocument();
     expect(document.querySelector('.blog-sidebar-tags-section')).toBeInTheDocument();
@@ -133,7 +133,7 @@ describe('TS-12: Blog Search, Left Sidebar & Article Reader Modal Integration', 
   });
 
   it('should render sticky filter controls panel and toggle is-stuck class on scroll', () => {
-    render(<BlogPage {...defaultProps} />);
+    render(<Blog {...defaultProps} />);
 
     const controlsPanel = document.querySelector('.blog-controls-panel');
     const scrollContainer = document.querySelector('.blog-main-scroll-area');

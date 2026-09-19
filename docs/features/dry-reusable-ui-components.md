@@ -33,26 +33,24 @@ flowchart TD
         ModalArticle["ModalArticle + ModalArticle.TocSidebar\n(Complete blog reader dialog with TOC parser and sidebar)"]
     end
 
-    subgraph Domain["Application Views & Pages"]
-        Hero["Hero"]
+    subgraph Pages["Application Pages (`src/pages/`)"]
+        Home["Home Page (Hero + About + Experience + Projects + Skills + Education + Contact)"]
+        Blog["Blog Page (Blog tracks + search + tags + schedule + ModalArticle)"]
+    end
+
+    subgraph AppLayout["App Root Layout (`src/App.tsx`)"]
         Header["Header (incorporates DrawerMenu)"]
-        About["About (Section + Card compound)"]
-        Skills["Skills (Section + Card compound)"]
-        Experience["Experience (Section + Card compound + TechTagList)"]
-        Education["Education & Certifications (Section + Card compound)"]
-        Contact["Contact (Section + Card compound)"]
-        Projects["Projects (Section + Card compound + ModalCaseStudy)"]
-        BlogSection["Blog Section (Section + Card compound + ModalArticle)"]
-        BlogPage["Blog Page (Card compound + ModalArticle + InputSearch + BadgeFilterChip + BadgeSchedule + EmptyState)"]
-        App["App Root Layout (ButtonFloatingScrollTop + ButtonPrint)"]
+        Footer["Footer"]
+        FAB["FloatingActions (ButtonFloatingScrollTop + ButtonPrint)"]
     end
 
     Tier1 --> Tier2
     Tier1 --> Tier3
     Tier2 --> Tier3
-    Tier1 --> Domain
-    Tier2 --> Domain
-    Tier3 --> Domain
+    Tier1 --> Pages
+    Tier2 --> Pages
+    Tier3 --> Pages
+    Pages --> AppLayout
 ```
 
 ---
@@ -79,3 +77,5 @@ flowchart TD
 | **Tier 3 (Composite)** | [`BadgeSchedule`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/composite/BadgeSchedule.tsx) | Complete schedule indicator with day code color-theming |
 | **Tier 3 (Composite)** | [`ModalCaseStudy`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/composite/ModalCaseStudy.tsx) | Complete architecture case study modal dialog |
 | **Tier 3 (Composite)** | [`ModalArticle`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/composite/ModalArticle.tsx) | Complete blog article reader modal dialog with TOC sidebar & parser |
+| **Pages** | [`Home`](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/Home.tsx) | Main portfolio home page view |
+| **Pages** | [`Blog`](file:///Users/tanhn/Projects/ga2631.github.io/src/pages/Blog.tsx) | Main tech articles and deep dives blog page view |
