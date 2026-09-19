@@ -111,6 +111,14 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
     setIsDragging(false);
   }, []);
 
+  const processedSvg = React.useMemo(() => {
+    if (!svgContent) return '';
+    return svgContent
+      .replace(/style="([^"]*max-width:[^;"]*;?)([^"]*)"/i, 'style="$2"')
+      .replace(/<svg\b([^>]*)\bwidth="[^"]*"/i, '<svg$1 width="100%"')
+      .replace(/<svg\b((?:(?!width=)[^>])*?)>/i, '<svg$1 width="100%">');
+  }, [svgContent]);
+
   if (!isOpen || !svgContent) return null;
 
   return createPortal(
@@ -127,11 +135,12 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="diagram-viewer-info">
-          <span className="diagram-viewer-badge">
+          <span className="diagram-viewer-badge" title={title}>
             <Maximize2Icon size={14} />
-            <span>{title}</span>
+            <span className="diagram-viewer-title-text" title={title}>{title}</span>
           </span>
         </div>
+
 
         {/* Interactive Controls */}
         <div className="diagram-viewer-controls">
@@ -198,9 +207,10 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
           style={{
             transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
           }}
-          dangerouslySetInnerHTML={{ __html: svgContent }}
+          dangerouslySetInnerHTML={{ __html: processedSvg }}
         />
       </div>
+
 
       {/* Bottom helper tip */}
       <div className="diagram-viewer-hint" onClick={(e) => e.stopPropagation()}>

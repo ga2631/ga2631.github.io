@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import mermaid from 'mermaid';
 import { Modal } from '../common/Modal';
 import { Badge } from '../common/Badge';
 import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
@@ -164,42 +165,6 @@ export interface ModalArticleComponent extends React.FC<ModalArticleProps> {
   TocSidebar: typeof ArticleTocSidebar;
 }
 
-/**
- * Resilient dynamic loader for Mermaid library
- * Uses @vite-ignore on ESM CDN module to avoid Vite import-analysis bare module resolution issues
- */
-async function loadMermaidInstance() {
-  if (typeof (window as any).mermaid !== 'undefined') {
-    return (window as any).mermaid;
-  }
-  if (typeof window !== 'undefined') {
-    try {
-      const cdnUrl = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-      const mod = await import(/* @vite-ignore */ cdnUrl);
-      const instance = mod.default || mod;
-      if (instance) {
-        (window as any).mermaid = instance;
-        return instance;
-      }
-    } catch {
-      // Fallback: UMD script injection
-      await new Promise<void>((resolve, reject) => {
-        const existing = document.querySelector('script[src*="mermaid"]');
-        if (existing) {
-          existing.addEventListener('load', () => resolve());
-          return;
-        }
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js';
-        script.onload = () => resolve();
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-      return (window as any).mermaid;
-    }
-  }
-}
-
 export const ModalArticle: ModalArticleComponent = ({
   post,
   isOpen,
@@ -228,16 +193,64 @@ export const ModalArticle: ModalArticleComponent = ({
       if (mermaidBlocks.length === 0) return;
 
       try {
-        const mermaid = await loadMermaidInstance();
-        if (!mermaid || isCancelled) return;
-
         const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
         mermaid.initialize({
           startOnLoad: false,
           theme: isDark ? 'dark' : 'default',
           securityLevel: 'loose',
-          fontFamily: 'var(--font-body)',
+          fontFamily: "Outfit, Inter, system-ui, -apple-system, sans-serif",
+          themeVariables: isDark
+            ? {
+                darkMode: true,
+                background: 'transparent',
+                mainBkg: '#111827',
+                nodeBorder: '#ff385c',
+                lineColor: '#fb7185',
+                textColor: '#f8fafc',
+                actorBkg: '#1f2937',
+                actorBorder: '#ff385c',
+                actorTextColor: '#f8fafc',
+                signalColor: '#fb7185',
+                signalTextColor: '#f8fafc',
+                labelBoxBkgColor: '#1f2937',
+                labelBoxBorderColor: '#ff385c',
+                labelTextColor: '#f8fafc',
+                loopTextColor: '#f8fafc',
+                noteBorderColor: '#ff385c',
+                noteBkgColor: '#1f2937',
+                noteTextColor: '#f8fafc',
+                activationBorderColor: '#ff385c',
+                activationBkgColor: '#1f2937',
+                sequenceNumberColor: '#ffffff',
+                primaryColor: '#111827',
+                primaryTextColor: '#f8fafc',
+                primaryBorderColor: '#ff385c',
+                secondaryColor: '#1f2937',
+                tertiaryColor: '#0b0f19',
+              }
+            : {
+                darkMode: false,
+                background: 'transparent',
+                mainBkg: '#ffffff',
+                nodeBorder: '#dc2626',
+                lineColor: '#ef4444',
+                textColor: '#0f172a',
+                actorBkg: '#f1f5f9',
+                actorBorder: '#dc2626',
+                actorTextColor: '#0f172a',
+                signalColor: '#ef4444',
+                signalTextColor: '#0f172a',
+                labelBoxBkgColor: '#f1f5f9',
+                labelBoxBorderColor: '#dc2626',
+                labelTextColor: '#0f172a',
+                primaryColor: '#ffffff',
+                primaryTextColor: '#0f172a',
+                primaryBorderColor: '#dc2626',
+                secondaryColor: '#f8fafc',
+                tertiaryColor: '#f1f5f9',
+              },
         });
+
 
         for (let i = 0; i < mermaidBlocks.length; i++) {
           if (isCancelled) return;
@@ -248,11 +261,18 @@ export const ModalArticle: ModalArticleComponent = ({
             el.setAttribute('data-raw-mermaid', rawCode);
           }
 
-          if (!rawCode.trim()) continue;
+          const cleanCode = rawCode
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .trim();
+
+          if (!cleanCode) continue;
 
           const uniqueId = `mermaid-svg-${Date.now()}-${i}`;
           try {
-            const { svg } = await mermaid.render(uniqueId, rawCode.trim());
+            const { svg } = await mermaid.render(uniqueId, cleanCode);
             if (!isCancelled) {
               el.innerHTML = svg + '<span class="mermaid-fit-hint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg> Fit View</span>';
               el.classList.add('mermaid-rendered');
@@ -261,12 +281,12 @@ export const ModalArticle: ModalArticleComponent = ({
               el.setAttribute('aria-label', 'Phóng to sơ đồ (Fit View)');
               el.setAttribute('title', 'Nhấn để phóng to toàn màn hình (Fit View)');
             }
-          } catch (err) {
-            console.warn('Failed to render Mermaid diagram:', err);
+          } catch (renderErr) {
+            console.error('Failed to render Mermaid diagram:', renderErr);
           }
         }
       } catch (err) {
-        console.warn('Failed to load mermaid module:', err);
+        console.error('Failed to initialize mermaid:', err);
       }
     };
 
@@ -276,6 +296,7 @@ export const ModalArticle: ModalArticleComponent = ({
       clearTimeout(timer);
     };
   }, [isOpen, post, processedHtml, modalContentRef]);
+
 
   const handleArticleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
