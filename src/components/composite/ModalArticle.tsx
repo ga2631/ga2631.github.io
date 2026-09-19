@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal } from '../common/Modal';
 import { Badge } from '../common/Badge';
 import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
+import { ModalDiagramViewer } from './ModalDiagramViewer.tsx';
 import { BlogPost } from '../../types/index.ts';
 
 export interface TocItem {
@@ -212,6 +213,8 @@ export const ModalArticle: ModalArticleComponent = ({
   tCommon,
   closeAriaLabel = 'Close article popup',
 }) => {
+  const [fitViewSvg, setFitViewSvg] = useState<string | null>(null);
+
   useEffect(() => {
     if (!isOpen || !post || !processedHtml) return;
 
@@ -251,8 +254,12 @@ export const ModalArticle: ModalArticleComponent = ({
           try {
             const { svg } = await mermaid.render(uniqueId, rawCode.trim());
             if (!isCancelled) {
-              el.innerHTML = svg;
+              el.innerHTML = svg + '<span class="mermaid-fit-hint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg> Fit View</span>';
               el.classList.add('mermaid-rendered');
+              el.setAttribute('tabindex', '0');
+              el.setAttribute('role', 'button');
+              el.setAttribute('aria-label', 'Phóng to sơ đồ (Fit View)');
+              el.setAttribute('title', 'Nhấn để phóng to toàn màn hình (Fit View)');
             }
           } catch (err) {
             console.warn('Failed to render Mermaid diagram:', err);
@@ -270,78 +277,117 @@ export const ModalArticle: ModalArticleComponent = ({
     };
   }, [isOpen, post, processedHtml, modalContentRef]);
 
+  const handleArticleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    const mermaidContainer = target.closest<HTMLElement>('.mermaid-rendered, pre.mermaid');
+    if (mermaidContainer) {
+      const svgEl = mermaidContainer.querySelector('svg');
+      if (svgEl) {
+        setFitViewSvg(svgEl.outerHTML);
+      }
+    }
+  };
+
+  const handleArticleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const target = e.target as HTMLElement;
+      const mermaidContainer = target.closest<HTMLElement>('.mermaid-rendered, pre.mermaid');
+      if (mermaidContainer) {
+        e.preventDefault();
+        const svgEl = mermaidContainer.querySelector('svg');
+        if (svgEl) {
+          setFitViewSvg(svgEl.outerHTML);
+        }
+      }
+    }
+  };
+
   if (!post) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={post.title}
-      stickyHeader={true}
-      isStickyTitleShown={isStickyTitleShown}
-      closeAriaLabel={closeAriaLabel}
-      backdropClassName="blog-modal-backdrop"
-      contentClassName="blog-modal-content blog-article-modal"
-      contentRef={modalContentRef}
-      ariaLabelledBy="article-modal-title"
-    >
-      <div className="article-modal-body">
-        <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
-          <div className="article-main-column">
-            {/* Tag Badges */}
-            <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
-              {post.tags.map((tag) => (
-                <Badge key={tag} variant="cyan">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-
-            {/* Article Title */}
-            <h1 id="article-modal-title" className="article-full-title">
-              {post.title}
-            </h1>
-
-            {/* Meta info bar */}
-            <div className="article-meta-bar">
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                <CalendarIcon size={14} /> {post.publishedAt}
-              </span>
-              <span>•</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                <ClockIcon size={14} /> {post.readTime}
-              </span>
-            </div>
-
-            {/* Summary Callout */}
-            {post.summary && (
-              <div className="article-summary-callout">
-                <strong>{tCommon.overview}: </strong>
-                <span>{post.summary}</span>
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={post.title}
+        stickyHeader={true}
+        isStickyTitleShown={isStickyTitleShown}
+        closeAriaLabel={closeAriaLabel}
+        backdropClassName="blog-modal-backdrop"
+        contentClassName="blog-modal-content blog-article-modal"
+        contentRef={modalContentRef}
+        ariaLabelledBy="article-modal-title"
+      >
+        <div className="article-modal-body">
+          <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
+            <div className="article-main-column">
+              {/* Tag Badges */}
+              <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
+                {post.tags.map((tag) => (
+                  <Badge key={tag} variant="cyan">
+                    {tag}
+                  </Badge>
+                ))}
               </div>
+
+              {/* Article Title */}
+              <h1 id="article-modal-title" className="article-full-title">
+                {post.title}
+              </h1>
+
+              {/* Meta info bar */}
+              <div className="article-meta-bar">
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                  <CalendarIcon size={14} /> {post.publishedAt}
+                </span>
+                <span>•</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                  <ClockIcon size={14} /> {post.readTime}
+                </span>
+              </div>
+
+              {/* Summary Callout */}
+              {post.summary && (
+                <div className="article-summary-callout">
+                  <strong>{tCommon.overview}: </strong>
+                  <span>{post.summary}</span>
+                </div>
+              )}
+
+              {/* Full Article Content */}
+              <div
+                className="article-body"
+                onClick={handleArticleClick}
+                onKeyDown={handleArticleKeyDown}
+                dangerouslySetInnerHTML={{ __html: processedHtml }}
+              />
+            </div>
+
+            {/* Right Sticky Table of Contents Sidebar */}
+            {tocItems.length > 0 && (
+              <ArticleTocSidebar
+                tocItems={tocItems}
+                activeHeadingId={activeHeadingId}
+                onSelectHeading={onSelectHeading}
+                tocTitle={tCommon.tableOfContents}
+              />
             )}
-
-            {/* Full Article Content */}
-            <div
-              className="article-body"
-              dangerouslySetInnerHTML={{ __html: processedHtml }}
-            />
           </div>
-
-          {/* Right Sticky Table of Contents Sidebar */}
-          {tocItems.length > 0 && (
-            <ArticleTocSidebar
-              tocItems={tocItems}
-              activeHeadingId={activeHeadingId}
-              onSelectHeading={onSelectHeading}
-              tocTitle={tCommon.tableOfContents}
-            />
-          )}
         </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      {/* Fullscreen Diagram Fit View Overlay */}
+      <ModalDiagramViewer
+        isOpen={Boolean(fitViewSvg)}
+        svgContent={fitViewSvg}
+        onClose={() => setFitViewSvg(null)}
+        title={post.title}
+        closeAriaLabel="Close diagram view"
+      />
+    </>
   );
 };
 
 ModalArticle.displayName = 'ModalArticle';
 ModalArticle.TocSidebar = ArticleTocSidebar;
+

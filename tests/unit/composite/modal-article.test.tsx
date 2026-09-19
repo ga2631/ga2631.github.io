@@ -96,6 +96,44 @@ describe('TU-COMPOSITE-09: Composite - ModalArticle Component', () => {
     expect(handleClose).toHaveBeenCalledTimes(2);
   });
 
+  it('opens diagram fit view overlay when clicking a rendered mermaid diagram card', () => {
+    const htmlWithMermaid = `
+      <div class="mermaid-rendered" role="button" tabindex="0">
+        <svg id="mermaid-sample"><text>Architecture Diagram SVG</text></svg>
+      </div>
+    `;
+
+    render(
+      <ModalArticle
+        post={mockPost}
+        isOpen={true}
+        onClose={vi.fn()}
+        processedHtml={htmlWithMermaid}
+        tocItems={[]}
+        activeHeadingId=""
+        onSelectHeading={vi.fn()}
+        tCommon={mockTCommon}
+      />
+    );
+
+    const diagramCard = screen.getByText('Architecture Diagram SVG').closest('.mermaid-rendered')!;
+    expect(diagramCard).toBeInTheDocument();
+
+    // Click diagram card
+    fireEvent.click(diagramCard);
+
+    // Fit view overlay should be displayed with close button and controls
+    expect(screen.getByLabelText('Close diagram view')).toBeInTheDocument();
+    expect(screen.getByText('100%')).toBeInTheDocument();
+
+    // Close fit view
+    const closeDiagramBtn = screen.getByLabelText('Close diagram view');
+    fireEvent.click(closeDiagramBtn);
+
+    expect(screen.queryByLabelText('Close diagram view')).not.toBeInTheDocument();
+  });
+
+
   describe('processArticleToc parser', () => {
     it('correctly parses up to 2 heading levels and generates IDs', () => {
       const html = `
