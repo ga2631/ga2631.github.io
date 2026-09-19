@@ -3,7 +3,8 @@ import { ExperienceItem } from '../types/index.ts';
 import { BriefcaseIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { Card, Badge } from './common';
-import { SectionHeader, TechTagList } from './composite';
+import { Section } from './ui';
+import { TechTagList } from './composite';
 
 interface ExperienceProps {
   experiences: ExperienceItem[];
@@ -12,41 +13,40 @@ interface ExperienceProps {
 
 export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
   return (
-    <section className="section" id="experience">
-      <div className="container">
-        <SectionHeader
-          badge={t.badge}
-          badgeIcon={<BriefcaseIcon size={14} />}
-          title={t.title}
-          subtitle={t.subtitle}
-        />
+    <Section
+      id="experience"
+      badge={t.badge}
+      badgeIcon={<BriefcaseIcon size={14} />}
+      title={t.title}
+      subtitle={t.subtitle}
+    >
+      <div className="timeline">
+        {experiences.map((item) => (
+          <div key={item.id} className="timeline-item">
+            <div className="timeline-dot" />
 
-        <div className="timeline">
-          {experiences.map((item) => (
-            <div key={item.id} className="timeline-item">
-              <div className="timeline-dot" />
-
-              <Card className="timeline-card">
-                <div className="timeline-header">
-                  <div className="timeline-title-row">
-                    <h3 className="timeline-role">{item.role}</h3>
-                    <div className="timeline-period-wrapper">
-                      <span className="timeline-period">{item.period}</span>
-                      {item.current && <Badge variant="emerald">{t.currentPosition}</Badge>}
-                    </div>
+            <Card className="timeline-card">
+              <Card.Header className="timeline-header">
+                <div className="timeline-title-row">
+                  <h3 className="timeline-role">{item.role}</h3>
+                  <div className="timeline-period-wrapper">
+                    <span className="timeline-period">{item.period}</span>
+                    {item.current && <Badge variant="emerald">{t.currentPosition}</Badge>}
                   </div>
-
-                  <div className="timeline-company">
-                    <span>{item.company}</span>
-                    <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{item.location}</span>
-                  </div>
-                  {item.companySubtitle && (
-                    <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '2px' }}>
-                      {item.companySubtitle}
-                    </div>
-                  )}
                 </div>
 
+                <div className="timeline-company">
+                  <span>{item.company}</span>
+                  <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{item.location}</span>
+                </div>
+                {item.companySubtitle && (
+                  <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '2px' }}>
+                    {item.companySubtitle}
+                  </div>
+                )}
+              </Card.Header>
+
+              <Card.Body className="timeline-body">
                 <p className="timeline-summary">{item.summary}</p>
 
                 <div className="timeline-achievements">
@@ -58,14 +58,15 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
                     />
                   ))}
                 </div>
+              </Card.Body>
 
+              <Card.Footer className="timeline-footer">
                 <TechTagList tags={item.technologies} />
-              </Card>
-            </div>
-          ))}
-        </div>
+              </Card.Footer>
+            </Card>
+          </div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 };
-

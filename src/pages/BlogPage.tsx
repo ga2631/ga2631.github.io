@@ -6,7 +6,6 @@ import {
   CloseIcon,
   SparklesIcon,
   CalendarIcon,
-  ClockIcon,
   LayersIcon,
   DatabaseIcon,
   ServerIcon,
@@ -15,15 +14,15 @@ import {
   TagIcon,
 } from '../components/Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
-import { processArticleToc, ArticleTocSidebar } from '../components/ArticleToc.tsx';
+import { processArticleToc } from '../components/ArticleToc.tsx';
 import { BLOG_CATEGORY_DEFINITIONS, BlogCategoryDef } from '../data/blogCategories.ts';
 import {
   loadInitialBlogPosts,
   loadNextMonthBatch,
   loadAllArchivePosts,
 } from '../data/blogService.ts';
-import { Button, Badge, Card, Modal } from '../components/common';
-import { SearchInput, FilterChip, ScheduleBadge } from '../components/ui';
+import { Button, Badge, Card } from '../components/common';
+import { SearchInput, FilterChip, ScheduleBadge, ArticleReaderModal } from '../components/ui';
 import { EmptyState } from '../components/composite';
 
 interface BlogPageProps {
@@ -530,7 +529,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                       className={`blog-card card-day-${postCatDef ? postCatDef.dayCode.toLowerCase() : 'all'}`}
                       onClick={() => handleOpenPost(post)}
                     >
-                      <div>
+                      <Card.Header>
                         {/* Top Category Badge & Publishing Schedule Meta */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                           {postCatDef && postCatDef.id !== 'all' ? (
@@ -552,25 +551,30 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                         </div>
 
                         <h2 className="blog-title" style={{ fontSize: '1.22rem', marginTop: '4px' }}>{post.title}</h2>
-                        <p className="blog-summary">{post.summary}</p>
-                      </div>
+                      </Card.Header>
 
-                      <div className="tech-tags-list" style={{ marginTop: 'auto', paddingTop: '10px' }}>
-                        {post.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="default"
-                            className={selectedTag === tag ? 'badge-cyan' : ''}
-                            interactive={true}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedTag(tag);
-                            }}
-                          >
-                            #{tag}
-                          </Badge>
-                        ))}
-                      </div>
+                      <Card.Body>
+                        <p className="blog-summary">{post.summary}</p>
+                      </Card.Body>
+
+                      <Card.Footer>
+                        <div className="tech-tags-list" style={{ marginTop: 'auto', paddingTop: '10px' }}>
+                          {post.tags.map((tag) => (
+                            <Badge
+                              key={tag}
+                              variant="default"
+                              className={selectedTag === tag ? 'badge-cyan' : ''}
+                              interactive={true}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTag(tag);
+                              }}
+                            >
+                              #{tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </Card.Footer>
                     </Card>
                   );
                 })
@@ -642,74 +646,19 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
         )}
 
       {/* ================= Blog Article Popup / Modal ================= */}
-      <Modal
+      <ArticleReaderModal
+        post={activePost}
         isOpen={Boolean(activePost)}
         onClose={handleClosePost}
-        title={activePost?.title}
-        stickyHeader={true}
+        processedHtml={processedHtml}
+        tocItems={tocItems}
+        activeHeadingId={activeHeadingId}
+        onSelectHeading={handleSelectHeading}
         isStickyTitleShown={isModalHeaderTitleShown}
+        modalContentRef={modalContentRef}
+        tCommon={tCommon}
         closeAriaLabel="Close article popup"
-        backdropClassName="blog-modal-backdrop"
-        contentClassName="blog-modal-content blog-article-modal"
-        contentRef={modalContentRef}
-        ariaLabelledBy="article-modal-title"
-      >
-        {activePost && (
-          <div className="article-modal-body">
-            {/* Main Article Content & Right Sticky Table of Contents Layout */}
-            <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
-              <div className="article-main-column">
-                {/* Tag Badges */}
-                <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
-                  {activePost.tags.map((tag) => (
-                    <Badge key={tag} variant="cyan">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Article Title */}
-                <h1 id="article-modal-title" className="article-full-title">
-                  {activePost.title}
-                </h1>
-
-                {/* Meta info bar */}
-                <div className="article-meta-bar">
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                    <CalendarIcon size={14} /> {activePost.publishedAt}
-                  </span>
-                  <span>•</span>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                    <ClockIcon size={14} /> {activePost.readTime}
-                  </span>
-                </div>
-
-                {/* Summary Callout */}
-                <div className="article-summary-callout">
-                  <strong>{tCommon.overview}: </strong>
-                  <span>{activePost.summary}</span>
-                </div>
-
-                {/* Full Article Content with Injected Heading IDs */}
-                <div
-                  className="article-body"
-                  dangerouslySetInnerHTML={{ __html: processedHtml }}
-                />
-              </div>
-
-              {/* Right Sticky Table of Contents Sidebar */}
-              {tocItems.length > 0 && (
-                <ArticleTocSidebar
-                  tocItems={tocItems}
-                  activeHeadingId={activeHeadingId}
-                  onSelectHeading={handleSelectHeading}
-                  tocTitle={tCommon.tableOfContents}
-                />
-              )}
-            </div>
-          </div>
-        )}
-      </Modal>
+      />
     </div>
   );
 };

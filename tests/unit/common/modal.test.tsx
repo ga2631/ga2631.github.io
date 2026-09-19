@@ -31,6 +31,31 @@ describe('Tier 1: Modal Component', () => {
     expect(screen.getByText('Dialog Body')).toBeInTheDocument();
   });
 
+  it('supports compound components Modal.Header, Modal.Body, and Modal.Footer', () => {
+    const handleClose = vi.fn();
+    render(
+      <Modal isOpen={true} onClose={handleClose}>
+        <Modal.Header title="Compound Modal Title" subtitle="Subtitle Info" onClose={handleClose} />
+        <Modal.Body>
+          <p>Compound Modal Body</p>
+        </Modal.Body>
+        <Modal.Footer actions={<button type="button">Confirm</button>}>
+          <span>Footer Notes</span>
+        </Modal.Footer>
+      </Modal>
+    );
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Compound Modal Title' })).toBeInTheDocument();
+    expect(screen.getByText('Subtitle Info')).toBeInTheDocument();
+    expect(screen.getByText('Compound Modal Body')).toBeInTheDocument();
+    expect(screen.getByText('Footer Notes')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Confirm' })).toBeInTheDocument();
+
+    const closeBtn = screen.getByRole('button', { name: 'Close modal' });
+    fireEvent.click(closeBtn);
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
   it('calls onClose when clicking backdrop and does not close when clicking modal content', () => {
     const handleClose = vi.fn();
     render(

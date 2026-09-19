@@ -4,7 +4,7 @@ import { MailIcon, MapPinIcon, CopyIcon, CheckIcon, LinkedinIcon, ExternalLinkIc
 import { UITranslation } from '../data/cvData.ts';
 import { SecureEmail, SecurePhone, getSecureEmail, getSecureMailtoUrl, getSecureTelUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 import { Card, Button, Badge } from './common';
-import { SectionHeader } from './composite';
+import { Section } from './ui';
 
 interface ContactProps {
   data: PersonalInfo;
@@ -41,156 +41,168 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
   };
 
   return (
-    <section id="contact" className="section">
-      <div className="container">
-        <SectionHeader
-          badge={t.badge}
-          title={t.title}
-          subtitle={t.subtitle}
-        />
-
-        <div className="contact-cards-grid">
-          {/* Email Card */}
-          <Card className="contact-card">
+    <Section
+      id="contact"
+      badge={t.badge}
+      title={t.title}
+      subtitle={t.subtitle}
+    >
+      <div className="contact-cards-grid">
+        {/* Email Card */}
+        <Card className="contact-card">
+          <Card.Header>
             <div className="contact-card-icon" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
               <MailIcon size={26} />
             </div>
-            <div className="contact-card-body">
-              <div className="contact-card-label">{t.emailLabel}</div>
-              <SecureEmail asLink className="contact-card-value" />
+          </Card.Header>
+
+          <Card.Body className="contact-card-body">
+            <div className="contact-card-label">{t.emailLabel}</div>
+            <SecureEmail asLink className="contact-card-value" />
+            <p className="contact-card-hint">
+              {t.emailHint}
+            </p>
+          </Card.Body>
+
+          <Card.Footer className="contact-card-actions">
+            <Button
+              variant={copied ? 'primary' : 'secondary'}
+              size="sm"
+              onClick={copyEmailToClipboard}
+              icon={copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
+              title="Copy email to clipboard"
+            >
+              <span>{copied ? t.copied : t.copyEmail}</span>
+            </Button>
+            <Button
+              as="a"
+              href="#"
+              variant="primary"
+              size="sm"
+              onClick={handleEmailCompose}
+              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureMailtoUrl(); }}
+              icon={<MailIcon size={14} />}
+              title="Open default email client"
+            >
+              <span>{t.compose}</span>
+            </Button>
+          </Card.Footer>
+        </Card>
+
+        {/* Phone Card */}
+        {data.phone && (
+          <Card className="contact-card">
+            <Card.Header>
+              <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>
+                <PhoneIcon size={26} />
+              </div>
+            </Card.Header>
+
+            <Card.Body className="contact-card-body">
+              <div className="contact-card-label">{t.phoneLabel}</div>
+              <SecurePhone asLink className="contact-card-value" />
               <p className="contact-card-hint">
-                {t.emailHint}
+                {t.phoneHint}
               </p>
-            </div>
-            <div className="contact-card-actions">
+            </Card.Body>
+
+            <Card.Footer className="contact-card-actions">
               <Button
-                variant={copied ? 'primary' : 'secondary'}
+                as="a"
+                href="#"
+                variant="secondary"
                 size="sm"
-                onClick={copyEmailToClipboard}
-                icon={copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
-                title="Copy email to clipboard"
+                onClick={handlePhoneCall}
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureTelUrl(); }}
+                icon={<PhoneIcon size={14} />}
+                title="Direct Phone Call"
               >
-                <span>{copied ? t.copied : t.copyEmail}</span>
+                <span>{t.call}</span>
               </Button>
               <Button
                 as="a"
                 href="#"
                 variant="primary"
                 size="sm"
-                onClick={handleEmailCompose}
-                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureMailtoUrl(); }}
-                icon={<MailIcon size={14} />}
-                title="Open default email client"
+                onClick={handleZaloChat}
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureZaloUrl(); }}
+                icon={<ZaloIcon size={14} />}
+                title="Chat via Zalo"
               >
-                <span>{t.compose}</span>
+                <span>{t.zalo}</span>
               </Button>
-            </div>
+            </Card.Footer>
           </Card>
+        )}
 
-          {/* Phone Card */}
-          {data.phone && (
-            <Card className="contact-card">
-              <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>
-                <PhoneIcon size={26} />
-              </div>
-              <div className="contact-card-body">
-                <div className="contact-card-label">{t.phoneLabel}</div>
-                <SecurePhone asLink className="contact-card-value" />
-                <p className="contact-card-hint">
-                  {t.phoneHint}
-                </p>
-              </div>
-              <div className="contact-card-actions">
-                <Button
-                  as="a"
-                  href="#"
-                  variant="secondary"
-                  size="sm"
-                  onClick={handlePhoneCall}
-                  onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureTelUrl(); }}
-                  icon={<PhoneIcon size={14} />}
-                  title="Direct Phone Call"
-                >
-                  <span>{t.call}</span>
-                </Button>
-                <Button
-                  as="a"
-                  href="#"
-                  variant="primary"
-                  size="sm"
-                  onClick={handleZaloChat}
-                  onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureZaloUrl(); }}
-                  icon={<ZaloIcon size={14} />}
-                  title="Chat via Zalo"
-                >
-                  <span>{t.zalo}</span>
-                </Button>
-              </div>
-            </Card>
-          )}
-
-          {/* Location & Personal Card */}
-          <Card className="contact-card">
+        {/* Location & Personal Card */}
+        <Card className="contact-card">
+          <Card.Header>
             <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>
               <MapPinIcon size={26} />
             </div>
-            <div className="contact-card-body">
-              <div className="contact-card-label">{t.locationLabel}</div>
-              <div className="contact-card-value" style={{ fontSize: '1.05rem' }}>
-                {data.location}
-              </div>
-              {data.birthday && (
-                <p className="contact-card-hint" style={{ marginTop: '4px' }}>
-                  {t.locationHint}
-                </p>
-              )}
-            </div>
-            <div className="contact-card-actions">
-              <Badge variant="emerald">
-                {t.locationCta}
-              </Badge>
-            </div>
-          </Card>
+          </Card.Header>
 
-          {/* LinkedIn Profile Card (if available) */}
-          {data.linkedinUrl && (
-            <Card className="contact-card">
+          <Card.Body className="contact-card-body">
+            <div className="contact-card-label">{t.locationLabel}</div>
+            <div className="contact-card-value" style={{ fontSize: '1.05rem' }}>
+              {data.location}
+            </div>
+            {data.birthday && (
+              <p className="contact-card-hint" style={{ marginTop: '4px' }}>
+                {t.locationHint}
+              </p>
+            )}
+          </Card.Body>
+
+          <Card.Footer className="contact-card-actions">
+            <Badge variant="emerald">
+              {t.locationCta}
+            </Badge>
+          </Card.Footer>
+        </Card>
+
+        {/* LinkedIn Profile Card (if available) */}
+        {data.linkedinUrl && (
+          <Card className="contact-card">
+            <Card.Header>
               <div className="contact-card-icon" style={{ background: 'rgba(14, 118, 168, 0.15)', color: '#0ea5e9' }}>
                 <LinkedinIcon size={26} />
               </div>
-              <div className="contact-card-body">
-                <div className="contact-card-label">{t.linkedinLabel}</div>
-                <a
-                  href={data.linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="contact-card-value"
-                >
-                  {data.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
-                </a>
-                <p className="contact-card-hint">
-                  {t.linkedinHint}
-                </p>
-              </div>
-              <div className="contact-card-actions">
-                <Button
-                  as="a"
-                  href={data.linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="secondary"
-                  size="sm"
-                  icon={<ExternalLinkIcon size={14} />}
-                  iconPosition="right"
-                >
-                  <span>{t.viewProfile}</span>
-                </Button>
-              </div>
-            </Card>
-          )}
-        </div>
+            </Card.Header>
+
+            <Card.Body className="contact-card-body">
+              <div className="contact-card-label">{t.linkedinLabel}</div>
+              <a
+                href={data.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-card-value"
+              >
+                {data.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+              </a>
+              <p className="contact-card-hint">
+                {t.linkedinHint}
+              </p>
+            </Card.Body>
+
+            <Card.Footer className="contact-card-actions">
+              <Button
+                as="a"
+                href={data.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="secondary"
+                size="sm"
+                icon={<ExternalLinkIcon size={14} />}
+                iconPosition="right"
+              >
+                <span>{t.viewProfile}</span>
+              </Button>
+            </Card.Footer>
+          </Card>
+        )}
       </div>
-    </section>
+    </Section>
   );
 };
-

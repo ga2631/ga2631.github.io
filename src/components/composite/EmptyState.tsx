@@ -35,33 +35,42 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         ...style,
       }}
     >
-      {icon && (
-        <div style={{ color: 'var(--text-muted)', margin: '0 auto 16px', display: 'flex', justifyContent: 'center' }}>
-          {icon}
-        </div>
+      <Card.Body>
+        {icon && (
+          <div style={{ color: 'var(--text-muted)', margin: '0 auto 16px', display: 'flex', justifyContent: 'center' }}>
+            {icon}
+          </div>
+        )}
+        {typeof title === 'string' ? (
+          <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{title}</h3>
+        ) : (
+          title
+        )}
+        {description && (
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '450px', margin: '0 auto 16px' }}>
+            {description}
+          </div>
+        )}
+      </Card.Body>
+
+      {(action || (actionText && onAction)) && (
+        <Card.Footer style={{ justifyContent: 'center', borderTop: 'none', padding: 0 }}>
+          {action ? (
+            action
+          ) : actionText && onAction ? (
+            <Button
+              variant="secondary"
+              size="sm"
+              style={{ marginTop: '8px' }}
+              onClick={onAction}
+            >
+              {actionText}
+            </Button>
+          ) : null}
+        </Card.Footer>
       )}
-      {typeof title === 'string' ? (
-        <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{title}</h3>
-      ) : (
-        title
-      )}
-      {description && (
-        <div style={{ color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '450px', margin: '0 auto 16px' }}>
-          {description}
-        </div>
-      )}
-      {action ? (
-        action
-      ) : actionText && onAction ? (
-        <Button
-          variant="secondary"
-          size="sm"
-          style={{ marginTop: '8px' }}
-          onClick={onAction}
-        >
-          {actionText}
-        </Button>
-      ) : null}
     </Card>
   );
 };
+
+EmptyState.displayName = 'EmptyState';

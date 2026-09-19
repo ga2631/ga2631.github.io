@@ -3,7 +3,7 @@ import { PersonalInfo, PrincipleItem } from '../types/index.ts';
 import { CodeIcon, AwardIcon, LayersIcon, RefreshCwIcon, ZapIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { Card } from './common';
-import { SectionHeader } from './composite';
+import { Section } from './ui';
 
 interface AboutProps {
   data: PersonalInfo;
@@ -51,44 +51,42 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
   };
 
   return (
-    <section className="section" id="about">
-      <div className="container">
-        <SectionHeader
-          badge={t.badge}
-          badgeIcon={<AwardIcon size={14} />}
-          title={t.title}
-          subtitle={data.tagline}
-        />
-
-        <div className="principles-grid">
-          {principles.map((item, index) => {
-            const config = getPrincipleConfig(item.title, index);
-            return (
-              <Card key={index} className="principle-card">
-                <div className="principle-card-header">
-                  <div
-                    className="principle-icon-badge"
-                    style={{
-                      color: config.color,
-                      backgroundColor: config.bg,
-                      borderColor: config.border,
-                      borderWidth: '1px',
-                      borderStyle: 'solid',
-                    }}
-                  >
-                    {config.icon}
-                  </div>
-                  <h3 className="principle-card-title">{item.title}</h3>
+    <Section
+      id="about"
+      badge={t.badge}
+      badgeIcon={<AwardIcon size={14} />}
+      title={t.title}
+      subtitle={data.tagline}
+    >
+      <div className="principles-grid">
+        {principles.map((item, index) => {
+          const config = getPrincipleConfig(item.title, index);
+          return (
+            <Card key={index} className="principle-card">
+              <Card.Header className="principle-card-header">
+                <div
+                  className="principle-icon-badge"
+                  style={{
+                    color: config.color,
+                    backgroundColor: config.bg,
+                    borderColor: config.border,
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                  }}
+                >
+                  {config.icon}
                 </div>
+                <h3 className="principle-card-title">{item.title}</h3>
+              </Card.Header>
+              <Card.Body>
                 <p className="principle-card-desc">
                   {item.description}
                 </p>
-              </Card>
-            );
-          })}
-        </div>
+              </Card.Body>
+            </Card>
+          );
+        })}
       </div>
-    </section>
+    </Section>
   );
 };
-

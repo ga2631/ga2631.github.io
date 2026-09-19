@@ -10,6 +10,7 @@ export interface TechTagListProps {
   className?: string;
   itemClassName?: string;
   getItemStyle?: (tag: string) => React.CSSProperties | undefined;
+  style?: React.CSSProperties;
 }
 
 export const TechTagList: React.FC<TechTagListProps> = ({
@@ -21,11 +22,12 @@ export const TechTagList: React.FC<TechTagListProps> = ({
   className = '',
   itemClassName = '',
   getItemStyle,
+  style,
 }) => {
   if (!tags || tags.length === 0) return null;
 
   return (
-    <div className={`tech-tags-list ${className}`.trim()}>
+    <div className={`tech-tags-list ${className}`.trim()} style={style}>
       {tags.map((tag) => {
         const isSelected = selectedTag === tag;
         const customStyle = getItemStyle ? getItemStyle(tag) : undefined;

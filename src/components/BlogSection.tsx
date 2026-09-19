@@ -1,9 +1,10 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useState, useEffect, useRef } from 'react';
 import { BlogPost } from '../types/index.ts';
-import { BookOpenIcon, CloseIcon, ExternalLinkIcon, CalendarIcon, ClockIcon } from './Icons.tsx';
+import { BookOpenIcon, ExternalLinkIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
-import { processArticleToc, ArticleTocSidebar } from './ArticleToc.tsx';
+import { Card, Button } from './common';
+import { Section, ArticleReaderModal, TocItem } from './ui';
+import { TechTagList } from './composite';
 
 interface BlogSectionProps {
   posts: BlogPost[];
@@ -13,60 +14,89 @@ interface BlogSectionProps {
 
 export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t, tCommon }) => {
   const [activePost, setActivePost] = useState<BlogPost | null>(null);
-  const modalContentRef = useRef<HTMLDivElement>(null);
+  const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
+  const [processedHtml, setProcessedHtml] = useState<string>('');
+  const modalContentRef = useRef<HTMLDivElement>(null);
 
-  // Process article content to extract TOC items (up to 2 levels) and inject unique IDs
-  const { processedHtml, tocItems } = useMemo(() => {
-    if (!activePost) return { processedHtml: '', tocItems: [] };
-    return processArticleToc(activePost.contentHtml);
+  // Parse Headings (h2, h3) from activePost content to generate TOC items
+  useEffect(() => {
+    const rawHtml = activePost?.contentHtml || activePost?.content || '';
+    if (!activePost || !rawHtml) {
+      setTocItems([]);
+      setProcessedHtml('');
+      setActiveHeadingId('');
+      return;
+    }
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = rawHtml;
+
+    const headings = tempDiv.querySelectorAll('h2, h3');
+    const items: TocItem[] = [];
+
+    headings.forEach((heading, index) => {
+      const text = heading.textContent || `Section ${index + 1}`;
+      let id = heading.id;
+      if (!id) {
+        id = text
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .concat(`-${index}`);
+        heading.id = id;
+      }
+
+      items.push({
+        id,
+        text,
+        level: heading.tagName.toLowerCase() === 'h2' ? 2 : 3,
+      });
+    });
+
+    setProcessedHtml(tempDiv.innerHTML);
+    setTocItems(items);
+    if (items.length > 0) {
+      setActiveHeadingId(items[0].id);
+    }
   }, [activePost]);
 
-  // Scrollspy to highlight active TOC heading when scrolling inside modal
+  // Scroll spy inside modal content
   useEffect(() => {
     if (!activePost || tocItems.length === 0) return;
 
-    const container = modalContentRef.current;
-    if (!container) return;
+    const modalEl = modalContentRef.current;
+    if (!modalEl) return;
 
     const handleScroll = () => {
-      const containerRect = container.getBoundingClientRect();
-      const offsetThreshold = 140;
+      const headingElements = tocItems
+        .map((item) => modalEl.querySelector(`#${item.id}`))
+        .filter(Boolean) as HTMLElement[];
 
-      let currentActiveId = tocItems[0]?.id || '';
+      const scrollPos = modalEl.scrollTop + 120;
 
-      for (const item of tocItems) {
-        const el = document.getElementById(item.id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top - containerRect.top <= offsetThreshold) {
-            currentActiveId = item.id;
-          }
+      for (let i = headingElements.length - 1; i >= 0; i--) {
+        const el = headingElements[i];
+        if (el.offsetTop <= scrollPos) {
+          setActiveHeadingId(el.id);
+          break;
         }
       }
-
-      setActiveHeadingId(currentActiveId);
     };
 
-    handleScroll();
-
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    modalEl.addEventListener('scroll', handleScroll, { passive: true });
+    return () => modalEl.removeEventListener('scroll', handleScroll);
   }, [activePost, tocItems]);
 
   const handleSelectHeading = (id: string) => {
-    const container = modalContentRef.current;
-    if (!container) return;
+    const modalEl = modalContentRef.current;
+    if (!modalEl) return;
 
-    const targetEl = document.getElementById(id);
+    const targetEl = modalEl.querySelector(`#${id}`) as HTMLElement;
     if (targetEl) {
-      const containerTop = container.getBoundingClientRect().top;
-      const targetTop = targetEl.getBoundingClientRect().top;
-      const currentScroll = container.scrollTop;
-      const targetScroll = currentScroll + (targetTop - containerTop) - 20;
-
-      container.scrollTo({
-        top: Math.max(0, targetScroll),
+      const targetOffset = targetEl.offsetTop - 80;
+      modalEl.scrollTo({
+        top: Math.max(0, targetOffset),
         behavior: 'smooth',
       });
       setActiveHeadingId(id);
@@ -74,136 +104,68 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ posts, t, tCommon }) =
   };
 
   return (
-    <section className="section" id="blog">
-      <div className="container">
-        <div className="section-header">
-          <span className="section-badge">
-            <BookOpenIcon size={14} /> {t.badge}
-          </span>
-          <h2 className="section-title">{t.title}</h2>
-          <p className="section-subtitle">
-            {t.subtitle}
-          </p>
-        </div>
-
-        <div className="blog-grid">
-          {posts.map((post) => (
-            <div
-              key={post.id}
-              className="glass-panel blog-card"
-              onClick={() => setActivePost(post)}
-            >
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                    {post.publishedAt} • {post.readTime}
-                  </span>
-                </div>
-
-                <h3 className="blog-title">{post.title}</h3>
-                <p className="blog-summary">{post.summary}</p>
+    <Section
+      id="blog"
+      badge={t.badge}
+      badgeIcon={<BookOpenIcon size={14} />}
+      title={t.title}
+      subtitle={t.subtitle}
+    >
+      <div className="blog-grid">
+        {posts.map((post) => (
+          <Card
+            key={post.id}
+            className="blog-card"
+            onClick={() => setActivePost(post)}
+          >
+            <Card.Header>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                  {post.publishedAt} • {post.readTime}
+                </span>
               </div>
 
-              <div>
-                <div className="tech-tags-list" style={{ marginBottom: '16px' }}>
-                  {post.tags.map((tag) => (
-                    <span key={tag} className="badge">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              <h3 className="blog-title">{post.title}</h3>
+            </Card.Header>
 
-                <button
-                  className="btn btn-outline btn-sm"
-                  style={{ width: '100%' }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActivePost(post);
-                  }}
-                >
-                  <span>{t.readArticle}</span>
-                  <ExternalLinkIcon size={14} />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+            <Card.Body>
+              <p className="blog-summary">{post.summary}</p>
+            </Card.Body>
 
-        {/* Modal Reader for HTML Blog Articles */}
-        {activePost &&
-          createPortal(
-            <div className="blog-modal-backdrop" onClick={() => setActivePost(null)}>
-              <div
-                ref={modalContentRef}
-                className="blog-modal-content blog-article-modal"
-                onClick={(e) => e.stopPropagation()}
+            <Card.Footer>
+              <TechTagList tags={post.tags} style={{ marginBottom: '16px' }} />
+
+              <Button
+                variant="outline"
+                size="sm"
+                style={{ width: '100%' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActivePost(post);
+                }}
+                icon={<ExternalLinkIcon size={14} />}
+                iconPosition="right"
               >
-                <button
-                  className="modal-close-btn"
-                  onClick={() => setActivePost(null)}
-                  aria-label="Close Article"
-                >
-                  <CloseIcon size={18} />
-                </button>
-
-                <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
-                  <div className="article-main-column">
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
-                      {activePost.tags.map((tag) => (
-                        <span key={tag} className="badge badge-cyan">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    <h2 style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontSize: '1.85rem',
-                      fontWeight: 800,
-                      color: 'var(--text-primary)',
-                      marginBottom: '12px',
-                      lineHeight: 1.25,
-                    }}>
-                      {activePost.title}
-                    </h2>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-muted)', fontSize: '0.88rem', paddingBottom: '16px', borderBottom: '1px solid var(--border-color)' }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                        <CalendarIcon size={14} /> {activePost.publishedAt}
-                      </span>
-                      <span>•</span>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                        <ClockIcon size={14} /> {activePost.readTime}
-                      </span>
-                    </div>
-
-                    <div
-                      className="article-body"
-                      dangerouslySetInnerHTML={{ __html: processedHtml }}
-                    />
-
-                    <div style={{ marginTop: '36px', paddingTop: '20px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end' }}>
-                      <button className="btn btn-secondary btn-sm" onClick={() => setActivePost(null)}>
-                        <CloseIcon size={15} />
-                        <span>{t.closeArticle}</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {tocItems.length > 0 && (
-                    <ArticleTocSidebar
-                      tocItems={tocItems}
-                      activeHeadingId={activeHeadingId}
-                      onSelectHeading={handleSelectHeading}
-                      tocTitle={tCommon.tableOfContents}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>,
-            document.body
-          )}
+                <span>{t.readArticle}</span>
+              </Button>
+            </Card.Footer>
+          </Card>
+        ))}
       </div>
-    </section>
+
+      {/* Standardized Modal Reader for HTML Blog Articles */}
+      <ArticleReaderModal
+        post={activePost}
+        isOpen={Boolean(activePost)}
+        onClose={() => setActivePost(null)}
+        processedHtml={processedHtml}
+        tocItems={tocItems}
+        activeHeadingId={activeHeadingId}
+        onSelectHeading={handleSelectHeading}
+        modalContentRef={modalContentRef}
+        tCommon={tCommon}
+        closeAriaLabel="Close Article"
+      />
+    </Section>
   );
 };

@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { Card } from '../../../src/components/common/Card';
 
 describe('Tier 1: Card Component', () => {
-  it('renders default glass card as div', () => {
+  it('renders default glass card as div with flex layout', () => {
     const { container } = render(<Card>Card Body Content</Card>);
     const cardEl = container.firstChild as HTMLElement;
 
@@ -25,19 +25,43 @@ describe('Tier 1: Card Component', () => {
     expect((container.firstChild as HTMLElement).tagName.toLowerCase()).toBe('li');
   });
 
-  it('renders header and footer slots when provided', () => {
+  it('supports compound components Card.Header, Card.Body, and Card.Footer', () => {
+    render(
+      <Card>
+        <Card.Header title="Compound Title" subtitle="Subtitle Text" />
+        <Card.Body>
+          <p>Compound Body Content</p>
+        </Card.Body>
+        <Card.Footer actions={<button type="button">Action Button</button>}>
+          <span>Footer Content</span>
+        </Card.Footer>
+      </Card>
+    );
+
+    expect(screen.getByRole('heading', { level: 3, name: 'Compound Title' })).toBeInTheDocument();
+    expect(screen.getByText('Subtitle Text')).toBeInTheDocument();
+    expect(screen.getByText('Compound Body Content')).toBeInTheDocument();
+    expect(screen.getByText('Footer Content')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Action Button' })).toBeInTheDocument();
+
+    const footer = screen.getByText('Footer Content').parentElement;
+    expect(footer).toHaveClass('card-footer');
+    expect(footer?.style.marginTop).toBe('auto');
+  });
+
+  it('supports backwards-compatible header and footer slot props', () => {
     render(
       <Card
-        header={<h3>Card Title</h3>}
-        footer={<button type="button">Action</button>}
+        header={<h3>Slot Title</h3>}
+        footer={<button type="button">Slot Footer</button>}
       >
         <p>Main Body</p>
       </Card>
     );
 
-    expect(screen.getByRole('heading', { level: 3, name: 'Card Title' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'Slot Title' })).toBeInTheDocument();
     expect(screen.getByText('Main Body')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Action' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Slot Footer' })).toBeInTheDocument();
   });
 
   it('handles click events and adds interactive-card class when interactive or onClick provided', () => {
