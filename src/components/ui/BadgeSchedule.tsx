@@ -28,4 +28,4 @@ export const BadgeSchedule: React.FC<BadgeScheduleProps> = ({
 };
 
 BadgeSchedule.displayName = 'BadgeSchedule';
-export { BadgeSchedule as ScheduleBadge, type BadgeScheduleProps as ScheduleBadgeProps };
+

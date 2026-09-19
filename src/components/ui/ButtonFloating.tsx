@@ -50,4 +50,4 @@ export const ButtonFloating = React.forwardRef<HTMLButtonElement, ButtonFloating
 );
 
 ButtonFloating.displayName = 'ButtonFloating';
-export { ButtonFloating as FloatingButton, type ButtonFloatingProps as FloatingButtonProps };
+

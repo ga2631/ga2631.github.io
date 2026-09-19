@@ -35,4 +35,4 @@ export const InputSearch = React.forwardRef<HTMLInputElement, InputSearchProps>(
 );
 
 InputSearch.displayName = 'InputSearch';
-export { InputSearch as SearchInput, type InputSearchProps as SearchInputProps };
+

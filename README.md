@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌐 Tan Huynh Nhat — Interactive Portfolio & Engineering CV
+# 🌐 Tan Huynh Nhat - Interactive Portfolio & Engineering CV
 
 [![Deploy to GitHub Pages](https://github.com/ga2631/ga2631.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/ga2631/ga2631.github.io/actions/workflows/deploy.yml)
 [![React 19](https://img.shields.io/badge/React-19.0-61dafb?logo=react&logoColor=black)](https://react.dev/)
@@ -36,13 +36,13 @@
 
 ## 🛠️ Technology Stack
 
-| Layer | Technologies & Tools |
-| :--- | :--- |
-| **Frontend Core** | React 19, TypeScript 5.7, Vite 6, Modern HTML5 Semantic Elements |
-| **Styling & Theme** | Vanilla CSS3 (Custom Design Tokens, HSL Color Palettes, Glassmorphism, Print CSS) |
-| **Icons & Assets** | Self-contained, tree-shakeable SVG Icon Component Library (Zero runtime bloat) |
-| **Containerization** | Docker, Docker Compose, Multi-Stage Build, Nginx 1.27 Alpine |
-| **CI/CD & Hosting** | GitHub Actions Workflow (`deploy.yml`), GitHub Pages (`https://ga2631.github.io`) |
+| Layer                | Technologies & Tools                                                              |
+| :------------------- | :-------------------------------------------------------------------------------- |
+| **Frontend Core**    | React 19, TypeScript 5.7, Vite 6, Modern HTML5 Semantic Elements                  |
+| **Styling & Theme**  | Vanilla CSS3 (Custom Design Tokens, HSL Color Palettes, Glassmorphism, Print CSS) |
+| **Icons & Assets**   | Self-contained, tree-shakeable SVG Icon Component Library (Zero runtime bloat)    |
+| **Containerization** | Docker, Docker Compose, Multi-Stage Build, Nginx 1.27 Alpine                      |
+| **CI/CD & Hosting**  | GitHub Actions Workflow (`deploy.yml`), GitHub Pages (`https://ga2631.github.io`) |
 
 ---
 

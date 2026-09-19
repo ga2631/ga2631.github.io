@@ -52,7 +52,7 @@ describe('Tier 2: ModalCaseStudy Component', () => {
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText('ERP Data Infrastructure Migration')).toBeInTheDocument();
-    expect(screen.getByText('Enterprise JSC — System Architect')).toBeInTheDocument();
+    expect(screen.getByText('Enterprise JSC - System Architect')).toBeInTheDocument();
     expect(screen.getByText('Featured Project')).toBeInTheDocument();
     expect(screen.getByText('Team: 8 Engineers')).toBeInTheDocument();
     expect(screen.getByText('Objective')).toBeInTheDocument();

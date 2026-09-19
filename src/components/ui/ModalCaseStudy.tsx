@@ -58,7 +58,7 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
 
         {(project.company || project.role) && (
           <div className="project-modal-subtitle">
-            {project.company} — {project.role}
+            {project.company} - {project.role}
           </div>
         )}
       </div>
@@ -214,4 +214,4 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
 };
 
 ModalCaseStudy.displayName = 'ModalCaseStudy';
-export { ModalCaseStudy as CaseStudyModal, type ModalCaseStudyProps as CaseStudyModalProps };
+

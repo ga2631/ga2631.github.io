@@ -35,4 +35,4 @@ export const BadgeFilterChip: React.FC<BadgeFilterChipProps> = ({
 };
 
 BadgeFilterChip.displayName = 'BadgeFilterChip';
-export { BadgeFilterChip as FilterChip, type BadgeFilterChipProps as FilterChipProps };
+
