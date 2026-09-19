@@ -1,8 +1,6 @@
 import { BlogPost } from '../types/index.ts';
 import {
   getEagerPosts,
-  assembleArticleHtml,
-  hydrateBlogPost,
   loadInitialBlogPosts,
   loadNextMonthBatch,
   loadAllArchivePosts,
@@ -10,8 +8,6 @@ import {
 } from '../services/blogService.ts';
 
 export {
-  assembleArticleHtml,
-  hydrateBlogPost,
   loadInitialBlogPosts,
   loadNextMonthBatch,
   loadAllArchivePosts,

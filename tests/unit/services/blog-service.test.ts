@@ -4,8 +4,6 @@ import {
   loadInitialBlogPosts,
   loadNextMonthBatch,
   loadAllArchivePosts,
-  assembleArticleHtml,
-  hydrateBlogPost,
   sortPostsByDateDesc,
 } from '../../../src/services/blogService';
 
@@ -83,48 +81,6 @@ describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
       expect(post.contentHtml).toBeTruthy();
       expect(post.contentHtml).toMatch(/<h[23]/);
     });
-  });
-
-  it('should correctly assemble HTML content from standard sections dictionary', () => {
-    const sampleCategory = 'data-engineering-analytics';
-    const sampleSections = {
-      'business-data-requirements': '<p>Business requirements description.</p>',
-      'data-modeling': '<p>Data modeling details.</p>',
-      'pipeline-construction': '<p>Pipeline code and architecture.</p>',
-      'testing-optimization': '<p>Testing and optimization results.</p>',
-      'summary-recommendations': '<p>Key takeaways and future recommendations.</p>',
-    };
-
-    const assembledHtml = assembleArticleHtml(sampleCategory, sampleSections, 'vi');
-    expect(assembledHtml).toContain('<h3>1. ');
-    expect(assembledHtml).toContain('<h3>5. ');
-    expect(assembledHtml).toContain('Business requirements description.');
-    expect(assembledHtml).toContain('Key takeaways and future recommendations.');
-  });
-
-  it('should correctly hydrate raw post objects and preserve existing contentHtml if provided', () => {
-    const rawPost = {
-      id: 'test-hydration',
-      category: 'architecture-system-design',
-      title: 'Hydration Test',
-      summary: 'Testing hydration logic',
-      publishedAt: '2026-05-15',
-      date: '2026-05-15',
-      readTime: '5 min',
-      tags: ['Kafka', 'Architecture'],
-      sections: {
-        'context-problem': '<p>Context.</p>',
-        'system-requirements': '<p>Requirements.</p>',
-        'architectural-design': '<p>Design.</p>',
-        'trade-offs-analysis': '<p>Trade-offs.</p>',
-        'lessons-best-practices': '<p>Best practices.</p>',
-      },
-    };
-
-    const hydrated = hydrateBlogPost(rawPost, 'vi');
-    expect(hydrated.contentHtml).toBeTruthy();
-    expect(hydrated.contentHtml).toContain('<h3>1. ');
-    expect(hydrated.contentHtml).toContain('<h3>5. ');
   });
 
   it('should sort posts descending by date', () => {

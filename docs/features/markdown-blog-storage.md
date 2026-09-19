@@ -91,11 +91,12 @@ tags:
 | `src/data/blog/vi/*.md` (40 files) | **NEW** | Toàn bộ 40 bài viết tiếng Việt định dạng `YYYY-MM-DD-<id>-<slug>.md`. |
 | `src/data/blog/en/*.md` (40 files) | **NEW** | Toàn bộ 40 bài viết tiếng Anh định dạng `YYYY-MM-DD-<id>-<slug>.md`. |
 | `src/services/blogService.ts` | **MODIFIED** | Nạp và phân tích dữ liệu trực tiếp từ các file `.md` qua Vite eager glob. |
+| `src/data/blog/blogCategories.ts` | **MODIFIED** | Tinh gọn định nghĩa chuyên mục, loại bỏ cấu trúc phần chuẩn cũ. |
 | `src/components/composite/BlogTopic.tsx` | **MODIFIED** | Hiển thị chính xác số lượng bài viết cho từng chuyên đề, bỏ giới hạn `20+`. |
 | `src/components/composite/BlogTagsKeyword.tsx` | **MODIFIED** | Hiển thị chính xác số lượng bài viết theo từng thẻ/từ khoá và tổng số bài viết. |
 | `src/pages/Blog.tsx` | **MODIFIED** | Tính toán thống kê chuyên mục, thẻ bài viết và cập nhật badge bộ lọc di động. |
-| `tests/unit/data/blog-post-structure.test.ts` | **MODIFIED** | Cập nhật kiểm thử cấu trúc, schema và thống kê bài viết từ nguồn Markdown. |
 | `tests/unit/data/mermaid-syntax.test.ts` | **MODIFIED** | Cập nhật kiểm thử cú pháp Mermaid diagrams từ nguồn Markdown. |
+| `src/data/blog/blogTemplates.ts` | **DELETED** | Loại bỏ file định nghĩa cấu trúc đề mục JSON cũ không còn sử dụng. |
 | `src/data/blog/vi/2026/09.json` | **DELETED** | Loại bỏ file JSON cũ sau khi đã di trú toàn bộ dữ liệu an toàn. |
 | `src/data/blog/en/2026/09.json` | **DELETED** | Loại bỏ file JSON cũ sau khi đã di trú toàn bộ dữ liệu an toàn. |
 | `docs/features/markdown-blog-storage.md` | **NEW** | Tài liệu kỹ thuật chi tiết theo quy chuẩn dự án. |

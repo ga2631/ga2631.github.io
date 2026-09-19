@@ -1,5 +1,4 @@
 import { BlogPost } from '../types/index.ts';
-import { CATEGORY_STRUCTURE_DEFINITIONS } from '../data/blog/blogTemplates.ts';
 import { parseFrontmatter, markdownToHtml } from '../utils/markdownParser.ts';
 
 // Vite glob importers for all markdown articles
@@ -96,43 +95,6 @@ export function getAvailableMonthArchives(lang: 'vi' | 'en'): MonthArchiveInfo[]
   });
 }
 
-/**
- * Backward-compatible helper for legacy structured sections.
- */
-export function assembleArticleHtml(
-  category?: string,
-  sections?: Record<string, string>,
-  lang: 'vi' | 'en' = 'vi'
-): string {
-  if (!sections || typeof sections !== 'object') return '';
-  const structure = category ? CATEGORY_STRUCTURE_DEFINITIONS[category] : undefined;
-  if (!structure) {
-    return Object.entries(sections)
-      .map(([key, content]) => `<h3>${key}</h3>${content}`)
-      .join('');
-  }
-
-  return structure.sections
-    .map((sec) => {
-      const content = sections[sec.id] || '';
-      return `<h3>${sec.order}. ${sec.title[lang]}</h3>${content}`;
-    })
-    .join('');
-}
-
-/**
- * Hydrates any raw blog post object into a fully populated BlogPost instance.
- */
-export function hydrateBlogPost(raw: any, lang: 'vi' | 'en' = 'vi'): BlogPost {
-  if (raw.contentHtml) {
-    return raw as BlogPost;
-  }
-  const contentHtml = assembleArticleHtml(raw.category, raw.sections, lang);
-  return {
-    ...raw,
-    contentHtml,
-  };
-}
 
 /**
  * Sorts articles descending by date or publishedAt.
