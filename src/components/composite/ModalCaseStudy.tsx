@@ -68,8 +68,8 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
         {/* 1. Project Objective */}
         {project.description && (
           <div style={{ marginBottom: '24px' }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '10px' }}>
-              <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+            <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '10px' }}>
+              <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
               <span>{t.objective}</span>
             </h3>
             <p style={{ lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
@@ -81,8 +81,8 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
         {/* 2. Key Responsibilities */}
         {project.responsibilities && project.responsibilities.length > 0 && (
           <div style={{ marginBottom: '24px' }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-              <ShieldIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+            <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+              <ShieldIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
               <span>{t.responsibilities}</span>
             </h3>
             <ul style={{ paddingLeft: '20px', margin: 0 }}>
@@ -100,8 +100,8 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
         {/* 3. Challenges & Solutions */}
         {project.challengesSolutions && project.challengesSolutions.length > 0 ? (
           <div style={{ marginBottom: '24px' }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-              <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+            <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+              <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
               <span>{t.challengesSolutions}</span>
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -134,8 +134,8 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
         ) : (
           project.highlights && project.highlights.length > 0 && (
             <div style={{ marginBottom: '24px' }}>
-              <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+              <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+                <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
                 <span>{t.challenges}</span>
               </h3>
               <ul style={{ paddingLeft: '20px', margin: 0 }}>
@@ -154,8 +154,8 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
         {/* 4. Achievements */}
         {project.achievements && project.achievements.length > 0 && (
           <div style={{ marginBottom: '24px' }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-              <RocketIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+            <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+              <RocketIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
               <span>{t.achievements}</span>
             </h3>
             <ul style={{ paddingLeft: '20px', margin: 0 }}>
@@ -173,8 +173,8 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
         {/* 5. Tech Stack */}
         {project.tags && project.tags.length > 0 && (
           <div style={{ marginBottom: '8px' }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-              <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0 }} />
+            <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
+              <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
               <span>{t.techStack}</span>
             </h3>
             <div className="tech-tags-list" style={{ marginTop: '8px' }}>

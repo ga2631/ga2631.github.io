@@ -390,12 +390,12 @@ export const ModalArticle: ModalArticleComponent = ({
 
               {/* Meta info bar */}
               <div className="article-meta-bar">
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                  <CalendarIcon size={14} /> {post.publishedAt}
+                <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: '5px' }}>
+                  <CalendarIcon size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> <span>{post.publishedAt}</span>
                 </span>
                 <span>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                  <ClockIcon size={14} /> {post.readTime}
+                <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: '5px' }}>
+                  <ClockIcon size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> <span>{post.readTime}</span>
                 </span>
               </div>
 

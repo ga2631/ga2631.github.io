@@ -25,7 +25,7 @@
 
 .hero-status-pill {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   padding: 6px 18px;
   background: rgba(16, 185, 129, 0.1);
@@ -52,6 +52,8 @@
   background-color: #10b981;
   box-shadow: 0 0 10px #10b981;
   animation: pulse 2s infinite;
+  margin-top: 5px;
+  flex-shrink: 0;
 }
 
 @keyframes pulse {
