@@ -10,7 +10,6 @@ import { Skills } from './components/Skills.tsx';
 import { EducationCertifications } from './components/EducationCertifications.tsx';
 import { Contact } from './components/Contact.tsx';
 import { Footer } from './components/Footer.tsx';
-import { PrintCV } from './components/PrintCV.tsx';
 import { ButtonFloatingScrollTop, ButtonPrint } from './components/composite';
 import { BlogPage } from './pages/BlogPage.tsx';
 import {
@@ -156,9 +155,6 @@ export const App: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Dedicated Standard ATS / Executive Print CV Document */}
-      <PrintCV data={currentCvData} t={t.printCv} />
     </div>
   );
 };
