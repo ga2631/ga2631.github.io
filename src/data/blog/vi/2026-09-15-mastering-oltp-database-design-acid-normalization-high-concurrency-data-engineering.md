@@ -18,7 +18,7 @@ tags:
   - "Data Engineering"
 ---
 
-## 1. Đề bài kinh doanh / Yêu cầu dữ liệu
+## Đề bài kinh doanh / Yêu cầu dữ liệu
 
 Trong mọi hệ thống phần mềm hướng người dùng (User-Facing Applications) như Sàn thương mại điện tử, Ứng dụng ngân hàng số, Cổng thanh toán hay Nền tảng đặt xe công nghệ, **Cơ sở dữ liệu Xử lý Giao dịch Trực tuyến (OLTP - Online Transaction Processing)** chính là 'trái tim' quyết định sự sống còn của doanh nghiệp.
 
@@ -32,7 +32,7 @@ Hãy xem xét những thách thức kinh doanh và kỹ thuật khốc liệt m�
 
 Cơ sở dữ liệu OLTP được thiết kế tối ưu cho các thao tác CRUD (Create, Read, Update, Delete) trên từng bản ghi đơn lẻ thông qua khóa chính (Primary Key). Nếu cố tình chạy các câu lệnh báo cáo tổng hợp (`SELECT COUNT(*)`, `GROUP BY` trên hàng chục triệu dòng) trực tiếp trên máy chủ OLTP, hệ thống sẽ bị nghẽn I/O, cạn kiệt Connection Pool và gây sập toàn bộ dịch vụ thanh toán của khách hàng.
 
-## 2. Mô hình hóa dữ liệu
+## Mô hình hóa dữ liệu
 
 Để đạt được sự cân bằng giữa tính toàn vẹn dữ liệu tuyệt đối và hiệu năng ghi siêu tốc, kỹ sư dữ liệu và kỹ sư hệ thống cần nắm vững 3 trụ cột thiết kế OLTP:
 
@@ -57,22 +57,22 @@ Nguyên tắc vàng của OLTP là chuẩn hóa tới **3NF (Third Normal Form) 
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**1NF (First Normal Form)**</td>
+      <td style="padding: 8px; font-weight: bold;">1NF (First Normal Form)</td>
       <td style="padding: 8px;">Giá trị trong mỗi cột phải là nguyên tử (Atomic), không chứa mảng hay danh sách lặp</td>
       <td style="padding: 8px;">Tách cột `phone_numbers` thành bảng riêng hoặc các dòng riêng</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**2NF (Second Normal Form)**</td>
+      <td style="padding: 8px; font-weight: bold;">2NF (Second Normal Form)</td>
       <td style="padding: 8px;">Đạt 1NF và mọi thuộc tính không khóa phải phụ thuộc hoàn toàn vào toàn bộ Khóa chính</td>
       <td style="padding: 8px;">Loại bỏ sự phụ thuộc một phần (Partial Dependency) trong khóa phức hợp</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**3NF (Third Normal Form)**</td>
+      <td style="padding: 8px; font-weight: bold;">3NF (Third Normal Form)</td>
       <td style="padding: 8px;">Đạt 2NF và không có thuộc tính không khóa nào phụ thuộc bắc cầu (Transitive) vào khóa chính</td>
       <td style="padding: 8px;">Tách thông tin Tỉnh/Thành phố ra khỏi bảng Khách hàng (Tránh lưu trùng tên tỉnh nhiều lần)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Controlled Denormalization**</td>
+      <td style="padding: 8px; font-weight: bold;">Controlled Denormalization</td>
       <td style="padding: 8px;">Lưu Snapshot bất biến có chủ đích (ví dụ: `unit_price_at_order` trong `order_items`)</td>
       <td style="padding: 8px;">Bảo toàn giá tiền tại thời điểm mua khi bảng giá sản phẩm gốc thay đổi</td>
     </tr>
@@ -116,7 +116,7 @@ flowchart TD
     end
 ```
 
-## 3. Xây dựng Pipeline / Script xử lý
+## Xây dựng Pipeline / Script xử lý
 
 Để minh họa việc triển khai mô hình OLTP xử lý tranh chấp đồng thời cao (High-Concurrency Concurrency Control), dưới đây là thiết kế DDL chuẩn hóa và mã nguồn Python/SQL giải quyết bài toán trừ tồn kho Flash Sale không bao giờ bị âm.
 
@@ -234,7 +234,7 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
     return False # Vuot qua so lan thu lai
 ```
 
-## 4. Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Kiểm thử dữ liệu & Tối ưu hiệu năng
 
 Để tối ưu hóa cơ sở dữ liệu OLTP chịu tải hàng chục nghìn TPS mà không gặp hiện tượng nghẽn cổ chai, các kỹ sư hệ thống cần áp dụng các kỹ thuật sau:
 
@@ -262,41 +262,39 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Serializable Isolation Cấp cao nhất**</td>
+      <td style="padding: 8px; font-weight: bold;">Serializable Isolation Cấp cao nhất</td>
       <td style="padding: 8px;">850 TPS</td>
       <td style="padding: 8px;">420ms</td>
       <td style="padding: 8px;">Cao (35% giao dịch bị Serialization Failure)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Pessimistic Locking (SELECT FOR UPDATE)**</td>
+      <td style="padding: 8px; font-weight: bold;">Pessimistic Locking (SELECT FOR UPDATE)</td>
       <td style="padding: 8px;">4,200 TPS</td>
       <td style="padding: 8px;">48ms</td>
       <td style="padding: 8px;">0.00% (An toàn tuyệt đối, xếp hàng chờ khóa)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Optimistic Concurrency Control (Version CAS)**</td>
+      <td style="padding: 8px; font-weight: bold;">Optimistic Concurrency Control (Version CAS)</td>
       <td style="padding: 8px;">6,800 TPS</td>
       <td style="padding: 8px;">18ms</td>
       <td style="padding: 8px;">Thấp (Retry tự động thành công 99.8%)</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Redis In-Memory Token + Asynchronous DB Write**</td>
-      <td style="padding: 8px;">**45,000 TPS**</td>
-      <td style="padding: 8px;">**2.1ms**</td>
+      <td style="padding: 8px; font-weight: bold;">Redis In-Memory Token + Asynchronous DB Write</td>
+      <td style="padding: 8px; font-weight: bold;">45,000 TPS</td>
+      <td style="padding: 8px; font-weight: bold;">2.1ms</td>
       <td style="padding: 8px;">0.00% (Tách biệt hoàn toàn tầng trừ tồn kho)</td>
     </tr>
   </tbody>
 </table>
 
-## 5. Tổng kết & Khuyến nghị
+## Tổng kết & Khuyến nghị
 
 Hệ thống OLTP là nền móng vận hành cốt lõi của mọi sản phẩm công nghệ. Một sai lầm nhỏ trong thiết kế mô hình hoặc kiểm soát giao dịch có thể dẫn đến thiệt hại tài chính không thể cứu vãn.
-
-**Khuyến nghị Hành động Dành cho Kỹ sư Thiết kế Hệ thống & Kỹ sư Dữ liệu:**
 
 1. **Thiết kế Giao dịch Cực kỳ Tinh gọn:** Giữ các khối `BEGIN ... COMMIT` ngắn nhất có thể. Luôn chuẩn bị sẵn sàng dữ liệu trong bộ nhớ trước khi mở Transaction và cam kết ngay lập tức.
 2. **Lựa chọn Cơ chế Khóa Phù hợp với Ngữ cảnh Nghiệp vụ:** Dùng _Pessimistic Locking_ cho các điểm nóng tranh chấp dữ liệu cao độ (Flash Sale, Inventory Booking); Dùng _Optimistic Locking_ cho các thao tác cập nhật hồ sơ, chỉnh sửa thông tin người dùng.
 3. **Tách Biệt Đọc/Ghi qua Read Replicas:** Điều hướng các truy vấn đọc tra cứu (Point Lookups) sang cụm máy chủ Read Replicas để dành trọn vẹn tài nguyên CPU/IOPS của Primary Server cho các thao tác ghi giao dịch.
 4. **Sử dụng Change Data Capture (CDC) làm Cầu nối sang Data Platform:** Tuyệt đối không dùng cơ chế Dual-Write (Ghi đồng thời vào OLTP và Elasticsearch/Lakehouse từ code ứng dụng vì dễ gây lệch dữ liệu khi có lỗi mạng). Hãy sử dụng Debezium CDC để trích xuất dữ liệu trực tiếp từ Write-Ahead Log một cách bất đồng bộ và tin cậy 100%.
 
-**Lời kết:** _Xây dựng một hệ thống OLTP vững chắc là nghệ thuật tôn trọng các nguyên lý ACID nguyên bản kết hợp với tư duy kiểm soát đồng thời thông minh. Đó là bệ phóng an toàn để doanh nghiệp tự tin mở rộng quy mô lên hàng triệu người dùng!_
+> **Lời kết:** _Xây dựng một hệ thống OLTP vững chắc là nghệ thuật tôn trọng các nguyên lý ACID nguyên bản kết hợp với tư duy kiểm soát đồng thời thông minh. Đó là bệ phóng an toàn để doanh nghiệp tự tin mở rộng quy mô lên hàng triệu người dùng!_

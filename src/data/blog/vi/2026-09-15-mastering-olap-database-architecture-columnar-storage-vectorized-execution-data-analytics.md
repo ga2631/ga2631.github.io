@@ -18,7 +18,7 @@ tags:
   - "Big Data"
 ---
 
-## 1. Đề bài kinh doanh / Yêu cầu dữ liệu
+## Đề bài kinh doanh / Yêu cầu dữ liệu
 
 Trong khi các hệ thống OLTP được xây dựng để xử lý hàng triệu giao dịch ghi đơn lẻ với độ trễ tính bằng mili-giây, các nhà phân tích dữ liệu (Data Analysts) và các nhà khoa học dữ liệu (Data Scientists) lại đối mặt với một bài toán hoàn toàn trái ngược: **Làm thế nào để quét, lọc và tính toán tổng hợp trên hàng tỷ bản ghi lịch sử trong thời gian thực để trả về biểu đồ phân tích kinh doanh tức thì?**
 
@@ -32,7 +32,7 @@ Hãy xem xét các bài toán kinh doanh đòi hỏi năng lực xử lý phân 
 
 Trong cơ sở dữ liệu dạng dòng (như PostgreSQL, MySQL), toàn bộ các cột của một bản ghi được lưu trữ liền kề nhau trên đĩa cứng. Khi bạn chạy câu lệnh `SELECT AVG(total_amount) FROM orders WHERE order_date >= '2026-01-01';`, database bắt buộc phải đọc toàn bộ dung lượng của tất cả các cột (tên khách hàng, địa chỉ, ghi chú, mã thanh toán) lên bộ nhớ đệm, gây lãng phí tới 95-99% băng thông I/O đĩa cứng. Để giải quyết triệt để bài toán này, **Cơ sở dữ liệu OLAP dạng cột (Column-Oriented Architecture)** đã ra đời.
 
-## 2. Mô hình hóa dữ liệu
+## Mô hình hóa dữ liệu
 
 Để xây dựng và khai thác hệ thống OLAP đạt hiệu năng cao nhất, kỹ sư dữ liệu cần hiểu rõ sự tiến hóa của các mô hình OLAP và cơ chế vật lý của công nghệ lưu trữ dạng cột.
 
@@ -49,25 +49,25 @@ Trong cơ sở dữ liệu dạng dòng (như PostgreSQL, MySQL), toàn bộ cá
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**MOLAP (Multidimensional)**</td>
+      <td style="padding: 8px; font-weight: bold;">MOLAP (Multidimensional)</td>
       <td style="padding: 8px;">Tính toán trước và lưu trữ kết quả trong các khối đa chiều (Cubes - SSAS, Apache Kylin)</td>
       <td style="padding: 8px;">Tốc độ truy vấn siêu nhanh trên các chiều cố định</td>
       <td style="padding: 8px;">Bùng nổ dung lượng lưu trữ (Cube Explosion), không linh hoạt khi thêm chiều mới</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**ROLAP (Relational)**</td>
+      <td style="padding: 8px; font-weight: bold;">ROLAP (Relational)</td>
       <td style="padding: 8px;">Lưu trữ dữ liệu dạng bảng quan hệ (Star/Snowflake Schema) và tính toán động qua SQL</td>
       <td style="padding: 8px;">Linh hoạt tuyệt đối, hỗ trợ truy vấn Ad-hoc phong phú</td>
       <td style="padding: 8px;">Tốn tài nguyên tính toán nếu không có cơ chế tối ưu cột</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**HOLAP (Hybrid)**</td>
+      <td style="padding: 8px; font-weight: bold;">HOLAP (Hybrid)</td>
       <td style="padding: 8px;">Kết hợp lưu trữ tóm tắt trong MOLAP và dữ liệu chi tiết trong ROLAP</td>
       <td style="padding: 8px;">Cân bằng giữa tốc độ báo cáo tổng quan và khả năng khoan sâu (Drill-down)</td>
       <td style="padding: 8px;">Kiến trúc phức tạp, khó đồng bộ dữ liệu</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Modern Real-Time OLAP (ClickHouse, Snowflake, DuckDB)**</td>
+      <td style="padding: 8px; font-weight: bold;">Modern Real-Time OLAP (ClickHouse, Snowflake, DuckDB)</td>
       <td style="padding: 8px;">Lưu trữ dạng cột tự nhiên (Columnar), nén dữ liệu cực đại và xử lý Vector hóa (SIMD)</td>
       <td style="padding: 8px;">Hiệu năng quét hàng tỷ dòng trong mili-giây, nén đĩa 90%, nạp dữ liệu Real-time</td>
       <td style="padding: 8px;">Hạn chế trong các giao dịch ghi cập nhật từng dòng nhỏ lẻ (Single-row UPDATEs)</td>
@@ -100,7 +100,7 @@ flowchart TD
 
 Trong các CSDL truyền thống (Volcano Iterator Model), mỗi dòng dữ liệu được gọi hàm `next()` lần lượt từng bản ghi một, gây tắc nghẽn CPU Cache và overhead gọi hàm. Ngược lại, **Vectorized Engine** tải một mảng gồm 1.024 hoặc 2.048 giá trị của cùng một cột vào trực tiếp các thanh ghi CPU (Registers) và sử dụng tập lệnh **SIMD (Single Instruction, Multiple Data - AVX2/AVX-512)** để tính toán song song hàng chục phép cộng/lọc chỉ trong một chu kỳ xung nhịp CPU.
 
-## 3. Xây dựng Pipeline / Script xử lý
+## Xây dựng Pipeline / Script xử lý
 
 Để minh họa việc triển khai hệ thống OLAP hiện đại, dưới đây là kiến trúc luồng dữ liệu thời gian thực và mã nguồn tạo bảng **ClickHouse MergeTree Engine** kết hợp với câu lệnh SQL phân tích nâng cao.
 
@@ -199,7 +199,7 @@ GROUP BY event_date, country, device_type
 ORDER BY event_date DESC, gross_merchandise_value DESC;
 ```
 
-## 4. Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Kiểm thử dữ liệu & Tối ưu hiệu năng
 
 Để đạt được tốc độ phản hồi truy vấn dưới 100ms trên các tập dữ liệu khổng lồ (Petabyte-scale), Data Engineer cần làm chủ các kỹ thuật tối ưu hóa vật lý chuyên sâu sau:
 
@@ -226,45 +226,44 @@ ORDER BY event_date DESC, gross_merchandise_value DESC;
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cơ sở Dữ liệu Dạng Dòng (PostgreSQL 16)**</td>
+      <td style="padding: 8px; font-weight: bold;">Cơ sở Dữ liệu Dạng Dòng (PostgreSQL 16)</td>
       <td style="padding: 8px;">340.000ms (Hơn 5.6 phút)</td>
       <td style="padding: 8px;">142 GB (Quét toàn bộ hàng)</td>
       <td style="padding: 8px;">1.2x (Nén dòng thông thường)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Hệ Thống Phân Tán ROLAP Truyền Thống**</td>
+      <td style="padding: 8px; font-weight: bold;">Hệ Thống Phân Tán ROLAP Truyền Thống</td>
       <td style="padding: 8px;">12.500ms (12.5 giây)</td>
       <td style="padding: 8px;">18.5 GB</td>
       <td style="padding: 8px;">3.5x (Nén Snappy cơ bản)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cloud MPP DWH (Snowflake Standard)**</td>
+      <td style="padding: 8px; font-weight: bold;">Cloud MPP DWH (Snowflake Standard)</td>
       <td style="padding: 8px;">420ms</td>
       <td style="padding: 8px;">1.4 GB (Micro-partition pruning)</td>
       <td style="padding: 8px;">6.0x (Proprietary Columnar)</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Real-Time Vectorized OLAP (ClickHouse Cluster)**</td>
-      <td style="padding: 8px;">**28ms**</td>
-      <td style="padding: 8px;">**180 MB** (MinMax Skip + SIMD)</td>
-      <td style="padding: 8px;">**10.5x** (ZSTD + LowCardinality Codec)</td>
+      <td style="padding: 8px; font-weight: bold;">Real-Time Vectorized OLAP (ClickHouse Cluster)</td>
+      <td style="padding: 8px; font-weight: bold;">28ms</td>
+      <td style="padding: 8px; font-weight: bold;">180 MB (MinMax Skip + SIMD)</td>
+      <td style="padding: 8px; font-weight: bold;">10.5x (ZSTD + LowCardinality Codec)</td>
     </tr>
   </tbody>
 </table>
 
-## 5. Tổng kết & Khuyến nghị
+## Tổng kết & Khuyến nghị
 
 Cơ sở dữ liệu OLAP dạng cột đại diện cho đỉnh cao của kỹ thuật tối ưu hóa phần cứng và thuật toán xử lý dữ liệu lớn hiện đại.
 
-**Khuyến nghị Chiến lược Dành cho Data Engineers & Data Analysts:**
-
-1. **Lựa chọn Động cơ OLAP Phù hợp với Bối cảnh Doanh nghiệp:**
+**Lựa chọn Động cơ OLAP Phù hợp với Bối cảnh Doanh nghiệp:**
 
 - Sử dụng **ClickHouse / StarRocks** khi cần phân tích thời gian thực với độ trễ truy vấn dưới 100ms trên luồng dữ liệu nạp liên tục (Clickstream, Log Analytics, Real-time Dashboard).
 - Sử dụng **Snowflake / BigQuery** khi cần xây dựng kho dữ liệu doanh nghiệp toàn diện (Enterprise DWH / BI) phục vụ đa phòng ban với khả năng mở rộng điện toán không giới hạn.
 - Sử dụng **DuckDB** khi cần một động cơ phân tích dạng cột siêu nhẹ, nhúng trực tiếp trong ứng dụng Python / Data Science mà không cần dựng cụm server phức tạp.
 
-2. **Luôn Tận dụng Nén Dữ liệu Chuyên biệt theo Kiểu Dữ liệu:** Sử dụng `LowCardinality` hoặc Dictionary Encoding cho các cột chuỗi lặp lại, `DoubleDelta` cho chuỗi thời gian và `T64/Gorilla` cho số thập phân.
-3. **Ứng dụng Thuật toán Phác thảo (Sketching) Cho Tập Dữ Liệu Lớn:** Đào tạo đội ngũ Data Analyst chuyển từ việc dùng `COUNT(DISTINCT)` chính xác tuyệt đối sang `HyperLogLog (HLL)` khi làm việc với các chỉ số ước lượng (Reach, Active Users) để tăng tốc độ phân tích lên hàng chục lần.
+**Luôn Tận dụng Nén Dữ liệu Chuyên biệt theo Kiểu Dữ liệu:** Sử dụng `LowCardinality` hoặc Dictionary Encoding cho các cột chuỗi lặp lại, `DoubleDelta` cho chuỗi thời gian và `T64/Gorilla` cho số thập phân.
 
-**Lời kết:** _Làm chủ cơ chế hoạt động của OLAP từ tầng lưu trữ dạng cột đến tập lệnh SIMD giúp Data Engineer tự tin biến hàng chục terabyte dữ liệu phức tạp thành những câu trả lời kinh doanh tức thì trong chớp mắt!_
+**Ứng dụng Thuật toán Phác thảo (Sketching) Cho Tập Dữ Liệu Lớn:** Đào tạo đội ngũ Data Analyst chuyển từ việc dùng `COUNT(DISTINCT)` chính xác tuyệt đối sang `HyperLogLog (HLL)` khi làm việc với các chỉ số ước lượng (Reach, Active Users) để tăng tốc độ phân tích lên hàng chục lần.
+
+> **Lời kết:** _Làm chủ cơ chế hoạt động của OLAP từ tầng lưu trữ dạng cột đến tập lệnh SIMD giúp Data Engineer tự tin biến hàng chục terabyte dữ liệu phức tạp thành những câu trả lời kinh doanh tức thì trong chớp mắt!_

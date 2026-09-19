@@ -359,4 +359,4 @@ Thiết kế Kho Dữ liệu không đơn thuần là việc tạo bảng trong 
 3. **Sử dụng dbt làm Tiêu chuẩn Chuyển đổi Dữ liệu (Transformations as Code):** Quản lý toàn bộ models, tests, tài liệu hóa (documentation) và sơ đồ nguồn gốc dữ liệu (Data Lineage) thông qua mã nguồn kiểm soát phiên bản (Git).
 4. **Tách biệt Rõ ràng giữa Tầng Chuẩn hóa (Silver) và Tầng Thứ nguyên (Gold):** Có thể áp dụng Data Vault 2.0 hoặc 3NF ở tầng tích hợp Silver để tối đa hóa tính linh hoạt của kỹ sư dữ liệu, nhưng luôn chuyển đổi sang Kimball Star Schema ở tầng Gold để mang lại trải nghiệm truy vấn tốt nhất cho người dùng cuối.
 
-**Lời kết:** _Một kiến trúc Data Warehouse xuất sắc là khi một chuyên viên phân tích mới vào công ty có thể nhìn vào sơ đồ Star Schema và hiểu ngay lập tức toàn bộ bức tranh hoạt động kinh doanh mà không cần đọc một trang tài liệu giải thích nào!_
+> **Lời kết:** _Một kiến trúc Data Warehouse xuất sắc là khi một chuyên viên phân tích mới vào công ty có thể nhìn vào sơ đồ Star Schema và hiểu ngay lập tức toàn bộ bức tranh hoạt động kinh doanh mà không cần đọc một trang tài liệu giải thích nào!_

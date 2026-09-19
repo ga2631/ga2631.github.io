@@ -273,4 +273,4 @@ Data Mart là cây cầu nối thiết yếu giúp chuyển hóa sức mạnh t�
 3. **Phân quyền Theo Miền Nghiệp vụ (Data Mesh Mindset):** Trao quyền sở hữu và khai thác Data Mart cho các Domain Data Analysts của từng phòng ban, trong khi đội ngũ Data Engineer trung tâm tập trung vào việc bảo đảm hạ tầng, chất lượng dữ liệu nền tảng và SLA pipeline.
 4. **Tự động hóa Kiểm thử Đối soát Hàng ngày:** Luôn cài đặt các bài test đối soát số liệu chéo (Cross-mart reconciliation tests) để phát hiện sớm mọi sự sai lệch trước khi dữ liệu xuất hiện trên bàn của ban điều hành.
 
-**Lời kết:** _Một hệ thống Data Mart thành công là khi các nhà phân tích nghiệp vụ có thể tự tin tạo ra các báo cáo chính xác chỉ trong vài phút, còn các lãnh đạo doanh nghiệp có thể hoàn toàn tin tưởng vào từng con số được trình bày!_
+> **Lời kết:** _Một hệ thống Data Mart thành công là khi các nhà phân tích nghiệp vụ có thể tự tin tạo ra các báo cáo chính xác chỉ trong vài phút, còn các lãnh đạo doanh nghiệp có thể hoàn toàn tin tưởng vào từng con số được trình bày!_
