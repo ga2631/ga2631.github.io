@@ -211,7 +211,7 @@ export const ModalArticle: ModalArticleComponent = ({
           startOnLoad: false,
           theme: 'base',
           securityLevel: 'loose',
-          fontFamily: "Outfit, Inter, system-ui, -apple-system, sans-serif",
+          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
           themeVariables: isDark
             ? {
                 darkMode: true,

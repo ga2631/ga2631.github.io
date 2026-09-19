@@ -399,9 +399,29 @@
       margin: 0 auto;
       pointer-events: none;
       background: transparent !important;
+      font-family: var(--font-sans) !important;
 
-      text {
+      text,
+      tspan,
+      p,
+      div,
+      span,
+      foreignObject,
+      .label,
+      .nodeText,
+      .messageText,
+      .labelText,
+      .loopText,
+      .noteText,
+      .actor {
         font-family: var(--font-sans) !important;
+        text-align: center !important;
+        text-justify: auto !important;
+      }
+
+      .cluster-label,
+      .subgraph-title {
+        text-align: left !important;
       }
     }
   }
@@ -419,6 +439,8 @@
   pre.mermaid,
   .diagram-viewer-canvas {
     svg {
+      font-family: var(--font-sans) !important;
+
       /* Force all diagram text labels to be bright & readable in dark mode */
       text,
       .actor,
@@ -430,9 +452,20 @@
       .node text,
       .edgeLabel,
       .titleText,
-      tspan {
+      tspan,
+      p,
+      div,
+      span {
         fill: #f8fafc !important;
         color: #f8fafc !important;
+        font-family: var(--font-sans) !important;
+        text-align: center !important;
+        text-justify: auto !important;
+      }
+
+      .cluster-label,
+      .subgraph-title {
+        text-align: left !important;
       }
 
       /* Actor boxes & node shapes */
@@ -488,6 +521,8 @@
   pre.mermaid,
   .diagram-viewer-canvas {
     svg {
+      font-family: var(--font-sans) !important;
+
       text,
       .actor,
       .messageText,
@@ -498,9 +533,20 @@
       .node text,
       .edgeLabel,
       .titleText,
-      tspan {
+      tspan,
+      p,
+      div,
+      span {
         fill: #0f172a !important;
         color: #0f172a !important;
+        font-family: var(--font-sans) !important;
+        text-align: center !important;
+        text-justify: auto !important;
+      }
+
+      .cluster-label,
+      .subgraph-title {
+        text-align: left !important;
       }
 
       rect.actor,
@@ -767,8 +813,29 @@
     overflow: visible;
     object-fit: contain;
 
-    text {
+    font-family: var(--font-sans) !important;
+
+    text,
+    tspan,
+    p,
+    div,
+    span,
+    foreignObject,
+    .label,
+    .nodeText,
+    .messageText,
+    .labelText,
+    .loopText,
+    .noteText,
+    .actor {
       font-family: var(--font-sans) !important;
+      text-align: center !important;
+      text-justify: auto !important;
+    }
+
+    .cluster-label,
+    .subgraph-title {
+      text-align: left !important;
     }
   }
 }
