@@ -613,6 +613,21 @@
   background: rgba(241, 245, 249, 0.9);
 }
 
+.diagram-viewer-content {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
+}
+
 .diagram-viewer-header {
   position: absolute;
   top: 18px;

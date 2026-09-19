@@ -371,7 +371,7 @@ export const ModalArticle: ModalArticleComponent = ({
         contentRef={modalContentRef}
         ariaLabelledBy="article-modal-title"
       >
-        <div className="article-modal-body">
+        <Modal.Body className="article-modal-body">
           <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
             <div className="article-main-column">
               {/* Tag Badges */}
@@ -426,7 +426,7 @@ export const ModalArticle: ModalArticleComponent = ({
               />
             )}
           </div>
-        </div>
+        </Modal.Body>
       </Modal>
 
       {/* Fullscreen Diagram Fit View Overlay */}

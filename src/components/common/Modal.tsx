@@ -161,6 +161,7 @@ export interface ModalProps {
   contentRef?: React.RefObject<HTMLDivElement | null>;
   onContentScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
   ariaLabelledBy?: string;
+  ariaLabel?: string;
   header?: React.ReactNode;
   footer?: React.ReactNode;
   children: React.ReactNode;
@@ -187,6 +188,7 @@ export const Modal: ModalComponent = ({
   contentRef,
   onContentScroll,
   ariaLabelledBy,
+  ariaLabel,
   header,
   footer,
   children,
@@ -230,6 +232,7 @@ export const Modal: ModalComponent = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby={ariaLabelledBy}
+      aria-label={ariaLabel || (typeof title === 'string' ? title : undefined)}
     >
       <div
         ref={activeContentRef as any}
