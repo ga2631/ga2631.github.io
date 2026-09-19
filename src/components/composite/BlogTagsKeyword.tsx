@@ -23,8 +23,6 @@ export const BlogTagsKeyword: React.FC<BlogTagsKeywordProps> = ({
   onSelectTag,
   className = '',
 }) => {
-  const displayTotalCount = totalPostsCount > 20 ? '20+' : totalPostsCount;
-
   return (
     <div className={`blog-sidebar-section blog-sidebar-tags-section ${className}`.trim()}>
       <div className="sidebar-section-header">
@@ -38,7 +36,7 @@ export const BlogTagsKeyword: React.FC<BlogTagsKeywordProps> = ({
         <Badge
           variant="tag-pill"
           isActive={selectedTag === 'all'}
-          count={displayTotalCount}
+          count={totalPostsCount}
           onClick={() => onSelectTag('all')}
         >
           {allTopicsLabel}

@@ -1,5 +1,3 @@
-import { CATEGORY_STRUCTURE_DEFINITIONS, StandardSectionDef } from './blogTemplates.ts';
-
 export interface BlogCategoryDef {
   id: string;
   dayCode: 'ALL' | 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI';
@@ -20,7 +18,6 @@ export interface BlogCategoryDef {
     en: string;
   };
   iconName: string;
-  standardSections?: StandardSectionDef[];
 }
 
 export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
@@ -65,7 +62,6 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Clean architecture, high-throughput system design, scalability, and distributed systems optimization.',
     },
     iconName: 'LayersIcon',
-    standardSections: CATEGORY_STRUCTURE_DEFINITIONS['architecture-system-design']?.sections,
   },
   {
     id: 'data-engineering-analytics',
@@ -87,7 +83,6 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Database modeling, query tuning, Change Data Capture (CDC), data pipelines, and analytics.',
     },
     iconName: 'DatabaseIcon',
-    standardSections: CATEGORY_STRUCTURE_DEFINITIONS['data-engineering-analytics']?.sections,
   },
   {
     id: 'devops-cloud-tooling',
@@ -109,7 +104,6 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Cloud infrastructure, Docker, Kubernetes, CI/CD pipelines, and developer tooling.',
     },
     iconName: 'ServerIcon',
-    standardSections: CATEGORY_STRUCTURE_DEFINITIONS['devops-cloud-tooling']?.sections,
   },
   {
     id: 'code-craftsmanship-languages',
@@ -131,7 +125,6 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Algorithms, programming languages (Go, Java, TS/Rust), frameworks, and clean code refactoring craftsmanship.',
     },
     iconName: 'CodeIcon',
-    standardSections: CATEGORY_STRUCTURE_DEFINITIONS['code-craftsmanship-languages']?.sections,
   },
   {
     id: 'tech-radar-career-insights',
@@ -153,6 +146,5 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Emerging tech radar, engineering mindset, career experiences, and practical reflections beyond code.',
     },
     iconName: 'SparklesIcon',
-    standardSections: CATEGORY_STRUCTURE_DEFINITIONS['tech-radar-career-insights']?.sections,
   },
 ];

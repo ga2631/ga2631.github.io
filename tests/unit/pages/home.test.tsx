@@ -32,4 +32,25 @@ describe('TU-PAGES-01: Pages - Home Component', () => {
     // Footer
     expect(screen.getByText(new RegExp(uiTranslations.en.footer.allRightsReserved, 'i'))).toBeInTheDocument();
   });
+
+  it('renders ButtonPrint floating button and print document within Home page', () => {
+    const { container } = render(<Home data={cvDataEn} t={uiTranslations.en} />);
+
+    // Floating action container has ButtonPrint
+    const floatingBtn = container.querySelector('#floating-save-cv-btn');
+    expect(floatingBtn).toBeInTheDocument();
+    expect(floatingBtn).toHaveTextContent(uiTranslations.en.nav.saveCv);
+
+    // Dedicated Print CV Document is rendered with Page 1 and Page 2
+    const printDoc = container.querySelector('.print-cv-document');
+    expect(printDoc).toBeInTheDocument();
+
+    const page1 = container.querySelector('.print-page-1');
+    const page2 = container.querySelector('.print-page-2');
+    expect(page1).toBeInTheDocument();
+    expect(page2).toBeInTheDocument();
+
+    expect(page1?.querySelector('.print-name')).toHaveTextContent(cvDataEn.personalInfo.fullName.toUpperCase());
+    expect(page1?.querySelector('.print-title')).toHaveTextContent(cvDataEn.personalInfo.jobTitle.toUpperCase());
+  });
 });

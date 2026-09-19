@@ -298,7 +298,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
         >
           <span>{t.categoriesTitle || 'Chuyên đề'}</span>
           <Badge variant="cyan" style={{ marginLeft: '4px', fontSize: '0.75rem' }}>
-            {selectedCategory !== 'all' || selectedTag !== 'all' ? '1+' : (allPosts.length > 20 ? '20+' : allPosts.length)}
+            {filteredPosts.length}
           </Badge>
         </Button>
       </div>

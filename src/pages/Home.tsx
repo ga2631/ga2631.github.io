@@ -43,6 +43,8 @@ export const Home: React.FC<HomeProps> = ({ data, t }) => {
         <ButtonFloatingScrollTop tCommon={t.common} />
         <ButtonPrint
           variant="floating"
+          data={data}
+          tPrintCv={t.printCv}
           onPrint={() => window.print()}
           label={t.nav.saveCv}
           tCommon={t.common}
