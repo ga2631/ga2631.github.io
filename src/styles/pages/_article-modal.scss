@@ -793,12 +793,7 @@
   justify-content: center;
   transform-origin: center center;
   transition: transform 0.05s ease-out;
-  background: var(--bg-card);
-  padding: 36px 32px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
-  box-sizing: border-box;
+  border: none;
 
   svg {
     display: block;
