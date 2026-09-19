@@ -207,7 +207,12 @@ function migrateLanguage(lang) {
   let count = 0;
   posts.forEach((post) => {
     const mdContent = convertPostToMarkdown(post, lang);
-    const fileName = `${post.slug}.md`;
+    let yyyymmdd = post.date || '';
+    if (!yyyymmdd && post.publishedAt && /^\d{2}\/\d{2}\/\d{4}$/.test(post.publishedAt)) {
+      const [d, m, y] = post.publishedAt.split('/');
+      yyyymmdd = `${y}-${m}-${d}`;
+    }
+    const fileName = yyyymmdd ? `${yyyymmdd}-${post.slug}.md` : `${post.slug}.md`;
     const targetFilePath = path.join(targetDir, fileName);
     fs.writeFileSync(targetFilePath, mdContent, 'utf8');
     count++;

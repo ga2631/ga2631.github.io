@@ -41,9 +41,10 @@ flowchart TD
 
 ## 2. Database & Schema Changes
 
-### Cấu trúc Thư mục Lưu trữ Mới:
-- **Tiếng Việt:** `src/data/blog/vi/<slug>.md`
-- **Tiếng Anh:** `src/data/blog/en/<slug>.md`
+### Cấu trúc Thư mục & Quy chuẩn Đặt tên Tệp Tin Mới:
+- **Cấu trúc đặt tên:** `YYYY-MM-DD-<slug>.md` (Trong đó tiền tố `YYYY-MM-DD` là ngày đăng `publishedAt`/`date` của bài viết).
+- **Tiếng Việt:** `src/data/blog/vi/YYYY-MM-DD-<slug>.md` (ví dụ: `2026-09-14-3-tier-dry-frontend-architecture-business-service-layer.md`)
+- **Tiếng Anh:** `src/data/blog/en/YYYY-MM-DD-<slug>.md` (ví dụ: `2026-09-14-3-tier-dry-frontend-architecture-business-service-layer.md`)
 - Loại bỏ hoàn toàn các thư mục lồng nhau và các file JSON cồng kềnh `src/data/blog/{vi,en}/2026/09.json`.
 
 ### Chuẩn Schema YAML Frontmatter:
@@ -86,8 +87,8 @@ tags:
 | `src/utils/markdownParser.ts` | **NEW** | Module bóc tách Frontmatter và biên dịch Markdown body sang HTML chuẩn. |
 | `scripts/migrate-json-to-md.mjs` | **NEW** | Script tự động chuyển đổi toàn bộ 78 bài viết từ JSON sang Markdown. |
 | `scripts/verify-markdown-articles.mjs` | **NEW** | Script kiểm tra tính toàn vẹn 100% và xuất bảng thống kê chi tiết cho bài viết. |
-| `src/data/blog/vi/*.md` (39 files) | **NEW** | Toàn bộ các bài viết tiếng Việt lưu trữ dưới dạng file Markdown độc lập. |
-| `src/data/blog/en/*.md` (39 files) | **NEW** | Toàn bộ các bài viết tiếng Anh lưu trữ dưới dạng file Markdown độc lập. |
+| `src/data/blog/vi/*.md` (39 files) | **NEW** | Toàn bộ 39 bài viết tiếng Việt định dạng `YYYY-MM-DD-<slug>.md`. |
+| `src/data/blog/en/*.md` (39 files) | **NEW** | Toàn bộ 39 bài viết tiếng Anh định dạng `YYYY-MM-DD-<slug>.md`. |
 | `src/services/blogService.ts` | **MODIFIED** | Nạp và phân tích dữ liệu trực tiếp từ các file `.md` qua Vite eager glob. |
 | `src/components/composite/BlogTopic.tsx` | **MODIFIED** | Hiển thị chính xác số lượng bài viết cho từng chuyên đề, bỏ giới hạn `20+`. |
 | `src/components/composite/BlogTagsKeyword.tsx` | **MODIFIED** | Hiển thị chính xác số lượng bài viết theo từng thẻ/từ khoá và tổng số bài viết. |
