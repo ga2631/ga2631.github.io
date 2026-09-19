@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal } from '../common/Modal';
 import { Badge } from '../common/Badge';
 import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
@@ -57,28 +57,35 @@ export const processArticleToc = (html: string): ProcessedContent => {
       .replace(/[^a-z0-9\s-]/g, '')
       .trim()
       .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .slice(0, 50);
+      .replace(/-+/g, '-');
 
     if (!rawSlug) rawSlug = 'section';
-    const baseId = `toc-${rawSlug}`;
-
-    let uniqueId = baseId;
-    let count = 1;
+    let uniqueId = `toc-${rawSlug}`;
+    let counter = 1;
     while (usedIds.has(uniqueId)) {
-      uniqueId = `${baseId}-${count++}`;
+      uniqueId = `toc-${rawSlug}-${counter}`;
+      counter++;
     }
     usedIds.add(uniqueId);
 
-    heading.setAttribute('id', uniqueId);
-    heading.classList.add('article-heading-target');
-
+    const level = (topTwoTags.indexOf(tagName) + 1) as 1 | 2;
     tocItems.push({
       id: uniqueId,
       text,
-      level: (topTwoTags.indexOf(tagName) + 1) as 1 | 2,
+      level,
       tagName,
     });
+  });
+
+  // Inject generated IDs onto the parsed heading elements
+  let index = 0;
+  headings.forEach((heading) => {
+    const tagName = heading.tagName.toLowerCase();
+    if (topTwoTags.includes(tagName) && tocItems[index]) {
+      heading.id = tocItems[index].id;
+      heading.classList.add('article-heading-target');
+      index++;
+    }
   });
 
   return {
@@ -169,6 +176,64 @@ export const ModalArticle: ModalArticleComponent = ({
   tCommon,
   closeAriaLabel = 'Close article popup',
 }) => {
+  useEffect(() => {
+    if (!isOpen || !post || !processedHtml) return;
+
+    let isCancelled = false;
+
+    const renderMermaidDiagrams = async () => {
+      const container = modalContentRef?.current || document.querySelector('.blog-article-modal');
+      if (!container) return;
+
+      const mermaidBlocks = container.querySelectorAll<HTMLElement>('pre.mermaid, .mermaid');
+      if (mermaidBlocks.length === 0) return;
+
+      try {
+        const { default: mermaid } = await import('mermaid');
+        if (isCancelled) return;
+
+        const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: isDark ? 'dark' : 'default',
+          securityLevel: 'loose',
+          fontFamily: 'var(--font-body)',
+        });
+
+        for (let i = 0; i < mermaidBlocks.length; i++) {
+          if (isCancelled) return;
+          const el = mermaidBlocks[i];
+          let rawCode = el.getAttribute('data-raw-mermaid');
+          if (!rawCode) {
+            rawCode = el.textContent || '';
+            el.setAttribute('data-raw-mermaid', rawCode);
+          }
+
+          if (!rawCode.trim()) continue;
+
+          const uniqueId = `mermaid-svg-${Date.now()}-${i}`;
+          try {
+            const { svg } = await mermaid.render(uniqueId, rawCode.trim());
+            if (!isCancelled) {
+              el.innerHTML = svg;
+              el.classList.add('mermaid-rendered');
+            }
+          } catch (err) {
+            console.warn('Failed to render Mermaid diagram:', err);
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to load mermaid module:', err);
+      }
+    };
+
+    const timer = setTimeout(renderMermaidDiagrams, 50);
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
+  }, [isOpen, post, processedHtml, modalContentRef]);
+
   if (!post) return null;
 
   return (

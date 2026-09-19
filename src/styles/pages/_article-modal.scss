@@ -302,6 +302,47 @@
     color: var(--accent-red);
   }
 
+  pre {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    overflow-x: auto;
+    margin: 20px 0;
+
+    code {
+      background: transparent;
+      padding: 0;
+      color: var(--text-primary);
+    }
+  }
+
+  pre.mermaid,
+  .mermaid-rendered {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 24px 16px;
+    margin: 24px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:hover {
+      border-color: var(--border-color-hover);
+    }
+
+    svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
   b, strong {
     color: var(--text-primary);
     font-weight: 700;
