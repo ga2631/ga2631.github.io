@@ -72,7 +72,7 @@ Why Edmonds-Karp suffers on dense networks:
     <tr>
       <td style="padding: 8px;">**Recommended Usage**</td>
       <td style="padding: 8px;">Small topologies (`V <= 100`)</td>
-      <td style="padding: 8px;">Production Systems &amp; High-load Pipelines</td>
+      <td style="padding: 8px;">Production Systems & High-load Pipelines</td>
     </tr>
   </tbody>
 </table>
@@ -87,12 +87,12 @@ graph LR
         Source((Source S)) -->|cap=1| U1((Engineer 1))
         Source -->|cap=1| U2((Engineer 2))
         Source -->|cap=1| U3((Engineer 3))
-        
+
         U1 -->|cap=1| V1((Project A))
         U1 -->|cap=1| V2((Project B))
         U2 -->|cap=1| V2
         U3 -->|cap=1| V3((Project C))
-        
+
         V1 -->|cap=1| Sink((Sink T))
         V2 -->|cap=1| Sink
         V3 -->|cap=1| Sink

@@ -46,7 +46,8 @@ dp[k][i][j] = min(
     dp[k - 1][i][k] + dp[k - 1][k][j]
 )
 ```
-3. **In-Place 2D Matrix Optimization:** Because values in row `k` and column `k` remain unchanged when vertex `k` is the pivot, dimension `k` can be dropped, computing directly on `dist[i][j]`. *Crucial Rule:* The intermediate pivot loop `k` must be the **outermost** loop.
+
+3. **In-Place 2D Matrix Optimization:** Because values in row `k` and column `k` remain unchanged when vertex `k` is the pivot, dimension `k` can be dropped, computing directly on `dist[i][j]`. _Crucial Rule:_ The intermediate pivot loop `k` must be the **outermost** loop.
 4. **Negative Cycle Detection:** Inspect the main diagonal: If any `dist[i][i] < 0`, vertex `i` participates in a negative cycle.
 
 ## 4. Code Implementation & Execution Trace
@@ -60,7 +61,7 @@ graph LR
         I -->|"dist i-k"| K((Pivot Node k))
         K -->|"dist k-j"| J
     end
-    
+
     subgraph MatrixUpdate [In-Place 2D DP Formula]
         Formula["dist[i, j] = MIN(dist[i, j], dist[i, k] + dist[k, j])"]
     end
@@ -160,10 +161,10 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Init:* `dist[0][1]=5, dist[0][3]=10, dist[1][2]=3, dist[2][3]=1`.
-- *Pivot `k = 1`:* Discovers path `0 -> 1 -> 2` with cost `5 + 3 = 8` &rarr; Updates `dist[0][2] = 8`.
-- *Pivot `k = 2`:* Relaxes path `0 -> 2 -> 3`: `dist[0][2] + dist[2][3] = 8 + 1 = 9 < 10` &rarr; Updates `dist[0][3] = 9`. Route optimizes from direct edge (10) to 3-hop path `0 -> 1 -> 2 -> 3` (9).
-- *Convergence:* Matrix stably settles across all pairs.
+- _Init:_ `dist[0][1]=5, dist[0][3]=10, dist[1][2]=3, dist[2][3]=1`.
+- _Pivot `k = 1`:_ Discovers path `0 -> 1 -> 2` with cost `5 + 3 = 8` &rarr; Updates `dist[0][2] = 8`.
+- _Pivot `k = 2`:_ Relaxes path `0 -> 2 -> 3`: `dist[0][2] + dist[2][3] = 8 + 1 = 9 < 10` &rarr; Updates `dist[0][3] = 9`. Route optimizes from direct edge (10) to 3-hop path `0 -> 1 -> 2 -> 3` (9).
+- _Convergence:_ Matrix stably settles across all pairs.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
@@ -173,8 +174,8 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Space Complexity:** `O(V²)` for the 2D distance and predecessor matrices. Highly cache-friendly on modern CPUs due to contiguous memory stride access.
 - **Real-World Applications:**
   <ul>
-  **Transitive Closure &amp; Reachability:** Warshall's algorithm variant computing reachability in static code analysis and dependency graphs.
-- **Logistics &amp; Airline Routing:** Fast lookup matrices for global hub-to-hub transit distances.
+  **Transitive Closure & Reachability:** Warshall's algorithm variant computing reachability in static code analysis and dependency graphs.
+- **Logistics & Airline Routing:** Fast lookup matrices for global hub-to-hub transit distances.
 - **Social Network Graph Metrics:** Computing network diameter, closeness centrality, and betweenness metrics.
 
 </li>

@@ -29,10 +29,10 @@ Mục tiêu của bài viết này là giới thiệu giải pháp **Diagrams as
 
 Nguyên lý cốt lõi của Mermaid.js là sử dụng cú pháp biểu diễn khai báo (declarative text syntax) để xây dựng cây cú pháp trừu tượng (AST) và biên dịch trực tiếp sang định dạng đồ họa vector có thể co giãn (SVG). Dưới đây là các họ biểu đồ quan trọng nhất thường dùng trong quy trình kỹ thuật:
 
-1. **Flowchart &amp; Architecture Graph:** Dùng để mô tả luồng điều hướng, cấu trúc hạ tầng hoặc phân tầng component. Hỗ trợ định hướng `TD` (Top-Down), `LR` (Left-Right) và nhóm khối `subgraph`.
+1. **Flowchart & Architecture Graph:** Dùng để mô tả luồng điều hướng, cấu trúc hạ tầng hoặc phân tầng component. Hỗ trợ định hướng `TD` (Top-Down), `LR` (Left-Right) và nhóm khối `subgraph`.
 2. **Sequence Diagram (Sơ đồ Tuần tự):** Cực kỳ mạnh mẽ để mô tả giao thức bắt tay (handshake), luồng gọi API giữa các microservices hoặc chu kỳ vòng đời tương tác. Hỗ trợ `autonumber`, `actor`, `participant`, `alt/else` (điều kiện rẽ nhánh) và `loop`.
 3. **Git Graph:** Trực quan hóa chiến lược phân nhánh (GitFlow / Trunk-based development), chuỗi commit và thao tác merge/rebase một cách sinh động.
-4. **Class &amp; Entity Relationship Diagram (ERD):** Mô tả lược đồ quan hệ thực thể trong cơ sở dữ liệu hoặc cấu trúc lớp đối tượng trong lập trình hướng đối tượng.
+4. **Class & Entity Relationship Diagram (ERD):** Mô tả lược đồ quan hệ thực thể trong cơ sở dữ liệu hoặc cấu trúc lớp đối tượng trong lập trình hướng đối tượng.
 
 ```mermaid
 flowchart LR
@@ -76,19 +76,20 @@ gitGraph
     merge develop id: "release: v1.1.0"
     commit id: "hotfix: security-patch" tag: "v1.1.1"
 ```
+
 3. **Tích hợp tự động hóa trong CI/CD Pipeline:** Sử dụng công cụ dòng lệnh `@mermaid-js/mermaid-cli` (lệnh `mmdc`) để tự động xuất sơ đồ sang file ảnh PDF/PNG phục vụ việc phát hành sách kỹ thuật hoặc tài liệu lưu trữ nội bộ.
 
 ## 4. Troubleshooting & Common Pitfalls
 
 Trong quá trình làm việc thực tế với Mermaid, các kỹ sư thường gặp phải 3 cạm bẫy phổ biến sau:
 
-1. **Lỗi ký tự đặc biệt trong nhãn (Text Label Parsing Error):** Khi chuỗi văn bản trong nhãn chứa ngoặc đơn `()`, ngoặc vuông `[]`, hoặc dấu ngoặc kép `""`, Mermaid parser có thể hiểu nhầm đó là cú pháp định dạng hình dạng node. *Khắc phục:* Tránh lồng các ký tự ngoặc đơn hoặc ngoặc vuông bên trong nhãn không bọc chuỗi, sử dụng dấu gạch ngang phân tách: `NodeA[Tên node - Kèm thông tin chi tiết]`.
+1. **Lỗi ký tự đặc biệt trong nhãn (Text Label Parsing Error):** Khi chuỗi văn bản trong nhãn chứa ngoặc đơn `()`, ngoặc vuông `[]`, hoặc dấu ngoặc kép `""`, Mermaid parser có thể hiểu nhầm đó là cú pháp định dạng hình dạng node. _Khắc phục:_ Tránh lồng các ký tự ngoặc đơn hoặc ngoặc vuông bên trong nhãn không bọc chuỗi, sử dụng dấu gạch ngang phân tách: `NodeA[Tên node - Kèm thông tin chi tiết]`.
 2. **Ký tự HTML Entity:** Khi Markdown parser chuyển đổi `<` thành `<` hoặc `>` thành `>`, hãy thực hiện hàm chuẩn hóa (sanitize/unescape) chuỗi trước khi chuyển vào `mermaid.render()`.
 3. **Tràn kích thước trên sơ đồ có quá nhiều nhánh:** Tránh đặt toàn bộ 50+ service trên một biểu đồ phẳng. Hãy tận dụng `subgraph` hoặc chia nhỏ thành các biểu đồ theo từng miền nghiệp vụ (Domain-Driven Context).
 
 ## 5. Đánh giá & Mở rộng
 
-**Đánh giá Hiệu quả &amp; Xu hướng Tương lai:**
+**Đánh giá Hiệu quả & Xu hướng Tương lai:**
 
 - **Tối ưu hóa năng suất kỹ thuật (ROI):** Tiết kiệm tới **80% thời gian** cập nhật tài liệu khi hệ thống thay đổi kiến trúc. Mọi thay đổi đều được phản ánh trực tiếp qua các commit trong Git pull request.
 - **Tự động sinh sơ đồ từ mã nguồn (AST to Diagram):** Kết hợp các plugin OpenAPI / Swagger hoặc trình phân tích cây AST của TypeScript/Go để tự động quét codebase và phát sinh sơ đồ lớp (Class Diagram) hoặc sơ đồ luồng dữ liệu tự động mà không cần gõ tay.

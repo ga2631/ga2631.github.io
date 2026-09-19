@@ -42,6 +42,7 @@ newNode->prev = target->prev;
 target->prev->next = newNode;
 target->prev = newNode;
 ```
+
 4. **Deletion Routine:**
 
 ```
@@ -173,18 +174,18 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Init:* `head <-> tail`.
-- *`pushBack(10)`:* Inserted after `head` &rarr; `head <-> [10] <-> tail`.
-- *`pushBack(20)`:* Inserted after `[10]` &rarr; `head <-> [10] <-> [20] <-> tail`.
-- *`pushFront(5)`:* Inserted after `head` &rarr; `head <-> [5] <-> [10] <-> [20] <-> tail`.
-- *`popFront()`:* Removes `[5]` &rarr; Re-links `head <-> [10]` in constant `O(1)` time.
+- _Init:_ `head <-> tail`.
+- _`pushBack(10)`:_ Inserted after `head` &rarr; `head <-> [10] <-> tail`.
+- _`pushBack(20)`:_ Inserted after `[10]` &rarr; `head <-> [10] <-> [20] <-> tail`.
+- _`pushFront(5)`:_ Inserted after `head` &rarr; `head <-> [5] <-> [10] <-> [20] <-> tail`.
+- _`popFront()`:_ Removes `[5]` &rarr; Re-links `head <-> [10]` in constant `O(1)` time.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Insert / Delete with Pointer:** `O(1)` strictly (no element shifting required).
-- **Push / Pop Front &amp; Back:** `O(1)` constant time with tail pointers.
+- **Push / Pop Front & Back:** `O(1)` constant time with tail pointers.
 - **Search by Value:** `O(N)` sequential linear scan.
 - **Access by Index:** `O(N)` (Random access unsupported).
 - **Space Complexity:** `O(N)` with 16-byte pointer overhead per node on 64-bit platforms.
@@ -192,7 +193,7 @@ Performance Scorecard anchored to RAM Model metrics:
   <ul>
   **LRU Cache (Least Recently Used):** Pairing Doubly Linked List with Hash Maps for `O(1)` eviction and lookup.
 - **OS Process Scheduling:** Managing execution Ready Queues and Memory Free Lists.
-- **Media Players &amp; Web Browsers:** Managing Next/Prev playlist tracks and browser history navigation.
+- **Media Players & Web Browsers:** Managing Next/Prev playlist tracks and browser history navigation.
 
 </li>
 </ul>

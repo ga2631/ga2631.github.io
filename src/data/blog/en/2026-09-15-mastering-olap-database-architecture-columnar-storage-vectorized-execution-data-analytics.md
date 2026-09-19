@@ -24,9 +24,9 @@ While OLTP databases are architected to handle millions of discrete single-row t
 
 Consider the enterprise workloads demanding massive analytical throughput:
 
-1. **Real-Time User Clickstream &amp; Funnel Analytics:** Processing billions of telemetry events (Pageviews, Clicks, Add-to-Cart) across tens of millions of daily active users to identify conversion drop-off points and calculate real-time recommendation features.
+1. **Real-Time User Clickstream & Funnel Analytics:** Processing billions of telemetry events (Pageviews, Clicks, Add-to-Cart) across tens of millions of daily active users to identify conversion drop-off points and calculate real-time recommendation features.
 2. **Multi-Dimensional Corporate Financial BI:** Computing net revenue, gross margins, and Year-over-Year (YoY) growth across ten years of order history, enabling executives to slice and dice across regional, product, and channel dimensions on the fly.
-3. **High-Throughput Observability &amp; Fraud Detection:** Ingesting and querying terabytes of application logs and network metrics every hour to isolate DDoS anomalies and fraudulent payment patterns within seconds.
+3. **High-Throughput Observability & Fraud Detection:** Ingesting and querying terabytes of application logs and network metrics every hour to isolate DDoS anomalies and fraudulent payment patterns within seconds.
 
 **Why Row-Oriented Databases Fail Miserably at Analytical Workloads:**
 
@@ -44,7 +44,7 @@ To design and operate analytical platforms with peak computational efficiency, e
       <th style="padding: 8px;">OLAP Archetype</th>
       <th style="padding: 8px;">Underlying Mechanism</th>
       <th style="padding: 8px;">Key Advantages</th>
-      <th style="padding: 8px;">Trade-offs &amp; Limitations</th>
+      <th style="padding: 8px;">Trade-offs & Limitations</th>
     </tr>
   </thead>
   <tbody>
@@ -75,7 +75,7 @@ To design and operate analytical platforms with peak computational efficiency, e
   </tbody>
 </table>
 
-**2. Columnar Physical Storage Layout &amp; Advanced Compression Codecs:**
+**2. Columnar Physical Storage Layout & Advanced Compression Codecs:**
 
 Rather than laying out consecutive rows, columnar databases partition tables into granular Row Groups and serialize each column into separate, highly compressed physical files:
 
@@ -117,7 +117,7 @@ flowchart LR
         CHBuffer["ClickHouse In-Memory Buffer"]
         CHMergeTree["ClickHouse ReplacingMergeTree<br/>(Partitioned by Month, Sparse Primary Key)"]
         CHMaterialized["Materialized View<br/>(Pre-aggregated Hourly Rollups)"]
-        
+
         KafkaEvents --> CHBuffer --> CHMergeTree
         AppLogs --> CHMergeTree
         CHMergeTree --> CHMaterialized
@@ -127,7 +127,7 @@ flowchart LR
         Superset["Apache Superset Dashboards"]
         Metabase["Metabase Real-time Monitor"]
         DataAnalysts["Ad-hoc SQL Analysts (HyperLogLog & Window Analytics)"]
-        
+
         CHMergeTree --> DataAnalysts
         CHMaterialized --> Superset
         CHMaterialized --> Metabase
@@ -163,11 +163,11 @@ TTL event_date + INTERVAL 365 DAY
 SETTINGS index_granularity = 8192;
 ```
 
-**3. Advanced Multi-Dimensional SQL Analytical Query with HyperLogLog &amp; Window Functions:**
+**3. Advanced Multi-Dimensional SQL Analytical Query with HyperLogLog & Window Functions:**
 
 ```sql
 -- Lightning-fast funnel and multi-dimensional analysis over 1 billion rows
-SELECT 
+SELECT
     event_date,
     country,
     device_type,
@@ -180,16 +180,16 @@ SELECT
     uniqCombined64If(user_id, event_type = 'PURCHASE') AS paying_users,
     -- Funnel conversion rate
     ROUND(
-        uniqCombined64If(user_id, event_type = 'PURCHASE') 
-        / NULLIF(uniqCombined64If(user_id, event_type = 'ADD_TO_CART'), 0) * 100, 
+        uniqCombined64If(user_id, event_type = 'PURCHASE')
+        / NULLIF(uniqCombined64If(user_id, event_type = 'ADD_TO_CART'), 0) * 100,
         2
     ) AS cart_to_purchase_cvr_pct,
     -- Financial gross volume
     SUM(cart_total_amount) AS gross_merchandise_value,
     -- Window function computing national contribution share per day
     ROUND(
-        SUM(cart_total_amount) 
-        / SUM(SUM(cart_total_amount)) OVER (PARTITION BY event_date) * 100, 
+        SUM(cart_total_amount)
+        / SUM(SUM(cart_total_amount)) OVER (PARTITION BY event_date) * 100,
         2
     ) AS country_revenue_contribution_pct
 FROM analytics.fact_user_events_hourly
@@ -202,12 +202,12 @@ ORDER BY event_date DESC, gross_merchandise_value DESC;
 
 Sustaining sub-100ms query response SLAs over petabyte-scale data lakes requires disciplined physical layout and approximation strategies:
 
-**1. Physical Sorting Key Design &amp; Sparse Primary Indexing:**
+**1. Physical Sorting Key Design & Sparse Primary Indexing:**
 
 - **ORDER BY Column Ordering Rules:** Sequence physical sorting keys in ascending order of cardinality (e.g., `(event_date, country, event_type, user_id)`). This clusters identical values together, maximizing Run-Length / Dictionary compression ratios and enabling the database to prune non-matching data blocks instantaneously via MinMax zone maps.
 - **Sparse Index Efficiency:** Marking primary key entries every 8,192 rows allows an index for a billion-row table to occupy less than 10 MB in RAM, guaranteeing instant index lookups.
 
-**2. Probabilistic &amp; Sketching Algorithms (HyperLogLog &amp; t-Digest):**
+**2. Probabilistic & Sketching Algorithms (HyperLogLog & t-Digest):**
 
 - Executing exact `COUNT(DISTINCT user_id)` queries over 500 million users incurs massive memory allocations for hash sets.
 - Adopting probabilistic sketching algorithms like **HyperLogLog (HLL)** and **t-Digest (Percentiles p95, p99)** reduces memory consumption by 99% and accelerates query throughput 50x with greater than 99% statistical accuracy.
@@ -258,12 +258,12 @@ Columnar OLAP engines represent the pinnacle of modern data engineering, uniting
 **Actionable Architecture Recommendations for Data Teams:**
 
 1. **Select the Right OLAP Engine for Your Workload:**
-  
 
 - Deploy **ClickHouse / StarRocks** for real-time, sub-second interactive analytics over high-velocity streaming ingestion (Clickstreams, Security Logs, Real-Time Dashboards).
 - Deploy **Snowflake / BigQuery** for enterprise-wide dimensional data warehousing (Star Schemas, Data Marts) serving multi-departmental business intelligence.
 - Deploy **DuckDB** for lightweight, embedded columnar analysis directly inside Python and Jupyter environments without cluster operational overhead.
+
 2. **Enforce Type-Specific Compression Codecs:** Apply `LowCardinality` or Dictionary encoding for repetitive categorical strings, `DoubleDelta` for monotonic timestamps, and `Gorilla/T64` for floating-point and numerical metrics.
 3. **Champion Probabilistic Sketching in Analytics:** Transition BI dashboards from exact `COUNT(DISTINCT)` to `HyperLogLog (HLL)` approximations whenever calculating unique reach or active user counts to unlock 50x performance gains.
 
-**Closing Takeaway:** *Mastering OLAP internals—from columnar physical layouts to SIMD vector registers—empowers Data Engineers to effortlessly transform terabytes of raw big data into instantaneous business intelligence!*
+**Closing Takeaway:** _Mastering OLAP internals—from columnar physical layouts to SIMD vector registers—empowers Data Engineers to effortlessly transform terabytes of raw big data into instantaneous business intelligence!_

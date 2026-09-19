@@ -72,7 +72,7 @@ Tại sao Edmonds-Karp lại trở nên chậm chạp trên mạng lưới dày?
     <tr>
       <td style="padding: 8px;">**Khuyến nghị Sử dụng**</td>
       <td style="padding: 8px;">Mạng nhỏ, minh họa học thuật (`V <= 100`)</td>
-      <td style="padding: 8px;">Môi trường Production thực tế &amp; Thi đấu lập trình</td>
+      <td style="padding: 8px;">Môi trường Production thực tế & Thi đấu lập trình</td>
     </tr>
   </tbody>
 </table>
@@ -87,12 +87,12 @@ graph LR
         Source((Nguồn S)) -->|cap=1| U1((Lập Trình Viên 1))
         Source -->|cap=1| U2((Lập Trình Viên 2))
         Source -->|cap=1| U3((Lập Trình Viên 3))
-        
+
         U1 -->|cap=1| V1((Dự Án A))
         U1 -->|cap=1| V2((Dự Án B))
         U2 -->|cap=1| V2
         U3 -->|cap=1| V3((Dự Án C))
-        
+
         V1 -->|cap=1| Sink((Đích T))
         V2 -->|cap=1| Sink
         V3 -->|cap=1| Sink

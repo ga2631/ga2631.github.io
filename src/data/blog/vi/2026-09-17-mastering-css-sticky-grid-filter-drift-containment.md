@@ -28,13 +28,13 @@ Cách tiếp cận ban đầu thường thấy trong các ứng dụng React:
 - Đặt `.blog-controls-panel` làm phần tử anh em (sibling) cùng cấp với danh sách bài viết `.blog-grid` bên trong container cha chung `.blog-main-inner-content` (được cấu hình dạng Flexbox: `display: flex; flex-direction: column; gap: 20px;`).
 - Gán CSS `position: sticky; top: 16px;` cho `.blog-controls-panel`.
 
-**Tại sao cách này thất bại?** Theo đặc tả CSS Positioning, một phần tử `position: sticky` chỉ có thể hoạt động trong phạm vi chiều cao của *Containing Block* (phần tử cha trực tiếp) của nó. Khi cuộn sâu xuống dưới, nếu container cha có các ràng buộc về flex alignment hoặc khi vùng nhìn cuộn chạm tới giới hạn biên dưới của container cha, phần tử sticky sẽ bị đẩy trôi theo dòng chảy tự nhiên của trang.
+**Tại sao cách này thất bại?** Theo đặc tả CSS Positioning, một phần tử `position: sticky` chỉ có thể hoạt động trong phạm vi chiều cao của _Containing Block_ (phần tử cha trực tiếp) của nó. Khi cuộn sâu xuống dưới, nếu container cha có các ràng buộc về flex alignment hoặc khi vùng nhìn cuộn chạm tới giới hạn biên dưới của container cha, phần tử sticky sẽ bị đẩy trôi theo dòng chảy tự nhiên của trang.
 
 ## 3. Tư duy tối ưu & Cấu trúc thuật toán
 
 Để giải quyết triệt để vấn đề mà không làm phức tạp hóa mã nguồn, tôi phân tích các phương án:
 
-- **Phương án 1 (JavaScript Scroll Listener + `position: fixed`):** Lắng nghe sự kiện scroll và gán `position: fixed` khi chạm ngưỡng. *Nhược điểm:* Gây hiện tượng nhảy layout (Layout Shift) do phần tử bị rút khỏi DOM flow, buộc phải tính toán lại kích thước thủ công và dễ gây giật khung hình (Layout Thrashing / Reflow).
+- **Phương án 1 (JavaScript Scroll Listener + `position: fixed`):** Lắng nghe sự kiện scroll và gán `position: fixed` khi chạm ngưỡng. _Nhược điểm:_ Gây hiện tượng nhảy layout (Layout Shift) do phần tử bị rút khỏi DOM flow, buộc phải tính toán lại kích thước thủ công và dễ gây giật khung hình (Layout Thrashing / Reflow).
 - **Phương án 2 (Đưa Filter Bar vào trong CSS Grid Container):** Di chuyển `.blog-controls-panel` vào làm phần tử con trực tiếp đầu tiên của `.blog-grid`. Vì `.blog-grid` chứa toàn bộ 20+ card bài viết nên chiều cao của nó trải dài suốt toàn bộ hành trình cuộn của người dùng.
 
 Trong CSS Grid, các phần tử con mặc định sẽ chiếm 1 ô (cell). Do đó, bí quyết mấu chốt để thanh Filter vẫn hiển thị toàn chiều ngang (full-width banner) nằm trên tất cả các cột card là áp dụng thuộc tính: `grid-column: 1 / -1;`.
@@ -44,12 +44,12 @@ Trong CSS Grid, các phần tử con mặc định sẽ chiếm 1 ô (cell). Do 
 Triển khai giải pháp chuẩn trong JSX và SCSS:
 
 - **Cấu trúc JSX trong BlogPage.tsx:** Đưa `.blog-controls-panel` vào làm phần tử con trực tiếp đầu tiên bên trong `.blog-grid`.
-- **Cấu hình CSS Grid &amp; Sticky:** Gán `grid-column: 1 / -1; position: sticky; top: 16px; z-index: 25;` cho `.blog-controls-panel` để bao trọn toàn bộ chiều rộng grid và ghim cố định ở đầu trang suốt hành trình cuộn.
+- **Cấu hình CSS Grid & Sticky:** Gán `grid-column: 1 / -1; position: sticky; top: 16px; z-index: 25;` cho `.blog-controls-panel` để bao trọn toàn bộ chiều rộng grid và ghim cố định ở đầu trang suốt hành trình cuộn.
 - **Hiệu ứng chuyển đổi mượt mà:** Kết hợp `backdrop-filter: blur(16px)` và tự động kích hoạt class `.is-stuck` với hiệu ứng đổ bóng khi cuộn vượt ngưỡng 40px.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
-**Phân tích hiệu năng &amp; Độ phức tạp:**
+**Phân tích hiệu năng & Độ phức tạp:**
 
 - **Độ phức tạp DOM:** O(1) - Không cần tạo thêm wrapper div trung gian hay logic tính toán vị trí bằng JavaScript phức tạp.
 - **Hiệu năng dựng hình (Rendering Performance):** Cơ chế sticky thuần CSS được xử lý trực tiếp trên GPU Compositing Layer của trình duyệt, duy trì tốc độ khung hình **60 FPS** ổn định ngay cả khi cuộn nhanh trên màn hình di động hoặc thiết bị có cấu hình thấp.

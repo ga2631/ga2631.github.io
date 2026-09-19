@@ -40,16 +40,16 @@ Why does BST outperform Arrays and Linked Lists?
 
 **The 4 Foundational Tree Traversals:**
 
-1. **In-order Traversal (Left &rarr; Root &rarr; Right):** *Golden property:* In-order traversal on a BST produces a **strictly ascending sorted sequence**.
+1. **In-order Traversal (Left &rarr; Root &rarr; Right):** _Golden property:_ In-order traversal on a BST produces a **strictly ascending sorted sequence**.
 2. **Pre-order Traversal (Root &rarr; Left &rarr; Right):** Used for tree cloning and prefix serialization.
 3. **Post-order Traversal (Left &rarr; Right &rarr; Root):** Evaluates subtrees first, mandatory for recursive memory deallocation from leaves up to root.
 4. **Level-order Traversal (BFS):** Scans nodes tier-by-tier horizontally utilizing a Queue.
 
 **BST Deletion (3 Cases):**
 
-- *Case 1 (Leaf - 0 children):* Remove node directly.
-- *Case 2 (1 child):* Splice child directly into parent.
-- *Case 3 (2 children):* Locate the **In-order Successor** (minimum node in right subtree), copy its value into current node, and recursively delete the successor.
+- _Case 1 (Leaf - 0 children):_ Remove node directly.
+- _Case 2 (1 child):_ Splice child directly into parent.
+- _Case 3 (2 children):_ Locate the **In-order Successor** (minimum node in right subtree), copy its value into current node, and recursively delete the successor.
 
 ## 4. Code Implementation & Execution Trace
 
@@ -75,7 +75,7 @@ graph TD
     end
 ```
 
-**Complete C++ Implementation: Binary Search Tree with Search, Insert, Delete &amp; Traversals:**
+**Complete C++ Implementation: Binary Search Tree with Search, Insert, Delete & Traversals:**
 
 ```
 #include <iostream>
@@ -195,9 +195,9 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Insert:* `50, 30, 70, 20, 40, 60, 80` builds balanced 3-tier tree.
-- *In-order:* Traverses left subtree `[20, 30, 40]` &rarr; Root `50` &rarr; Right subtree `[60, 70, 80]` &rarr; Yields sorted sequence.
-- *Delete 50:* Successor located at `60` &rarr; Roots becomes `60`, leaf 60 unlinked &rarr; BST invariant fully preserved.
+- _Insert:_ `50, 30, 70, 20, 40, 60, 80` builds balanced 3-tier tree.
+- _In-order:_ Traverses left subtree `[20, 30, 40]` &rarr; Root `50` &rarr; Right subtree `[60, 70, 80]` &rarr; Yields sorted sequence.
+- _Delete 50:_ Successor located at `60` &rarr; Roots becomes `60`, leaf 60 unlinked &rarr; BST invariant fully preserved.
 
 ## 5. Complexity Evaluation & Real-world Applications
 

@@ -25,16 +25,16 @@ In data-driven enterprises, strategic executive decisions rely on timely, pristi
 
 This anti-pattern inevitably leads to catastrophic failures:
 
-1. **Direct OLTP Degradation &amp; Production Outages:** Analytical queries scanning millions of rows with heavy aggregations (`SUM`, `AVG`, `COUNT DISTINCT`) and multi-table `JOIN`s exhaust CPU/memory resources, acquire table/row locks, and degrade customer-facing transaction APIs.
-2. **Fragmented 3NF Relational Schemas:** OLTP databases are heavily normalized (3NF) to optimize atomic transactional writes (INSERT/UPDATE). Answering a straightforward business inquiry (e.g., *'What was the regional revenue breakdown by product department last quarter?'*) requires joining 15+ normalized tables in complex, error-prone SQL queries spanning hundreds of lines.
+1. **Direct OLTP Degradation & Production Outages:** Analytical queries scanning millions of rows with heavy aggregations (`SUM`, `AVG`, `COUNT DISTINCT`) and multi-table `JOIN`s exhaust CPU/memory resources, acquire table/row locks, and degrade customer-facing transaction APIs.
+2. **Fragmented 3NF Relational Schemas:** OLTP databases are heavily normalized (3NF) to optimize atomic transactional writes (INSERT/UPDATE). Answering a straightforward business inquiry (e.g., _'What was the regional revenue breakdown by product department last quarter?'_) requires joining 15+ normalized tables in complex, error-prone SQL queries spanning hundreds of lines.
 3. **Irreversible Loss of Historical Context:** Operational databases store current state. When a customer updates their shipping address or a product changes category, old records are overwritten, completely falsifying historical cohort and financial reporting.
 
 **Core Architectural Imperatives of an Enterprise Data Warehouse (DWH):**
 
 - **Workload Isolation:** Completely isolate analytical compute (OLAP) from customer transaction engines (OLTP).
 - **Single Source of Truth (Data Integration):** Ingest, standardize, and unify disparate data streams (CRM, ERP, billing gateways, clickstreams) into a unified corporate repository.
-- **Sub-second Multi-Dimensional Slicing &amp; Dicing:** Structure schemas so business analysts can filter, drill down, and aggregate enterprise metrics effortlessly with sub-second response times.
-- **Auditability &amp; Time-Travel Traceability:** Faithfully preserve every historical state transition across time.
+- **Sub-second Multi-Dimensional Slicing & Dicing:** Structure schemas so business analysts can filter, drill down, and aggregate enterprise metrics effortlessly with sub-second response times.
+- **Auditability & Time-Travel Traceability:** Faithfully preserve every historical state transition across time.
 
 ## 2. Data Modeling & Schema Design
 
@@ -61,8 +61,8 @@ To design an enduring analytical foundation, Data Engineers must master three fo
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px;">**Data Normalization**</td>
       <td style="padding: 8px;">Highly Normalized (Third Normal Form - 3NF)</td>
-      <td style="padding: 8px;">Denormalized (Fact &amp; Dimension Star Schemas)</td>
-      <td style="padding: 8px;">Hyper-Normalized &amp; Decomposed (Hub/Link/Sat)</td>
+      <td style="padding: 8px;">Denormalized (Fact & Dimension Star Schemas)</td>
+      <td style="padding: 8px;">Hyper-Normalized & Decomposed (Hub/Link/Sat)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px;">**Analyst Accessibility**</td>
@@ -71,7 +71,7 @@ To design an enduring analytical foundation, Data Engineers must master three fo
       <td style="padding: 8px;">Indirect (Requires Information Mart projections)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Extensibility &amp; Automation**</td>
+      <td style="padding: 8px;">**Extensibility & Automation**</td>
       <td style="padding: 8px;">Rigid; high refactoring friction when upstream schema changes</td>
       <td style="padding: 8px;">High; managed through Conformed Dimensions</td>
       <td style="padding: 8px;">Infinite; 100% parallel ingestion and zero-downtime evolution</td>
@@ -84,17 +84,17 @@ To design an enduring analytical foundation, Data Engineers must master three fo
 Kimball dimensional modeling remains the reigning standard for analytical data marts on modern Cloud Data Warehouses. It structures data into two distinct table archetypes:
 
 1. **Fact Tables (Quantitative Measurements):** Store numerical business metrics (e.g., `quantity`, `gross_amount`, `tax_amount`) alongside foreign keys referencing dimensions.
-  
 
-- *Transaction Fact:* One row per atomic discrete event (e.g., individual line items in a checkout order).
-- *Periodic Snapshot Fact:* Captures cumulative status at regular intervals (e.g., daily bank account balances, monthly inventory levels).
-- *Accumulating Snapshot Fact:* Tracks the full lifecycle of a multi-stage workflow with milestone timestamps (Order Created &rarr; Payment Captured &rarr; Warehouse Dispatched &rarr; Delivered &rarr; Closed).
+- _Transaction Fact:_ One row per atomic discrete event (e.g., individual line items in a checkout order).
+- _Periodic Snapshot Fact:_ Captures cumulative status at regular intervals (e.g., daily bank account balances, monthly inventory levels).
+- _Accumulating Snapshot Fact:_ Tracks the full lifecycle of a multi-stage workflow with milestone timestamps (Order Created &rarr; Payment Captured &rarr; Warehouse Dispatched &rarr; Delivered &rarr; Closed).
+
 2. **Dimension Tables (Descriptive Context):** Store textual attributes providing the context for filtering, grouping, and labeling (e.g., `dim_customer`, `dim_product`, `dim_date`, `dim_store`).
 
 **Slowly Changing Dimensions (SCD) Management Strategies:**
 
-- **SCD Type 1 (Overwrite):** Updates attributes in place. *Drawback:* Destroys historical context.
-- **SCD Type 2 (Add New Version Row):** Inserts a new row when an attribute changes, tracked via metadata columns: `is_current (BOOLEAN)`, `valid_from (TIMESTAMP)`, `valid_to (TIMESTAMP)`. *The industry gold standard for historical auditability*.
+- **SCD Type 1 (Overwrite):** Updates attributes in place. _Drawback:_ Destroys historical context.
+- **SCD Type 2 (Add New Version Row):** Inserts a new row when an attribute changes, tracked via metadata columns: `is_current (BOOLEAN)`, `valid_from (TIMESTAMP)`, `valid_to (TIMESTAMP)`. _The industry gold standard for historical auditability_.
 - **SCD Type 3 (Add Previous Value Column):** Retains previous state in an explicit column (`previous_category`).
 - **SCD Type 6 (Hybrid 1 + 2 + 3):** Combines versioned rows with updated current-attribute columns across past versions.
 
@@ -107,7 +107,7 @@ flowchart TD
         DimCustStar["dim_customer<br/>(customer_key, name, city, state, country)"]
         DimProdStar["dim_product<br/>(product_key, name, brand, category, department)"]
         DimDateStar["dim_date<br/>(date_key, date, month, quarter, year, is_holiday)"]
-        
+
         FactSales -->|"N:1"| DimCustStar
         FactSales -->|"N:1"| DimProdStar
         FactSales -->|"N:1"| DimDateStar
@@ -118,14 +118,14 @@ flowchart TD
         DimProdSnow["dim_product<br/>(product_key, name, brand_id, subcategory_id)"]
         DimSubcat["dim_subcategory<br/>(subcategory_id, name, category_id)"]
         DimCat["dim_category<br/>(category_id, name, department_id)"]
-        
+
         FactSales2 --> DimProdSnow
         DimProdSnow --> DimSubcat
         DimSubcat --> DimCat
     end
 ```
 
-*Engineering Rule of Thumb:* On modern MPP Cloud Data Warehouses (Snowflake, BigQuery, ClickHouse) utilizing columnar storage and vectorized execution, **Star Schemas consistently outperform Snowflake Schemas** by eliminating expensive multi-hop distributed shuffle JOINs.
+_Engineering Rule of Thumb:_ On modern MPP Cloud Data Warehouses (Snowflake, BigQuery, ClickHouse) utilizing columnar storage and vectorized execution, **Star Schemas consistently outperform Snowflake Schemas** by eliminating expensive multi-hop distributed shuffle JOINs.
 
 ## 3. Pipeline Construction & Processing Logic
 
@@ -160,11 +160,11 @@ flowchart LR
     SrcOrders --> FactOrders
     SrcUsers --> SnapDimUser
     SrcProducts --> DimProdModel
-    
+
     DimProdModel --> FactOrders
     SnapDimUser --> FactOrders
     DimDateGen --> FactOrders
-    
+
     FactOrders --> AggDailySales
     FactOrders --> Analysts
     AggDailySales --> BI
@@ -186,7 +186,7 @@ flowchart LR
     )
 }}
 
-SELECT 
+SELECT
     customer_id,
     first_name || ' ' || last_name AS full_name,
     email,
@@ -239,23 +239,23 @@ SELECT
     MD5(o.order_id || '-' || o.product_id) AS order_item_key,
     o.order_id,
     CAST(o.order_timestamp AS DATE) AS order_date,
-    
+
     -- Foreign Dimension Keys
     c.customer_id AS customer_key,
     p.product_id AS product_key,
     o.store_id AS store_key,
-    
+
     -- Fact Measures
     o.quantity,
     o.unit_price,
     o.discount_amount,
     (o.quantity * o.unit_price) - o.discount_amount AS net_amount,
     o.tax_amount,
-    
+
     -- Degenerate Dimensions
     o.payment_method,
     o.order_status,
-    
+
     CURRENT_TIMESTAMP() AS dwh_inserted_at
 FROM raw_orders o
 INNER JOIN dim_customers c ON o.customer_id = c.customer_id
@@ -267,7 +267,7 @@ INNER JOIN dim_products p ON o.product_id = p.product_id;
 ```sql
 -- Month-over-Month Revenue Growth Query
 WITH monthly_metrics AS (
-    SELECT 
+    SELECT
         d.year,
         d.month_number,
         d.month_name,
@@ -279,7 +279,7 @@ WITH monthly_metrics AS (
     INNER JOIN dim_products p ON f.product_key = p.product_key
     GROUP BY d.year, d.month_number, d.month_name, p.category_name
 )
-SELECT 
+SELECT
     year,
     month_name,
     category_name,
@@ -288,8 +288,8 @@ SELECT
     LAG(total_revenue, 1) OVER (PARTITION BY category_name ORDER BY year, month_number) AS prev_month_revenue,
     -- MoM growth calculation
     ROUND(
-        (total_revenue - LAG(total_revenue, 1) OVER (PARTITION BY category_name ORDER BY year, month_number)) 
-        / NULLIF(LAG(total_revenue, 1) OVER (PARTITION BY category_name ORDER BY year, month_number), 0) * 100, 
+        (total_revenue - LAG(total_revenue, 1) OVER (PARTITION BY category_name ORDER BY year, month_number))
+        / NULLIF(LAG(total_revenue, 1) OVER (PARTITION BY category_name ORDER BY year, month_number), 0) * 100,
         2
     ) AS mom_growth_pct
 FROM monthly_metrics
@@ -302,16 +302,16 @@ Operating a production Data Warehouse at scale requires disciplined physical tun
 
 **1. Physical Optimization Techniques for Cloud MPP Data Warehouses:**
 
-- **Partitioning &amp; Clustering Pruning:** Partition Fact tables by time (`order_date`) and specify cluster keys on high-frequency predicate columns (`customer_region`, `category_id`). This triggers metadata-level *Partition Pruning &amp; MinMax Block Skipping*, avoiding scanning 95-99% of raw storage files.
+- **Partitioning & Clustering Pruning:** Partition Fact tables by time (`order_date`) and specify cluster keys on high-frequency predicate columns (`customer_region`, `category_id`). This triggers metadata-level _Partition Pruning & MinMax Block Skipping_, avoiding scanning 95-99% of raw storage files.
 - **Surrogate Keys over Natural Business Keys:** Enforce synthetic surrogate keys (MD5 hash or sequences) across all dimension records. This decouples DWH integrity from volatile source identifiers and accelerates integer/hash joins in distributed memory.
 - **Degenerate Dimensions:** Retain high-cardinality transaction identifiers (such as `order_id`, `invoice_number`, `tracking_code`) directly inside the Fact table rather than spawning bloated 1-to-1 dimension tables.
 - **Junk Dimensions:** Consolidate scattered low-cardinality boolean flags and small statuses into a single composite lookup dimension to reduce fact table width.
 
-**2. Automated Data Quality Guardrails (dbt Test &amp; Great Expectations):**
+**2. Automated Data Quality Guardrails (dbt Test & Great Expectations):**
 
 - Enforce continuous CI/CD data testing:
   <ol>
-  **Uniqueness &amp; Non-null Constraints:** Verify that surrogate keys maintain absolute uniqueness and never contain nulls.
+  **Uniqueness & Non-null Constraints:** Verify that surrogate keys maintain absolute uniqueness and never contain nulls.
 - **Referential Integrity Checks:** Ensure every dimension key in the Fact table resolves to a valid record in the corresponding dimension table (handling late-arriving facts via fallback `-1` 'Unknown' dimension keys).
 - **Business Domain Rules:** Assert that `net_amount >= 0`, `valid_to >= valid_from`, and `discount_amount <= unit_price * quantity`.
 
@@ -320,7 +320,7 @@ Operating a production Data Warehouse at scale requires disciplined physical tun
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Architecture &amp; Execution Engine</th>
+      <th style="padding: 8px;">Architecture & Execution Engine</th>
       <th style="padding: 8px;">Revenue Report Latency</th>
       <th style="padding: 8px;">Data Scanned</th>
       <th style="padding: 8px;">Operational Impact</th>
@@ -340,7 +340,7 @@ Operating a production Data Warehouse at scale requires disciplined physical tun
       <td style="padding: 8px;">Zero OLTP impact, moderate shuffle join compute cost</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Kimball Star Schema (Partitioned &amp; Clustered)**</td>
+      <td style="padding: 8px;">**Kimball Star Schema (Partitioned & Clustered)**</td>
       <td style="padding: 8px;">**38ms**</td>
       <td style="padding: 8px;">**12 MB** (Via Partition Pruning)</td>
       <td style="padding: 8px;">Optimal performance, near-zero cloud compute cost</td>
@@ -359,4 +359,4 @@ Data Warehouse design is fundamentally about modeling business reality into a re
 3. **Implement Transformations as Code via dbt:** Maintain all models, data tests, documentation, and lineage graphs in version-controlled Git repositories.
 4. **Maintain a Layered Architecture (Silver Integration &rarr; Gold Marts):** You may employ Data Vault 2.0 or 3NF in the Silver core integration tier for ingestion agility, but always project data into Kimball Star Schemas in Gold for optimal end-user query performance.
 
-**Closing Wisdom:** *An exceptional Data Warehouse architecture is achieved when a new business analyst can inspect your Star Schema diagram on day one and instantly comprehend the entire enterprise workflow without opening a single page of documentation!*
+**Closing Wisdom:** _An exceptional Data Warehouse architecture is achieved when a new business analyst can inspect your Star Schema diagram on day one and instantly comprehend the entire enterprise workflow without opening a single page of documentation!_

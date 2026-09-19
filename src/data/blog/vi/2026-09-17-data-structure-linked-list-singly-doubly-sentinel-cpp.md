@@ -30,7 +30,7 @@ Cách tiếp cận cơ bản nhất là **Danh sách liên kết đơn (Singly L
 
 ## 3. Tư duy tối ưu & Cấu trúc thuật toán
 
-Khi thao tác trên con trỏ trong Danh sách liên kết, các lỗi kinh điển như *Null Pointer Dereference* hoặc *Memory Leak* thường phát sinh ở các trường hợp biên (danh sách rỗng, chèn vào đầu Head, xóa ở đuôi Tail). Kỹ sư chuyên nghiệp áp dụng kỹ thuật **Nút Lính canh (Sentinel / Dummy Node)**:
+Khi thao tác trên con trỏ trong Danh sách liên kết, các lỗi kinh điển như _Null Pointer Dereference_ hoặc _Memory Leak_ thường phát sinh ở các trường hợp biên (danh sách rỗng, chèn vào đầu Head, xóa ở đuôi Tail). Kỹ sư chuyên nghiệp áp dụng kỹ thuật **Nút Lính canh (Sentinel / Dummy Node)**:
 
 1. **Nút Lính canh (Sentinel Nodes):** Khởi tạo 2 nút giả cố định: `dummyHead` và `dummyTail`. Danh sách rỗng luôn có `dummyHead->next = dummyTail` và `dummyTail->prev = dummyHead`. Mọi nút dữ liệu thực tế đều nằm kẹp giữa 2 nút lính canh này.
 2. **Loại bỏ hoàn toàn các nhánh `if (head == nullptr)`:** Thao tác chèn/xóa tại bất kỳ vị trí nào (đầu, giữa, cuối) đều tuân theo đúng một mẫu đổi trỏ duy nhất, loại bỏ 100% các điều kiện rẽ nhánh phức tạp.
@@ -42,6 +42,7 @@ newNode->prev = target->prev;
 target->prev->next = newNode;
 target->prev = newNode;
 ```
+
 4. **Đổi trỏ 2 bước khi xóa nút:**
 
 ```
@@ -186,11 +187,11 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Khởi tạo:* `head <-> tail`. `count = 0`.
-- *`pushBack(10)`:* Chèn sau `tail->prev (head)`: `head <-> [10] <-> tail`.
-- *`pushBack(20)`:* Chèn sau `tail->prev ([10])`: `head <-> [10] <-> [20] <-> tail`.
-- *`pushFront(5)`:* Chèn sau `head`: `head <-> [5] <-> [10] <-> [20] <-> tail`.
-- *`popFront()`:* Xóa nút `head->next ([5])`: Nối `head` trực tiếp sang `[10]` &rarr; `head <-> [10] <-> [20] <-> tail` trong đúng 2 phép đổi trỏ `O(1)`.
+- _Khởi tạo:_ `head <-> tail`. `count = 0`.
+- _`pushBack(10)`:_ Chèn sau `tail->prev (head)`: `head <-> [10] <-> tail`.
+- _`pushBack(20)`:_ Chèn sau `tail->prev ([10])`: `head <-> [10] <-> [20] <-> tail`.
+- _`pushFront(5)`:_ Chèn sau `head`: `head <-> [5] <-> [10] <-> [20] <-> tail`.
+- _`popFront()`:_ Xóa nút `head->next ([5])`: Nối `head` trực tiếp sang `[10]` &rarr; `head <-> [10] <-> [20] <-> tail` trong đúng 2 phép đổi trỏ `O(1)`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
@@ -205,7 +206,7 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
   <ul>
   **Thuật toán Bộ nhớ đệm LRU Cache (Least Recently Used):** Kết hợp Bảng băm với Danh sách liên kết đôi để đạt `O(1)` cho cả đọc và ghi.
 - **Hệ điều hành (OS Process Scheduler):** Quản lý danh sách các tiến trình sẵn sàng chạy (Ready Queue) và danh sách khối bộ nhớ trống (Free List Memory Allocator).
-- **Trình phát nhạc &amp; Trình duyệt Web:** Nút chuyển bài kế tiếp/quay lại (Next / Prev Track) và lịch sử duyệt web (Back / Forward History).
+- **Trình phát nhạc & Trình duyệt Web:** Nút chuyển bài kế tiếp/quay lại (Next / Prev Track) và lịch sử duyệt web (Back / Forward History).
 
 </li>
 </ul>

@@ -17,15 +17,15 @@ tags:
   - "PostgreSQL JSONB"
 ---
 
-## 1. Đề bài kinh doanh / Yêu cầu dữ liệu
+## Đề bài kinh doanh / Yêu cầu dữ liệu
 
-Trong quá trình thiết kế cơ sở dữ liệu quan hệ (RDBMS), nguyên tắc chuẩn hóa dữ liệu (3NF - Third Normal Form) thường hướng dẫn chúng ta tạo các bảng phẳng với các cột cố định (ví dụ: bảng `users` có `id`, `email`, `created_at`). Tuy nhiên, các kỹ sư phần mềm và kỹ sư dữ liệu sẽ sớm đối mặt với một bài toán hóc búa từ thực tế kinh doanh: **Sự bùng nổ của các thuộc tính động và không đồng nhất (Heterogeneous &amp; Sparse Attributes)**.
+Trong quá trình thiết kế cơ sở dữ liệu quan hệ (RDBMS), nguyên tắc chuẩn hóa dữ liệu (3NF - Third Normal Form) thường hướng dẫn chúng ta tạo các bảng phẳng với các cột cố định (ví dụ: bảng `users` có `id`, `email`, `created_at`). Tuy nhiên, các kỹ sư phần mềm và kỹ sư dữ liệu sẽ sớm đối mặt với một bài toán hóc búa từ thực tế kinh doanh: **Sự bùng nổ của các thuộc tính động và không đồng nhất (Heterogeneous & Sparse Attributes)**.
 
 Hãy xem xét các bài toán thực tế điển hình:
 
-1. **Sàn Thương mại Điện tử Đa ngành hàng (Multi-category E-commerce):** Hệ thống quản lý hàng triệu sản phẩm thuộc hơn 500 ngành hàng khác nhau. Laptop cần lưu *RAM, CPU, Dung lượng Pin, Độ phân giải màn hình*; Giày thể thao cần lưu *Size giày, Chất liệu đế, Màu sắc, Kiểu khóa*; Thực phẩm tươi sống cần lưu *Hạn sử dụng, Nhiệt độ bảo quản, Nước xuất xứ*; Sách cần lưu *ISBN, Tác giả, Số trang, Năm xuất bản*.
+1. **Sàn Thương mại Điện tử Đa ngành hàng (Multi-category E-commerce):** Hệ thống quản lý hàng triệu sản phẩm thuộc hơn 500 ngành hàng khác nhau. Laptop cần lưu _RAM, CPU, Dung lượng Pin, Độ phân giải màn hình_; Giày thể thao cần lưu _Size giày, Chất liệu đế, Màu sắc, Kiểu khóa_; Thực phẩm tươi sống cần lưu _Hạn sử dụng, Nhiệt độ bảo quản, Nước xuất xứ_; Sách cần lưu _ISBN, Tác giả, Số trang, Năm xuất bản_.
 2. **Hồ sơ Bệnh án Điện tử (Electronic Health Records - EHR):** Trong y tế, có hơn 10.000 chỉ số xét nghiệm, triệu chứng lâm sàng và phương pháp điều trị. Tuy nhiên, mỗi bệnh nhân khi vào viện chỉ phát sinh từ 5 đến 20 chỉ số cụ thể.
-3. **Nền tảng CRM &amp; SaaS Tùy biến (Custom Fields):** Cho phép hàng nghìn doanh nghiệp khách hàng tự do định nghĩa các trường dữ liệu tùy biến (Custom Attributes) theo quy trình nghiệp vụ riêng mà không cần chờ đội ngũ kỹ thuật can thiệp.
+3. **Nền tảng CRM & SaaS Tùy biến (Custom Fields):** Cho phép hàng nghìn doanh nghiệp khách hàng tự do định nghĩa các trường dữ liệu tùy biến (Custom Attributes) theo quy trình nghiệp vụ riêng mà không cần chờ đội ngũ kỹ thuật can thiệp.
 
 **Những cạm bẫy chết người của cách tiếp cận truyền thống:**
 
@@ -34,9 +34,9 @@ Hãy xem xét các bài toán thực tế điển hình:
 
 Để giải quyết triệt để sự linh hoạt về mặt Schema mà vẫn duy trì hệ quản trị cơ sở dữ liệu quan hệ, **Mô hình EAV (Entity - Attribute - Value)** đã ra đời như một giải pháp cứu cánh kinh điển.
 
-## 2. Mô hình hóa dữ liệu
+## Mô hình hóa dữ liệu
 
-Bản chất của mô hình **EAV (Entity - Attribute - Value)** là chuyển đổi cấu trúc dữ liệu từ *mô hình mở rộng theo chiều ngang (thêm Cột)* sang *mô hình mở rộng theo chiều dọc (thêm Dòng)*. Dữ liệu được chia tách thành 3 thành phần nguyên tử:
+Bản chất của mô hình **EAV (Entity - Attribute - Value)** là chuyển đổi cấu trúc dữ liệu từ _mô hình mở rộng theo chiều ngang (thêm Cột)_ sang _mô hình mở rộng theo chiều dọc (thêm Dòng)_. Dữ liệu được chia tách thành 3 thành phần nguyên tử:
 
 1. **Entity (Thực thể):** Đối tượng được mô tả (ví dụ: Sản phẩm ID `101`, Bệnh nhân ID `8055`). Bảng Entity chỉ lưu các trường thông tin cốt lõi chung nhất (như `sku`, `status`, `created_at`).
 2. **Attribute (Thuộc tính):** Danh mục định nghĩa tên thuộc tính và kiểu dữ liệu (ví dụ: `ram_gb`, `screen_size`, `shoe_color`).
@@ -88,35 +88,35 @@ flowchart TD
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ linh hoạt Schema**</td>
+      <td style="padding: 8px; font-weight: bold;">Độ linh hoạt Schema</td>
       <td style="padding: 8px;">Kém (Phải chạy DDL ALTER TABLE)</td>
       <td style="padding: 8px;">Rất cao (Thêm dòng trong bảng Attribute)</td>
       <td style="padding: 8px;">Rất cao (Schemaless / Semi-structured)</td>
       <td style="padding: 8px;">Tuyệt đối (Dynamic JSON Document)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Hiệu năng Ghi (Write)**</td>
+      <td style="padding: 8px; font-weight: bold;">Hiệu năng Ghi (Write)</td>
       <td style="padding: 8px;">Cực nhanh (1 lệnh INSERT duy nhất)</td>
       <td style="padding: 8px;">Chậm (1 Entity cần 10-30 INSERT vào nhiều bảng)</td>
       <td style="padding: 8px;">Nhanh (1 lệnh INSERT chứa object JSON)</td>
       <td style="padding: 8px;">Cực nhanh (Atomic Document Insert)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Hiệu năng Đọc 1 Entity (Point Read)**</td>
+      <td style="padding: 8px; font-weight: bold;">Hiệu năng Đọc 1 Entity (Point Read)</td>
       <td style="padding: 8px;">Tức thì (Index scan trên 1 bảng)</td>
       <td style="padding: 8px;">Chậm (Phải JOIN từ 10-20 lần)</td>
       <td style="padding: 8px;">Rất nhanh (Đọc 1 dòng, parse JSON)</td>
       <td style="padding: 8px;">Cực nhanh (Đọc nguyên Document theo _id)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp Câu lệnh SQL**</td>
+      <td style="padding: 8px; font-weight: bold;">Độ phức tạp Câu lệnh SQL</td>
       <td style="padding: 8px;">Đơn giản, trực quan</td>
       <td style="padding: 8px;">Cực kỳ phức tạp (Nhiều JOIN / PIVOT)</td>
       <td style="padding: 8px;">Trung bình (Sử dụng toán tử `->>`, `@>`)</td>
       <td style="padding: 8px;">Dễ dàng qua MongoDB Query API</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Hiệu năng Phân tích Dữ liệu (OLAP)**</td>
+      <td style="padding: 8px; font-weight: bold;">Hiệu năng Phân tích Dữ liệu (OLAP)</td>
       <td style="padding: 8px;">Tối ưu cao (Định dạng cột chuẩn)</td>
       <td style="padding: 8px;">Thảm họa (Không thể phân tích trực tiếp)</td>
       <td style="padding: 8px;">Khá (Có thể đánh GIN Index)</td>
@@ -125,7 +125,7 @@ flowchart TD
   </tbody>
 </table>
 
-## 3. Xây dựng Pipeline / Script xử lý
+## Xây dựng Pipeline / Script xử lý
 
 Để hiểu rõ tại sao EAV là 'cơn ác mộng' của các Data Analyst và cách Data Engineer giải cứu hệ thống, ta hãy phân tích quá trình truy vấn SQL và xây dựng Data Pipeline chuyển đổi (Flattening ETL).
 
@@ -135,7 +135,7 @@ Giả sử cần lấy thông tin 1 chiếc Laptop gồm SKU, Tên sản phẩm,
 
 ```sql
 -- Cách 1: Sử dụng Multiple LEFT JOINs (Dẫn đến Query Plan cồng kềnh khi có hàng chục thuộc tính)
-SELECT 
+SELECT
     e.entity_id,
     e.sku,
     v_name.value AS product_name,
@@ -143,18 +143,18 @@ SELECT
     v_ram.value AS ram_gb,
     v_ssd.value AS ssd_gb
 FROM catalog_product_entity e
-LEFT JOIN catalog_product_entity_varchar v_name 
+LEFT JOIN catalog_product_entity_varchar v_name
     ON e.entity_id = v_name.entity_id AND v_name.attribute_id = 71 -- Name
-LEFT JOIN catalog_product_entity_decimal v_price 
+LEFT JOIN catalog_product_entity_decimal v_price
     ON e.entity_id = v_price.entity_id AND v_price.attribute_id = 72 -- Price
-LEFT JOIN catalog_product_entity_int v_ram 
+LEFT JOIN catalog_product_entity_int v_ram
     ON e.entity_id = v_ram.entity_id AND v_ram.attribute_id = 105 -- RAM
-LEFT JOIN catalog_product_entity_int v_ssd 
+LEFT JOIN catalog_product_entity_int v_ssd
     ON e.entity_id = v_ssd.entity_id AND v_ssd.attribute_id = 106 -- SSD
 WHERE e.entity_id = 101;
 
 -- Cách 2: Sử dụng Kỹ thuật Gom nhóm & Điều kiện (Conditional Aggregation / PIVOT)
-SELECT 
+SELECT
     e.entity_id,
     e.sku,
     MAX(CASE WHEN a.code = 'name' THEN v_str.value END) AS product_name,
@@ -189,7 +189,7 @@ flowchart LR
         Parquet[("Silver Layer: Parquet Lakehouse")]
         DW[("Gold Layer: Snowflake / ClickHouse Flat Tables")]
         BI["Data Analyst BI Reports & ML Models"]
-        
+
         Pivoter --> Parquet --> DW --> BI
     end
 
@@ -210,21 +210,21 @@ def flatten_eav_to_flat_table(spark: SparkSession):
     df_varchar = spark.table("raw_product_entity_varchar")
     df_int = spark.table("raw_product_entity_int")
     df_decimal = spark.table("raw_product_entity_decimal")
-    
+
     # 2. Hợp nhất tất cả các bảng giá trị thành một khung nhìn E-A-V duy nhất (Cast sang String để chuẩn hóa)
     df_all_values = (
         df_varchar.select("entity_id", "attribute_id", F.col("value").cast("string"))
         .unionByName(df_int.select("entity_id", "attribute_id", F.col("value").cast("string")))
         .unionByName(df_decimal.select("entity_id", "attribute_id", F.col("value").cast("string")))
     )
-    
+
     # 3. Join với bảng từ điển Attribute để lấy attribute_code thân thiện
     df_named_values = df_all_values.join(
-        df_attr.select("attribute_id", "attribute_code"), 
-        on="attribute_id", 
+        df_attr.select("attribute_id", "attribute_code"),
+        on="attribute_id",
         how="inner"
     )
-    
+
     # 4. Thực hiện Dynamic PIVOT để xoay trục dữ liệu từ Dòng sang Cột
     df_flat_attributes = (
         df_named_values
@@ -232,14 +232,14 @@ def flatten_eav_to_flat_table(spark: SparkSession):
         .pivot("attribute_code")
         .agg(F.first("value"))
     )
-    
+
     # 5. Kết hợp với thông tin cốt lõi của Entity để ra Bảng Phẳng Hoàn Hảo (Gold Layer)
     df_final_product_flat = df_entity.join(
-        df_flat_attributes, 
-        on="entity_id", 
+        df_flat_attributes,
+        on="entity_id",
         how="left"
     )
-    
+
     # 6. Ghi ra định dạng Parquet tối ưu hóa truy vấn dạng cột cho Analytics
     df_final_product_flat.write \
         .mode("overwrite") \
@@ -249,7 +249,7 @@ def flatten_eav_to_flat_table(spark: SparkSession):
 print("EAV Flattening Pipeline executed with zero row data corruption!")
 ```
 
-## 4. Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Kiểm thử dữ liệu & Tối ưu hiệu năng
 
 Để vận hành mô hình EAV đạt hiệu năng chấp nhận được trong các hệ thống OLTP và đảm bảo chất lượng dữ liệu sạch cho phân tích, Data Engineer cần áp dụng các kỹ thuật tối ưu hóa sau:
 
@@ -257,7 +257,6 @@ print("EAV Flattening Pipeline executed with zero row data corruption!")
 
 - Trong các bảng Value của EAV, các truy vấn lọc thường có điều kiện `WHERE entity_id = ? AND attribute_id = ?` hoặc tìm kiếm theo giá trị `WHERE attribute_id = ? AND value = ?`.
 - Bắt buộc phải đánh chỉ mục phức hợp (Composite Indexes):
-  
 
 ```sql
 -- Tối ưu hóa truy vấn lấy thuộc tính của 1 Entity
@@ -285,25 +284,25 @@ CREATE INDEX idx_attr_val ON catalog_product_entity_varchar (attribute_id, value
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Lọc sản phẩm theo 3 thuộc tính động**</td>
+      <td style="padding: 8px; font-weight: bold;">Lọc sản phẩm theo 3 thuộc tính động</td>
       <td style="padding: 8px;">340ms (3 JOINs + Index Scan)</td>
       <td style="padding: 8px;">18ms (GIN JSONB index lookup)</td>
-      <td style="padding: 8px;">4ms (Columnar Scan &amp; MinMax Pruning)</td>
+      <td style="padding: 8px;">4ms (Columnar Scan & MinMax Pruning)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Tính giá trị trung bình (AVG Price) theo ngành hàng**</td>
+      <td style="padding: 8px; font-weight: bold;">Tính giá trị trung bình (AVG Price) theo ngành hàng</td>
       <td style="padding: 8px;">4,250ms (Full table scan trên bảng Decimal)</td>
       <td style="padding: 8px;">520ms (JSON parse on-the-fly)</td>
       <td style="padding: 8px;">8ms (Vectorized Columnar Aggregation)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Thêm 1 trường thuộc tính mới vào hệ thống**</td>
+      <td style="padding: 8px; font-weight: bold;">Thêm 1 trường thuộc tính mới vào hệ thống</td>
       <td style="padding: 8px;">0.01ms (1 dòng INSERT vào eav_attribute)</td>
       <td style="padding: 8px;">0.00ms (Không cần thao tác DDL)</td>
       <td style="padding: 8px;">0.05ms (Schema Evolution tự động)</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Dung lượng lưu trữ đĩa cứng**</td>
+      <td style="padding: 8px; font-weight: bold;">Dung lượng lưu trữ đĩa cứng</td>
       <td style="padding: 8px;">Cao (Do trùng lặp entity_id, attribute_id, index)</td>
       <td style="padding: 8px;">Trung bình (Nén JSONB nhị phân)</td>
       <td style="padding: 8px;">Rất thấp (Nén Snappy/ZSTD dạng cột)</td>
@@ -311,27 +310,24 @@ CREATE INDEX idx_attr_val ON catalog_product_entity_varchar (attribute_id, value
   </tbody>
 </table>
 
-## 5. Tổng kết & Khuyến nghị
+## Tổng kết & Khuyến nghị
 
-Mô hình EAV là một minh chứng kinh điển cho sự đánh đổi (Trade-off) trong kỹ thuật phần mềm: *Đánh đổi hiệu năng truy vấn và sự đơn giản của SQL để lấy tính linh hoạt tuyệt đối về Schema*.
+Mô hình EAV là một minh chứng kinh điển cho sự đánh đổi (Trade-off) trong kỹ thuật phần mềm: _Đánh đổi hiệu năng truy vấn và sự đơn giản của SQL để lấy tính linh hoạt tuyệt đối về Schema_. Vậy
 
-**Khuyến nghị Hành động dành cho Kỹ sư Thiết kế Hệ thống &amp; Kỹ sư Dữ liệu:**
-
-1. **Khi nào NÊN sử dụng EAV?**
-  
+**Khi nào NÊN sử dụng EAV?**
 
 - Khi số lượng thuộc tính tiềm năng rất lớn (hàng trăm đến hàng nghìn), nhưng mỗi thực thể chỉ sở hữu một tập hợp con rất nhỏ và thưa thớt (Sparse).
 - Khi thuộc tính được định nghĩa động bởi người dùng cuối trong thời gian chạy (Runtime Dynamic Custom Attributes) mà không thể biết trước lúc thiết kế Schema.
 - Khi hoạt động trong CSDL quan hệ truyền thống và hệ thống không hỗ trợ tốt kiểu dữ liệu JSON cấu trúc.
-2. **Khi nào TUYỆT ĐỐI TRÁNH EAV?**
-  
+
+**Khi nào TUYỆT ĐỐI TRÁNH EAV?**
 
 - Khi các thuộc tính đã cố định, rõ ràng và có thể mô hình hóa bằng các bảng quan hệ chuẩn.
 - Khi hệ thống chủ yếu phục vụ các truy vấn tổng hợp số liệu, báo cáo phân tích kinh doanh (OLAP / BI).
 - Nếu hệ cơ sở dữ liệu hiện đại của bạn là **PostgreSQL 14+**: Hãy ưu tiên sử dụng **JSONB kết hợp GIN Index** thay vì xây dựng hệ thống EAV gồm 6-7 bảng phức tạp.
-3. **Áp dụng Kiến trúc Phân tách Đọc/Ghi (CQRS Pattern):**
-  
 
-- Nếu bắt buộc phải dùng EAV ở tầng ứng dụng ghi (Write Model - OLTP) để đảm bảo độ linh hoạt cho nghiệp vụ bán hàng, hãy luôn thiết lập một Pipeline tự động làm phẳng (Flattening CDC Pipeline) để đồng bộ dữ liệu sang **Elasticsearch/OpenSearch** (cho tìm kiếm sản phẩm phía người dùng) và **Data Warehouse / Parquet Lakehouse** (cho đội ngũ Data Analyst).
+**Nếu bắt buộc phải dùng EAV thì sao?**
 
-**Lời kết:** *EAV không phải là một mô hình lỗi thời, mà là một công cụ đặc thù cho những bài toán đặc thù. Hiểu rõ điểm mạnh, điểm yếu và xây dựng ranh giới chuyển đổi phù hợp giữa OLTP và OLAP chính là thước đo bản lĩnh của một Data Engineer xuất sắc!*
+Hãy áp dụng Kiến trúc Phân tách Đọc/Ghi (CQRS Pattern), luôn thiết lập một Pipeline tự động làm phẳng (Flattening CDC Pipeline) để đồng bộ dữ liệu sang **Elasticsearch/OpenSearch** (cho tìm kiếm sản phẩm phía người dùng) và **Data Warehouse / Parquet Lakehouse** (cho đội ngũ Data Analyst).
+
+> **Lời kết:** _EAV không phải là một mô hình lỗi thời, mà là một công cụ đặc thù cho những bài toán đặc thù. Hiểu rõ điểm mạnh, điểm yếu và xây dựng ranh giới chuyển đổi phù hợp giữa OLTP và OLAP chính là thước đo bản lĩnh của một Data Engineer xuất sắc!_

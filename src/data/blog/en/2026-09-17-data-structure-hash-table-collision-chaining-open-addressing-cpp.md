@@ -30,24 +30,23 @@ A Hash Table applies a **Hash Function** to map arbitrary keys to integer array 
 bucket_index = hash(key) % capacity
 ```
 
-Core Mathematical Obstacle: By the *Pigeonhole Principle*, mapping an infinite domain of keys to a finite array space inevitably causes **two distinct keys to produce the exact same bucket index (`hash(k₁) % M == hash(k₂) % M`)**. This collision event is termed a **Hash Collision**.
+Core Mathematical Obstacle: By the _Pigeonhole Principle_, mapping an infinite domain of keys to a finite array space inevitably causes **two distinct keys to produce the exact same bucket index (`hash(k₁) % M == hash(k₂) % M`)**. This collision event is termed a **Hash Collision**.
 
 ## 3. Optimization Thinking & Algorithm Design
 
 Two primary architectural strategies resolve collisions to sustain `O(1)` performance:
 
 1. **Separate Chaining:**
-  
 
 - Each bucket houses a Linked List (or Red-Black Tree for deep collision chains).
 - Colliding keys are appended to the bucket chain in `O(1)` time.
 - Default strategy in C++ `std::unordered_map` and Java `HashMap`.
+
 2. **Open Addressing (Linear Probing):**
-  
 
 - Elements reside directly in the table array. Upon collision, search sequentially for the next vacant slot: `(bucket + 1) % capacity`.
-3. **Load Factor &amp; Dynamic Rehashing:**
-  
+
+3. **Load Factor & Dynamic Rehashing:**
 
 - Load Factor `alpha = N / capacity` tracks table saturation.
 - When `alpha >= 0.75`, the table allocates double capacity (`capacity x 2`) and re-hashes all entries, preserving average `O(1)` lookups.
@@ -125,7 +124,7 @@ private:
     }
 
 public:
-    HashTable(size_t initialCapacity = 7) 
+    HashTable(size_t initialCapacity = 7)
         : numElements(0), capacity(initialCapacity) {
         table.resize(capacity);
     }
@@ -186,7 +185,7 @@ int main() {
     }
 
     ht.remove("banana");
-    std::cout << "Lookup 'banana' after delete: " 
+    std::cout << "Lookup 'banana' after delete: "
               << (ht.get("banana", val) ? "FOUND" : "NOT FOUND") << std::endl;
 
     return 0;
@@ -195,10 +194,10 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Insert "apple" (val 100):* Maps to `bucket 3` &rarr; Appends to `table[3]`.
-- *Insert "banana" (val 40):* Maps to `bucket 1` &rarr; Appends to `table[1]`.
-- *Insert "cherry" (val 80):* Collision at `bucket 1` &rarr; Appends to linked list at `table[1]`.
-- *Lookup "banana":* Hashes to `bucket 1` &rarr; Traverses first node, matches "banana" &rarr; Returns `40` in `O(1)`.
+- _Insert "apple" (val 100):_ Maps to `bucket 3` &rarr; Appends to `table[3]`.
+- _Insert "banana" (val 40):_ Maps to `bucket 1` &rarr; Appends to `table[1]`.
+- _Insert "cherry" (val 80):_ Collision at `bucket 1` &rarr; Appends to linked list at `table[1]`.
+- _Lookup "banana":_ Hashes to `bucket 1` &rarr; Traverses first node, matches "banana" &rarr; Returns `40` in `O(1)`.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
@@ -211,7 +210,7 @@ Performance Scorecard anchored to RAM Model metrics:
   <ul>
   **Database Hash Indexes:** Exact match acceleration in PostgreSQL / MySQL Memory Engine.
 - **In-Memory Distributed Caches:** High-performance Key-Value storage in Redis and Memcached.
-- **Compilers &amp; Interpreters:** Managing variable identifiers and scoping in Symbol Tables.
+- **Compilers & Interpreters:** Managing variable identifiers and scoping in Symbol Tables.
 
 </li>
 </ul>

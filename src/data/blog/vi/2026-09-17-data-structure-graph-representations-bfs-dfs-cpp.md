@@ -31,33 +31,31 @@ Khi mô hình hóa các mạng lưới phức tạp trong thế giới thực - 
 Hai phương pháp kinh điển để biểu diễn đồ thị trong bộ nhớ máy tính:
 
 1. **Ma trận kề (Adjacency Matrix):**
-  
 
 - Sử dụng ma trận 2 chiều `adj[V][V]`. Nếu có cạnh từ `u` đến `v` thì `adj[u][v] = 1` (hoặc bằng trọng số `w`), ngược lại bằng `0`.
-- *Ưu điểm:* Kiểm tra xem hai đỉnh bất kỳ có cạnh nối trực tiếp hay không trong thời gian tức thời `O(1)`.
-- *Nhược điểm:* Tiêu tốn bộ nhớ cố định `O(V²)` ngay cả khi đồ thị có rất ít cạnh (Đồ thị thưa). Duyệt qua các đỉnh kề của một nút tốn `O(V)`.
+- _Ưu điểm:_ Kiểm tra xem hai đỉnh bất kỳ có cạnh nối trực tiếp hay không trong thời gian tức thời `O(1)`.
+- _Nhược điểm:_ Tiêu tốn bộ nhớ cố định `O(V²)` ngay cả khi đồ thị có rất ít cạnh (Đồ thị thưa). Duyệt qua các đỉnh kề của một nút tốn `O(V)`.
+
 2. **Danh sách kề (Adjacency List):**
-  
 
 - Sử dụng mảng gồm `V` danh sách: `std::vector<std::vector<int>> adj(V)`. Mỗi đỉnh `u` lưu danh sách các đỉnh kề trực tiếp với nó.
-- *Ưu điểm:* Tiết kiệm bộ nhớ tối đa `O(V + E)`. Duyệt các đỉnh kề cực nhanh chỉ tốn `O(deg(u))`. Đây là cấu trúc chuẩn mực được sử dụng trong 99% các ứng dụng thực tế.
+- _Ưu điểm:_ Tiết kiệm bộ nhớ tối đa `O(V + E)`. Duyệt các đỉnh kề cực nhanh chỉ tốn `O(deg(u))`. Đây là cấu trúc chuẩn mực được sử dụng trong 99% các ứng dụng thực tế.
 
 ## 3. Tư duy tối ưu & Cấu trúc thuật toán
 
 **Hai Thuật toán Duyệt Đồ thị Cơ bản (Graph Traversals):**
 
 1. **Tìm kiếm theo Chiều rộng (Breadth-First Search - BFS):**
-  
 
 - Sử dụng **Hàng chờ (Queue)** để duyệt đồ thị theo từng lớp sóng lan tỏa (Level by Level).
-- *Đặc tính:* Luôn tìm ra **đường đi ngắn nhất** (số cạnh ít nhất) từ đỉnh nguồn đến mọi đỉnh khác trên đồ thị không trọng số.
+- _Đặc tính:_ Luôn tìm ra **đường đi ngắn nhất** (số cạnh ít nhất) từ đỉnh nguồn đến mọi đỉnh khác trên đồ thị không trọng số.
+
 2. **Tìm kiếm theo Chiều sâu (Depth-First Search - DFS):**
-  
 
 - Sử dụng **Đệ quy / Ngăn xếp (Call Stack)** để đi sâu nhất có thể theo từng nhánh trước khi quay lui (Backtrack).
-- *Đặc tính:* Dùng để kiểm tra tính liên thông, phát hiện chu trình, sắp xếp Tô-pô (Topological Sort) và tìm các thành phần liên thông mạnh (SCC).
+- _Đặc tính:_ Dùng để kiểm tra tính liên thông, phát hiện chu trình, sắp xếp Tô-pô (Topological Sort) và tìm các thành phần liên thông mạnh (SCC).
 
-*Nguyên tắc an toàn:* Bắt buộc phải duy trì mảng `visited[V]` để đánh dấu các đỉnh đã thăm, ngăn ngừa thuật toán rơi vào vòng lặp vô tận khi đồ thị chứa chu trình.
+_Nguyên tắc an toàn:_ Bắt buộc phải duy trì mảng `visited[V]` để đánh dấu các đỉnh đã thăm, ngăn ngừa thuật toán rơi vào vòng lặp vô tận khi đồ thị chứa chu trình.
 
 ## 4. Triển khai mã nguồn & Dry Run
 
@@ -168,7 +166,7 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *BFS từ đỉnh 0:*
+- _BFS từ đỉnh 0:_
   <ul>
   Khởi tạo: `q = [0]`, `visited[0] = true`.
 - Pop 0 &rarr; In `0`. Đẩy các đỉnh kề chưa thăm `1, 2` vào hàng đợi &rarr; `q = [1, 2]`.
@@ -178,7 +176,7 @@ int main() {
 
 </li>
 <li>*DFS từ đỉnh 0:*
-  
+
 
 - Thăm 0 &rarr; Đi sâu vào nhánh 1 &rarr; Đi sâu vào nhánh 3 (hết đường, quay lui) &rarr; Đi sang nhánh 4 &rarr; Từ 4 đi sang 2 &rarr; Kết quả DFS: `0 1 3 4 2`.
 
@@ -198,9 +196,9 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 
 </li>
 <li>**Ứng dụng thực tế:**
-  
 
-- **Đồ thị Tri thức &amp; Mạng xã hội:** Friend Recommendation (Thuật toán gợi ý bạn bè chung qua khoảng cách 2 bước BFS).
+
+- **Đồ thị Tri thức & Mạng xã hội:** Friend Recommendation (Thuật toán gợi ý bạn bè chung qua khoảng cách 2 bước BFS).
 - **Hệ thống Web Crawling của Công cụ Tìm kiếm:** Googlebot duyệt toàn bộ mạng Internet bằng thuật toán BFS phân tán.
 - **Phân tích Phụ thuộc Gói phần mềm (Package Managers):** npm/yarn sử dụng DFS để kiểm tra chu trình phụ thuộc vòng (Circular Dependencies) và sinh thứ tự biên dịch (Topological Sort).
 

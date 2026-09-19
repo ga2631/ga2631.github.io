@@ -19,7 +19,7 @@ tags:
 
 ## 1. Mô tả bài toán
 
-Trong các công cụ soạn thảo mã nguồn (VS Code, Vim), công cụ tìm kiếm văn bản (grep, ripgrep), hệ thống phát hiện xâm nhập mạng (Snort) hay các phần mềm phân tích hệ gen sinh học (BLAST), thao tác phổ biến nhất là: *Tìm kiếm sự xuất hiện của một chuỗi mẫu con `Pattern` (độ dài `M`) bên trong một văn bản lớn `Text` (độ dài `N`).*
+Trong các công cụ soạn thảo mã nguồn (VS Code, Vim), công cụ tìm kiếm văn bản (grep, ripgrep), hệ thống phát hiện xâm nhập mạng (Snort) hay các phần mềm phân tích hệ gen sinh học (BLAST), thao tác phổ biến nhất là: _Tìm kiếm sự xuất hiện của một chuỗi mẫu con `Pattern` (độ dài `M`) bên trong một văn bản lớn `Text` (độ dài `N`)._
 
 Bài toán đặt ra: **Đối sánh mẫu chính xác (Exact String Matching)**. Cho chuỗi văn bản `Text[0..N-1]` và chuỗi mẫu `Pattern[0..M-1]` (với `M <= N`). Hãy tìm tất cả các vị trí chỉ số `i` trong `Text` sao cho `Text[i .. i + M - 1] == Pattern[0 .. M - 1]`.
 
@@ -50,6 +50,7 @@ Rabin-Karp biến đổi bài toán so khớp chuỗi thành bài toán so khớ
 ```
 H_{new} = (H_{old} - Text[i] x B^{M-1}) x B + Text[i + M] \pmod P
 ```
+
 - Chỉ khi mã băm của cửa sổ trùng với mã băm của `Pattern`, ta mới thực hiện so sánh từng ký tự để loại trừ đụng độ băm (Hash Collision).
 
 ## 4. Triển khai mã nguồn & Dry Run
@@ -64,7 +65,7 @@ stateDiagram-v2
     State2 --> State3: Khớp ký tự 'A'
     State3 --> State4: Khớp ký tự 'B'
     State4 --> State5: Khớp ký tự 'C' (MATCH!)
-    
+
     State4 --> State2: Mismatch! Nhảy về LPS[3] = 2 (Không lùi Text pointer)
     State2 --> State0: Mismatch! Nhảy về LPS[1] = 0
 ```
@@ -205,14 +206,14 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace KMP):**
 
-- *Mẫu `Pattern = "ABABCABAB"`:* Bảng `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
+- _Mẫu `Pattern = "ABABCABAB"`:_ Bảng `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
   <ul>
   `LPS[3] = 2` vì chuỗi con `"ABAB"` có tiền tố `"AB"` trùng với hậu tố `"AB"`.
 - `LPS[8] = 4` vì chuỗi con `"ABABCABAB"` có tiền tố `"ABAB"` trùng hậu tố `"ABAB"`.
 
 </li>
 <li>*Quá trình so khớp trên `Text = "ABABDABACDABABCABAB"`:*
-  
+
 
 - So khớp 4 ký tự đầu `"ABAB"` thành công (`j = 4`).
 - Tại ký tự thứ 5 (`Text[4] = 'D'`, `Pattern[4] = 'C'`) &rarr; Mismatch!
@@ -234,19 +235,19 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 
 </li>
 <li>**Độ phức tạp Không gian (Space Complexity):**
-  
+
 
 - KMP: `O(M)` cho mảng tiền tố `LPS`.
 - Rabin-Karp: `O(1)` bộ nhớ phụ trợ chỉ với vài biến tích lũy mã băm.
 
 </li>
 <li>**Ứng dụng thực tế:**
-  
+
 
 - **Trình tìm kiếm mã nguồn và văn bản:** Lõi của các lệnh tìm kiếm Regex và đối sánh từ khóa trong IDE.
 - **Phân tích hệ Gen sinh học:** Tìm kiếm các đoạn mã gen gây bệnh hoặc mẫu DNA đột biến trong chuỗi hàng tỷ nucleotide.
 - **Phát hiện đạo văn (Plagiarism Detection):** Rabin-Karp với Rolling Hash nhiều mẫu cho phép so khớp đồng thời hàng trăm đoạn văn bản ngắn cùng lúc.
-- **Tường lửa &amp; Phát hiện xâm nhập mạng (IDS/IPS):** Quét các chữ ký độc hại (Malware Signature) trong payload của gói tin mạng TCP/IP theo thời gian thực.
+- **Tường lửa & Phát hiện xâm nhập mạng (IDS/IPS):** Quét các chữ ký độc hại (Malware Signature) trong payload của gói tin mạng TCP/IP theo thời gian thực.
 
 </li>
 </ul>

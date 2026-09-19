@@ -23,9 +23,9 @@ In traditional relational database design (RDBMS), Third Normal Form (3NF) princ
 
 Consider these prevalent production scenarios:
 
-1. **Multi-Category E-Commerce Platforms:** Managing millions of products across 500+ distinct categories. Laptops require *RAM, CPU, Battery Capacity, Screen Resolution*; Athletic Shoes require *Shoe Size, Sole Material, Color, Closure Type*; Groceries require *Expiration Date, Storage Temperature, Country of Origin*; Books require *ISBN, Author, Page Count, Edition*.
-2. **Electronic Health Records (EHR) &amp; Clinical Systems:** Modern healthcare catalogs contain over 10,000 potential clinical tests, symptoms, and lab observations. Yet any single patient admission records only 5 to 20 specific metrics.
-3. **CRM &amp; Multi-Tenant SaaS Platforms:** Enabling thousands of enterprise tenants to create custom runtime business fields dynamically without requiring developer intervention or database migration scripts.
+1. **Multi-Category E-Commerce Platforms:** Managing millions of products across 500+ distinct categories. Laptops require _RAM, CPU, Battery Capacity, Screen Resolution_; Athletic Shoes require _Shoe Size, Sole Material, Color, Closure Type_; Groceries require _Expiration Date, Storage Temperature, Country of Origin_; Books require _ISBN, Author, Page Count, Edition_.
+2. **Electronic Health Records (EHR) & Clinical Systems:** Modern healthcare catalogs contain over 10,000 potential clinical tests, symptoms, and lab observations. Yet any single patient admission records only 5 to 20 specific metrics.
+3. **CRM & Multi-Tenant SaaS Platforms:** Enabling thousands of enterprise tenants to create custom runtime business fields dynamically without requiring developer intervention or database migration scripts.
 
 **The Catastrophic Pitfalls of Conventional Approaches:**
 
@@ -36,7 +36,7 @@ To provide infinite schema flexibility while remaining within a robust relationa
 
 ## 2. Data Modeling & Schema Design
 
-The core concept of the **EAV (Entity - Attribute - Value)** model is transforming database growth from *horizontal expansion (adding columns)* to *vertical expansion (adding rows)*. Data is decomposed into three atomic primitives:
+The core concept of the **EAV (Entity - Attribute - Value)** model is transforming database growth from _horizontal expansion (adding columns)_ to _vertical expansion (adding rows)_. Data is decomposed into three atomic primitives:
 
 1. **Entity:** The object being described (e.g., Product ID `101`, Patient ID `8055`). The Entity table maintains only shared immutable metadata (e.g., `sku`, `status`, `created_at`).
 2. **Attribute:** The metadata dictionary defining property identifiers and data types (e.g., `ram_gb`, `screen_size`, `shoe_color`).
@@ -105,12 +105,12 @@ flowchart TD
       <td style="padding: 8px;">**Single-Entity Point Read**</td>
       <td style="padding: 8px;">Instant (Direct primary key index scan)</td>
       <td style="padding: 8px;">Slow (Requires 10-20 table JOINs)</td>
-      <td style="padding: 8px;">Very Fast (Single row read &amp; JSON deserialization)</td>
+      <td style="padding: 8px;">Very Fast (Single row read & JSON deserialization)</td>
       <td style="padding: 8px;">Ultra-fast (Read complete document by _id)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px;">**SQL Query Complexity**</td>
-      <td style="padding: 8px;">Simple &amp; intuitive</td>
+      <td style="padding: 8px;">Simple & intuitive</td>
       <td style="padding: 8px;">Extremely Complex (Multiple JOINs or PIVOTs)</td>
       <td style="padding: 8px;">Moderate (Uses operators `->>`, `@>`)</td>
       <td style="padding: 8px;">Clean via Native Mongo Query API</td>
@@ -135,7 +135,7 @@ To reconstruct a single laptop record with SKU, Name, Price, RAM, and SSD storag
 
 ```sql
 -- Pattern 1: Multiple Cascading LEFT JOINs (Query plan explodes when fetching dozens of attributes)
-SELECT 
+SELECT
     e.entity_id,
     e.sku,
     v_name.value AS product_name,
@@ -143,18 +143,18 @@ SELECT
     v_ram.value AS ram_gb,
     v_ssd.value AS ssd_gb
 FROM catalog_product_entity e
-LEFT JOIN catalog_product_entity_varchar v_name 
+LEFT JOIN catalog_product_entity_varchar v_name
     ON e.entity_id = v_name.entity_id AND v_name.attribute_id = 71 -- Name
-LEFT JOIN catalog_product_entity_decimal v_price 
+LEFT JOIN catalog_product_entity_decimal v_price
     ON e.entity_id = v_price.entity_id AND v_price.attribute_id = 72 -- Price
-LEFT JOIN catalog_product_entity_int v_ram 
+LEFT JOIN catalog_product_entity_int v_ram
     ON e.entity_id = v_ram.entity_id AND v_ram.attribute_id = 105 -- RAM
-LEFT JOIN catalog_product_entity_int v_ssd 
+LEFT JOIN catalog_product_entity_int v_ssd
     ON e.entity_id = v_ssd.entity_id AND v_ssd.attribute_id = 106 -- SSD
 WHERE e.entity_id = 101;
 
 -- Pattern 2: Conditional Aggregation / PIVOT (Reduces JOINs but incurs heavy aggregation cost)
-SELECT 
+SELECT
     e.entity_id,
     e.sku,
     MAX(CASE WHEN a.code = 'name' THEN v_str.value END) AS product_name,
@@ -189,7 +189,7 @@ flowchart LR
         Parquet[("Silver Layer: Parquet Lakehouse")]
         DW[("Gold Layer: Snowflake / ClickHouse Flat Tables")]
         BI["Data Analyst BI Dashboards & ML Models"]
-        
+
         Pivoter --> Parquet --> DW --> BI
     end
 
@@ -210,21 +210,21 @@ def flatten_eav_to_flat_table(spark: SparkSession):
     df_varchar = spark.table("raw_product_entity_varchar")
     df_int = spark.table("raw_product_entity_int")
     df_decimal = spark.table("raw_product_entity_decimal")
-    
+
     # 2. Standardize and unify typed value tables into a single unified key-value stream
     df_all_values = (
         df_varchar.select("entity_id", "attribute_id", F.col("value").cast("string"))
         .unionByName(df_int.select("entity_id", "attribute_id", F.col("value").cast("string")))
         .unionByName(df_decimal.select("entity_id", "attribute_id", F.col("value").cast("string")))
     )
-    
+
     # 3. Join with Attribute Dictionary to map attribute_id to human-readable names
     df_named_values = df_all_values.join(
-        df_attr.select("attribute_id", "attribute_code"), 
-        on="attribute_id", 
+        df_attr.select("attribute_id", "attribute_code"),
+        on="attribute_id",
         how="inner"
     )
-    
+
     # 4. Perform high-performance distributed dynamic PIVOT from Rows to Columns
     df_flat_attributes = (
         df_named_values
@@ -232,14 +232,14 @@ def flatten_eav_to_flat_table(spark: SparkSession):
         .pivot("attribute_code")
         .agg(F.first("value"))
     )
-    
+
     # 5. Join pivoted attributes back to Core Entity metadata (Gold Dimension Model)
     df_final_product_flat = df_entity.join(
-        df_flat_attributes, 
-        on="entity_id", 
+        df_flat_attributes,
+        on="entity_id",
         how="left"
     )
-    
+
     # 6. Write partitioned, highly compressed columnar Parquet for instantaneous BI queries
     df_final_product_flat.write \
         .mode("overwrite") \
@@ -257,7 +257,6 @@ To operate EAV databases reliably in OLTP while guaranteeing pristine data quali
 
 - Value table access patterns predominantly query either `WHERE entity_id = ? AND attribute_id = ?` or attribute value lookups `WHERE attribute_id = ? AND value = ?`.
 - Mandatory composite indexing schema:
-  
 
 ```sql
 -- Optimizes entity attribute hydration
@@ -267,10 +266,10 @@ CREATE UNIQUE INDEX uq_entity_attr ON catalog_product_entity_varchar (entity_id,
 CREATE INDEX idx_attr_val ON catalog_product_entity_varchar (attribute_id, value);
 ```
 
-**2. Data Quality &amp; Governance Guardrails:**
+**2. Data Quality & Governance Guardrails:**
 
 - **Attribute-Level Validation:** Enforce strict backend validation rules (Regex, Enums, Range Checks) mapped within the `eav_attribute` dictionary before writes reach typed storage.
-- **Orphaned Record Pruning:** Because value tables grow proportionally to \(Entities 	imes Attributes\), entity deletions must enforce `ON DELETE CASCADE` or automated cleanup scripts to purge orphaned value rows.
+- **Orphaned Record Pruning:** Because value tables grow proportionally to \(Entities imes Attributes\), entity deletions must enforce `ON DELETE CASCADE` or automated cleanup scripts to purge orphaned value rows.
 
 **3. Empirical Performance Benchmark Matrix:**
 
@@ -288,7 +287,7 @@ CREATE INDEX idx_attr_val ON catalog_product_entity_varchar (attribute_id, value
       <td style="padding: 8px;">**Filter products by 3 dynamic attributes**</td>
       <td style="padding: 8px;">340ms (3 JOINs + Index Scan)</td>
       <td style="padding: 8px;">18ms (GIN JSONB index lookup)</td>
-      <td style="padding: 8px;">4ms (Columnar Scan &amp; MinMax Pruning)</td>
+      <td style="padding: 8px;">4ms (Columnar Scan & MinMax Pruning)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px;">**Aggregate Average Price (AVG) by Category**</td>
@@ -313,25 +312,24 @@ CREATE INDEX idx_attr_val ON catalog_product_entity_varchar (attribute_id, value
 
 ## 5. Summary & Recommendations
 
-The EAV model is a textbook demonstration of software engineering trade-offs: *Sacrificing relational simplicity and query performance in exchange for complete, runtime schema flexibility*.
+The EAV model is a textbook demonstration of software engineering trade-offs: _Sacrificing relational simplicity and query performance in exchange for complete, runtime schema flexibility_.
 
-**Actionable Architecture Recommendations for System &amp; Data Engineers:**
+**Actionable Architecture Recommendations for System & Data Engineers:**
 
 1. **When SHOULD You Use EAV?**
-  
 
 - When the universe of potential attributes is vast (hundreds or thousands), but any single entity only possesses a tiny, sparse subset.
 - When attributes are dynamically defined at runtime by end-users or multi-tenant configurations without prior schema certainty.
 - When operating within legacy relational databases lacking robust native document/JSON capabilities.
+
 2. **When SHOULD You AVOID EAV?**
-  
 
 - When attributes are relatively fixed and predictable across entities.
 - When workloads are heavily analytical, aggregative, or report-driven (OLAP / BI).
 - If you are running modern databases like **PostgreSQL 14+**: Strongly prefer **JSONB with GIN indexing** over building multi-table EAV scaffolding.
+
 3. **Embrace CQRS (Command Query Responsibility Segregation):**
-  
 
 - If EAV is indispensable for your transactional Write Model (OLTP) to enable business flexibility, always decouple it from your Read Model: Deploy an automated CDC/Flattening pipeline to sync structured projections into **Elasticsearch/OpenSearch** (for user-facing catalog search) and **Columnar Lakehouses** (for Data Analysts).
 
-**Closing Takeaway:** *EAV is neither obsolete nor a silver bullet; it is a specialized tool for specialized requirements. Mastering its trade-offs and architecting clean transformation boundaries between OLTP and OLAP separates novice practitioners from veteran Data Engineers!*
+**Closing Takeaway:** _EAV is neither obsolete nor a silver bullet; it is a specialized tool for specialized requirements. Mastering its trade-offs and architecting clean transformation boundaries between OLTP and OLAP separates novice practitioners from veteran Data Engineers!_

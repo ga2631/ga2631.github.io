@@ -20,18 +20,18 @@ tags:
 
 Trong hành trình phát triển nghề nghiệp của một kỹ sư phần mềm (Software Engineer), việc đối mặt với các codebase ngày càng phình to, phức tạp và xuất hiện nợ kỹ thuật (Technical Debt) là điều không thể tránh khỏi. Nhu cầu tái cấu trúc (Refactoring) để chuẩn hóa kiến trúc, loại bỏ trùng lặp mã nguồn (DRY) và nâng cao hiệu năng luôn hiện hữu.
 
-Tuy nhiên, nỗi ám ảnh lớn nhất của bất kỳ lập trình viên nào khi chạm vào mã nguồn cũ là: *'Liệu thay đổi này có vô tình làm hỏng một tính năng nào đó ở màn hình khác hay không?'*. Khái niệm 'Lưới an toàn' (Safety Net) và tư duy Refactoring dựa trên Test Matrix đa tầng chính là chìa khóa phân định giữa một kỹ sư chuyên nghiệp và một người sửa code dựa trên may rủi.
+Tuy nhiên, nỗi ám ảnh lớn nhất của bất kỳ lập trình viên nào khi chạm vào mã nguồn cũ là: _'Liệu thay đổi này có vô tình làm hỏng một tính năng nào đó ở màn hình khác hay không?'_. Khái niệm 'Lưới an toàn' (Safety Net) và tư duy Refactoring dựa trên Test Matrix đa tầng chính là chìa khóa phân định giữa một kỹ sư chuyên nghiệp và một người sửa code dựa trên may rủi.
 
 ## 2. Đánh giá đa chiều / So sánh đối chuẩn
 
 Để hiểu rõ giá trị của chiến lược Refactoring có phương pháp, hãy cùng so sánh hai trường phái tiếp cận phổ biến trong các dự án thực tế:
 
-- **Trường phái 'Cowboy Refactoring' (Tái cấu trúc theo cảm tính):** Nhà phát triển thay đổi trực tiếp file, đổi tên biến và di chuyển các component lớn mà không có bộ test tự động bảo vệ. Việc kiểm thử chủ yếu dựa vào 'bằng mắt' (manual visual check) trên trình duyệt. *Hệ quả:* Dễ bỏ sót các edge-case trên mobile, sai lệch kiểu dữ liệu ngầm định (type regression), và gây ra lỗi âm thầm khi lên môi trường Production.
+- **Trường phái 'Cowboy Refactoring' (Tái cấu trúc theo cảm tính):** Nhà phát triển thay đổi trực tiếp file, đổi tên biến và di chuyển các component lớn mà không có bộ test tự động bảo vệ. Việc kiểm thử chủ yếu dựa vào 'bằng mắt' (manual visual check) trên trình duyệt. _Hệ quả:_ Dễ bỏ sót các edge-case trên mobile, sai lệch kiểu dữ liệu ngầm định (type regression), và gây ra lỗi âm thầm khi lên môi trường Production.
 - **Trường phái 'Test-Driven Refactoring' (Tái cấu trúc có lưới an toàn):** Trước khi di chuyển bất kỳ dòng code nào, toàn bộ hợp đồng hành vi (behavioral contracts) và trạng thái bất biến (invariants) đều được khóa lại bằng hệ thống Unit Test và Integration Test toàn diện. Bất kỳ sự thay đổi nào gây lệch hợp đồng đều bị phát hiện tự động trong vài mili-giây.
 
 ## 3. Kinh nghiệm thực chiến / Case Study
 
-Trong đợt tái cấu trúc toàn diện hệ thống UI Portfolio &amp; Tech Blog vừa qua, tôi đã áp dụng quy trình kiểm thử và chuyển đổi tuần tự theo đường ống tự động:
+Trong đợt tái cấu trúc toàn diện hệ thống UI Portfolio & Tech Blog vừa qua, tôi đã áp dụng quy trình kiểm thử và chuyển đổi tuần tự theo đường ống tự động:
 
 ```mermaid
 sequenceDiagram

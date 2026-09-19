@@ -20,14 +20,14 @@ tags:
 
 Sắp xếp danh sách là bài toán nền tảng trong khoa học máy tính. Đề bài đặt ra: Cho một mảng gồm N số nguyên chưa có thứ tự, hãy sắp xếp lại các phần tử theo thứ tự tăng dần sao cho `arr[0] <= arr[1] <= ... <= arr[N-1]`.
 
-Thuật toán Sắp xếp Nổi bọt (Bubble Sort) là thuật toán sắp xếp kinh điển đầu tiên mà mọi kỹ sư phần mềm cần nắm vững để hiểu rõ cơ chế so sánh và hoán đổi lân cận (Adjacent Comparison &amp; Swapping).
+Thuật toán Sắp xếp Nổi bọt (Bubble Sort) là thuật toán sắp xếp kinh điển đầu tiên mà mọi kỹ sư phần mềm cần nắm vững để hiểu rõ cơ chế so sánh và hoán đổi lân cận (Adjacent Comparison & Swapping).
 
 ## 2. Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận nguyên bản không tối ưu:
 
 - Sử dụng hai vòng lặp lồng nhau duyệt qua mảng N - 1 lần. Mỗi lượt, duyệt từ đầu đến cuối mảng và so sánh cặp phần tử liền kề `arr[j]` và `arr[j+1]`, nếu `arr[j] > arr[j+1]` thì hoán đổi.
-- *Điểm yếu cốt tử:* Thuật toán luôn thực hiện đủ `N * (N - 1) / 2` phép so sánh kể cả khi mảng đầu vào *đã được sắp xếp hoàn hảo* ngay từ đầu, tiêu tốn lãng phí `O(N²)` chu kỳ CPU.
+- _Điểm yếu cốt tử:_ Thuật toán luôn thực hiện đủ `N * (N - 1) / 2` phép so sánh kể cả khi mảng đầu vào _đã được sắp xếp hoàn hảo_ ngay từ đầu, tiêu tốn lãng phí `O(N²)` chu kỳ CPU.
 
 ## 3. Tư duy tối ưu & Cấu trúc thuật toán
 
@@ -96,10 +96,10 @@ int main() {
 
 **Phân tích luồng thực thi (Dry Run Trace):**
 
-- *Đầu vào:* `data = {5, 1, 4, 2, 8}`, `N = 5`.
-- *Pass 1 (`i = 0`):* So sánh `(5, 1) ->` Swap `{1, 5, 4, 2, 8}`; So sánh `(5, 4) ->` Swap `{1, 4, 5, 2, 8}`; So sánh `(5, 2) ->` Swap `{1, 4, 2, 5, 8}`; So sánh `(5, 8) ->` Giữ nguyên. Cờ `swapped = true`. Phần tử `8` đã khóa vị trí index 4.
-- *Pass 2 (`i = 1`):* Quét đến index 2: So sánh `(1, 4) ->` Ok; `(4, 2) ->` Swap `{1, 2, 4, 5, 8}`; `(4, 5) ->` Ok. Cờ `swapped = true`. Phần tử `5` khóa index 3.
-- *Pass 3 (`i = 2`):* Quét `(1, 2)` và `(2, 4)`, không có hoán đổi &rarr; `swapped = false` &rarr; `break` ngay lập tức! Tiết kiệm 40% số phép tính so với bản gốc.
+- _Đầu vào:_ `data = {5, 1, 4, 2, 8}`, `N = 5`.
+- _Pass 1 (`i = 0`):_ So sánh `(5, 1) ->` Swap `{1, 5, 4, 2, 8}`; So sánh `(5, 4) ->` Swap `{1, 4, 5, 2, 8}`; So sánh `(5, 2) ->` Swap `{1, 4, 2, 5, 8}`; So sánh `(5, 8) ->` Giữ nguyên. Cờ `swapped = true`. Phần tử `8` đã khóa vị trí index 4.
+- _Pass 2 (`i = 1`):_ Quét đến index 2: So sánh `(1, 4) ->` Ok; `(4, 2) ->` Swap `{1, 2, 4, 5, 8}`; `(4, 5) ->` Ok. Cờ `swapped = true`. Phần tử `5` khóa index 3.
+- _Pass 3 (`i = 2`):_ Quét `(1, 2)` và `(2, 4)`, không có hoán đổi &rarr; `swapped = false` &rarr; `break` ngay lập tức! Tiết kiệm 40% số phép tính so với bản gốc.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 

@@ -31,7 +31,7 @@ The Bellman-Ford algorithm (developed by Richard Bellman and Lester Ford Jr.) se
 
 Dijkstra's algorithm fundamentally collapses in the presence of negative weights because its greedy invariant permanently locks nodes once popped from the priority queue. If a negative edge relaxes an already-settled node later, Dijkstra has no rollback mechanism to propagate updates downstream.
 
-To eliminate greedy assumptions, Bellman-Ford adopts dynamic programming by globally and iteratively relaxing *all edges* across the entire graph.
+To eliminate greedy assumptions, Bellman-Ford adopts dynamic programming by globally and iteratively relaxing _all edges_ across the entire graph.
 
 ## 3. Optimization Thinking & Algorithm Design
 
@@ -53,7 +53,7 @@ flowchart TD
         Pass2["Pass 2: Relax all E edges -> Finalize 2-edge paths"]
         PassV1["Pass V-1: Finalize all simple paths up to V-1 edges"]
         PassV["Pass V: Negative Cycle Verification"]
-        
+
         Pass1 --> Pass2 --> PassV1 --> PassV
     end
 
@@ -63,7 +63,7 @@ flowchart TD
     end
 ```
 
-**Complete C++ Implementation (Bellman-Ford with Early-Exit Flag &amp; Negative Cycle Detection):**
+**Complete C++ Implementation (Bellman-Ford with Early-Exit Flag & Negative Cycle Detection):**
 
 ```
 #include <iostream>
@@ -148,11 +148,11 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Init:* `dist = [0, &infin;, &infin;, &infin;, &infin;]`.
-- *Pass 1 (i = 1):* Relaxes edges from 0 and 1 &rarr; `dist = [0, -1, 2, 1, 1]`.
-- *Pass 2 (i = 2):* Edge `(4->3, w=-3)` relaxes node 3: `1 + (-3) = -2 < 1` &rarr; `dist[3] = -2`.
-- *Pass 3 (i = 3):* Zero updates occur &rarr; `updated = false` triggers early break.
-- *Verification:* Pass 5 finds zero further reductions &rarr; Stable optimal shortest path distances confirmed.
+- _Init:_ `dist = [0, &infin;, &infin;, &infin;, &infin;]`.
+- _Pass 1 (i = 1):_ Relaxes edges from 0 and 1 &rarr; `dist = [0, -1, 2, 1, 1]`.
+- _Pass 2 (i = 2):_ Edge `(4->3, w=-3)` relaxes node 3: `1 + (-3) = -2 < 1` &rarr; `dist[3] = -2`.
+- _Pass 3 (i = 3):_ Zero updates occur &rarr; `updated = false` triggers early break.
+- _Verification:_ Pass 5 finds zero further reductions &rarr; Stable optimal shortest path distances confirmed.
 
 ## 5. Complexity Evaluation & Real-world Applications
 

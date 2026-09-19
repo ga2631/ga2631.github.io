@@ -20,7 +20,7 @@ tags:
 
 Trong kiến trúc phần cứng máy tính hiện đại (kiến trúc Von Neumann), bộ nhớ RAM được tổ chức như một mảng tuyến tính khổng lồ của các ô nhớ (Byte). **Mảng (Array)** là cấu trúc dữ liệu nguyên thủy và nền tảng nhất trong khoa học máy tính, đại diện cho một khối các phần tử có cùng kiểu dữ liệu được cấp phát tại một **vùng nhớ liên tục (Contiguous Memory Block)**.
 
-Tuy nhiên, mảng tĩnh truyền thống (Static Array) có kích thước cố định tại thời điểm biên dịch. Trong thực tế phát triển phần mềm, số lượng phần tử cần lưu trữ thường biến động liên tục trong thời gian chạy (Runtime). Thách thức đặt ra: *Làm thế nào để thiết kế một **Mảng động (Dynamic Array - tương đương `std::vector` trong C++ hay `ArrayList` trong Java)** có khả năng tự động co giãn kích thước linh hoạt mà vẫn duy trì tốc độ truy xuất tức thời `O(1)` và tối ưu hóa hiệu năng bộ nhớ đệm CPU (CPU Cache Locality)?*
+Tuy nhiên, mảng tĩnh truyền thống (Static Array) có kích thước cố định tại thời điểm biên dịch. Trong thực tế phát triển phần mềm, số lượng phần tử cần lưu trữ thường biến động liên tục trong thời gian chạy (Runtime). Thách thức đặt ra: _Làm thế nào để thiết kế một **Mảng động (Dynamic Array - tương đương `std::vector` trong C++ hay `ArrayList` trong Java)** có khả năng tự động co giãn kích thước linh hoạt mà vẫn duy trì tốc độ truy xuất tức thời `O(1)` và tối ưu hóa hiệu năng bộ nhớ đệm CPU (CPU Cache Locality)?_
 
 ## 2. Ý tưởng tiếp cận ban đầu
 
@@ -40,8 +40,7 @@ Chiến lược tăng trưởng tuyến tính này (Linear Resizing) dẫn đế
 Address(arr[i]) = Base_Address + i x sizeof(ElementType)
 ```
 
-Thao tác đọc/ghi ngẫu nhiên (Random Access) chỉ tốn đúng 1 chu kỳ xung nhịp CPU `O(1)`.
-4. **Tối ưu hóa Bộ nhớ đệm (Cache Locality):** Khi CPU đọc một phần tử từ RAM, toàn bộ dòng đệm Cache Line (thường là 64 bytes) chứa các phần tử lân cận sẽ được tải đồng thời vào L1/L2 Cache, giúp tốc độ duyệt mảng nhanh gấp hàng chục lần so với danh sách liên kết.
+Thao tác đọc/ghi ngẫu nhiên (Random Access) chỉ tốn đúng 1 chu kỳ xung nhịp CPU `O(1)`. 4. **Tối ưu hóa Bộ nhớ đệm (Cache Locality):** Khi CPU đọc một phần tử từ RAM, toàn bộ dòng đệm Cache Line (thường là 64 bytes) chứa các phần tử lân cận sẽ được tải đồng thời vào L1/L2 Cache, giúp tốc độ duyệt mảng nhanh gấp hàng chục lần so với danh sách liên kết.
 
 ## 4. Triển khai mã nguồn & Dry Run
 
@@ -138,7 +137,7 @@ int main() {
     std::cout << "--- DEMO MANG DONG (DYNAMIC ARRAY) ---" << std::endl;
     for (int i = 1; i <= 5; ++i) {
         vec.pushBack(i * 10);
-        std::cout << "Them " << (i * 10) << " | Size: " << vec.size() 
+        std::cout << "Them " << (i * 10) << " | Size: " << vec.size()
                   << " | Capacity: " << vec.capacity() << std::endl;
     }
 
@@ -154,12 +153,12 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Khởi tạo:* `size = 0, capacity = 2`. Cấp phát mảng 2 phần tử trên Heap.
-- *Thêm 10 (i=1):* `size = 1 < 2` &rarr; `data[0] = 10`. `size = 1, capacity = 2`.
-- *Thêm 20 (i=2):* `size = 2 <= 2` &rarr; `data[1] = 20`. `size = 2, capacity = 2` (Đầy!).
-- *Thêm 30 (i=3):* `size = 2 == capacity = 2` &rarr; Kích hoạt `reallocate(4)`: Cấp phát mảng mới size 4, chép `[10, 20]` sang, gán `data[2] = 30` &rarr; `size = 3, capacity = 4`.
-- *Thêm 40 (i=4):* `size = 4, capacity = 4` (Đầy!).
-- *Thêm 50 (i=5):* Kích hoạt `reallocate(8)`: Cấp phát mảng mới size 8, chép 4 phần tử sang, gán `data[4] = 50` &rarr; `size = 5, capacity = 8`.
+- _Khởi tạo:_ `size = 0, capacity = 2`. Cấp phát mảng 2 phần tử trên Heap.
+- _Thêm 10 (i=1):_ `size = 1 < 2` &rarr; `data[0] = 10`. `size = 1, capacity = 2`.
+- _Thêm 20 (i=2):_ `size = 2 <= 2` &rarr; `data[1] = 20`. `size = 2, capacity = 2` (Đầy!).
+- _Thêm 30 (i=3):_ `size = 2 == capacity = 2` &rarr; Kích hoạt `reallocate(4)`: Cấp phát mảng mới size 4, chép `[10, 20]` sang, gán `data[2] = 30` &rarr; `size = 3, capacity = 4`.
+- _Thêm 40 (i=4):_ `size = 4, capacity = 4` (Đầy!).
+- _Thêm 50 (i=5):_ Kích hoạt `reallocate(8)`: Cấp phát mảng mới size 8, chép 4 phần tử sang, gán `data[4] = 50` &rarr; `size = 5, capacity = 8`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
@@ -172,7 +171,7 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Ứng dụng thực tế:**
   <ul>
   **Cấu trúc nền tảng:** Làm khối xây dựng cơ sở để cài đặt Bảng băm (Hash Table), Hàng đợi ưu tiên (Binary Heap), Hàng chờ vòng (Ring Buffer).
-- **Xử lý đồ họa &amp; Game:** Ma trận biến đổi 3D (Transformation Matrix), bộ đệm đỉnh (Vertex Buffers) trong OpenGL/DirectX.
+- **Xử lý đồ họa & Game:** Ma trận biến đổi 3D (Transformation Matrix), bộ đệm đỉnh (Vertex Buffers) trong OpenGL/DirectX.
 - **Hệ thống cơ sở dữ liệu:** Lưu trữ các trang dữ liệu (Database Pages) theo khối bộ nhớ liên tục để tăng tốc I/O ổ đĩa.
 
 </li>

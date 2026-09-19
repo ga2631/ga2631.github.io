@@ -29,10 +29,10 @@ The purpose of this article is to introduce the **Diagrams as Code (DaC)** metho
 
 The core principle of Mermaid.js is using a declarative text syntax to construct an Abstract Syntax Tree (AST), which is then dynamically compiled into crisp, scalable vector graphics (SVG). Here are the most essential diagram families used in software engineering:
 
-1. **Flowchart &amp; Architecture Graph:** Visualizes data flows, infrastructure topologies, or component hierarchies. Supports `TD` (Top-Down), `LR` (Left-Right) orientations and modular `subgraph` clusters.
+1. **Flowchart & Architecture Graph:** Visualizes data flows, infrastructure topologies, or component hierarchies. Supports `TD` (Top-Down), `LR` (Left-Right) orientations and modular `subgraph` clusters.
 2. **Sequence Diagram:** Exceptionally powerful for modeling protocol handshakes, inter-service REST/gRPC calls, and lifecycle events. Supports `autonumber`, `actor`, `participant`, branching `alt/else` blocks, and `loop` constructs.
 3. **Git Graph:** Programmatically maps branching workflows (GitFlow / Trunk-based development), commit histories, and merge/rebase points.
-4. **Class &amp; Entity Relationship Diagram (ERD):** Defines database schemas, foreign keys, cardinality, and object-oriented class relationships.
+4. **Class & Entity Relationship Diagram (ERD):** Defines database schemas, foreign keys, cardinality, and object-oriented class relationships.
 
 ```mermaid
 flowchart LR
@@ -76,19 +76,20 @@ gitGraph
     merge develop id: "release: v1.1.0"
     commit id: "hotfix: security-patch" tag: "v1.1.1"
 ```
+
 3. **Automate PDF/PNG generation in CI/CD:** Integrate the `@mermaid-js/mermaid-cli` package (`mmdc` command) into GitHub Actions or GitLab CI to automatically compile diagrams into publication-ready technical manuals.
 
 ## 4. Troubleshooting & Common Pitfalls
 
 When authoring complex Mermaid diagrams, watch out for these three common pitfalls:
 
-1. **Special Characters in Text Labels:** If node labels contain nested parentheses `()` or square brackets `[]`, the parser may confuse them with node boundary syntax. *Solution:* Avoid nested brackets or use hyphens/slashes to separate label details: `NodeA[Node Title - Extra Details]`.
+1. **Special Characters in Text Labels:** If node labels contain nested parentheses `()` or square brackets `[]`, the parser may confuse them with node boundary syntax. _Solution:_ Avoid nested brackets or use hyphens/slashes to separate label details: `NodeA[Node Title - Extra Details]`.
 2. **HTML Entity Escaping:** When Markdown preprocessors convert `<` to `<` or `>` to `>`, sanitize and decode HTML entities before passing the string to `mermaid.render()`.
 3. **Layout Overflow on High-Density Graphs:** Avoid placing 50+ services on a single flat canvas. Segment the topology using modular `subgraph` groups or divide them across bounded domain contexts.
 
 ## 5. Evaluation & Future Scaling
 
-**Evaluation &amp; Future Outlook:**
+**Evaluation & Future Outlook:**
 
 - **Engineering Productivity ROI:** Reduces diagram maintenance time by over **80%**. Architectural updates are reviewed and tracked directly via standard Git commits and pull requests.
 - **Automated Diagram Generation (AST to Diagrams):** Pair OpenAPI/Swagger specs or TypeScript AST parsers to auto-generate class diagrams and API flow charts directly from code without manual drawing.

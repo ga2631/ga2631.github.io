@@ -24,9 +24,9 @@ In modern mission-critical user applications—such as E-Commerce platforms, Dig
 
 Consider the uncompromising engineering and business demands placed upon production OLTP systems:
 
-1. **Absolute Financial &amp; Inventory Data Integrity:** When thousands of concurrent shoppers race to purchase the last remaining item during a high-stakes Flash Sale, or when moving balances between bank accounts, the database must categorically prevent *Overselling*, *Negative Balances*, or *Phantom Deductions*.
+1. **Absolute Financial & Inventory Data Integrity:** When thousands of concurrent shoppers race to purchase the last remaining item during a high-stakes Flash Sale, or when moving balances between bank accounts, the database must categorically prevent _Overselling_, _Negative Balances_, or _Phantom Deductions_.
 2. **Sub-millisecond / Low-Latency SLA:** End users demand instant responsiveness (under 100ms end-to-end). The operational database must sustain tens of thousands of atomic CRUD operations per second (High QPS/TPS) with p99 latencies beneath 10ms.
-3. **High Availability &amp; Zero Data Loss (RPO = 0):** Hardware failures, network partitions, or unexpected node reboots must never lose an acknowledged transaction.
+3. **High Availability & Zero Data Loss (RPO = 0):** Hardware failures, network partitions, or unexpected node reboots must never lose an acknowledged transaction.
 
 **The Catastrophic Anti-Pattern of Conflating OLTP and OLAP:**
 
@@ -95,13 +95,13 @@ flowchart TD
         PrimaryDB[("Primary Database (PostgreSQL/MySQL - Write Master)")]
         ReplicaDB1[("Read Replica 1 (Point Lookups)")]
         ReplicaDB2[("Read Replica 2 (Point Lookups)")]
-        
+
         AppServer --> Pooler
         AppServer <--> RedisCache
         Pooler -->|"ACID Writes & Critical Reads"| PrimaryDB
         Pooler -.->|"Read Only Lookups"| ReplicaDB1
         Pooler -.->|"Read Only Lookups"| ReplicaDB2
-        
+
         PrimaryDB -->|"Streaming Replication (WAL / Binlog)"| ReplicaDB1
         PrimaryDB -->|"Streaming Replication (WAL / Binlog)"| ReplicaDB2
     end
@@ -110,7 +110,7 @@ flowchart TD
         Debezium["Debezium CDC Engine"]
         Kafka["Kafka Distributed Event Bus"]
         OLAP["Data Warehouse / Lakehouse (Snowflake / ClickHouse)"]
-        
+
         PrimaryDB -.->|"Zero-overhead Binlog Tail"| Debezium
         Debezium --> Kafka --> OLAP
     end
@@ -120,7 +120,7 @@ flowchart TD
 
 To demonstrate production OLTP concurrency control, below is a fully normalized 3NF schema implementation paired with Python transaction controllers solving high-concurrency inventory reservation without race conditions.
 
-**1. Normalized 3NF DDL Schema for E-Commerce &amp; Digital Wallets (PostgreSQL):**
+**1. Normalized 3NF DDL Schema for E-Commerce & Digital Wallets (PostgreSQL):**
 
 ```sql
 -- Core User Identity Table
@@ -191,7 +191,7 @@ def deduct_inventory_pessimistic(conn, product_id: int, quantity: int) -> bool:
             if not row or row['available_stock'] < quantity:
                 conn.rollback()
                 return False # Insufficient stock
-            
+
             # Atomic in-place deduction
             cur.execute(
                 "UPDATE inventory_items SET available_stock = available_stock - %s, updated_at = CURRENT_TIMESTAMP WHERE product_id = %s;",
@@ -213,24 +213,24 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
             wallet = cur.fetchone()
             if not wallet or wallet['balance'] < deduct_amount:
                 return False # Insufficient funds
-            
+
             current_version = wallet['version']
             new_balance = wallet['balance'] - deduct_amount
-            
+
             # 2. Atomic Compare-And-Swap (CAS) update
             cur.execute(
                 "UPDATE wallets SET balance = %s, version = version + 1, updated_at = CURRENT_TIMESTAMP WHERE wallet_id = %s AND version = %s;",
                 (new_balance, wallet_id, current_version)
             )
             conn.commit()
-            
+
             # 3. Exactly 1 row affected confirms zero race collision
             if cur.rowcount == 1:
                 return True
-            
+
             # Collision detected -> Exponential backoff retry
             time.sleep(0.05 * (2 ** attempt))
-            
+
     return False # Retry threshold exhausted
 ```
 
@@ -244,10 +244,10 @@ Operating OLTP databases under sustained tens of thousands of TPS without query 
 - **Covering Indexes (Index-Only Scans with INCLUDE):** Syntax like `CREATE INDEX idx_orders_covering ON orders (user_id) INCLUDE (total_amount, status);` enables PostgreSQL to satisfy read queries directly from the B-Tree leaf pages without performing random heap lookups.
 - **Partial / Filtered Indexes:** Index only active operational working sets: `CREATE INDEX idx_pending_orders ON orders(created_at) WHERE status = 'PENDING';`, reducing index disk footprints by over 90%.
 
-**2. Connection Pooling &amp; Lean Transaction Boundaries:**
+**2. Connection Pooling & Lean Transaction Boundaries:**
 
 - **Ultra-Lean Transaction Boundaries:** Never execute long-running tasks, third-party network I/O, or asynchronous logging inside an active database transaction. Prolonged locks induce deadlocks and exhaust connection limits.
-- **Transaction-Level Connection Multiplexing:** Deploy *PgBouncer* in Transaction Pooling mode to multiplex thousands of microservice client threads into 50-100 high-performance database backend connections.
+- **Transaction-Level Connection Multiplexing:** Deploy _PgBouncer_ in Transaction Pooling mode to multiplex thousands of microservice client threads into 50-100 high-performance database backend connections.
 
 **3. Empirical Concurrency Benchmark (10,000 Concurrent Transactions):**
 
@@ -292,11 +292,11 @@ Operating OLTP databases under sustained tens of thousands of TPS without query 
 
 OLTP databases form the immutable transactional cornerstone of modern software architecture. Mastering their invariants prevents catastrophic financial and operational losses.
 
-**Actionable Architecture Recommendations for System &amp; Data Engineers:**
+**Actionable Architecture Recommendations for System & Data Engineers:**
 
 1. **Keep Transactions Lean and Atomic:** Minimize the duration between `BEGIN` and `COMMIT`. Prepare all parameters in application memory prior to opening the database transaction.
-2. **Select Concurrency Control Based on Contention Profiles:** Enforce *Pessimistic Locking* on hot contention bottlenecks (Flash Sale inventory, booking slots); use *Optimistic Concurrency Control* for distributed entity updates.
+2. **Select Concurrency Control Based on Contention Profiles:** Enforce _Pessimistic Locking_ on hot contention bottlenecks (Flash Sale inventory, booking slots); use _Optimistic Concurrency Control_ for distributed entity updates.
 3. **Route Queries via Read Replicas:** Offload non-critical point lookups and secondary reads to streaming read replicas, preserving master instance CPU/IOPS for transactional writes.
 4. **Bridge OLTP to Analytics Exclusively via Change Data Capture (CDC):** Never rely on application-level Dual-Writes to sync search engines or data warehouses. Deploy Debezium CDC to capture changes directly from the database Write-Ahead Log in an asynchronous, fault-tolerant, and zero-overhead manner.
 
-**Closing Takeaway:** *A resilient OLTP foundation is forged through unwavering adherence to ACID principles, disciplined normalization, and intelligent concurrency design—empowering your platform to scale to millions of concurrent users with zero data loss!*
+**Closing Takeaway:** _A resilient OLTP foundation is forged through unwavering adherence to ACID principles, disciplined normalization, and intelligent concurrency design—empowering your platform to scale to millions of concurrent users with zero data loss!_

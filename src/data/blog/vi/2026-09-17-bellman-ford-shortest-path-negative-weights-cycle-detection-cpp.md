@@ -31,7 +31,7 @@ Thuật toán Bellman-Ford (phát triển bởi Richard Bellman và Lester Ford 
 
 Thuật toán Dijkstra thất bại hoàn toàn trên đồ thị có trọng số âm vì chiến lược Tham lam chốt cố định đỉnh có khoảng cách nhỏ nhất tại mỗi bước. Khi một cạnh âm xuất hiện ở bước sau, khoảng cách đến đỉnh đã chốt có thể bị giảm xuống, nhưng Dijkstra không có cơ chế hoàn tác hoặc cập nhật lại các đỉnh đã bị loại khỏi hàng đợi ưu tiên.
 
-Để đảm bảo tính chính xác tuyệt đối mà không cần giả định tham lam, ta phải chuyển sang tư duy Quy hoạch động: Thực hiện nới lỏng (Relax) trên *toàn bộ danh sách cạnh* một cách có hệ thống.
+Để đảm bảo tính chính xác tuyệt đối mà không cần giả định tham lam, ta phải chuyển sang tư duy Quy hoạch động: Thực hiện nới lỏng (Relax) trên _toàn bộ danh sách cạnh_ một cách có hệ thống.
 
 ## 3. Tư duy tối ưu & Cấu trúc thuật toán
 
@@ -53,7 +53,7 @@ flowchart TD
         Pass2["Lượt 2: Relax toàn bộ E cạnh -> Chốt đường đi độ dài 2 cạnh"]
         PassV1["Lượt V-1: Chốt toàn bộ đường đi đơn tối đa V-1 cạnh"]
         PassV["Lượt V: Kiểm tra Chu Trình Âm"]
-        
+
         Pass1 --> Pass2 --> PassV1 --> PassV
     end
 
@@ -63,7 +63,7 @@ flowchart TD
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh (Bellman-Ford với Tối ưu Dừng sớm &amp; Phát hiện Chu trình âm):**
+**Mã nguồn C++ hoàn chỉnh (Bellman-Ford với Tối ưu Dừng sớm & Phát hiện Chu trình âm):**
 
 ```
 #include <iostream>
@@ -150,8 +150,8 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Khởi tạo:* `dist = [0, &infin;, &infin;, &infin;, &infin;]`.
-- *Lượt 1 (i = 1):*
+- _Khởi tạo:_ `dist = [0, &infin;, &infin;, &infin;, &infin;]`.
+- _Lượt 1 (i = 1):_
   <ul>
   Cạnh `(0->1, w=-1)`: `dist[1] = 0 + (-1) = -1`.
 - Cạnh `(0->2, w=4)`: `dist[2] = 4`.
@@ -162,7 +162,7 @@ int main() {
 
 </li>
 <li>*Lượt 2 (i = 2):*
-  
+
 
 - Cạnh `(4->3, w=-3)`: `dist[4] + (-3) = 1 - 3 = -2 < dist[3]=1` &rarr; Nới lỏng! `dist[3] = -2`.
 - Cạnh `(3->1, w=1)`: `dist[3] + 1 = -2 + 1 = -1 == dist[1]` (không đổi).
@@ -179,13 +179,13 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 
 - **Độ phức tạp Thời gian (Time Complexity):**
   <ul>
-  Worst &amp; Average Case: `O(V x E)`. Với đồ thị dày (`E ~ V²`), độ phức tạp tiến đến `O(V³)`.
+  Worst & Average Case: `O(V x E)`. Với đồ thị dày (`E ~ V²`), độ phức tạp tiến đến `O(V³)`.
 - Best Case: `O(E)` khi mảng khoảng cách hội tụ ngay từ lượt đầu tiên nhờ cờ hiệu dừng sớm.
 
 </li>
 <li>**Độ phức tạp Không gian (Space Complexity):** `O(V)` cho mảng khoảng cách `dist` và mảng `parent`, cùng `O(E)` để lưu trữ danh sách cạnh rời rạc.</li>
 <li>**Ứng dụng thực tế:**
-  
+
 
 - **Giao thức định tuyến RIP (Routing Information Protocol):** Nền tảng của thuật toán Distance-Vector Routing trong mạng viễn thông.
 - **Phát hiện Kinh doanh chênh lệch giá (Currency Arbitrage Detection):** Chuyển đổi ma trận tỷ giá hối đoái bằng phép logarit `-log(rate)` để biến bài toán nhân tỷ giá thành bài toán tìm chu trình âm trong đồ thị.

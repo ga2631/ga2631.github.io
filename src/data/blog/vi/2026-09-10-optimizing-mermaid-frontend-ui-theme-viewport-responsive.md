@@ -79,8 +79,8 @@ sequenceDiagram
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 
-**Phân tích Hiệu năng &amp; Trải nghiệm Thực tế:**
+**Phân tích Hiệu năng & Trải nghiệm Thực tế:**
 
-- **Hiệu năng dựng hình GPU:** Thao tác Pan &amp; Zoom trong modal viewer sử dụng thuộc tính `transform: translate3d(...) scale(...)` thuần túy, tận dụng tối đa GPU Compositing để đạt độ mượt **60 FPS** tuyệt đối.
+- **Hiệu năng dựng hình GPU:** Thao tác Pan & Zoom trong modal viewer sử dụng thuộc tính `transform: translate3d(...) scale(...)` thuần túy, tận dụng tối đa GPU Compositing để đạt độ mượt **60 FPS** tuyệt đối.
 - **Giảm tải Bundle ban đầu:** Kỹ thuật lazy-load giúp tiết kiệm hơn **1.4 MB JavaScript** cho các bài viết không chứa sơ đồ.
 - **Khả năng ứng dụng rộng rãi:** Giải pháp này là kiến trúc mẫu mực cho các nền tảng kỹ thuật phức tạp như API Documentation, Enterprise Architecture Dashboards, và các Tech Blogs chuyên nghiệp.

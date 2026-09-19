@@ -30,24 +30,23 @@ Bản chất của Bảng băm là sử dụng một **Hàm băm (Hash Function)
 bucket_index = hash(key) % capacity
 ```
 
-Thách thức toán học cốt tử: Theo *Nguyên lý chuồng bồ câu (Pigeonhole Principle)*, vì không gian các khóa có thể có là vô hạn trong khi kích thước mảng băm là hữu hạn, luôn luôn tồn tại trường hợp **hai khóa khác nhau cùng sinh ra một chỉ số ô nhớ (`hash(k₁) % M == hash(k₂) % M`)**. Hiện tượng này gọi là **Đụng độ băm (Hash Collision)**.
+Thách thức toán học cốt tử: Theo _Nguyên lý chuồng bồ câu (Pigeonhole Principle)_, vì không gian các khóa có thể có là vô hạn trong khi kích thước mảng băm là hữu hạn, luôn luôn tồn tại trường hợp **hai khóa khác nhau cùng sinh ra một chỉ số ô nhớ (`hash(k₁) % M == hash(k₂) % M`)**. Hiện tượng này gọi là **Đụng độ băm (Hash Collision)**.
 
 ## 3. Tư duy tối ưu & Cấu trúc thuật toán
 
 Để giải quyết đụng độ và duy trì hiệu năng `O(1)`, hai chiến lược kiến trúc kinh điển được áp dụng:
 
 1. **Phương pháp Dây chuyền Tách biệt (Separate Chaining):**
-  
 
 - Mỗi ô nhớ (Bucket) của bảng băm là một Danh sách liên kết (Linked List) hoặc Cây đỏ đen (Red-Black Tree khi chuỗi dài &gt; 8).
 - Khi xảy ra đụng độ, cặp `{key, value}` mới chỉ việc được thêm vào danh sách tại bucket đó trong `O(1)`.
 - Đây là cơ chế mặc định trong `std::unordered_map` của C++ và `HashMap` của Java.
+
 2. **Phương pháp Địa chỉ Mở (Open Addressing / Linear Probing):**
-  
 
 - Mọi phần tử đều nằm trực tiếp trong mảng. Khi ô `bucket` bị chiếm dụng, thuật toán dò tiếp các ô lân cận `(bucket + 1) % capacity` cho đến khi tìm thấy ô trống.
-3. **Kiểm soát Hệ số tải &amp; Tái băm (Load Factor &amp; Dynamic Rehashing):**
-  
+
+3. **Kiểm soát Hệ số tải & Tái băm (Load Factor & Dynamic Rehashing):**
 
 - Hệ số tải `alpha = N / capacity` biểu thị mức độ đầy của bảng.
 - Khi `alpha >= 0.75`, bảng băm tự động cấp phát mảng mới có kích thước gấp đôi (`capacity x 2`) và băm lại toàn bộ các phần tử (Rehashing) để bảo toàn độ phức tạp trung bình `O(1)`.
@@ -126,7 +125,7 @@ private:
     }
 
 public:
-    HashTable(size_t initialCapacity = 7) 
+    HashTable(size_t initialCapacity = 7)
         : numElements(0), capacity(initialCapacity) {
         table.resize(capacity);
     }
@@ -187,7 +186,7 @@ int main() {
     }
 
     ht.remove("banana");
-    std::cout << "Tim lai 'banana' sau khi xoa: " 
+    std::cout << "Tim lai 'banana' sau khi xoa: "
               << (ht.get("banana", val) ? "TIM THAY" : "KHONG TIM THAY") << std::endl;
 
     return 0;
@@ -196,11 +195,11 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Khởi tạo:* `capacity = 7, numElements = 0`.
-- *Thêm "apple" (val 100):* `hash("apple") % 7 = 3` &rarr; Đưa vào `table[3]`. `numElements = 1`.
-- *Thêm "banana" (val 40):* `hash("banana") % 7 = 1` &rarr; Đưa vào `table[1]`. `numElements = 2`.
-- *Thêm "cherry" (val 80):* `hash("cherry") % 7 = 1` (Đụng độ với banana!) &rarr; Thêm vào danh sách liên kết tại `table[1]`. `table[1] = [banana, cherry]`.
-- *Tra cứu "banana":* Băm ra bucket 1 &rarr; Quét phần tử đầu tiên của danh sách, thấy khóa "banana" &rarr; Trả về `40` trong `O(1)`.
+- _Khởi tạo:_ `capacity = 7, numElements = 0`.
+- _Thêm "apple" (val 100):_ `hash("apple") % 7 = 3` &rarr; Đưa vào `table[3]`. `numElements = 1`.
+- _Thêm "banana" (val 40):_ `hash("banana") % 7 = 1` &rarr; Đưa vào `table[1]`. `numElements = 2`.
+- _Thêm "cherry" (val 80):_ `hash("cherry") % 7 = 1` (Đụng độ với banana!) &rarr; Thêm vào danh sách liên kết tại `table[1]`. `table[1] = [banana, cherry]`.
+- _Tra cứu "banana":_ Băm ra bucket 1 &rarr; Quét phần tử đầu tiên của danh sách, thấy khóa "banana" &rarr; Trả về `40` trong `O(1)`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
@@ -213,7 +212,7 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
   <ul>
   **Hệ thống Database Indexing:** Hash Indexes trong PostgreSQL / MySQL Memory Engine cho các phép so sánh bằng (`=`).
 - **Bộ nhớ đệm trong Bộ nhớ (In-Memory Cache):** Redis và Memcached lưu trữ cặp Key-Value siêu tốc.
-- **Trình biên dịch &amp; Thông dịch viên:** Bảng ký hiệu (Symbol Table) quản lý tên biến, hàm và phạm vi tầm vực (Scope).
+- **Trình biên dịch & Thông dịch viên:** Bảng ký hiệu (Symbol Table) quản lý tên biến, hàm và phạm vi tầm vực (Scope).
 
 </li>
 </ul>

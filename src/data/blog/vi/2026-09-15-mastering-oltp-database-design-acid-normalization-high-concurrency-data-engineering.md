@@ -24,9 +24,9 @@ Trong mọi hệ thống phần mềm hướng người dùng (User-Facing Appli
 
 Hãy xem xét những thách thức kinh doanh và kỹ thuật khốc liệt mà một hệ thống OLTP phải đối mặt hàng ngày:
 
-1. **Đảm bảo Tính Toàn vẹn Tuyệt đối của Tiền tệ &amp; Tồn kho (Data Integrity):** Khi hàng nghìn người dùng cùng nhấn nút 'Đặt mua' một món hàng Flash Sale chỉ còn 1 sản phẩm duy nhất trong kho, hoặc khi thực hiện giao dịch chuyển tiền giữa 2 tài khoản ngân hàng, hệ thống tuyệt đối không được phép xảy ra hiện tượng *Bán quá số lượng (Overselling)* hay *Tiền đã trừ ở người gửi nhưng chưa cộng vào người nhận*.
+1. **Đảm bảo Tính Toàn vẹn Tuyệt đối của Tiền tệ & Tồn kho (Data Integrity):** Khi hàng nghìn người dùng cùng nhấn nút 'Đặt mua' một món hàng Flash Sale chỉ còn 1 sản phẩm duy nhất trong kho, hoặc khi thực hiện giao dịch chuyển tiền giữa 2 tài khoản ngân hàng, hệ thống tuyệt đối không được phép xảy ra hiện tượng _Bán quá số lượng (Overselling)_ hay _Tiền đã trừ ở người gửi nhưng chưa cộng vào người nhận_.
 2. **Độ trễ Siêu thấp (Sub-millisecond / Low-Latency SLA):** Người dùng không thể chờ đợi quá 100ms cho một thao tác thêm vào giỏ hàng hoặc xác thực đơn hàng. Hệ thống phải phục vụ hàng chục nghìn truy vấn đọc/ghi mỗi giây (High QPS/TPS) với độ trễ p99 dưới 10ms.
-3. **Khả năng Sẵn sàng 24/7 (High Availability &amp; Zero Data Loss):** Bất kỳ sự cố sập nguồn hoặc lỗi phần cứng nào trên máy chủ cơ sở dữ liệu cũng không được làm mất các giao dịch đã cam kết thành công (RPO = 0, RTO tính bằng giây).
+3. **Khả năng Sẵn sàng 24/7 (High Availability & Zero Data Loss):** Bất kỳ sự cố sập nguồn hoặc lỗi phần cứng nào trên máy chủ cơ sở dữ liệu cũng không được làm mất các giao dịch đã cam kết thành công (RPO = 0, RTO tính bằng giây).
 
 **Cạm bẫy của việc Nhầm lẫn giữa OLTP và OLAP:**
 
@@ -52,7 +52,7 @@ Nguyên tắc vàng của OLTP là chuẩn hóa tới **3NF (Third Normal Form) 
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Cấp độ Chuẩn hóa</th>
       <th style="padding: 8px;">Quy tắc Bắt buộc</th>
-      <th style="padding: 8px;">Mục tiêu &amp; Ứng dụng Thực tế</th>
+      <th style="padding: 8px;">Mục tiêu & Ứng dụng Thực tế</th>
     </tr>
   </thead>
   <tbody>
@@ -95,13 +95,13 @@ flowchart TD
         PrimaryDB[("Primary Database (PostgreSQL/MySQL - Write Only)")]
         ReplicaDB1[("Read Replica 1 (Point Lookups)")]
         ReplicaDB2[("Read Replica 2 (Point Lookups)")]
-        
+
         AppServer --> Pooler
         AppServer <--> RedisCache
         Pooler -->|"ACID Writes & Critical Reads"| PrimaryDB
         Pooler -.->|"Read Only (Eventual Consistency)"| ReplicaDB1
         Pooler -.->|"Read Only (Eventual Consistency)"| ReplicaDB2
-        
+
         PrimaryDB -->|"Streaming Replication (WAL / Binlog)"| ReplicaDB1
         PrimaryDB -->|"Streaming Replication (WAL / Binlog)"| ReplicaDB2
     end
@@ -110,7 +110,7 @@ flowchart TD
         Debezium["Debezium CDC Engine"]
         Kafka["Kafka Distributed Event Log"]
         OLAP["Data Warehouse / Lakehouse (Snowflake / ClickHouse)"]
-        
+
         PrimaryDB -.->|"Zero-overhead Binlog Tail"| Debezium
         Debezium --> Kafka --> OLAP
     end
@@ -120,7 +120,7 @@ flowchart TD
 
 Để minh họa việc triển khai mô hình OLTP xử lý tranh chấp đồng thời cao (High-Concurrency Concurrency Control), dưới đây là thiết kế DDL chuẩn hóa và mã nguồn Python/SQL giải quyết bài toán trừ tồn kho Flash Sale không bao giờ bị âm.
 
-**1. Thiết kế DDL Chuẩn hóa 3NF cho Hệ thống Ví điện tử &amp; Đơn hàng (PostgreSQL):**
+**1. Thiết kế DDL Chuẩn hóa 3NF cho Hệ thống Ví điện tử & Đơn hàng (PostgreSQL):**
 
 ```sql
 -- Tạo bảng Tài khoản Người dùng (Users Core)
@@ -191,7 +191,7 @@ def deduct_inventory_pessimistic(conn, product_id: int, quantity: int) -> bool:
             if not row or row['available_stock'] < quantity:
                 conn.rollback()
                 return False # Het hang
-            
+
             # Tru ton kho an toan tuyet doi
             cur.execute(
                 "UPDATE inventory_items SET available_stock = available_stock - %s, updated_at = CURRENT_TIMESTAMP WHERE product_id = %s;",
@@ -213,24 +213,24 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
             wallet = cur.fetchone()
             if not wallet or wallet['balance'] < deduct_amount:
                 return False # Khong du so du
-            
+
             current_version = wallet['version']
             new_balance = wallet['balance'] - deduct_amount
-            
+
             # 2. Cap nhat co dieu kien kiem tra version (Atomic Compare-and-Swap)
             cur.execute(
                 "UPDATE wallets SET balance = %s, version = version + 1, updated_at = CURRENT_TIMESTAMP WHERE wallet_id = %s AND version = %s;",
                 (new_balance, wallet_id, current_version)
             )
             conn.commit()
-            
+
             # 3. Neu so dong bi anh huong = 1 tuc la thanh cong
             if cur.rowcount == 1:
                 return True
-            
+
             # Neu rowcount = 0 tuc la da bi xung dot -> Thu lai
             time.sleep(0.05 * (2 ** attempt))
-            
+
     return False # Vuot qua so lan thu lai
 ```
 
@@ -244,10 +244,10 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
 - **Covering Indexes (Chỉ mục Bao phủ với INCLUDE):** Sử dụng cú pháp `CREATE INDEX idx_orders_covering ON orders (user_id) INCLUDE (total_amount, status);` giúp PostgreSQL đọc dữ liệu trực tiếp từ B-Tree (Index-Only Scan) mà không cần truy xuất vào bảng gốc (Heap Table).
 - **Partial Indexes (Chỉ mục Phân vùng Điều kiện):** Chỉ đánh chỉ mục trên tập dữ liệu đang hoạt động, ví dụ: `CREATE INDEX idx_pending_orders ON orders(created_at) WHERE status = 'PENDING';`. Giúp kích thước chỉ mục nhỏ hơn 90% so với đánh trên toàn bộ bảng.
 
-**2. Quản lý Kết nối &amp; Giảm thiểu Thời gian Giao dịch (Connection Pooling &amp; Lean Transactions):**
+**2. Quản lý Kết nối & Giảm thiểu Thời gian Giao dịch (Connection Pooling & Lean Transactions):**
 
-- **Quy tắc Transaction Tinh gọn:** Tuyệt đối không thực hiện các tác vụ tốn thời gian như gọi API bên thứ ba (HTTP Call), gửi Email hoặc xử lý ảnh *bên trong một Transaction của Cơ sở dữ liệu*. Thời gian giữ Lock càng dài, nguy cơ gây Deadlock và nghẽn Connection Pool càng cao.
-- **Sử dụng Connection Pooler chuyên dụng:** Triển khai *PgBouncer* (PostgreSQL) ở chế độ Transaction Pooling để chia sẻ hàng nghìn kết nối client vào một nhóm 50-100 kết nối thực sự tới Database.
+- **Quy tắc Transaction Tinh gọn:** Tuyệt đối không thực hiện các tác vụ tốn thời gian như gọi API bên thứ ba (HTTP Call), gửi Email hoặc xử lý ảnh _bên trong một Transaction của Cơ sở dữ liệu_. Thời gian giữ Lock càng dài, nguy cơ gây Deadlock và nghẽn Connection Pool càng cao.
+- **Sử dụng Connection Pooler chuyên dụng:** Triển khai _PgBouncer_ (PostgreSQL) ở chế độ Transaction Pooling để chia sẻ hàng nghìn kết nối client vào một nhóm 50-100 kết nối thực sự tới Database.
 
 **3. Bảng Benchmark Đánh giá Hiệu năng Khóa Đồng thời (Concurrency Benchmark trên 10,000 Concurrent Requests):**
 
@@ -292,11 +292,11 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
 
 Hệ thống OLTP là nền móng vận hành cốt lõi của mọi sản phẩm công nghệ. Một sai lầm nhỏ trong thiết kế mô hình hoặc kiểm soát giao dịch có thể dẫn đến thiệt hại tài chính không thể cứu vãn.
 
-**Khuyến nghị Hành động Dành cho Kỹ sư Thiết kế Hệ thống &amp; Kỹ sư Dữ liệu:**
+**Khuyến nghị Hành động Dành cho Kỹ sư Thiết kế Hệ thống & Kỹ sư Dữ liệu:**
 
 1. **Thiết kế Giao dịch Cực kỳ Tinh gọn:** Giữ các khối `BEGIN ... COMMIT` ngắn nhất có thể. Luôn chuẩn bị sẵn sàng dữ liệu trong bộ nhớ trước khi mở Transaction và cam kết ngay lập tức.
-2. **Lựa chọn Cơ chế Khóa Phù hợp với Ngữ cảnh Nghiệp vụ:** Dùng *Pessimistic Locking* cho các điểm nóng tranh chấp dữ liệu cao độ (Flash Sale, Inventory Booking); Dùng *Optimistic Locking* cho các thao tác cập nhật hồ sơ, chỉnh sửa thông tin người dùng.
+2. **Lựa chọn Cơ chế Khóa Phù hợp với Ngữ cảnh Nghiệp vụ:** Dùng _Pessimistic Locking_ cho các điểm nóng tranh chấp dữ liệu cao độ (Flash Sale, Inventory Booking); Dùng _Optimistic Locking_ cho các thao tác cập nhật hồ sơ, chỉnh sửa thông tin người dùng.
 3. **Tách Biệt Đọc/Ghi qua Read Replicas:** Điều hướng các truy vấn đọc tra cứu (Point Lookups) sang cụm máy chủ Read Replicas để dành trọn vẹn tài nguyên CPU/IOPS của Primary Server cho các thao tác ghi giao dịch.
 4. **Sử dụng Change Data Capture (CDC) làm Cầu nối sang Data Platform:** Tuyệt đối không dùng cơ chế Dual-Write (Ghi đồng thời vào OLTP và Elasticsearch/Lakehouse từ code ứng dụng vì dễ gây lệch dữ liệu khi có lỗi mạng). Hãy sử dụng Debezium CDC để trích xuất dữ liệu trực tiếp từ Write-Ahead Log một cách bất đồng bộ và tin cậy 100%.
 
-**Lời kết:** *Xây dựng một hệ thống OLTP vững chắc là nghệ thuật tôn trọng các nguyên lý ACID nguyên bản kết hợp với tư duy kiểm soát đồng thời thông minh. Đó là bệ phóng an toàn để doanh nghiệp tự tin mở rộng quy mô lên hàng triệu người dùng!*
+**Lời kết:** _Xây dựng một hệ thống OLTP vững chắc là nghệ thuật tôn trọng các nguyên lý ACID nguyên bản kết hợp với tư duy kiểm soát đồng thời thông minh. Đó là bệ phóng an toàn để doanh nghiệp tự tin mở rộng quy mô lên hàng triệu người dùng!_

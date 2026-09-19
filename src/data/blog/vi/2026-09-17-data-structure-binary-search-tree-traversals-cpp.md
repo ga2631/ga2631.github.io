@@ -40,16 +40,16 @@ Tại sao BST lại vượt trội hơn Mảng và Danh sách liên kết?
 
 **Bốn Thuật toán Duyệt Cây Chuẩn mực (Tree Traversals):**
 
-1. **Duyệt Trung thứ tự (In-order Traversal: Left &rarr; Root &rarr; Right):** Thăm cây con trái, thăm gốc, thăm cây con phải. *Tính chất kỳ diệu:* Phép duyệt In-order trên cây BST luôn sinh ra một dãy giá trị **được sắp xếp tăng dần hoàn hảo**.
+1. **Duyệt Trung thứ tự (In-order Traversal: Left &rarr; Root &rarr; Right):** Thăm cây con trái, thăm gốc, thăm cây con phải. _Tính chất kỳ diệu:_ Phép duyệt In-order trên cây BST luôn sinh ra một dãy giá trị **được sắp xếp tăng dần hoàn hảo**.
 2. **Duyệt Tiền thứ tự (Pre-order Traversal: Root &rarr; Left &rarr; Right):** Thăm gốc trước, dùng để sao chép cây hoặc tuần tự hóa (Serialization).
 3. **Duyệt Hậu thứ tự (Post-order Traversal: Left &rarr; Right &rarr; Root):** Thăm hai con trước, thăm gốc sau cùng, bắt buộc dùng khi giải phóng bộ nhớ (hủy cây từ lá lên gốc) hoặc tính dung lượng thư mục.
 4. **Duyệt Theo Tầng (Level-order Traversal / BFS):** Duyệt từng tầng từ trên xuống dưới bằng Hàng chờ (Queue).
 
 **Thao tác Xóa nút trên BST (BST Deletion - 3 kịch bản):**
 
-- *Kịch bản 1 (Nút lá - 0 con):* Xóa trực tiếp và gán con trỏ cha về `nullptr`.
-- *Kịch bản 2 (Nút có 1 con):* Nối trực tiếp nút con duy nhất vào nút cha của nút bị xóa.
-- *Kịch bản 3 (Nút có đủ 2 con):* Tìm **Phần tử Kế tiếp theo thứ tự (In-order Successor)** - tức là nút nhỏ nhất trong cây con Phải. Sao chép giá trị của Successor vào nút hiện tại, sau đó xóa đệ quy Successor khỏi cây con Phải.
+- _Kịch bản 1 (Nút lá - 0 con):_ Xóa trực tiếp và gán con trỏ cha về `nullptr`.
+- _Kịch bản 2 (Nút có 1 con):_ Nối trực tiếp nút con duy nhất vào nút cha của nút bị xóa.
+- _Kịch bản 3 (Nút có đủ 2 con):_ Tìm **Phần tử Kế tiếp theo thứ tự (In-order Successor)** - tức là nút nhỏ nhất trong cây con Phải. Sao chép giá trị của Successor vào nút hiện tại, sau đó xóa đệ quy Successor khỏi cây con Phải.
 
 ## 4. Triển khai mã nguồn & Dry Run
 
@@ -75,7 +75,7 @@ graph TD
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh: Binary Search Tree đầy đủ Chèn, Xóa, Tìm kiếm &amp; Duyệt:**
+**Mã nguồn C++ hoàn chỉnh: Binary Search Tree đầy đủ Chèn, Xóa, Tìm kiếm & Duyệt:**
 
 ```
 #include <iostream>
@@ -202,7 +202,7 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Chèn các giá trị:* `50, 30, 70, 20, 40, 60, 80`.
+- _Chèn các giá trị:_ `50, 30, 70, 20, 40, 60, 80`.
   <ul>
   `30 < 50` &rarr; Con trái của 50. `70 > 50` &rarr; Con phải của 50.
 - `40 > 30` &rarr; Con phải của 30. `60 < 70` &rarr; Con trái của 70.
@@ -222,7 +222,7 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Ứng dụng thực tế:**
   <ul>
   **Cấu trúc dữ liệu std::map / std::set trong C++:** Được cài đặt bằng Cây Đỏ Đen (Red-Black BST) đảm bảo thời gian `O(\log N)` trong mọi trường hợp.
-- **Cơ sở dữ liệu B-Tree &amp; B+ Tree:** Mở rộng của cây nhị phân sang cây đa phân nhiều nhánh để tối ưu hóa chỉ mục ổ cứng trong MySQL InnoDB và PostgreSQL.
+- **Cơ sở dữ liệu B-Tree & B+ Tree:** Mở rộng của cây nhị phân sang cây đa phân nhiều nhánh để tối ưu hóa chỉ mục ổ cứng trong MySQL InnoDB và PostgreSQL.
 - **Thuật toán Nén Dữ liệu Huffman Coding:** Sử dụng Cây nhị phân để sinh mã tiền tố có độ dài biến thiên tối ưu dung lượng tệp.
 
 </li>

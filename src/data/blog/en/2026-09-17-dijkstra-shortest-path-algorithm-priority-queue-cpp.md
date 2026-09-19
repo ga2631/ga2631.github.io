@@ -34,7 +34,7 @@ Dijkstra's original 1959 formulation performed linear array scanning to extract 
 
 Dijkstra's algorithm relies on the **Greedy Choice Property** and **Edge Relaxation**:
 
-1. **Distance Array &amp; Settled Invariant:** Maintain `dist[v]` initialized to `&infin;`, with `dist[s] = 0`. Once vertex `u` with the minimal unvisited distance is extracted, its distance is finalized and immutable because all remaining path extensions through non-negative edges can only increase cost.
+1. **Distance Array & Settled Invariant:** Maintain `dist[v]` initialized to `&infin;`, with `dist[s] = 0`. Once vertex `u` with the minimal unvisited distance is extracted, its distance is finalized and immutable because all remaining path extensions through non-negative edges can only increase cost.
 2. **Edge Relaxation:** For each neighbor `v` of `u`, check if routing through `u` provides a shorter path:
 
 ```
@@ -43,6 +43,7 @@ if (dist[u] + w(u, v) < dist[v]) {
     parent[v] = u; // Track parent for path reconstruction
 }
 ```
+
 3. **Min-Heap Priority Queue:** Storing distance candidates in a binary min-heap (`std::priority_queue`) enables `O(log V)` minimum extraction and relaxation pushes, optimizing total runtime to `O((V + E) log V)`.
 
 **Critical Invariant:** Dijkstra fails on graphs containing negative edge weights because future negative edges can invalidate previously settled greedy assumptions.
@@ -86,13 +87,13 @@ struct Edge {
 
 using State = std::pair<long long, int>; // {distance, vertex}
 
-void dijkstra(int startNode, int numVertices, 
+void dijkstra(int startNode, int numVertices,
               const std::vector<std::vector<Edge>>& graph,
               std::vector<long long>& dist,
               std::vector<int>& parent) {
     dist.assign(numVertices, INF);
     parent.assign(numVertices, -1);
-    
+
     std::priority_queue<State, std::vector<State>, std::greater<State>> pq;
 
     dist[startNode] = 0;
@@ -161,13 +162,13 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Init:* `dist = [0, &infin;, &infin;, &infin;, &infin;]`, `pq = {(0, 0)}`.
-- *Step 1:* Pop `(0, 0)`. Discovers node 1 (`dist[1]=4`) and node 2 (`dist[2]=2`).
-- *Step 2:* Pop `(2, 2)`. Relaxes node 1: `2 + 1 = 3 < 4` &rarr; Updates `dist[1]=3, parent[1]=2`; Relaxes node 3: `dist[3]=7`.
-- *Step 3:* Pop `(3, 1)`. Relaxes node 3: `3 + 3 = 6 < 7` &rarr; Updates `dist[3]=6, parent[3]=1`; Relaxes node 4: `dist[4]=9`.
-- *Step 4:* Pop `(4, 1)` &rarr; Discarded by lazy deletion check (`4 > 3`).
-- *Step 5:* Pop `(6, 3)`. Relaxes node 4: `6 + 1 = 7 < 9` &rarr; Updates `dist[4]=7, parent[4]=3`.
-- *Outcome:* Shortest path to node 4 converges to `7` along route `0 -> 2 -> 1 -> 3 -> 4`.
+- _Init:_ `dist = [0, &infin;, &infin;, &infin;, &infin;]`, `pq = {(0, 0)}`.
+- _Step 1:_ Pop `(0, 0)`. Discovers node 1 (`dist[1]=4`) and node 2 (`dist[2]=2`).
+- _Step 2:_ Pop `(2, 2)`. Relaxes node 1: `2 + 1 = 3 < 4` &rarr; Updates `dist[1]=3, parent[1]=2`; Relaxes node 3: `dist[3]=7`.
+- _Step 3:_ Pop `(3, 1)`. Relaxes node 3: `3 + 3 = 6 < 7` &rarr; Updates `dist[3]=6, parent[3]=1`; Relaxes node 4: `dist[4]=9`.
+- _Step 4:_ Pop `(4, 1)` &rarr; Discarded by lazy deletion check (`4 > 3`).
+- _Step 5:_ Pop `(6, 3)`. Relaxes node 4: `6 + 1 = 7 < 9` &rarr; Updates `dist[4]=7, parent[4]=3`.
+- _Outcome:_ Shortest path to node 4 converges to `7` along route `0 -> 2 -> 1 -> 3 -> 4`.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
@@ -177,7 +178,7 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Space Complexity:** `O(V + E)` to maintain Adjacency List graph representation, distance vectors, and priority queue elements.
 - **Real-World Applications:**
   <ul>
-  **Digital Maps &amp; Navigation:** Engine powering Google Maps, Apple Maps, and OSRM (coupled with Contraction Hierarchies and A* heuristics).
+  **Digital Maps & Navigation:** Engine powering Google Maps, Apple Maps, and OSRM (coupled with Contraction Hierarchies and A* heuristics).
 - **Internet Protocol Routing:** Open Shortest Path First (OSPF) and IS-IS interior gateway protocols.
 - **Game Engine AI:** Real-time pathfinding on navigation meshes (NavMesh).
 - **Social Graphs:** Calculating degrees of separation and shortest connection chains.

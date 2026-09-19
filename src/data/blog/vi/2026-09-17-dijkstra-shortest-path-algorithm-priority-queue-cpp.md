@@ -26,7 +26,7 @@ Thuật toán Dijkstra do nhà khoa học máy tính huyền thoại Edsger W. D
 
 ## 2. Ý tưởng tiếp cận ban đầu
 
-Cách tiếp cận ngây thơ ban đầu là sử dụng giải thuật Tìm kiếm theo chiều rộng (BFS). Tuy nhiên, BFS truyền thống chỉ hoạt động chính xác khi tất cả các cạnh có *trọng số đồng nhất bằng 1*. Khi đồ thị có trọng số biến thiên, đỉnh được duyệt đầu tiên chưa chắc đã có khoảng cách ngắn nhất.
+Cách tiếp cận ngây thơ ban đầu là sử dụng giải thuật Tìm kiếm theo chiều rộng (BFS). Tuy nhiên, BFS truyền thống chỉ hoạt động chính xác khi tất cả các cạnh có _trọng số đồng nhất bằng 1_. Khi đồ thị có trọng số biến thiên, đỉnh được duyệt đầu tiên chưa chắc đã có khoảng cách ngắn nhất.
 
 Phiên bản Dijkstra nguyên bản duyệt mảng tuyến tính: Tại mỗi bước, thuật toán quét qua toàn bộ `V` đỉnh để chọn ra đỉnh có khoảng cách nhỏ nhất chưa được cố định. Độ phức tạp của phiên bản này là `O(V²)`. Với các đồ thị thưa (Sparse Graph có `E ~ V`), việc duyệt mảng tốn kém tài nguyên không cần thiết và hoạt động rất chậm trên các mạng lưới giao thông hàng triệu đỉnh.
 
@@ -34,7 +34,7 @@ Phiên bản Dijkstra nguyên bản duyệt mảng tuyến tính: Tại mỗi b�
 
 Thuật toán Dijkstra vận hành dựa trên **Nguyên lý Tham lam (Greedy Paradigm)** và cơ chế **Tối ưu hóa cạnh (Edge Relaxation)**:
 
-1. **Mảng khoảng cách &amp; Tập đỉnh đã chốt (Visited Set):** Duy trì mảng `dist[v]` lưu khoảng cách ngắn nhất hiện thời từ nguồn `s` đến `v`. Ban đầu `dist[s] = 0`, tất cả các đỉnh khác gán `&infin;` (vô cực).
+1. **Mảng khoảng cách & Tập đỉnh đã chốt (Visited Set):** Duy trì mảng `dist[v]` lưu khoảng cách ngắn nhất hiện thời từ nguồn `s` đến `v`. Ban đầu `dist[s] = 0`, tất cả các đỉnh khác gán `&infin;` (vô cực).
 2. **Chiến lược Tham lam:** Tại mỗi bước, chọn đỉnh `u` có `dist[u]` nhỏ nhất trong số các đỉnh chưa được chốt. Vì đồ thị có trọng số không âm, giá trị `dist[u]` lúc này chắc chắn là khoảng cách ngắn nhất tuyệt đối không thể tối ưu thêm (Invariance).
 3. **Cơ chế Relaxation (Nới lỏng cạnh):** Với mọi đỉnh kề `v` của `u`, nếu đi qua `u` giúp rút ngắn khoảng cách tới `v`, ta cập nhật lại:
 
@@ -44,9 +44,10 @@ if (dist[u] + w(u, v) < dist[v]) {
     parent[v] = u; // Lưu vết đường đi
 }
 ```
+
 4. **Tối ưu cấu trúc dữ liệu Min-Heap:** Thay vì duyệt mảng `O(V)` để tìm đỉnh cực tiểu, ta sử dụng Hàng đợi ưu tiên (`std::priority_queue` với `std::greater`) để lấy đỉnh nhỏ nhất trong `O(log V)`. Mỗi cạnh được nới lỏng đẩy vào heap tối đa 1 lần, giúp tổng thời gian thực thi giảm xuống `O((V + E) log V)`.
 
-**Lưu ý quan trọng:** Dijkstra *không hoạt động chính xác* trên đồ thị có cạnh mang trọng số âm, vì giả định tham lam bị phá vỡ (việc đi qua một cạnh âm trong tương lai có thể làm giảm khoảng cách của một đỉnh đã bị chốt).
+**Lưu ý quan trọng:** Dijkstra _không hoạt động chính xác_ trên đồ thị có cạnh mang trọng số âm, vì giả định tham lam bị phá vỡ (việc đi qua một cạnh âm trong tương lai có thể làm giảm khoảng cách của một đỉnh đã bị chốt).
 
 ## 4. Triển khai mã nguồn & Dry Run
 
@@ -88,13 +89,13 @@ struct Edge {
 // Cặp trạng thái trong Min-Heap: {khoảng cách, đỉnh}
 using State = std::pair<long long, int>;
 
-void dijkstra(int startNode, int numVertices, 
+void dijkstra(int startNode, int numVertices,
               const std::vector<std::vector<Edge>>& graph,
               std::vector<long long>& dist,
               std::vector<int>& parent) {
     dist.assign(numVertices, INF);
     parent.assign(numVertices, -1);
-    
+
     // Min-heap ưu tiên phần tử có khoảng cách nhỏ nhất lên đầu
     std::priority_queue<State, std::vector<State>, std::greater<State>> pq;
 
@@ -167,22 +168,22 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Khởi tạo:* `dist = [0, &infin;, &infin;, &infin;, &infin;]`, `pq = {(0, 0)}`.
-- *Bước 1:* Pop `(0, 0)`. Xét kề đỉnh 0:
+- _Khởi tạo:_ `dist = [0, &infin;, &infin;, &infin;, &infin;]`, `pq = {(0, 0)}`.
+- _Bước 1:_ Pop `(0, 0)`. Xét kề đỉnh 0:
   <ul>
   Cạnh `(0->1, w=4)`: `dist[1] = 4, parent[1] = 0` &rarr; Push `(4, 1)`.
 - Cạnh `(0->2, w=2)`: `dist[2] = 2, parent[2] = 0` &rarr; Push `(2, 2)`.
 
 </li>
 <li>*Bước 2:* Pop `(2, 2)` (nhỏ nhất trong heap). Xét kề đỉnh 2:
-  
+
 
 - Cạnh `(2->1, w=1)`: `dist[0] + 2 + 1 = 3 < dist[1]=4` &rarr; Relaxation thành công! `dist[1] = 3, parent[1] = 2` &rarr; Push `(3, 1)`.
 - Cạnh `(2->3, w=5)`: `dist[3] = 2 + 5 = 7, parent[3] = 2` &rarr; Push `(7, 3)`.
 
 </li>
 <li>*Bước 3:* Pop `(3, 1)`. Xét kề đỉnh 1:
-  
+
 
 - Cạnh `(1->3, w=3)`: `3 + 3 = 6 < dist[3]=7` &rarr; Relaxation! `dist[3] = 6, parent[3] = 1` &rarr; Push `(6, 3)`.
 - Cạnh `(1->4, w=6)`: `3 + 6 = 9 < dist[4]=&infin;` &rarr; `dist[4] = 9, parent[4] = 1` &rarr; Push `(9, 4)`.
@@ -190,12 +191,12 @@ int main() {
 </li>
 <li>*Bước 4:* Pop `(4, 1)` &rarr; Bị loại bỏ do `d = 4 > dist[1] = 3` (Lazy Deletion).</li>
 <li>*Bước 5:* Pop `(6, 3)`. Xét kề đỉnh 3:
-  
+
 
 - Cạnh `(3->4, w=1)`: `6 + 1 = 7 < dist[4]=9` &rarr; Relaxation! `dist[4] = 7, parent[4] = 3` &rarr; Push `(7, 4)`.
 
 </li>
-<li>*Bước 6 &amp; 7:* Pop `(7, 4)`, sau đó các trạng thái cũ bị bỏ qua &rarr; Đường đi đến đỉnh 4 chốt giá trị tối ưu là `7` với hành trình `0 -> 2 -> 1 -> 3 -> 4`.</li>
+<li>*Bước 6 & 7:* Pop `(7, 4)`, sau đó các trạng thái cũ bị bỏ qua &rarr; Đường đi đến đỉnh 4 chốt giá trị tối ưu là `7` với hành trình `0 -> 2 -> 1 -> 3 -> 4`.</li>
 </ul>
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế

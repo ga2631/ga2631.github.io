@@ -27,8 +27,8 @@ Hash Tables combined with robust Hashing Algorithms represent the global standar
 
 Comparing against classical structures:
 
-- *Flat Arrays:* Lookup requires sequential `O(N)` comparisons.
-- *Balanced Binary Search Trees (AVL / Red-Black Tree):* Maintains `O(log N)` lookups, but incurs tree rebalancing rotations and pointer chasing overhead.
+- _Flat Arrays:_ Lookup requires sequential `O(N)` comparisons.
+- _Balanced Binary Search Trees (AVL / Red-Black Tree):_ Maintains `O(log N)` lookups, but incurs tree rebalancing rotations and pointer chasing overhead.
 
 ## 3. Optimization Thinking & Algorithm Design
 
@@ -37,9 +37,10 @@ Hash Table Architecture and Collision Resolution Strategies:
 1. **Hash Function Mechanics:** Uniformly maps variable-length keys into array indices via `index = hash(key) % Capacity`. Industry standard string hashing algorithm: `djb2` (bitwise shift multiplication by 33 + character value).
 2. **Collision Resolution Mechanisms:** When two distinct keys produce identical hash indices:
 
-- *Separate Chaining:* Each bucket houses a dynamic linked list. Collisions append to the bucket list.
-- *Open Addressing:* Probing for subsequent empty slots across the primary array (Linear Probing, Quadratic Probing, Double Hashing).
-3. **Load Factor (`α`) &amp; Dynamic Rehashing:** When `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, the table automatically doubles capacity and re-inserts all items to maintain short bucket chains and sustain strict `O(1)` lookup guarantees.
+- _Separate Chaining:_ Each bucket houses a dynamic linked list. Collisions append to the bucket list.
+- _Open Addressing:_ Probing for subsequent empty slots across the primary array (Linear Probing, Quadratic Probing, Double Hashing).
+
+3. **Load Factor (`α`) & Dynamic Rehashing:** When `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, the table automatically doubles capacity and re-inserts all items to maintain short bucket chains and sustain strict `O(1)` lookup guarantees.
 
 ## 4. Code Implementation & Execution Trace
 
@@ -175,11 +176,11 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Initialization:* `capacity = 7`, `numElements = 0`.
-- *Insert "apple" (value 100):* `hashFunction("apple")` computes bucket `3` &rarr; Appends `{"apple", 100}` into `table[3]`. `numElements = 1` (`α pprox 0.14`).
-- *Insert "banana" (value 40):* `hashFunction("banana")` computes bucket `1` &rarr; Appends `{"banana", 40}` into `table[1]`. `numElements = 2`.
-- *Insert "cherry" (value 80):* Resolves to bucket `1` &rarr; Collision! Appends `{"cherry", 80}` to the linked list in `table[1]`.
-- *Lookup `get("banana")`:* Hash points directly to bucket `1` &rarr; Traverses first node, finds key "banana" &rarr; Outputs `40` in `O(1)` time.
+- _Initialization:_ `capacity = 7`, `numElements = 0`.
+- _Insert "apple" (value 100):_ `hashFunction("apple")` computes bucket `3` &rarr; Appends `{"apple", 100}` into `table[3]`. `numElements = 1` (`α pprox 0.14`).
+- _Insert "banana" (value 40):_ `hashFunction("banana")` computes bucket `1` &rarr; Appends `{"banana", 40}` into `table[1]`. `numElements = 2`.
+- _Insert "cherry" (value 80):_ Resolves to bucket `1` &rarr; Collision! Appends `{"cherry", 80}` to the linked list in `table[1]`.
+- _Lookup `get("banana")`:_ Hash points directly to bucket `1` &rarr; Traverses first node, finds key "banana" &rarr; Outputs `40` in `O(1)` time.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
@@ -188,6 +189,6 @@ int main() {
 1. **Average-Case Time Complexity (`Θ`):** `Θ(1)` for Insert, Lookup, and Delete under uniform distribution and `α < 0.75`.
 2. **Worst-Case Time Complexity (`O`):** `O(N)` under adversarial pathological collisions where all keys collide into a single bucket.
 3. **Auxiliary Space Complexity:** `O(N)` for bucket arrays and linked nodes.
-4. **Cryptographic &amp; DoS Defenses:** In public internet endpoints, use collision-resistant keyed hashes like **SipHash** to defend against HashDoS attacks.
+4. **Cryptographic & DoS Defenses:** In public internet endpoints, use collision-resistant keyed hashes like **SipHash** to defend against HashDoS attacks.
 
 **Real-World Applications:** `std::unordered_map` / `std::unordered_set` in C++ STL, HashMap in Java, JavaScript V8 Object/Map memory layouts, Redis In-Memory Cache, database query hash-joins, and network packet routing tables.

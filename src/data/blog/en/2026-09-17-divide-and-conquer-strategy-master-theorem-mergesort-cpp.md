@@ -18,9 +18,9 @@ tags:
 
 ## 1. Problem Statement & Objectives
 
-When operating on massive datasets comprising millions or billions of elements, processing monolithic blocks sequentially often triggers quadratic `O(N²)` bottlenecks. The **Divide and Conquer (D&amp;C)** paradigm solves this by recursively decomposing complex problems into smaller, independent subproblems of identical structure.
+When operating on massive datasets comprising millions or billions of elements, processing monolithic blocks sequentially often triggers quadratic `O(N²)` bottlenecks. The **Divide and Conquer (D&C)** paradigm solves this by recursively decomposing complex problems into smaller, independent subproblems of identical structure.
 
-The classical benchmark is **Large-Scale Array Sorting**: Given an unsorted array of `N` items, rearrange elements in non-decreasing order such that worst-case execution time is strictly bounded by `O(N \log N)` while guaranteeing *Stability* - preserving the relative input order of equivalent keys.
+The classical benchmark is **Large-Scale Array Sorting**: Given an unsorted array of `N` items, rearrange elements in non-decreasing order such that worst-case execution time is strictly bounded by `O(N \log N)` while guaranteeing _Stability_ - preserving the relative input order of equivalent keys.
 
 ## 2. Initial Naive Approach
 
@@ -73,7 +73,7 @@ graph TD
         M4["[3, 27, 38, 43]"]
         M5["[9, 10, 82]"]
         FinalSorted["[3, 9, 10, 27, 38, 43, 82] (SORTED)"]
-        
+
         L2_1 -.-> M1
         L2_2 -.-> M2
         M1 --> M4
@@ -154,18 +154,18 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Input:* `data = {38, 27, 43, 3, 9, 82, 10}` (`N = 7`).
-- *Division Level 1:* `mid = 3` &rarr; Left `[0..3] = {38, 27, 43, 3}`, Right `[4..6] = {9, 82, 10}`.
-- *Left Branch:*
+- _Input:_ `data = {38, 27, 43, 3, 9, 82, 10}` (`N = 7`).
+- _Division Level 1:_ `mid = 3` &rarr; Left `[0..3] = {38, 27, 43, 3}`, Right `[4..6] = {9, 82, 10}`.
+- _Left Branch:_
   <ul>
   Divides to `{38, 27}` and `{43, 3}`.
-- Merges `{38}` &amp; `{27}` &rarr; `{27, 38}`.
-- Merges `{43}` &amp; `{3}` &rarr; `{3, 43}`.
-- Merges `{27, 38}` &amp; `{3, 43}` &rarr; `{3, 27, 38, 43}`.
+- Merges `{38}` & `{27}` &rarr; `{27, 38}`.
+- Merges `{43}` & `{3}` &rarr; `{3, 43}`.
+- Merges `{27, 38}` & `{3, 43}` &rarr; `{3, 27, 38, 43}`.
 
 </li>
 <li>*Right Branch:*
-  
+
 
 - Divides to `{9, 82}` and `{10}` &rarr; Merges to `{9, 10, 82}`.
 

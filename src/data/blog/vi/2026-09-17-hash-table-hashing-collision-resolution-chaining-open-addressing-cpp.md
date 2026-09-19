@@ -27,8 +27,8 @@ Bảng băm (Hash Table) kết hợp cùng Thuật toán Băm (Hashing) là gi�
 
 So sánh với các cấu trúc dữ liệu truyền thống:
 
-- *Mảng phẳng (Array):* Tìm kiếm tốn `O(N)` phép so sánh tuần tự.
-- *Cây tìm kiếm nhị phân cân bằng (AVL / Red-Black Tree):* Duy trì thời gian `O(log N)`, nhưng vẫn phát sinh chi phí so sánh khóa và mất chi phí xoay cây (Tree Rebalancing).
+- _Mảng phẳng (Array):_ Tìm kiếm tốn `O(N)` phép so sánh tuần tự.
+- _Cây tìm kiếm nhị phân cân bằng (AVL / Red-Black Tree):_ Duy trì thời gian `O(log N)`, nhưng vẫn phát sinh chi phí so sánh khóa và mất chi phí xoay cây (Tree Rebalancing).
 
 ## 3. Tư duy tối ưu & Cấu trúc thuật toán
 
@@ -37,9 +37,10 @@ Kiến trúc Bảng băm và Chiến lược giải quyết Đụng độ (Colli
 1. **Hàm băm (Hash Function):** Ánh xạ một khóa có kích thước bất kỳ (chuỗi ký tự, object) thành một số nguyên `index = hash(key) % Capacity` phân bố đều khắp các ô nhớ (Buckets). Thuật toán băm chuỗi nổi tiếng: `djb2` (nhân 33 kết hợp XOR).
 2. **Xử lý Đụng độ (Collision Resolution):** Khi hai khóa khác nhau tạo ra cùng một chỉ số băm:
 
-- *Separate Chaining (Chuỗi liên kết riêng biệt):* Mỗi bucket là một danh sách liên kết (Linked List). Khi đụng độ, chèn phần tử mới vào danh sách tại bucket đó.
-- *Open Addressing (Địa chỉ mở):* Dò tìm ô trống tiếp theo trong bảng (Linear Probing, Quadratic Probing, Double Hashing).
-3. **Hệ số Tải (Load Factor `α`) &amp; Tái băm (Rehashing):** Khi tỷ lệ `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, bảng băm tự động nhân đôi kích thước và phân bổ lại toàn bộ phần tử để ngăn ngừa danh sách liên kết bị kéo dài, giữ vững hiệu năng `O(1)`.
+- _Separate Chaining (Chuỗi liên kết riêng biệt):_ Mỗi bucket là một danh sách liên kết (Linked List). Khi đụng độ, chèn phần tử mới vào danh sách tại bucket đó.
+- _Open Addressing (Địa chỉ mở):_ Dò tìm ô trống tiếp theo trong bảng (Linear Probing, Quadratic Probing, Double Hashing).
+
+3. **Hệ số Tải (Load Factor `α`) & Tái băm (Rehashing):** Khi tỷ lệ `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, bảng băm tự động nhân đôi kích thước và phân bổ lại toàn bộ phần tử để ngăn ngừa danh sách liên kết bị kéo dài, giữ vững hiệu năng `O(1)`.
 
 ## 4. Triển khai mã nguồn & Dry Run
 
@@ -175,11 +176,11 @@ int main() {
 
 **Phân tích luồng thực thi (Dry Run Trace):**
 
-- *Khởi tạo:* `capacity = 7`, `numElements = 0`.
-- *Chèn "apple" (giá trị 100):* `hashFunction("apple")` cho ra bucket `3` &rarr; Thêm `{"apple", 100}` vào `table[3]`. `numElements = 1` (`α = 1/7 pprox 0.14`).
-- *Chèn "banana" (giá trị 40):* `hashFunction("banana")` cho ra bucket `1` &rarr; Thêm `{"banana", 40}` vào `table[1]`. `numElements = 2`.
-- *Chèn "cherry" (giá trị 80):* Giả sử băm ra cùng bucket `1` &rarr; Đụng độ băm! Separate Chaining gắn tiếp `{"cherry", 80}` vào cuối danh sách liên kết tại `table[1]`.
-- *Truy xuất `get("banana")`:* Tính băm ra bucket `1` &rarr; Duyệt node đầu tiên của danh sách tìm thấy ngay khóa "banana" &rarr; Trả về `40` trong thời gian `O(1)`.
+- _Khởi tạo:_ `capacity = 7`, `numElements = 0`.
+- _Chèn "apple" (giá trị 100):_ `hashFunction("apple")` cho ra bucket `3` &rarr; Thêm `{"apple", 100}` vào `table[3]`. `numElements = 1` (`α = 1/7 pprox 0.14`).
+- _Chèn "banana" (giá trị 40):_ `hashFunction("banana")` cho ra bucket `1` &rarr; Thêm `{"banana", 40}` vào `table[1]`. `numElements = 2`.
+- _Chèn "cherry" (giá trị 80):_ Giả sử băm ra cùng bucket `1` &rarr; Đụng độ băm! Separate Chaining gắn tiếp `{"cherry", 80}` vào cuối danh sách liên kết tại `table[1]`.
+- _Truy xuất `get("banana")`:_ Tính băm ra bucket `1` &rarr; Duyệt node đầu tiên của danh sách tìm thấy ngay khóa "banana" &rarr; Trả về `40` trong thời gian `O(1)`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 

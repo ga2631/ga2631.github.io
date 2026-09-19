@@ -19,7 +19,7 @@ tags:
 
 ## 1. Problem Statement & Objectives
 
-In source code editors (VS Code, Vim), text search utilities (grep, ripgrep), network intrusion detection systems (Snort), and bioinformatics alignment software (BLAST), a core operation is: *Locate all occurrences of a search `Pattern` (length `M`) inside a large body of `Text` (length `N`).*
+In source code editors (VS Code, Vim), text search utilities (grep, ripgrep), network intrusion detection systems (Snort), and bioinformatics alignment software (BLAST), a core operation is: _Locate all occurrences of a search `Pattern` (length `M`) inside a large body of `Text` (length `N`)._
 
 Problem statement: **Exact String Matching**. Given `Text[0..N-1]` and `Pattern[0..M-1]` (where `M <= N`). Return all index offsets `i` where `Text[i .. i + M - 1] == Pattern[0 .. M - 1]`.
 
@@ -50,6 +50,7 @@ Rabin-Karp transforms string matching into integer matching via **Polynomial Rol
 ```
 H_{new} = (H_{old} - Text[i] x B^{M-1}) x B + Text[i + M] \pmod P
 ```
+
 - Character comparisons execute strictly when window hash equals pattern hash.
 
 ## 4. Code Implementation & Execution Trace
@@ -64,7 +65,7 @@ stateDiagram-v2
     State2 --> State3: Match 'A'
     State3 --> State4: Match 'B'
     State4 --> State5: Match 'C' (MATCH FOUND!)
-    
+
     State4 --> State2: Mismatch! Jump to LPS[3] = 2 (No text rewind)
     State2 --> State0: Mismatch! Jump to LPS[1] = 0
 ```
@@ -199,8 +200,8 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run KMP):**
 
-- *Pattern `"ABABCABAB"`:* `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
-- *Matching on `"ABABDABACDABABCABAB"`:*
+- _Pattern `"ABABCABAB"`:_ `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
+- _Matching on `"ABABDABACDABABCABAB"`:_
   <ul>
   Matches prefix `"ABAB"` (`j = 4`).
 - Mismatch at `Text[4] = 'D'` vs `Pattern[4] = 'C'`.
@@ -222,16 +223,16 @@ Performance Scorecard anchored to RAM Model metrics:
 
 </li>
 <li>**Space Complexity:**
-  
+
 
 - KMP: `O(M)` for the LPS table.
 - Rabin-Karp: `O(1)` auxiliary space.
 
 </li>
 <li>**Real-World Applications:**
-  
 
-- **Code Search &amp; IDE Tools:** Substring matching engines in text editors and regex parsers.
+
+- **Code Search & IDE Tools:** Substring matching engines in text editors and regex parsers.
 - **Genomic DNA Alignment:** Locating mutated gene subsequences in multi-gigabyte genomic sequences.
 - **Plagiarism Detection:** Multi-pattern rolling hash comparison across large document repositories.
 - **Intrusion Detection Systems (IDS):** Real-time packet payload signature filtering in network firewalls.

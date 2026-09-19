@@ -20,7 +20,7 @@ tags:
 
 In modern computer architecture (Von Neumann model), physical RAM is structured as a contiguous sequence of byte-addressable memory cells. An **Array** is the most primitive and fundamental data structure in computer science, storing elements of identical data type in a **strictly contiguous block of memory**.
 
-However, traditional static arrays require compile-time fixed dimensions. In real-world software engineering, dataset sizes fluctuate dynamically at runtime. The core engineering challenge: *How to design a **Dynamic Array (equivalent to `std::vector` in C++ or `ArrayList` in Java)** capable of dynamic growth while preserving instantaneous `O(1)` random access and maximizing CPU Cache Locality?*
+However, traditional static arrays require compile-time fixed dimensions. In real-world software engineering, dataset sizes fluctuate dynamically at runtime. The core engineering challenge: _How to design a **Dynamic Array (equivalent to `std::vector` in C++ or `ArrayList` in Java)** capable of dynamic growth while preserving instantaneous `O(1)` random access and maximizing CPU Cache Locality?_
 
 ## 2. Initial Naive Approach
 
@@ -39,6 +39,7 @@ Modern runtimes resolve this through **Geometric (Exponential) Resizing**:
 ```
 Address(arr[i]) = Base_Address + i x sizeof(ElementType)
 ```
+
 4. **CPU Cache Locality:** Accessing one element automatically pre-fetches adjacent elements into the 64-byte L1/L2 CPU Cache line, making sequential array iteration significantly faster than linked structures.
 
 ## 4. Code Implementation & Execution Trace
@@ -126,7 +127,7 @@ int main() {
     std::cout << "--- DYNAMIC VECTOR DEMO ---" << std::endl;
     for (int i = 1; i <= 5; ++i) {
         vec.pushBack(i * 10);
-        std::cout << "Appended " << (i * 10) << " | Size: " << vec.size() 
+        std::cout << "Appended " << (i * 10) << " | Size: " << vec.size()
                   << " | Capacity: " << vec.capacity() << std::endl;
     }
 
@@ -142,12 +143,12 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Init:* `size = 0, capacity = 2`. Heap allocation of size 2.
-- *Append 10 (i=1):* Stored at `data[0]` &rarr; `size = 1, capacity = 2`.
-- *Append 20 (i=2):* Stored at `data[1]` &rarr; `size = 2, capacity = 2` (Full).
-- *Append 30 (i=3):* Capacity exceeded &rarr; Triggers `reallocate(4)`, copies `[10, 20]`, sets `data[2] = 30` &rarr; `size = 3, capacity = 4`.
-- *Append 40 (i=4):* Stored at `data[3]` &rarr; `size = 4, capacity = 4`.
-- *Append 50 (i=5):* Triggers `reallocate(8)` &rarr; `size = 5, capacity = 8`.
+- _Init:_ `size = 0, capacity = 2`. Heap allocation of size 2.
+- _Append 10 (i=1):_ Stored at `data[0]` &rarr; `size = 1, capacity = 2`.
+- _Append 20 (i=2):_ Stored at `data[1]` &rarr; `size = 2, capacity = 2` (Full).
+- _Append 30 (i=3):_ Capacity exceeded &rarr; Triggers `reallocate(4)`, copies `[10, 20]`, sets `data[2] = 30` &rarr; `size = 3, capacity = 4`.
+- _Append 40 (i=4):_ Stored at `data[3]` &rarr; `size = 4, capacity = 4`.
+- _Append 50 (i=5):_ Triggers `reallocate(8)` &rarr; `size = 5, capacity = 8`.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
@@ -160,7 +161,7 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Real-World Applications:**
   <ul>
   **Foundational Building Block:** Backing store for Hash Tables, Binary Heaps, and Ring Buffers.
-- **Computer Graphics &amp; Gaming:** 3D transformation matrices and GPU vertex buffers.
+- **Computer Graphics & Gaming:** 3D transformation matrices and GPU vertex buffers.
 - **Database Storage Engines:** Storing page blocks in contiguous memory to optimize disk sequential I/O.
 
 </li>

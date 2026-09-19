@@ -18,9 +18,9 @@ tags:
 
 ## 1. Mô tả bài toán
 
-Khi đối mặt với các bài toán có quy mô dữ liệu khổng lồ (hàng triệu đến hàng tỷ phần tử), việc xử lý trực tiếp toàn khối dữ liệu thường dẫn đến các giải thuật bậc hai `O(N²)` hoặc hàm mũ. Chiến lược **Chia để trị (Divide and Conquer - D&amp;C)** là một trong những mô hình thiết kế thuật toán quyền năng nhất, dựa trên triết lý phân rã bài toán lớn thành các bài toán con độc lập có cùng cấu trúc nhưng quy mô nhỏ hơn.
+Khi đối mặt với các bài toán có quy mô dữ liệu khổng lồ (hàng triệu đến hàng tỷ phần tử), việc xử lý trực tiếp toàn khối dữ liệu thường dẫn đến các giải thuật bậc hai `O(N²)` hoặc hàm mũ. Chiến lược **Chia để trị (Divide and Conquer - D&C)** là một trong những mô hình thiết kế thuật toán quyền năng nhất, dựa trên triết lý phân rã bài toán lớn thành các bài toán con độc lập có cùng cấu trúc nhưng quy mô nhỏ hơn.
 
-Một bài toán mẫu mực cho chiến lược này là **Sắp xếp mảng kích thước lớn (Large-Scale Sorting)**: Cho một mảng gồm `N` phần tử chưa có thứ tự, hãy sắp xếp mảng theo thứ tự không giảm sao cho thời gian thực thi trong mọi kịch bản đều bị chặn trên bởi `O(N \log N)` và đảm bảo *tính ổn định (Stability)* - bảo toàn thứ tự ban đầu của các phần tử có giá trị tương đương.
+Một bài toán mẫu mực cho chiến lược này là **Sắp xếp mảng kích thước lớn (Large-Scale Sorting)**: Cho một mảng gồm `N` phần tử chưa có thứ tự, hãy sắp xếp mảng theo thứ tự không giảm sao cho thời gian thực thi trong mọi kịch bản đều bị chặn trên bởi `O(N \log N)` và đảm bảo _tính ổn định (Stability)_ - bảo toàn thứ tự ban đầu của các phần tử có giá trị tương đương.
 
 ## 2. Ý tưởng tiếp cận ban đầu
 
@@ -73,7 +73,7 @@ graph TD
         M4["[3, 27, 38, 43]"]
         M5["[9, 10, 82]"]
         FinalSorted["[3, 9, 10, 27, 38, 43, 82] (ĐÃ SẮP XẾP)"]
-        
+
         L2_1 -.-> M1
         L2_2 -.-> M2
         M1 --> M4
@@ -160,9 +160,9 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Input:* `data = {38, 27, 43, 3, 9, 82, 10}` (`N = 7`).
-- *Tầng chia 1:* `left=0, right=6, mid=3` &rarr; Nửa trái `[0..3] = {38, 27, 43, 3}`, Nửa phải `[4..6] = {9, 82, 10}`.
-- *Xử lý nửa trái:*
+- _Input:_ `data = {38, 27, 43, 3, 9, 82, 10}` (`N = 7`).
+- _Tầng chia 1:_ `left=0, right=6, mid=3` &rarr; Nửa trái `[0..3] = {38, 27, 43, 3}`, Nửa phải `[4..6] = {9, 82, 10}`.
+- _Xử lý nửa trái:_
   <ul>
   Chia `[0..3]` thành `[0..1]={38, 27}` và `[2..3]={43, 3}`.
 - Hợp nhất `{38}` và `{27}` &rarr; `{27, 38}`.
@@ -171,7 +171,7 @@ int main() {
 
 </li>
 <li>*Xử lý nửa phải:*
-  
+
 
 - Chia `[4..6]` thành `[4..5]={9, 82}` và `[6..6]={10}`.
 - Hợp nhất `{9}` và `{82}` &rarr; `{9, 82}`.
@@ -179,7 +179,7 @@ int main() {
 
 </li>
 <li>*Hợp nhất tầng gốc:* `merge({3, 27, 38, 43}, {9, 10, 82})`:
-  
+
 
 - 3 &lt; 9 &rarr; `[3]`; 27 &gt; 9 &rarr; `[3, 9]`; 27 &gt; 10 &rarr; `[3, 9, 10]`; 27 &lt; 82 &rarr; `[3, 9, 10, 27]`; 38 &lt; 82 &rarr; `[3, 9, 10, 27, 38]`; 43 &lt; 82 &rarr; `[3, 9, 10, 27, 38, 43]`; Chép phần tử còn lại 82 &rarr; Hoàn tất mảng sắp xếp trong đúng `O(N log N)`.
 

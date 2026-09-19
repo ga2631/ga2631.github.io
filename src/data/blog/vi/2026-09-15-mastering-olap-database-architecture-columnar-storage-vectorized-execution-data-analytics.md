@@ -25,8 +25,8 @@ Trong khi các hệ thống OLTP được xây dựng để xử lý hàng tri�
 Hãy xem xét các bài toán kinh doanh đòi hỏi năng lực xử lý phân tích quy mô lớn:
 
 1. **Phân tích Hành vi Người dùng Thời gian thực (Clickstream Analytics):** Theo dõi luồng sự kiện (Pageviews, Clicks, Add-to-Cart) của hàng chục triệu người dùng hoạt động hàng ngày, phát hiện các điểm rơi phễu chuyển đổi (Funnel Drop-off) và đề xuất sản phẩm theo thời gian thực.
-2. **Báo cáo Tài chính &amp; Doanh thu Hợp nhất Đa chiều (Multi-dimensional Financial BI):** Tính toán doanh thu thuần, tỷ suất lợi nhuận và tăng trưởng so với cùng kỳ (YoY, MoM) trên hàng trăm triệu giao dịch đơn hàng qua 10 năm lịch sử, cho phép lãnh đạo cắt lát dữ liệu theo vùng miền, danh mục và kênh bán hàng.
-3. **Giám sát Hệ thống &amp; Phát hiện Gian lận (Observability &amp; Fraud Detection):** Phân tích hàng terabyte logs mạng và số liệu thanh toán mỗi giờ để phát hiện các mẫu tấn công DDoS hoặc giao dịch gian lận trong vòng vài giây.
+2. **Báo cáo Tài chính & Doanh thu Hợp nhất Đa chiều (Multi-dimensional Financial BI):** Tính toán doanh thu thuần, tỷ suất lợi nhuận và tăng trưởng so với cùng kỳ (YoY, MoM) trên hàng trăm triệu giao dịch đơn hàng qua 10 năm lịch sử, cho phép lãnh đạo cắt lát dữ liệu theo vùng miền, danh mục và kênh bán hàng.
+3. **Giám sát Hệ thống & Phát hiện Gian lận (Observability & Fraud Detection):** Phân tích hàng terabyte logs mạng và số liệu thanh toán mỗi giờ để phát hiện các mẫu tấn công DDoS hoặc giao dịch gian lận trong vòng vài giây.
 
 **Tại sao Cơ sở Dữ liệu Dạng Dòng (Row-oriented) Bất lực trước Bài toán Phân tích?**
 
@@ -44,7 +44,7 @@ Trong cơ sở dữ liệu dạng dòng (như PostgreSQL, MySQL), toàn bộ cá
       <th style="padding: 8px;">Mô hình OLAP</th>
       <th style="padding: 8px;">Nguyên lý Hoạt động</th>
       <th style="padding: 8px;">Ưu Điểm</th>
-      <th style="padding: 8px;">Nhược Điểm &amp; Hạn Chế</th>
+      <th style="padding: 8px;">Nhược Điểm & Hạn Chế</th>
     </tr>
   </thead>
   <tbody>
@@ -75,7 +75,7 @@ Trong cơ sở dữ liệu dạng dòng (như PostgreSQL, MySQL), toàn bộ cá
   </tbody>
 </table>
 
-**2. Bản chất Cơ chế Lưu trữ Dạng Cột &amp; Các Thuật toán Nén Dữ liệu Đỉnh cao:**
+**2. Bản chất Cơ chế Lưu trữ Dạng Cột & Các Thuật toán Nén Dữ liệu Đỉnh cao:**
 
 Thay vì xếp các dòng cạnh nhau, cơ sở dữ liệu OLAP chia nhỏ bảng thành các khối dữ liệu (Data Blocks / Row Groups) và lưu trữ từng cột trong các file vật lý riêng biệt:
 
@@ -117,7 +117,7 @@ flowchart LR
         CHBuffer["ClickHouse Buffer Engine"]
         CHMergeTree["ClickHouse ReplacingMergeTree<br/>(Partition by Month, Order by Date, User, Product)"]
         CHMaterialized["Materialized View<br/>(Hourly Aggregation Summary)"]
-        
+
         KafkaEvents --> CHBuffer --> CHMergeTree
         AppLogs --> CHMergeTree
         CHMergeTree --> CHMaterialized
@@ -127,7 +127,7 @@ flowchart LR
         Superset["Apache Superset Dashboard"]
         Metabase["Metabase Real-time Monitor"]
         DataAnalysts["Ad-hoc SQL Analytics (Window & HyperLogLog)"]
-        
+
         CHMergeTree --> DataAnalysts
         CHMaterialized --> Superset
         CHMaterialized --> Metabase
@@ -163,11 +163,11 @@ TTL event_date + INTERVAL 365 DAY
 SETTINGS index_granularity = 8192;
 ```
 
-**3. Câu lệnh SQL Phân tích Đa chiều Tận dụng Thuật toán Ước lượng HyperLogLog &amp; Window Functions:**
+**3. Câu lệnh SQL Phân tích Đa chiều Tận dụng Thuật toán Ước lượng HyperLogLog & Window Functions:**
 
 ```sql
 -- Truy vấn phân tích tỷ lệ chuyển đổi phễu và đếm người dùng duy nhất siêu tốc trên 1 tỷ dòng
-SELECT 
+SELECT
     event_date,
     country,
     device_type,
@@ -181,16 +181,16 @@ SELECT
     uniqCombined64If(user_id, event_type = 'PURCHASE') AS paying_users,
     -- Tính tỷ lệ chuyển đổi thanh toán (Conversion Rate)
     ROUND(
-        uniqCombined64If(user_id, event_type = 'PURCHASE') 
-        / NULLIF(uniqCombined64If(user_id, event_type = 'ADD_TO_CART'), 0) * 100, 
+        uniqCombined64If(user_id, event_type = 'PURCHASE')
+        / NULLIF(uniqCombined64If(user_id, event_type = 'ADD_TO_CART'), 0) * 100,
         2
     ) AS cart_to_purchase_cvr_pct,
     -- Tổng giá trị giao dịch
     SUM(cart_total_amount) AS gross_merchandise_value,
     -- Window Function tính tỷ trọng đóng góp doanh thu của từng quốc gia trong ngày
     ROUND(
-        SUM(cart_total_amount) 
-        / SUM(SUM(cart_total_amount)) OVER (PARTITION BY event_date) * 100, 
+        SUM(cart_total_amount)
+        / SUM(SUM(cart_total_amount)) OVER (PARTITION BY event_date) * 100,
         2
     ) AS country_revenue_contribution_pct
 FROM analytics.fact_user_events_hourly
@@ -203,12 +203,12 @@ ORDER BY event_date DESC, gross_merchandise_value DESC;
 
 Để đạt được tốc độ phản hồi truy vấn dưới 100ms trên các tập dữ liệu khổng lồ (Petabyte-scale), Data Engineer cần làm chủ các kỹ thuật tối ưu hóa vật lý chuyên sâu sau:
 
-**1. Thiết kế Khóa Sắp xếp Vật lý (Sorting Keys &amp; Sparse Primary Index):**
+**1. Thiết kế Khóa Sắp xếp Vật lý (Sorting Keys & Sparse Primary Index):**
 
 - **Quy tắc Thứ tự Cột trong ORDER BY:** Luôn đặt các cột thường xuyên xuất hiện trong mệnh đề `WHERE` và có lực lượng giá trị (Cardinality) từ thấp đến cao ở đầu khóa sắp xếp (ví dụ: `(event_date, country, event_type, user_id)`). Cách sắp xếp này giúp nén dữ liệu tốt nhất và loại bỏ tối đa các khối dữ liệu không khớp (MinMax Data Skipping).
 - **Sparse Index Granularity:** Chỉ mục sơ cấp dạng thưa (mỗi 8.192 dòng chỉ lưu 1 điểm đánh dấu) giúp toàn bộ chỉ mục của bảng hàng tỷ dòng nằm gọn trong RAM chỉ với vài megabyte bộ nhớ.
 
-**2. Sử dụng Thuật toán Xác suất &amp; Cấu trúc Dữ liệu Phác thảo (Approximate &amp; Sketch Algorithms):**
+**2. Sử dụng Thuật toán Xác suất & Cấu trúc Dữ liệu Phác thảo (Approximate & Sketch Algorithms):**
 
 - Khi số lượng người dùng lên tới hàng trăm triệu, việc chạy `COUNT(DISTINCT user_id)` truyền thống đòi hỏi chi phí bộ nhớ khổng lồ để lưu trữ toàn bộ ID phục vụ loại trùng lặp.
 - Sử dụng các thuật toán xấp xỉ như **HyperLogLog (HLL)** và **t-Digest (tính phân vị Percentile p95, p99)** giúp giảm 99% RAM và tăng tốc độ xử lý lên gấp 50 lần với độ chính xác trên 99%.
@@ -219,7 +219,7 @@ ORDER BY event_date DESC, gross_merchandise_value DESC;
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Kiến Trúc Cơ Sở Dữ Liệu</th>
-      <th style="padding: 8px;">Thời Gian Truy Vấn Quét &amp; Gom Nhóm</th>
+      <th style="padding: 8px;">Thời Gian Truy Vấn Quét & Gom Nhóm</th>
       <th style="padding: 8px;">Dung Lượng Quét Đĩa</th>
       <th style="padding: 8px;">Tỷ Lệ Nén Dữ Liệu Đĩa Cứng</th>
     </tr>
@@ -256,15 +256,15 @@ ORDER BY event_date DESC, gross_merchandise_value DESC;
 
 Cơ sở dữ liệu OLAP dạng cột đại diện cho đỉnh cao của kỹ thuật tối ưu hóa phần cứng và thuật toán xử lý dữ liệu lớn hiện đại.
 
-**Khuyến nghị Chiến lược Dành cho Data Engineers &amp; Data Analysts:**
+**Khuyến nghị Chiến lược Dành cho Data Engineers & Data Analysts:**
 
 1. **Lựa chọn Động cơ OLAP Phù hợp với Bối cảnh Doanh nghiệp:**
-  
 
 - Sử dụng **ClickHouse / StarRocks** khi cần phân tích thời gian thực với độ trễ truy vấn dưới 100ms trên luồng dữ liệu nạp liên tục (Clickstream, Log Analytics, Real-time Dashboard).
 - Sử dụng **Snowflake / BigQuery** khi cần xây dựng kho dữ liệu doanh nghiệp toàn diện (Enterprise DWH / BI) phục vụ đa phòng ban với khả năng mở rộng điện toán không giới hạn.
 - Sử dụng **DuckDB** khi cần một động cơ phân tích dạng cột siêu nhẹ, nhúng trực tiếp trong ứng dụng Python / Data Science mà không cần dựng cụm server phức tạp.
+
 2. **Luôn Tận dụng Nén Dữ liệu Chuyên biệt theo Kiểu Dữ liệu:** Sử dụng `LowCardinality` hoặc Dictionary Encoding cho các cột chuỗi lặp lại, `DoubleDelta` cho chuỗi thời gian và `T64/Gorilla` cho số thập phân.
 3. **Ứng dụng Thuật toán Phác thảo (Sketching) Cho Tập Dữ Liệu Lớn:** Đào tạo đội ngũ Data Analyst chuyển từ việc dùng `COUNT(DISTINCT)` chính xác tuyệt đối sang `HyperLogLog (HLL)` khi làm việc với các chỉ số ước lượng (Reach, Active Users) để tăng tốc độ phân tích lên hàng chục lần.
 
-**Lời kết:** *Làm chủ cơ chế hoạt động của OLAP từ tầng lưu trữ dạng cột đến tập lệnh SIMD giúp Data Engineer tự tin biến hàng chục terabyte dữ liệu phức tạp thành những câu trả lời kinh doanh tức thì trong chớp mắt!*
+**Lời kết:** _Làm chủ cơ chế hoạt động của OLAP từ tầng lưu trữ dạng cột đến tập lệnh SIMD giúp Data Engineer tự tin biến hàng chục terabyte dữ liệu phức tạp thành những câu trả lời kinh doanh tức thì trong chớp mắt!_

@@ -19,7 +19,7 @@ tags:
 
 ## 1. Problem Statement & Objectives
 
-When engineering regional optical fiber backbones, electrical grids, or oil pipelines, the core economic requirement is: *How to interconnect all `V` municipalities at minimum capital expenditure while eliminating redundant, cyclic wiring?*
+When engineering regional optical fiber backbones, electrical grids, or oil pipelines, the core economic requirement is: _How to interconnect all `V` municipalities at minimum capital expenditure while eliminating redundant, cyclic wiring?_
 
 Problem statement: **Minimum Spanning Tree (MST)**. Given an undirected, connected, weighted graph `G = (V, E)`. A spanning tree is an acyclic connected subgraph containing all `V` vertices and exactly `V - 1` edges. Find a spanning tree with minimal total weight: `w(T) = sum_{(u, v) in T} w(u, v)`.
 
@@ -29,7 +29,7 @@ Kruskal's algorithm (published by Joseph Kruskal in 1956) is the quintessential 
 
 Sort all edges by ascending weight. Iteratively add edges from smallest to largest, provided adding edge `(u, v)` does not introduce a cycle.
 
-Key Challenge: *How to efficiently test whether adding `(u, v)` creates a cycle?*
+Key Challenge: _How to efficiently test whether adding `(u, v)` creates a cycle?_
 
 Executing BFS/DFS for cycle detection per candidate edge takes `O(V)` time, ballooning total runtime to `O(E x V)` - intractable on large graphs.
 
@@ -40,7 +40,6 @@ Kruskal's algorithm achieves near-linear efficiency by combining with **Disjoint
 1. **Spanning Forest Model:** Initially, each vertex `v in V` constitutes an isolated 1-node tree. Kruskal merges these trees until exactly 1 spanning tree of `V - 1` edges remains.
 2. **Cycle Detection in `O(alpha(V))`:** Adding edge `(u, v)` creates a cycle if and only if both endpoints share the same root representative: `find(u) == find(v)`.
 3. **Two DSU Optimization Pillars:**
-  
 
 - **Path Compression:** Inside `find(u)`, re-point traversed nodes directly to the root, flattening tree depth to near-constant height.
 - **Union by Rank:** Always attach the shallower tree beneath the root of the deeper tree to prevent degeneration into linked lists.
@@ -69,7 +68,7 @@ flowchart TD
     end
 ```
 
-**Complete C++ Implementation (Kruskal's Algorithm with Path Compression &amp; Union by Rank):**
+**Complete C++ Implementation (Kruskal's Algorithm with Path Compression & Union by Rank):**
 
 ```
 #include <iostream>
@@ -174,12 +173,12 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Sorted Edges:* `(0-1: 9), (1-3: 19), (3-4: 31), (1-4: 42), (2-3: 51), (0-2: 75), (1-2: 95)`.
-- *Edge 1 (0-1, w=9):* Added &rarr; `total = 9`. DSU merges `{0, 1}`.
-- *Edge 2 (1-3, w=19):* Added &rarr; `total = 28`. DSU merges `{0, 1, 3}`.
-- *Edge 3 (3-4, w=31):* Added &rarr; `total = 59`. DSU merges `{0, 1, 3, 4}`.
-- *Edge 4 (1-4, w=42):* `find(1) == find(4)` &rarr; Discarded to prevent cycle.
-- *Edge 5 (2-3, w=51):* Added &rarr; `total = 110`. Exactly `V - 1 = 4` edges selected &rarr; Converged!
+- _Sorted Edges:_ `(0-1: 9), (1-3: 19), (3-4: 31), (1-4: 42), (2-3: 51), (0-2: 75), (1-2: 95)`.
+- _Edge 1 (0-1, w=9):_ Added &rarr; `total = 9`. DSU merges `{0, 1}`.
+- _Edge 2 (1-3, w=19):_ Added &rarr; `total = 28`. DSU merges `{0, 1, 3}`.
+- _Edge 3 (3-4, w=31):_ Added &rarr; `total = 59`. DSU merges `{0, 1, 3, 4}`.
+- _Edge 4 (1-4, w=42):_ `find(1) == find(4)` &rarr; Discarded to prevent cycle.
+- _Edge 5 (2-3, w=51):_ Added &rarr; `total = 110`. Exactly `V - 1 = 4` edges selected &rarr; Converged!
 
 ## 5. Complexity Evaluation & Real-world Applications
 
@@ -189,7 +188,7 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Space Complexity:** `O(V + E)` for DSU parent/rank vectors and edge storage.
 - **Real-World Applications:**
   <ul>
-  **Telecommunications &amp; Power Grid Layout:** Interconnecting regional transformers at minimum total cable length.
+  **Telecommunications & Power Grid Layout:** Interconnecting regional transformers at minimum total cable length.
 - **Machine Learning Clustering:** Single-linkage hierarchical clustering terminating at `K` connected components.
 - **VLSI Circuit Layout:** Minimizing interconnect delay and silicon wire area.
 

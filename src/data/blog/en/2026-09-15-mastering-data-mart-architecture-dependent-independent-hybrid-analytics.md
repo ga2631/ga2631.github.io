@@ -23,13 +23,13 @@ tags:
 As enterprise operations expand, a monolithic Enterprise Data Warehouse (EDW) inevitably encounters severe organizational and operational friction:
 
 1. **Centralized Data Team Bottleneck:** Every functional department (Marketing, Finance, Sales, Logistics, HR) queues up change requests to a single core data engineering team. Implementing a single new business KPI takes weeks or months, paralyzing operational agility.
-2. **Metric Discrepancy &amp; Semantic Chaos:** Marketing defines Revenue as Gross Merchandise Value (GMV) of placed orders; Sales calculates Revenue based on fulfilled orders; Finance recognizes Revenue strictly when cash settles after processing fees, discounts, and refunds. Executives arrive at quarterly business reviews with irreconcilable figures.
-3. **Data Governance &amp; Sensitive Security Silos:** Executive compensation data or branch profit-and-loss margins cannot be openly exposed across the wider enterprise warehouse, demanding strict domain-driven Row-Level Security (RLS) and Role-Based Access Control (RBAC).
+2. **Metric Discrepancy & Semantic Chaos:** Marketing defines Revenue as Gross Merchandise Value (GMV) of placed orders; Sales calculates Revenue based on fulfilled orders; Finance recognizes Revenue strictly when cash settles after processing fees, discounts, and refunds. Executives arrive at quarterly business reviews with irreconcilable figures.
+3. **Data Governance & Sensitive Security Silos:** Executive compensation data or branch profit-and-loss margins cannot be openly exposed across the wider enterprise warehouse, demanding strict domain-driven Row-Level Security (RLS) and Role-Based Access Control (RBAC).
 4. **Compute Inefficiencies on Massive Tables:** Scanning enterprise-scale fact tables containing billions of rows to satisfy department-specific tactical dashboards consumes unnecessary cloud warehouse credits and slows query latency.
 
-**Core Mission &amp; Value of a Data Mart:**
+**Core Mission & Value of a Data Mart:**
 
-A **Data Mart** is a specialized, curated subject-oriented database partition designed specifically for a single department, team, or business process. Its primary mission is delivering *clean, analytics-ready, highly performant dimensional models* that empower domain analysts with sub-second self-service business intelligence.
+A **Data Mart** is a specialized, curated subject-oriented database partition designed specifically for a single department, team, or business process. Its primary mission is delivering _clean, analytics-ready, highly performant dimensional models_ that empower domain analysts with sub-second self-service business intelligence.
 
 ## 2. Data Modeling & Schema Design
 
@@ -43,7 +43,7 @@ To design an enduring Data Mart architecture, engineers must master the trade-of
       <th style="padding: 8px;">Mart Topology</th>
       <th style="padding: 8px;">Data Ingestion Source</th>
       <th style="padding: 8px;">Key Advantages</th>
-      <th style="padding: 8px;">Risks &amp; Trade-Offs</th>
+      <th style="padding: 8px;">Risks & Trade-Offs</th>
     </tr>
   </thead>
   <tbody>
@@ -68,7 +68,7 @@ To design an enduring Data Mart architecture, engineers must master the trade-of
   </tbody>
 </table>
 
-**2. Architectural Blueprint: Dependent Domain Data Marts (Kimball Bus &amp; Medallion Layout):**
+**2. Architectural Blueprint: Dependent Domain Data Marts (Kimball Bus & Medallion Layout):**
 
 ```mermaid
 flowchart TD
@@ -103,8 +103,8 @@ flowchart TD
 
 **3. Table Modeling Paradigms: Star Schema vs One Big Table (OBT):**
 
-- **Star Schema:** Fact table surrounded by Conformed Dimension tables (e.g., `dim_date`, `dim_customer`). *Ideal when:* The Data Mart must support varied ad-hoc multi-dimensional slicing and maintain reusable enterprise dimensions.
-- **One Big Table (OBT - Wide Denormalized Table):** Collapses facts and all associated dimension attributes into a single flat table containing 50-200 columns. *Ideal when:* Powering interactive BI tools (ClickHouse, PowerBI DirectQuery, Apache Superset) where avoiding all runtime JOINs unlocks instantaneous sub-50ms dashboard loads.
+- **Star Schema:** Fact table surrounded by Conformed Dimension tables (e.g., `dim_date`, `dim_customer`). _Ideal when:_ The Data Mart must support varied ad-hoc multi-dimensional slicing and maintain reusable enterprise dimensions.
+- **One Big Table (OBT - Wide Denormalized Table):** Collapses facts and all associated dimension attributes into a single flat table containing 50-200 columns. _Ideal when:_ Powering interactive BI tools (ClickHouse, PowerBI DirectQuery, Apache Superset) where avoiding all runtime JOINs unlocks instantaneous sub-50ms dashboard loads.
 
 ## 3. Pipeline Construction & Processing Logic
 
@@ -125,7 +125,7 @@ To demonstrate a production implementation, below is a complete **dbt (data buil
 
 WITH daily_ad_spend AS (
     -- Ad spend aggregated by campaign and channel
-    SELECT 
+    SELECT
         ad_date AS campaign_date,
         channel, -- 'google_ads', 'facebook_ads', 'tiktok_ads'
         campaign_id,
@@ -139,7 +139,7 @@ WITH daily_ad_spend AS (
 
 daily_orders_attributed AS (
     -- Revenue and new customer acquisition joined from Core Fact Orders
-    SELECT 
+    SELECT
         CAST(f.order_timestamp AS DATE) AS campaign_date,
         f.utm_channel AS channel,
         f.utm_campaign_id AS campaign_id,
@@ -152,14 +152,14 @@ daily_orders_attributed AS (
     GROUP BY CAST(f.order_timestamp AS DATE), f.utm_channel, f.utm_campaign_id
 )
 
-SELECT 
+SELECT
     -- Deterministic surrogate primary key
     MD5(s.campaign_date || '-' || s.channel || '-' || s.campaign_id) AS marketing_mart_key,
     s.campaign_date,
     s.channel,
     s.campaign_id,
     s.campaign_name,
-    
+
     -- Ingested raw measures
     s.total_spend,
     s.total_impressions,
@@ -167,16 +167,16 @@ SELECT
     COALESCE(o.attributed_orders, 0) AS attributed_orders,
     COALESCE(o.new_customers_acquired, 0) AS new_customers_acquired,
     COALESCE(o.attributed_revenue, 0) AS attributed_revenue,
-    
+
     -- Pre-calculated Semantic Domain KPIs
     ROUND(s.total_clicks / NULLIF(s.total_impressions, 0) * 100, 2) AS ctr_pct, -- Click-Through Rate
     ROUND(s.total_spend / NULLIF(s.total_clicks, 0), 2) AS cpc_amount, -- Cost Per Click
     ROUND(s.total_spend / NULLIF(o.new_customers_acquired, 0), 2) AS cac_amount, -- Customer Acquisition Cost
     ROUND(COALESCE(o.attributed_revenue, 0) / NULLIF(s.total_spend, 0), 2) AS roas_ratio -- Return On Ad Spend
 FROM daily_ad_spend s
-LEFT JOIN daily_orders_attributed o 
-    ON s.campaign_date = o.campaign_date 
-    AND s.channel = o.channel 
+LEFT JOIN daily_orders_attributed o
+    ON s.campaign_date = o.campaign_date
+    AND s.channel = o.channel
     AND s.campaign_id = o.campaign_id;
 ```
 
@@ -193,7 +193,7 @@ AS (region_name VARCHAR) RETURNS BOOLEAN ->
   OR (CURRENT_ROLE() = 'SOUTH_MANAGER_ROLE' AND region_name = 'SOUTH');
 
 -- Bind the policy to the Financial Data Mart
-ALTER TABLE finance_mart.marts_branch_pnl 
+ALTER TABLE finance_mart.marts_branch_pnl
 ADD ROW ACCESS POLICY finance_region_policy ON (region_code);
 ```
 
@@ -204,7 +204,6 @@ To operate high-performing Data Marts without metric drift, Data Engineers imple
 **1. Automated Cross-Mart Data Reconciliation Tests:**
 
 - Guarding against metric divergence between departmental marts (e.g., Financial revenue must match Sales order net revenue down to the cent):
-  
 
 ```sql
 -- tests/reconciliation_finance_vs_sales_revenue.sql
@@ -217,9 +216,9 @@ sales_rev AS (
     SELECT SUM(gross_amount - discount_amount) AS total_sales FROM {{ ref('marts_sales_orders') }}
     WHERE order_date = CURRENT_DATE() - 1
 )
-SELECT 
-    f.total_fin, 
-    s.total_sales, 
+SELECT
+    f.total_fin,
+    s.total_sales,
     ABS(f.total_fin - s.total_sales) AS discrepancy
 FROM fin_rev f, sales_rev s
 WHERE ABS(f.total_fin - s.total_sales) > 0.01; -- Alarm if delta exceeds 1 cent
@@ -228,9 +227,9 @@ WHERE ABS(f.total_fin - s.total_sales) > 0.01; -- Alarm if delta exceeds 1 cent
 **2. Self-Service Performance Optimization Techniques:**
 
 - **Pre-Aggregated Materialized Views:** Generate roll-up summaries for executive dashboards (monthly and quarterly views), eliminating 99% of raw file scanning.
-- **In-Memory Semantic Caching:** Position tools like *Cube.js* or *dbt Semantic Layer* in front of Data Marts to serve frequent BI queries directly from Redis/memory caches in under 50ms.
+- **In-Memory Semantic Caching:** Position tools like _Cube.js_ or _dbt Semantic Layer_ in front of Data Marts to serve frequent BI queries directly from Redis/memory caches in under 50ms.
 
-**3. Performance &amp; Operational Evaluation Matrix:**
+**3. Performance & Operational Evaluation Matrix:**
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
@@ -274,4 +273,4 @@ Data Marts represent the critical transformation bridge between heavy centralize
 3. **Embrace a Domain-Driven Ownership (Data Mesh Mindset):** Empower domain data analysts within business departments to own and innovate upon their Data Marts, while the central data engineering team focuses on underlying infrastructure, conformed dimensions, and pipeline SLAs.
 4. **Automate Cross-Mart Reconciliation Tests:** Enforce automated daily reconciliation checks to detect and alert on any financial or volume variance before data reaches executive presentation decks.
 
-**Closing Takeaway:** *A stellar Data Mart architecture enables domain analysts to build trustworthy reports in minutes, and empowers corporate leadership to make decisions with absolute confidence in every single metric!*
+**Closing Takeaway:** _A stellar Data Mart architecture enables domain analysts to build trustworthy reports in minutes, and empowers corporate leadership to make decisions with absolute confidence in every single metric!_

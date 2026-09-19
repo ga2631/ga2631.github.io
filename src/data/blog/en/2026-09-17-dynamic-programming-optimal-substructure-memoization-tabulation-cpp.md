@@ -138,12 +138,12 @@ int main() {
 
 **Execution Trace Breakdown (Dry Run):**
 
-- *Inputs:* `W = 5`, `weights = {2, 3, 4, 5}`, `values = {3, 4, 5, 8}`, `N = 4`.
-- *Init:* `dp = [0, 0, 0, 0, 0, 0]` (size `W + 1 = 6`).
-- *Item 1 (w=2, v=3):* Loop `w` from 5 down to 2 &rarr; `dp = [0, 0, 3, 3, 3, 3]`.
-- *Item 2 (w=3, v=4):* Loop `w` from 5 down to 3:
+- _Inputs:_ `W = 5`, `weights = {2, 3, 4, 5}`, `values = {3, 4, 5, 8}`, `N = 4`.
+- _Init:_ `dp = [0, 0, 0, 0, 0, 0]` (size `W + 1 = 6`).
+- _Item 1 (w=2, v=3):_ Loop `w` from 5 down to 2 &rarr; `dp = [0, 0, 3, 3, 3, 3]`.
+- _Item 2 (w=3, v=4):_ Loop `w` from 5 down to 3:
   <ul>
-  `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Combo item 1 &amp; 2: weight 5).
+  `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Combo item 1 & 2: weight 5).
 - `w = 4: dp[4] = max(3, 4 + dp[1]) = 4`.
 - `w = 3: dp[3] = max(3, 4 + dp[0]) = 4` &rarr; `dp = [0, 0, 3, 4, 4, 7]`.
 
@@ -164,7 +164,7 @@ Performance Scorecard anchored to RAM Model metrics:
 
 </li>
 <li>**Real-World Applications:**
-  
+
 
 - **Cloud Resource Allocation:** Packing virtual machines (VMs) onto hypervisors to maximize throughput within memory/CPU constraints.
 - **Graph Routing:** Algorithmic foundation for Bellman-Ford and Floyd-Warshall shortest path algorithms.
