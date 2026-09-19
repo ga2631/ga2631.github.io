@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { blogPostsEn, blogPostsVi } from '../../src/data/blogData';
-import { BLOG_CATEGORY_DEFINITIONS } from '../../src/data/blogCategories';
+import { BLOG_CATEGORY_DEFINITIONS } from '../../src/data/blog/blogCategories';
 import {
   CATEGORY_STRUCTURE_DEFINITIONS,
   validateBlogPostStructure,
-} from '../../src/data/blogTemplates';
+} from '../../src/data/blog/blogTemplates';
 import viBlogRaw from '../../src/data/blog/vi/2026/09.json';
 import enBlogRaw from '../../src/data/blog/en/2026/09.json';
 

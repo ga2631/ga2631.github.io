@@ -1,4 +1,4 @@
-import { BlogPost } from '../types/index.ts';
+import { BlogPost } from '../../types/index.ts';
 
 export interface StandardSectionDef {
   id: string;

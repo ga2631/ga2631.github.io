@@ -1,5 +1,5 @@
 import { BlogPost } from '../types/index.ts';
-import { CATEGORY_STRUCTURE_DEFINITIONS } from './blogTemplates.ts';
+import { CATEGORY_STRUCTURE_DEFINITIONS } from '../data/blog/blogTemplates.ts';
 
 // Dynamic loaders for all blog month JSON chunks
 const viMonthModules = import.meta.glob<{ default: any[] }>('/src/data/blog/vi/*/*.json');

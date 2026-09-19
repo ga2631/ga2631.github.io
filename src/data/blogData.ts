@@ -7,7 +7,7 @@ import {
   loadNextMonthBatch,
   loadAllArchivePosts,
   getAvailableMonthArchives,
-} from './blogService.ts';
+} from '../services/blogService.ts';
 
 export {
   assembleArticleHtml,

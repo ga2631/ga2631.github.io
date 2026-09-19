@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { cvDataEn, cvDataVi, uiTranslations } from '../../src/data/cvData';
 import { blogPostsEn, blogPostsVi } from '../../src/data/blogData';
-import { validateBlogPostStructure } from '../../src/data/blogTemplates';
+import { validateBlogPostStructure } from '../../src/data/blog/blogTemplates';
 
 // Recursive helper to get all nested object keys
 const getAllKeys = (obj: Record<string, any>, prefix = ''): string[] => {

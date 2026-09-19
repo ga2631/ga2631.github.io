@@ -14,12 +14,12 @@ import {
   TagIcon,
 } from '../components/Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
-import { BLOG_CATEGORY_DEFINITIONS, BlogCategoryDef } from '../data/blogCategories.ts';
+import { BLOG_CATEGORY_DEFINITIONS, BlogCategoryDef } from '../data/blog/blogCategories.ts';
 import {
   loadInitialBlogPosts,
   loadNextMonthBatch,
   loadAllArchivePosts,
-} from '../data/blogService.ts';
+} from '../services/blogService.ts';
 import { Button, Badge, Card } from '../components/common';
 import { InputSearch } from '../components/ui';
 import { 
