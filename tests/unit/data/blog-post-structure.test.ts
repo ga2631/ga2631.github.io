@@ -5,8 +5,6 @@ import {
   CATEGORY_STRUCTURE_DEFINITIONS,
   validateBlogPostStructure,
 } from '../../../src/data/blog/blogTemplates';
-import viBlogRaw from '../../../src/data/blog/vi/2026/09.json';
-import enBlogRaw from '../../../src/data/blog/en/2026/09.json';
 
 describe('TU-DATA-02: Data - Standardized Blog Post Structure & Category Schema Validation', () => {
   const activeCategories = BLOG_CATEGORY_DEFINITIONS.filter((c) => c.id !== 'all');
@@ -31,95 +29,57 @@ describe('TU-DATA-02: Data - Standardized Blog Post Structure & Category Schema 
     });
   });
 
-  it('should have structured sections dictionary with exactly 5 keys for all raw Vietnamese articles in blog storage', () => {
-    expect(viBlogRaw.length).toBeGreaterThanOrEqual(1);
-
-    viBlogRaw.forEach((rawPost: any) => {
-      expect(rawPost.sections, `Post "${rawPost.id}" must have a sections object`).toBeDefined();
-      expect(typeof rawPost.sections).toBe('object');
-      expect(Array.isArray(rawPost.sections)).toBe(false);
-
-      const sectionKeys = Object.keys(rawPost.sections);
-      expect(sectionKeys.length).toBe(5);
-
-      const structure = CATEGORY_STRUCTURE_DEFINITIONS[rawPost.category];
-      expect(structure, `Category "${rawPost.category}" must exist in schema`).toBeDefined();
-
-      structure.sections.forEach((expectedDef) => {
-        const content = rawPost.sections[expectedDef.id];
-        expect(content, `Section "${expectedDef.id}" in post "${rawPost.id}" must exist`).toBeDefined();
-        expect(typeof content).toBe('string');
-        expect(content.length).toBeGreaterThan(20);
-      });
-
-      const validation = validateBlogPostStructure(rawPost, 'vi');
-      expect(validation.isValid, `Raw post "${rawPost.id}" failed validation:\n${validation.errors.join('\n')}`).toBe(true);
-    });
-  });
-
-  it('should have structured sections dictionary with exactly 5 keys for all raw English articles in blog storage', () => {
-    expect(enBlogRaw.length).toBeGreaterThanOrEqual(1);
-
-    enBlogRaw.forEach((rawPost: any) => {
-      expect(rawPost.sections, `Post "${rawPost.id}" must have a sections object`).toBeDefined();
-      expect(typeof rawPost.sections).toBe('object');
-      expect(Array.isArray(rawPost.sections)).toBe(false);
-
-      const sectionKeys = Object.keys(rawPost.sections);
-      expect(sectionKeys.length).toBe(5);
-
-      const structure = CATEGORY_STRUCTURE_DEFINITIONS[rawPost.category];
-      expect(structure, `Category "${rawPost.category}" must exist in schema`).toBeDefined();
-
-      structure.sections.forEach((expectedDef) => {
-        const content = rawPost.sections[expectedDef.id];
-        expect(content, `Section "${expectedDef.id}" in post "${rawPost.id}" must exist`).toBeDefined();
-        expect(typeof content).toBe('string');
-        expect(content.length).toBeGreaterThan(20);
-      });
-
-      const validation = validateBlogPostStructure(rawPost, 'en');
-      expect(validation.isValid, `Raw post "${rawPost.id}" failed validation:\n${validation.errors.join('\n')}`).toBe(true);
-    });
-  });
-
-  it('should validate that hydrated Vietnamese blog posts (up to 20) assemble complete contentHtml and adhere to standard structure', () => {
+  it('should validate that all Vietnamese Markdown blog posts adhere to standard structure and have non-empty content', () => {
     expect(blogPostsVi.length).toBeGreaterThanOrEqual(1);
 
-    const postsToTest = blogPostsVi.slice(0, 20);
-    postsToTest.forEach((post) => {
-      expect(post.contentHtml).toBeTruthy();
-      expect(post.contentHtml).toContain('<h3');
+    blogPostsVi.forEach((post) => {
+      expect(post.id, `Post must have an id`).toBeTruthy();
+      expect(post.slug, `Post "${post.id}" must have a slug`).toBeTruthy();
+      expect(post.title, `Post "${post.id}" must have a title`).toBeTruthy();
+      expect(post.summary, `Post "${post.id}" must have a summary`).toBeTruthy();
+      expect(post.publishedAt, `Post "${post.id}" must have publishedAt`).toBeTruthy();
+      expect(post.readTime, `Post "${post.id}" must have readTime`).toBeTruthy();
+      expect(Array.isArray(post.tags) && post.tags.length > 0, `Post "${post.id}" must have tags`).toBe(true);
+      expect(post.contentHtml, `Post "${post.id}" must have rendered contentHtml`).toBeTruthy();
+      expect(post.contentHtml.length).toBeGreaterThan(100);
 
-      const result = validateBlogPostStructure(post, 'vi');
+      const structure = CATEGORY_STRUCTURE_DEFINITIONS[post.category || ''];
+      expect(structure, `Category "${post.category}" of post "${post.id}" must exist in schema`).toBeDefined();
+
+      const validation = validateBlogPostStructure(post, 'vi');
       expect(
-        result.isValid,
-        `Vietnamese post "${post.id}" (${post.title}) in category "${post.category}" failed structure validation:\n${result.errors.join('\n')}`
+        validation.isValid,
+        `Vietnamese post "${post.id}" (${post.title}) in category "${post.category}" failed validation:\n${validation.errors.join('\n')}`
       ).toBe(true);
-      expect(result.missingSections).toHaveLength(0);
-      expect(result.foundSections).toHaveLength(5);
     });
   });
 
-  it('should validate that hydrated English blog posts (up to 20) assemble complete contentHtml and adhere to standard structure', () => {
+  it('should validate that all English Markdown blog posts adhere to standard structure and have non-empty content', () => {
     expect(blogPostsEn.length).toBeGreaterThanOrEqual(1);
 
-    const postsToTest = blogPostsEn.slice(0, 20);
-    postsToTest.forEach((post) => {
-      expect(post.contentHtml).toBeTruthy();
-      expect(post.contentHtml).toContain('<h3');
+    blogPostsEn.forEach((post) => {
+      expect(post.id, `Post must have an id`).toBeTruthy();
+      expect(post.slug, `Post "${post.id}" must have a slug`).toBeTruthy();
+      expect(post.title, `Post "${post.id}" must have a title`).toBeTruthy();
+      expect(post.summary, `Post "${post.id}" must have a summary`).toBeTruthy();
+      expect(post.publishedAt, `Post "${post.id}" must have publishedAt`).toBeTruthy();
+      expect(post.readTime, `Post "${post.id}" must have readTime`).toBeTruthy();
+      expect(Array.isArray(post.tags) && post.tags.length > 0, `Post "${post.id}" must have tags`).toBe(true);
+      expect(post.contentHtml, `Post "${post.id}" must have rendered contentHtml`).toBeTruthy();
+      expect(post.contentHtml.length).toBeGreaterThan(100);
 
-      const result = validateBlogPostStructure(post, 'en');
+      const structure = CATEGORY_STRUCTURE_DEFINITIONS[post.category || ''];
+      expect(structure, `Category "${post.category}" of post "${post.id}" must exist in schema`).toBeDefined();
+
+      const validation = validateBlogPostStructure(post, 'en');
       expect(
-        result.isValid,
-        `English post "${post.id}" (${post.title}) in category "${post.category}" failed structure validation:\n${result.errors.join('\n')}`
+        validation.isValid,
+        `English post "${post.id}" (${post.title}) in category "${post.category}" failed validation:\n${validation.errors.join('\n')}`
       ).toBe(true);
-      expect(result.missingSections).toHaveLength(0);
-      expect(result.foundSections).toHaveLength(5);
     });
   });
 
-  it('should reject non-conforming articles with missing section keys in dictionary', () => {
+  it('should reject non-conforming articles with missing section headings', () => {
     const invalidPost = {
       id: 'test-invalid-post',
       slug: 'test-invalid-post',
@@ -130,15 +90,11 @@ describe('TU-DATA-02: Data - Standardized Blog Post Structure & Category Schema 
       readTime: '3 min',
       tags: ['Test'],
       author: 'Test Author',
-      sections: {
-        'context-problem': '<p>Only one section here.</p>',
-      },
-      contentHtml: '',
+      contentHtml: '<h2>1. Bối cảnh & Vấn đề</h2><p>Only one section here.</p>',
     };
 
     const result = validateBlogPostStructure(invalidPost, 'vi');
     expect(result.isValid).toBe(false);
-    expect(result.errors.length).toBe(4);
     expect(result.missingSections.length).toBe(4);
   });
 });

@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import mermaid from 'mermaid';
-import viBlogRaw from '../../../src/data/blog/vi/2026/09.json';
-import enBlogRaw from '../../../src/data/blog/en/2026/09.json';
+import { blogPostsEn, blogPostsVi } from '../../../src/data/blogData';
 
 describe('TU-DATA-03: Data - Mermaid Diagrams Syntax Validation', () => {
   mermaid.initialize({
@@ -25,26 +24,28 @@ describe('TU-DATA-03: Data - Mermaid Diagrams Syntax Validation', () => {
     return results;
   };
 
-  it('validates all Mermaid diagrams in Vietnamese blog posts', async () => {
-    for (const post of viBlogRaw) {
-      for (const [sectionKey, sectionContent] of Object.entries(post.sections)) {
-        const diagrams = extractMermaidCode(sectionContent as string);
-        for (const [idx, code] of diagrams.entries()) {
-          const isValid = await mermaid.parse(code);
-          expect(isValid, `Failed to parse VI post ${post.id} (${post.slug}) section "${sectionKey}" diagram #${idx + 1}:\n${code}`).toBeTruthy();
-        }
+  it('validates all Mermaid diagrams in Vietnamese Markdown blog posts', async () => {
+    for (const post of blogPostsVi) {
+      const diagrams = extractMermaidCode(post.contentHtml);
+      for (const [idx, code] of diagrams.entries()) {
+        const isValid = await mermaid.parse(code);
+        expect(
+          isValid,
+          `Failed to parse VI post ${post.id} (${post.slug}) diagram #${idx + 1}:\n${code}`
+        ).toBeTruthy();
       }
     }
   });
 
-  it('validates all Mermaid diagrams in English blog posts', async () => {
-    for (const post of enBlogRaw) {
-      for (const [sectionKey, sectionContent] of Object.entries(post.sections)) {
-        const diagrams = extractMermaidCode(sectionContent as string);
-        for (const [idx, code] of diagrams.entries()) {
-          const isValid = await mermaid.parse(code);
-          expect(isValid, `Failed to parse EN post ${post.id} (${post.slug}) section "${sectionKey}" diagram #${idx + 1}:\n${code}`).toBeTruthy();
-        }
+  it('validates all Mermaid diagrams in English Markdown blog posts', async () => {
+    for (const post of blogPostsEn) {
+      const diagrams = extractMermaidCode(post.contentHtml);
+      for (const [idx, code] of diagrams.entries()) {
+        const isValid = await mermaid.parse(code);
+        expect(
+          isValid,
+          `Failed to parse EN post ${post.id} (${post.slug}) diagram #${idx + 1}:\n${code}`
+        ).toBeTruthy();
       }
     }
   });
