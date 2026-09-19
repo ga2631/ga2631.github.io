@@ -73,10 +73,11 @@ tags:
 
 1. **Zero-Dependency Markdown Parser:** Xây dựng `markdownParser.ts` thuần túy với TypeScript/RegExp, không phụ thuộc vào các thư viện nặng nề bên ngoài, giảm tải bundle size tối đa cho client.
 2. **Mermaid Code Block Preservation:** Bảo toàn cấu trúc sơ đồ ```` ```mermaid ```` sang `<pre class="mermaid"><code>` chuẩn để kết hợp hoàn hảo với engine Mermaid động và cơ chế Pan/Zoom 60 FPS hiện có.
-3. **Tự động hóa Kiểm thử Tính Toàn vẹn & Thống kê (Automated Verification & Exact Statistics):**
+3. **Zero-Dependency Syntax Highlighting Engine:** Tích hợp bộ phân tích màu sắc mã nguồn (Syntax Highlighter) đa ngôn ngữ (`SQL`, `C++`, `Python`, `TypeScript`, `JavaScript`, `JSON`, `Bash`, `HTML/CSS`) trực tiếp trong `markdownParser.ts`. Đóng gói mã nguồn trong khung giao diện macOS hiện đại (terminal dots, language tag badge, token styling sắc nét).
+4. **Tự động hóa Kiểm thử Tính Toàn vẹn & Thống kê (Automated Verification & Exact Statistics):**
    - Viết script `scripts/verify-markdown-articles.mjs` kiểm tra 100% các file Markdown về Frontmatter, đủ 5 mục tiêu chuẩn (headings), không trùng ID/Slug và độ dài nội dung hợp lệ.
    - Thống kê chính xác số lượng bài viết theo từng Chuyên đề (5 categories) và Thẻ / Từ khoá (135 unique tags), loại bỏ giới hạn làm tròn `20+` trước đây để hiển thị số lượng bài viết thực tế (39 bài viết cho mỗi ngôn ngữ).
-4. **Trải nghiệm Phát triển (DX):** Viết bài trực tiếp bằng Markdown tự nhiên, dễ đọc, không cần escape chuỗi JSON, hỗ trợ Git diff rõ ràng theo từng bài viết.
+5. **Trải nghiệm Phát triển (DX):** Viết bài trực tiếp bằng Markdown tự nhiên, dễ đọc, không cần escape chuỗi JSON, hỗ trợ Git diff rõ ràng theo từng bài viết.
 
 ---
 

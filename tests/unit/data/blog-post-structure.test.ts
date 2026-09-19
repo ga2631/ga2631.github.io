@@ -123,4 +123,15 @@ describe('TU-DATA-02: Data - Standardized Blog Post Structure & Category Schema 
     expect(html).toContain('<code>&gt; svg</code>');
     expect(html).not.toContain('<code><div class="card"></code>');
   });
+
+  it('should render rich syntax highlighted code blocks with header and token spans', () => {
+    const rawSqlMd = '```sql\nSELECT * FROM fact_orders WHERE status = \'COMPLETED\';\n```';
+    const html = markdownToHtml(rawSqlMd);
+    expect(html).toContain('class="code-block-wrapper"');
+    expect(html).toContain('class="code-lang-tag"');
+    expect(html).toContain('SQL');
+    expect(html).toContain('<span class="token-keyword">SELECT</span>');
+    expect(html).toContain('<span class="token-keyword">FROM</span>');
+    expect(html).toContain('<span class="token-string">&#039;COMPLETED&#039;</span>');
+  });
 });

@@ -377,8 +377,113 @@
     color: var(--accent-red);
   }
 
-  pre {
-    background: var(--bg-tertiary);
+  /* Code Block Container with Syntax Highlighting */
+  .code-block-wrapper {
+    margin: 24px 0;
+    background: #0d1117;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    position: relative;
+
+    .code-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 16px;
+      background: #161b22;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+      .code-mac-dots {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          display: inline-block;
+
+          &.dot-red {
+            background: #ff5f56;
+          }
+          &.dot-yellow {
+            background: #ffbd2e;
+          }
+          &.dot-green {
+            background: #27c93f;
+          }
+        }
+      }
+
+      .code-lang-tag {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--accent-red);
+        letter-spacing: 0.06em;
+        font-family: var(--font-mono);
+      }
+    }
+
+    pre {
+      margin: 0;
+      padding: 16px 20px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      overflow-x: auto;
+      line-height: 1.65;
+      font-size: 0.9rem;
+
+      code {
+        background: transparent;
+        padding: 0;
+        color: #e6edf3;
+        font-family: var(--font-mono);
+      }
+    }
+  }
+
+  /* Syntax Highlighting Tokens */
+  .token-keyword {
+    color: #ff7b72;
+    font-weight: 600;
+  }
+
+  .token-type {
+    color: #79c0ff;
+    font-weight: 500;
+  }
+
+  .token-string {
+    color: #a5d6ff;
+  }
+
+  .token-number {
+    color: #ffa657;
+    font-weight: 500;
+  }
+
+  .token-comment {
+    color: #8b949e;
+    font-style: italic;
+  }
+
+  .token-function {
+    color: #d2a8ff;
+    font-weight: 500;
+  }
+
+  .token-operator {
+    color: #ff7b72;
+  }
+
+  /* Standalone Pre (Non-wrapper fallback) */
+  pre:not(.mermaid) {
+    background: #0d1117;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     padding: 16px;
@@ -388,7 +493,7 @@
     code {
       background: transparent;
       padding: 0;
-      color: var(--text-primary);
+      color: #e6edf3;
     }
   }
 

@@ -62,7 +62,7 @@ flowchart LR
 
 Step-by-step workflow for integrating Mermaid.js into engineering repositories and doc toolchains:
 
-1. **Declare Mermaid fenced code blocks:** Use standard ````mermaid` fences in any Markdown document. Platforms such as GitHub, GitLab, Notion, and Obsidian provide native out-of-the-box rendering.
+1. **Declare Mermaid fenced code blocks:** Use standard `mermaid` code fences in any Markdown document. Platforms such as GitHub, GitLab, Notion, and Obsidian provide native out-of-the-box rendering.
 2. **Model Git branching workflows:**
 
 ```mermaid
