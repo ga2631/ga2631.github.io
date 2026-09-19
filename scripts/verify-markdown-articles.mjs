@@ -45,13 +45,13 @@ function verifyPostsInDir(lang) {
       }
     });
 
-    // Validate filename pattern: YYYY-MM-DD-<slug>.md
+    // Validate filename pattern: YYYY-MM-DD-<id>-<slug>.md
     let expectedPrefix = metadata.date;
     if (!expectedPrefix && metadata.publishedAt && /^\d{2}\/\d{2}\/\d{4}$/.test(metadata.publishedAt)) {
       const [d, m, y] = metadata.publishedAt.split('/');
       expectedPrefix = `${y}-${m}-${d}`;
     }
-    const expectedFilename = `${expectedPrefix}-${metadata.slug}.md`;
+    const expectedFilename = `${expectedPrefix}-${metadata.id}-${metadata.slug}.md`;
     if (file !== expectedFilename) {
       throw new Error(`[${file}] Invalid filename format. Expected: "${expectedFilename}", Found: "${file}"`);
     }

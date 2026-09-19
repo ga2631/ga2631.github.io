@@ -1,5 +1,3 @@
-import { BlogPost } from '../../types/index.ts';
-
 export interface StandardSectionDef {
   id: string;
   order: number;
