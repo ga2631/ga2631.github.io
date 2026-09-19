@@ -29,14 +29,14 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
         <div>
           <h3 style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             gap: '10px',
             fontSize: '1.4rem',
             fontWeight: 700,
             marginBottom: '20px',
             color: 'var(--text-primary)',
           }}>
-            <GraduationCapIcon size={22} style={{ color: 'var(--accent-cyan)' }} />
+            <GraduationCapIcon size={22} style={{ color: 'var(--accent-cyan)', flexShrink: 0, marginTop: '3px' }} />
             <span>{t.academicBg}</span>
           </h3>
 
@@ -79,14 +79,14 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
         <div>
           <h3 style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             gap: '10px',
             fontSize: '1.4rem',
             fontWeight: 700,
             marginBottom: '20px',
             color: 'var(--text-primary)',
           }}>
-            <AwardIcon size={22} style={{ color: 'var(--accent-purple)' }} />
+            <AwardIcon size={22} style={{ color: 'var(--accent-purple)', flexShrink: 0, marginTop: '3px' }} />
             <span>{t.certificationsTitle}</span>
           </h3>
 

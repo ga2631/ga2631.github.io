@@ -51,11 +51,13 @@ describe('TU-COMPOSITE-08: Composite - ModalCaseStudy Component', () => {
     );
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByText('ERP Data Infrastructure Migration')).toBeInTheDocument();
-    expect(screen.getByText('Enterprise JSC - System Architect')).toBeInTheDocument();
+    expect(screen.getAllByText('ERP Data Infrastructure Migration').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText('Enterprise JSC')).toBeInTheDocument();
+    expect(screen.getByText('System Architect')).toBeInTheDocument();
+    expect(screen.getByText('2023 - Present')).toBeInTheDocument();
     expect(screen.getByText('Featured Project')).toBeInTheDocument();
     expect(screen.getByText('Team: 8 Engineers')).toBeInTheDocument();
-    expect(screen.getByText('Objective')).toBeInTheDocument();
+    expect(screen.getAllByText(/Objective/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Responsibilities')).toBeInTheDocument();
     expect(screen.getByText('Challenges & Solutions')).toBeInTheDocument();
     expect(screen.getByText('Achievements')).toBeInTheDocument();

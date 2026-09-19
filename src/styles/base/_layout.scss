@@ -36,7 +36,7 @@
 
 .section-badge {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   padding: 6px 16px;
   background: rgba(239, 68, 68, 0.1);
@@ -48,6 +48,11 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 16px;
+
+  svg {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
 }
 
 .section-title {
@@ -258,7 +263,7 @@
 
 .badge {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   padding: 4px 12px;
   border-radius: var(--radius-full);
@@ -268,6 +273,11 @@
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
   transition: all var(--transition-fast);
+
+  svg {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
 }
 
 .badge:hover {

@@ -54,12 +54,12 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
               <p className="avatar-location">{data.location}</p>
 
               <div className="avatar-info-box">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
                   <span style={{ color: 'var(--text-muted)' }}>$</span>
                   <span>git status</span>
                 </div>
-                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckIcon size={14} style={{ flexShrink: 0 }} />
+                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                  <CheckIcon size={14} style={{ flexShrink: 0, marginTop: '3px' }} />
                   <span>{t.workingTreeClean}</span>
                 </div>
                 <div style={{ color: 'var(--text-secondary)', marginTop: '6px', fontSize: '0.82rem' }}>

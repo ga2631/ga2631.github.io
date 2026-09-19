@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import { Modal } from '../common/Modal';
 import { CloseIcon, ZoomInIcon, ZoomOutIcon, Maximize2Icon, RotateCcwIcon } from '../Icons';
 
 export interface ModalDiagramViewerProps {
@@ -34,31 +34,6 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
       setPan({ x: 0, y: 0 });
     }
   }, [isOpen, svgContent]);
-
-  // Lock body scroll and intercept Escape key to prevent closing parent modal
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation?.();
-        onClose();
-      }
-    };
-
-    // Use capture phase to intercept before parent modal's listener
-    window.addEventListener('keydown', handleKeyDown, true);
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener('keydown', handleKeyDown, true);
-    };
-  }, [isOpen, onClose]);
 
   const handleZoomIn = useCallback(() => {
     setZoom((prev) => Math.min(prev + 0.25, 3.5));
@@ -121,79 +96,82 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
 
   if (!isOpen || !svgContent) return null;
 
-  return createPortal(
-    <div
-      className="diagram-viewer-backdrop"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={title}
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      showCloseButton={false}
+      closeAriaLabel={closeAriaLabel}
+      ariaLabel={title}
+      backdropClassName="diagram-viewer-backdrop"
+      contentClassName="diagram-viewer-content"
+      header={
+        <div
+          className="diagram-viewer-header"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="diagram-viewer-info">
+            <span className="diagram-viewer-badge" title={title}>
+              <Maximize2Icon size={14} />
+              <span className="diagram-viewer-title-text" title={title}>{title}</span>
+            </span>
+          </div>
+
+          <div className="diagram-viewer-controls">
+            <button
+              type="button"
+              className="diagram-viewer-btn"
+              onClick={handleZoomOut}
+              title="Zoom out (-)"
+              aria-label="Zoom out"
+            >
+              <ZoomOutIcon size={14} />
+            </button>
+            <span className="diagram-viewer-zoom-level" title="Current zoom level">
+              {Math.round(zoom * 100)}%
+            </span>
+            <button
+              type="button"
+              className="diagram-viewer-btn"
+              onClick={handleZoomIn}
+              title="Zoom in (+)"
+              aria-label="Zoom in"
+            >
+              <ZoomInIcon size={14} />
+            </button>
+            <div className="diagram-viewer-divider" />
+            <button
+              type="button"
+              className="diagram-viewer-btn"
+              onClick={handleResetZoom}
+              title="Reset view (100%)"
+              aria-label="Reset zoom and position"
+            >
+              <RotateCcwIcon size={14} />
+              <span style={{ marginLeft: '4px' }}>Reset</span>
+            </button>
+          </div>
+
+          <div className="diagram-viewer-actions">
+            <button
+              type="button"
+              className="diagram-viewer-close-btn"
+              onClick={onClose}
+              aria-label={closeAriaLabel}
+              title={`${closeAriaLabel} (Esc)`}
+            >
+              <CloseIcon size={18} />
+            </button>
+          </div>
+        </div>
+      }
+      footer={
+        <div className="diagram-viewer-hint" onClick={(e) => e.stopPropagation()}>
+          <span>💡 Nhấp &amp; kéo để di chuyển • Cuộn chuột để phóng to/thu nhỏ • Nhấn <strong>Esc</strong> để đóng</span>
+        </div>
+      }
     >
-      {/* Top Floating Control Bar */}
-      <div
-        className="diagram-viewer-header"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="diagram-viewer-info">
-          <span className="diagram-viewer-badge" title={title}>
-            <Maximize2Icon size={14} />
-            <span className="diagram-viewer-title-text" title={title}>{title}</span>
-          </span>
-        </div>
-
-
-        {/* Interactive Controls */}
-        <div className="diagram-viewer-controls">
-          <button
-            type="button"
-            className="diagram-viewer-btn"
-            onClick={handleZoomOut}
-            title="Zoom out (-)"
-            aria-label="Zoom out"
-          >
-            <ZoomOutIcon size={14} />
-          </button>
-          <span className="diagram-viewer-zoom-level" title="Current zoom level">
-            {Math.round(zoom * 100)}%
-          </span>
-          <button
-            type="button"
-            className="diagram-viewer-btn"
-            onClick={handleZoomIn}
-            title="Zoom in (+)"
-            aria-label="Zoom in"
-          >
-            <ZoomInIcon size={14} />
-          </button>
-          <div className="diagram-viewer-divider" />
-          <button
-            type="button"
-            className="diagram-viewer-btn"
-            onClick={handleResetZoom}
-            title="Reset view (100%)"
-            aria-label="Reset zoom and position"
-          >
-            <RotateCcwIcon size={14} />
-            <span style={{ marginLeft: '4px' }}>Reset</span>
-          </button>
-        </div>
-
-        {/* Prominent Top-Right Close Button */}
-        <div className="diagram-viewer-actions">
-          <button
-            type="button"
-            className="diagram-viewer-close-btn"
-            onClick={onClose}
-            aria-label={closeAriaLabel}
-            title={`${closeAriaLabel} (Esc)`}
-          >
-            <CloseIcon size={18} />
-          </button>
-        </div>
-      </div>
-
-      {/* Main Fullscreen Viewport Area */}
-      <div
+      <Modal.Body
         className={`diagram-viewer-viewport ${isDragging ? 'is-dragging' : ''}`}
         onWheel={handleWheel}
         onMouseDown={handleMouseDown}
@@ -209,15 +187,8 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
           }}
           dangerouslySetInnerHTML={{ __html: processedSvg }}
         />
-      </div>
-
-
-      {/* Bottom helper tip */}
-      <div className="diagram-viewer-hint" onClick={(e) => e.stopPropagation()}>
-        <span>💡 Nhấp &amp; kéo để di chuyển • Cuộn chuột để phóng to/thu nhỏ • Nhấn <strong>Esc</strong> để đóng</span>
-      </div>
-    </div>,
-    document.body
+      </Modal.Body>
+    </Modal>
   );
 };
 
