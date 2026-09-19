@@ -61,7 +61,6 @@ export const BlogTopic: React.FC<BlogTopicProps> = ({
         {categories.map((cat: BlogCategoryDef) => {
           const isActive = selectedCategory === cat.id;
           const count = categoryCounts[cat.id] || 0;
-          const displayCount = cat.id === 'all' && count > 20 ? '20+' : count;
 
           return (
             <button
@@ -93,7 +92,7 @@ export const BlogTopic: React.FC<BlogTopicProps> = ({
                 </span>
                 <span className="category-item-name">{cat.title[langKey]}</span>
               </div>
-              <span className="category-count-pill">{displayCount}</span>
+              <span className="category-count-pill">{count}</span>
             </button>
           );
         })}

@@ -79,16 +79,46 @@ function verifyPostsInDir(lang) {
     }
   });
 
+  // Statistics calculation
+  const categoryCounts = {};
+  REQUIRED_CATEGORIES.forEach((cat) => { categoryCounts[cat] = 0; });
+  const tagCounts = {};
+
+  files.forEach((file) => {
+    const fullPath = path.join(dirPath, file);
+    const content = fs.readFileSync(fullPath, 'utf8');
+    const { metadata } = parseFrontmatter(content);
+    if (metadata.category) {
+      categoryCounts[metadata.category] = (categoryCounts[metadata.category] || 0) + 1;
+    }
+    if (Array.isArray(metadata.tags)) {
+      metadata.tags.forEach((tag) => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+    }
+  });
+
+  console.log(`[${lang.toUpperCase()}] Category breakdown (Total ${files.length} articles):`);
+  Object.entries(categoryCounts).forEach(([cat, count]) => {
+    console.log(`  - ${cat}: ${count} bài viết`);
+  });
+
+  console.log(`[${lang.toUpperCase()}] Tags breakdown (${Object.keys(tagCounts).length} unique tags):`);
+  const sortedTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+  sortedTags.forEach(([tag, count]) => {
+    console.log(`  - #${tag}: ${count} bài`);
+  });
+
   console.log(`[${lang.toUpperCase()}] All ${files.length} posts passed integrity & structure validation!\n`);
-  return files.length;
+  return { count: files.length, categoryCounts, tagCounts };
 }
 
 console.log('--- BLOG MARKDOWN INTEGRITY VERIFICATION ---');
-const viTotal = verifyPostsInDir('vi');
-const enTotal = verifyPostsInDir('en');
+const viRes = verifyPostsInDir('vi');
+const enRes = verifyPostsInDir('en');
 
-if (viTotal !== enTotal) {
-  throw new Error(`Mismatch between VI count (${viTotal}) and EN count (${enTotal})`);
+if (viRes.count !== enRes.count) {
+  throw new Error(`Mismatch between VI count (${viRes.count}) and EN count (${enRes.count})`);
 }
 
-console.log(`SUCCESS: Total ${viTotal + enTotal} Markdown articles (${viTotal} VI, ${enTotal} EN) verified with 100% integrity!`);
+console.log(`SUCCESS: Total ${viRes.count + enRes.count} Markdown articles (${viRes.count} VI, ${enRes.count} EN) verified with 100% integrity and accurate statistics!`);

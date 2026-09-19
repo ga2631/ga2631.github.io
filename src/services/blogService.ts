@@ -157,17 +157,15 @@ export interface BlogLoadResult {
  * Returns initial batch of posts (or all posts).
  */
 export async function loadInitialBlogPosts(
-  lang: 'vi' | 'en',
-  targetMinPosts = 20
+  lang: 'vi' | 'en'
 ): Promise<BlogLoadResult> {
   const allPosts = getEagerPosts(lang);
   const archives = getAvailableMonthArchives(lang);
-  const initialPosts = allPosts.slice(0, targetMinPosts);
 
   return {
-    posts: initialPosts,
+    posts: allPosts,
     loadedMonthKeys: archives.map((a) => a.key),
-    hasMore: allPosts.length > targetMinPosts,
+    hasMore: false,
     totalArchivesCount: archives.length,
   };
 }

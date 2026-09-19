@@ -97,4 +97,20 @@ describe('TU-DATA-02: Data - Standardized Blog Post Structure & Category Schema 
     expect(result.isValid).toBe(false);
     expect(result.missingSections.length).toBe(4);
   });
+
+  it('should calculate accurate category and tag statistics across all existing posts (39 posts)', () => {
+    expect(blogPostsVi.length).toBe(39);
+    expect(blogPostsEn.length).toBe(39);
+
+    // Verify category distribution totals exactly 39 posts
+    const viCategorySum = activeCategories.reduce((sum, cat) => {
+      return sum + blogPostsVi.filter((p) => p.category === cat.id).length;
+    }, 0);
+    expect(viCategorySum).toBe(39);
+
+    const enCategorySum = activeCategories.reduce((sum, cat) => {
+      return sum + blogPostsEn.filter((p) => p.category === cat.id).length;
+    }, 0);
+    expect(enCategorySum).toBe(39);
+  });
 });

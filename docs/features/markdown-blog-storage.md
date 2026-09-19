@@ -72,7 +72,9 @@ tags:
 
 1. **Zero-Dependency Markdown Parser:** Xây dựng `markdownParser.ts` thuần túy với TypeScript/RegExp, không phụ thuộc vào các thư viện nặng nề bên ngoài, giảm tải bundle size tối đa cho client.
 2. **Mermaid Code Block Preservation:** Bảo toàn cấu trúc sơ đồ ```` ```mermaid ```` sang `<pre class="mermaid"><code>` chuẩn để kết hợp hoàn hảo với engine Mermaid động và cơ chế Pan/Zoom 60 FPS hiện có.
-3. **Tự động hóa Kiểm thử Tính Toàn vẹn (Automated Verification):** Viết script `scripts/verify-markdown-articles.mjs` kiểm tra 100% các file Markdown về Frontmatter, đủ 5 mục tiêu chuẩn (headings), không trùng ID/Slug và độ dài nội dung hợp lệ.
+3. **Tự động hóa Kiểm thử Tính Toàn vẹn & Thống kê (Automated Verification & Exact Statistics):**
+   - Viết script `scripts/verify-markdown-articles.mjs` kiểm tra 100% các file Markdown về Frontmatter, đủ 5 mục tiêu chuẩn (headings), không trùng ID/Slug và độ dài nội dung hợp lệ.
+   - Thống kê chính xác số lượng bài viết theo từng Chuyên đề (5 categories) và Thẻ / Từ khoá (135 unique tags), loại bỏ giới hạn làm tròn `20+` trước đây để hiển thị số lượng bài viết thực tế (39 bài viết cho mỗi ngôn ngữ).
 4. **Trải nghiệm Phát triển (DX):** Viết bài trực tiếp bằng Markdown tự nhiên, dễ đọc, không cần escape chuỗi JSON, hỗ trợ Git diff rõ ràng theo từng bài viết.
 
 ---
@@ -83,11 +85,14 @@ tags:
 | :--- | :--- | :--- |
 | `src/utils/markdownParser.ts` | **NEW** | Module bóc tách Frontmatter và biên dịch Markdown body sang HTML chuẩn. |
 | `scripts/migrate-json-to-md.mjs` | **NEW** | Script tự động chuyển đổi toàn bộ 78 bài viết từ JSON sang Markdown. |
-| `scripts/verify-markdown-articles.mjs` | **NEW** | Script kiểm tra tính toàn vẹn 100% của các file Markdown. |
+| `scripts/verify-markdown-articles.mjs` | **NEW** | Script kiểm tra tính toàn vẹn 100% và xuất bảng thống kê chi tiết cho bài viết. |
 | `src/data/blog/vi/*.md` (39 files) | **NEW** | Toàn bộ các bài viết tiếng Việt lưu trữ dưới dạng file Markdown độc lập. |
 | `src/data/blog/en/*.md` (39 files) | **NEW** | Toàn bộ các bài viết tiếng Anh lưu trữ dưới dạng file Markdown độc lập. |
 | `src/services/blogService.ts` | **MODIFIED** | Nạp và phân tích dữ liệu trực tiếp từ các file `.md` qua Vite eager glob. |
-| `tests/unit/data/blog-post-structure.test.ts` | **MODIFIED** | Cập nhật kiểm thử cấu trúc và schema bài viết từ nguồn Markdown. |
+| `src/components/composite/BlogTopic.tsx` | **MODIFIED** | Hiển thị chính xác số lượng bài viết cho từng chuyên đề, bỏ giới hạn `20+`. |
+| `src/components/composite/BlogTagsKeyword.tsx` | **MODIFIED** | Hiển thị chính xác số lượng bài viết theo từng thẻ/từ khoá và tổng số bài viết. |
+| `src/pages/Blog.tsx` | **MODIFIED** | Tính toán thống kê chuyên mục, thẻ bài viết và cập nhật badge bộ lọc di động. |
+| `tests/unit/data/blog-post-structure.test.ts` | **MODIFIED** | Cập nhật kiểm thử cấu trúc, schema và thống kê bài viết từ nguồn Markdown. |
 | `tests/unit/data/mermaid-syntax.test.ts` | **MODIFIED** | Cập nhật kiểm thử cú pháp Mermaid diagrams từ nguồn Markdown. |
 | `src/data/blog/vi/2026/09.json` | **DELETED** | Loại bỏ file JSON cũ sau khi đã di trú toàn bộ dữ liệu an toàn. |
 | `src/data/blog/en/2026/09.json` | **DELETED** | Loại bỏ file JSON cũ sau khi đã di trú toàn bộ dữ liệu an toàn. |
