@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import {
   CloseIcon,
-  DownloadIcon,
   SunIcon,
   MoonIcon,
   UserIcon,
@@ -21,6 +20,7 @@ import {
 import { UITranslation } from '../data/cvData.ts';
 import { PersonalInfo } from '../types/index.ts';
 import { getSecureZaloUrl } from '../utils/obfuscation.tsx';
+import { ButtonPrint } from './composite';
 
 export interface NavItem {
   label: string;
@@ -160,16 +160,16 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
 
           <div className="drawer-actions-card">
             {/* Save CV PDF button */}
-            <button
-              onClick={() => {
+            <ButtonPrint
+              variant="default"
+              buttonVariant="primary"
+              className="drawer-cv-btn"
+              label={`${tNav.saveCv} (PDF)`}
+              onPrint={() => {
                 onClose();
                 setTimeout(() => onPrint(), 300);
               }}
-              className="btn btn-primary drawer-cv-btn"
-            >
-              <DownloadIcon size={18} />
-              <span>{tNav.saveCv} (PDF)</span>
-            </button>
+            />
 
             {/* Language Selection Buttons */}
             <div className="drawer-lang-selector">

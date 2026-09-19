@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { CaseStudyModal } from '../../../src/components/ui/CaseStudyModal';
+import { ModalCaseStudy } from '../../../src/components/ui/ModalCaseStudy';
 import { ProjectItem } from '../../../src/types';
 
-describe('Tier 2: CaseStudyModal Component', () => {
+describe('Tier 2: ModalCaseStudy Component', () => {
   const mockProject: ProjectItem = {
     id: 'erp-medallion',
     title: 'ERP Data Infrastructure Migration',
@@ -42,7 +42,7 @@ describe('Tier 2: CaseStudyModal Component', () => {
   it('renders case study dialog with all detailed architecture sections', () => {
     const handleClose = vi.fn();
     render(
-      <CaseStudyModal
+      <ModalCaseStudy
         project={mockProject}
         isOpen={true}
         onClose={handleClose}
@@ -66,7 +66,7 @@ describe('Tier 2: CaseStudyModal Component', () => {
   it('handles close button trigger and escape key dismiss', () => {
     const handleClose = vi.fn();
     render(
-      <CaseStudyModal
+      <ModalCaseStudy
         project={mockProject}
         isOpen={true}
         onClose={handleClose}
@@ -85,7 +85,7 @@ describe('Tier 2: CaseStudyModal Component', () => {
 
   it('does not render when project is null', () => {
     const { container } = render(
-      <CaseStudyModal
+      <ModalCaseStudy
         project={null}
         isOpen={true}
         onClose={vi.fn()}

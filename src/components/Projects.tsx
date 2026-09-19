@@ -11,7 +11,7 @@ import {
 } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { Card, Button, Badge } from './common';
-import { Section, CaseStudyModal } from './ui';
+import { Section, ModalCaseStudy } from './ui';
 
 interface ProjectsProps {
   projects: ProjectItem[];
@@ -428,7 +428,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
       </div>
 
       {/* Detailed Architecture & Case Study Modal */}
-      <CaseStudyModal
+      <ModalCaseStudy
         project={activeProject}
         isOpen={Boolean(activeProject)}
         onClose={() => setActiveProject(null)}

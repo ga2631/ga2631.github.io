@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { FloatingButton } from '../../../src/components/ui/FloatingButton';
+import { ButtonFloating } from '../../../src/components/ui/ButtonFloating';
 
-describe('Tier 2: FloatingButton Component', () => {
+describe('Tier 2: ButtonFloating Component', () => {
   it('renders primary floating button with glow element by default', () => {
     render(
-      <FloatingButton
+      <ButtonFloating
         floatingVariant="primary"
         label="Download CV"
         icon={<span data-testid="fab-icon">📄</span>}
@@ -23,7 +23,7 @@ describe('Tier 2: FloatingButton Component', () => {
 
   it('renders secondary floating button without glow element', () => {
     render(
-      <FloatingButton
+      <ButtonFloating
         floatingVariant="secondary"
         aria-label="Back to Top"
         icon={<span data-testid="arrow-icon">↑</span>}
@@ -39,7 +39,7 @@ describe('Tier 2: FloatingButton Component', () => {
   it('triggers click handler when clicked', () => {
     const handleClick = vi.fn();
     render(
-      <FloatingButton onClick={handleClick} label="Scroll Up" />
+      <ButtonFloating onClick={handleClick} label="Scroll Up" />
     );
 
     const button = screen.getByRole('button', { name: /scroll up/i });

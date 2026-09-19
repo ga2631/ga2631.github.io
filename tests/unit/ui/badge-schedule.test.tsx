@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { ScheduleBadge } from '../../../src/components/ui/ScheduleBadge';
+import { BadgeSchedule } from '../../../src/components/ui/BadgeSchedule';
 
-describe('Tier 2: ScheduleBadge Component', () => {
+describe('Tier 2: BadgeSchedule Component', () => {
   it('renders schedule badge with day code class', () => {
-    render(<ScheduleBadge dayCode="MON">Monday • Tech Deep Dive</ScheduleBadge>);
+    render(<BadgeSchedule dayCode="MON">Monday • Tech Deep Dive</BadgeSchedule>);
 
     const badge = screen.getByText(/monday • tech deep dive/i);
     expect(badge).toBeInTheDocument();
@@ -14,12 +14,12 @@ describe('Tier 2: ScheduleBadge Component', () => {
 
   it('renders icon and custom children correctly', () => {
     render(
-      <ScheduleBadge
+      <BadgeSchedule
         dayCode="FRI"
         icon={<span data-testid="cal-icon">📅</span>}
       >
         Friday • Systems
-      </ScheduleBadge>
+      </BadgeSchedule>
     );
 
     expect(screen.getByTestId('cal-icon')).toBeInTheDocument();

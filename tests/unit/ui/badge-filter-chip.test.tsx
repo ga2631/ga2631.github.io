@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { FilterChip } from '../../../src/components/ui/FilterChip';
+import { BadgeFilterChip } from '../../../src/components/ui/BadgeFilterChip';
 
-describe('Tier 2: FilterChip Component', () => {
+describe('Tier 2: BadgeFilterChip Component', () => {
   it('renders filter chip with key and value', () => {
     render(
-      <FilterChip chipKey="Tag" chipValue="Architecture" onRemove={vi.fn()} />
+      <BadgeFilterChip chipKey="Tag" chipValue="Architecture" onRemove={vi.fn()} />
     );
 
     expect(screen.getByText('Tag:')).toBeInTheDocument();
@@ -15,9 +15,9 @@ describe('Tier 2: FilterChip Component', () => {
 
   it('renders children as value when chipValue is not explicitly provided', () => {
     render(
-      <FilterChip chipKey="Category" onRemove={vi.fn()}>
+      <BadgeFilterChip chipKey="Category" onRemove={vi.fn()}>
         DevOps
-      </FilterChip>
+      </BadgeFilterChip>
     );
 
     expect(screen.getByText('Category:')).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('Tier 2: FilterChip Component', () => {
   it('calls onRemove when the remove button is clicked', () => {
     const handleRemove = vi.fn();
     render(
-      <FilterChip
+      <BadgeFilterChip
         chipKey="Search"
         chipValue="TypeScript"
         onRemove={handleRemove}

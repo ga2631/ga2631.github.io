@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { SearchInput } from '../../../src/components/ui/SearchInput';
+import { InputSearch } from '../../../src/components/ui/InputSearch';
 
-describe('Tier 2: SearchInput Component', () => {
+describe('Tier 2: InputSearch Component', () => {
   it('renders search input with default placeholder and search icon', () => {
-    render(<SearchInput placeholder="Search articles..." value="" onChange={vi.fn()} />);
+    render(<InputSearch placeholder="Search articles..." value="" onChange={vi.fn()} />);
 
     const input = screen.getByPlaceholderText('Search articles...');
     expect(input).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe('Tier 2: SearchInput Component', () => {
     const handleValueChange = vi.fn();
 
     render(
-      <SearchInput
+      <InputSearch
         value="Microservices"
         onClear={handleClear}
         onValueChange={handleValueChange}
@@ -36,7 +36,7 @@ describe('Tier 2: SearchInput Component', () => {
 
   it('supports onChange user typing interactions', () => {
     const handleChange = vi.fn();
-    render(<SearchInput value="" onChange={handleChange} placeholder="Search" />);
+    render(<InputSearch value="" onChange={handleChange} placeholder="Search" />);
 
     const input = screen.getByPlaceholderText('Search');
     fireEvent.change(input, { target: { value: 'Rust' } });

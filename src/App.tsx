@@ -11,7 +11,7 @@ import { EducationCertifications } from './components/EducationCertifications.ts
 import { Contact } from './components/Contact.tsx';
 import { Footer } from './components/Footer.tsx';
 import { PrintCV } from './components/PrintCV.tsx';
-import { FloatingActions } from './components/FloatingActions.tsx';
+import { ButtonFloatingScrollTop, ButtonPrint } from './components/composite';
 import { BlogPage } from './pages/BlogPage.tsx';
 import {
   ThemeMode,
@@ -145,11 +145,15 @@ export const App: React.FC = () => {
 
         {/* Floating Quick Action Button (FAB) */}
         {route !== 'blog' && (
-          <FloatingActions
-            onPrint={() => window.print()}
-            saveCvLabel={t.nav.saveCv}
-            tCommon={t.common}
-          />
+          <div className="floating-actions-container" role="region" aria-label="Floating quick actions">
+            <ButtonFloatingScrollTop tCommon={t.common} />
+            <ButtonPrint
+              variant="floating"
+              onPrint={() => window.print()}
+              label={t.nav.saveCv}
+              tCommon={t.common}
+            />
+          </div>
         )}
       </div>
 

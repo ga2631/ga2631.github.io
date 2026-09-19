@@ -21,7 +21,7 @@ import {
   loadAllArchivePosts,
 } from '../data/blogService.ts';
 import { Button, Badge, Card } from '../components/common';
-import { SearchInput, FilterChip, ScheduleBadge, ModalArticle, processArticleToc } from '../components/ui';
+import { InputSearch, BadgeFilterChip, BadgeSchedule, ModalArticle, processArticleToc } from '../components/ui';
 import { EmptyState } from '../components/composite';
 
 interface BlogPageProps {
@@ -466,7 +466,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
             <div className="blog-grid">
               {/* Search Input Panel (Sticky Glass Box) */}
               <div className={`blog-controls-panel ${isFilterStuck ? 'is-stuck' : ''}`}>
-                <SearchInput
+                <InputSearch
                   placeholder={t.searchPlaceholder}
                   value={searchQuery}
                   onValueChange={setSearchQuery}
@@ -480,7 +480,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                     </span>
 
                     {selectedCategory !== 'all' && (
-                      <FilterChip
+                      <BadgeFilterChip
                         chipKey={t.filterByCategory || 'Chuyên đề'}
                         chipValue={currentCategoryDef.title[langKey]}
                         onRemove={() => setSelectedCategory('all')}
@@ -489,7 +489,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                     )}
 
                     {selectedTag !== 'all' && (
-                      <FilterChip
+                      <BadgeFilterChip
                         chipKey={t.filterByTag || 'Thẻ'}
                         chipValue={`#${selectedTag}`}
                         onRemove={() => setSelectedTag('all')}
@@ -498,7 +498,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                     )}
 
                     {searchQuery && (
-                      <FilterChip
+                      <BadgeFilterChip
                         chipKey="Search"
                         chipValue={`"${searchQuery}"`}
                         onRemove={() => setSearchQuery('')}
@@ -532,12 +532,12 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
                         {/* Top Category Badge & Publishing Schedule Meta */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                           {postCatDef && postCatDef.id !== 'all' ? (
-                            <ScheduleBadge
+                            <BadgeSchedule
                               dayCode={postCatDef.dayCode}
                               style={{ fontSize: '0.72rem', padding: '3px 8px' }}
                             >
                               {postCatDef.title[langKey]}
-                            </ScheduleBadge>
+                            </BadgeSchedule>
                           ) : (
                             <Badge variant="purple" style={{ fontSize: '0.72rem' }} icon={<SparklesIcon size={11} />}>
                               {t.article}
@@ -627,9 +627,9 @@ export const BlogPage: React.FC<BlogPageProps> = ({ posts, t, tCommon }) => {
             }}
           >
             <div className="tooltip-top-row">
-              <ScheduleBadge dayCode={hoveredCategory.cat.dayCode} icon={<CalendarIcon size={12} />}>
+              <BadgeSchedule dayCode={hoveredCategory.cat.dayCode} icon={<CalendarIcon size={12} />}>
                 {hoveredCategory.cat.scheduleFull[langKey]}
-              </ScheduleBadge>
+              </BadgeSchedule>
             </div>
             <div className="tooltip-title">
               {hoveredCategory.cat.title[langKey]}
