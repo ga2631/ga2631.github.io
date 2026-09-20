@@ -54,17 +54,12 @@ sequenceDiagram
     autonumber
     actor Reader as Reader (User)
     participant Article as ModalArticle.tsx
-    participant ThemeObs as MutationObserver data-theme
     participant MermaidEngine as Mermaid.js Dynamic ESM
     participant Viewer as ModalDiagramViewer.tsx
 
     Reader->>Article: Opens article containing diagrams
-    Article->>MermaidEngine: On-demand import and render SVG with theme base
+    Article->>MermaidEngine: On-demand import and render SVG with Light Theme
     MermaidEngine-->>Article: Injects crisp SVG and Fit View micro-pill
-    opt User toggles Dark or Light theme
-        ThemeObs->>Article: Captures data-theme attribute change
-        Article->>MermaidEngine: Instant re-render with updated contrast palette
-    end
     opt User clicks diagram or presses Enter
         Reader->>Article: Triggers click or keyboard focus
         Article->>Viewer: Launches Fullscreen Fit View Overlay
@@ -75,7 +70,7 @@ sequenceDiagram
 **Key Engineering Takeaways:**
 
 - **CSS Child Selector Scoping (`> svg`):** Prevents diagram container sizing rules from overriding micro-icons inside button pills.
-- **Theme Synchronization via MutationObserver:** Automatically captures root theme switches to refresh vector colors without page reloads.
+- **Unified Light Theme Theming:** Initializes Mermaid in Light Theme mode with tailored `themeVariables`, eliminating theme switching runtime overhead.
 
 ## Complexity Evaluation & Real-world Applications
 

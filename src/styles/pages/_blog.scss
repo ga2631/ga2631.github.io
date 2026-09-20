@@ -129,66 +129,54 @@
   }
 }
 
-/* Category Theme Colors Map */
+/* Category Theme Colors Map (Light Palette) */
 $category-colors: (
   'all': (
-    accent: #ff4d6d,
-    accent-light: #dc2626,
-    bg-alpha: rgba(255, 77, 109, 0.12),
-    bg-alpha-light: rgba(220, 38, 38, 0.1),
-    border-alpha: rgba(255, 77, 109, 0.3),
-    border-hover: rgba(255, 77, 109, 0.45),
-    glow: rgba(255, 77, 109, 0.22),
-    gradient: linear-gradient(135deg, #ff385c 0%, #e11d48 100%)
+    accent: #dc2626,
+    bg-alpha: rgba(220, 38, 38, 0.08),
+    border-alpha: rgba(220, 38, 38, 0.25),
+    border-hover: rgba(220, 38, 38, 0.45),
+    glow: rgba(220, 38, 38, 0.15),
+    gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%)
   ),
   'mon': (
-    accent: #38bdf8,
-    accent-light: #0284c7,
-    bg-alpha: rgba(56, 189, 248, 0.12),
-    bg-alpha-light: rgba(2, 132, 199, 0.1),
-    border-alpha: rgba(56, 189, 248, 0.3),
-    border-hover: rgba(56, 189, 248, 0.45),
-    glow: rgba(56, 189, 248, 0.22),
+    accent: #0284c7,
+    bg-alpha: rgba(2, 132, 199, 0.08),
+    border-alpha: rgba(2, 132, 199, 0.25),
+    border-hover: rgba(2, 132, 199, 0.45),
+    glow: rgba(2, 132, 199, 0.15),
     gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)
   ),
   'tue': (
-    accent: #34d399,
-    accent-light: #059669,
-    bg-alpha: rgba(52, 211, 153, 0.12),
-    bg-alpha-light: rgba(5, 150, 105, 0.1),
-    border-alpha: rgba(52, 211, 153, 0.3),
-    border-hover: rgba(52, 211, 153, 0.45),
-    glow: rgba(52, 211, 153, 0.22),
+    accent: #059669,
+    bg-alpha: rgba(5, 150, 105, 0.08),
+    border-alpha: rgba(5, 150, 105, 0.25),
+    border-hover: rgba(5, 150, 105, 0.45),
+    glow: rgba(5, 150, 105, 0.15),
     gradient: linear-gradient(135deg, #34d399 0%, #059669 100%)
   ),
   'wed': (
-    accent: #c084fc,
-    accent-light: #7e22ce,
-    bg-alpha: rgba(192, 132, 252, 0.12),
-    bg-alpha-light: rgba(126, 34, 206, 0.1),
-    border-alpha: rgba(192, 132, 252, 0.3),
-    border-hover: rgba(192, 132, 252, 0.45),
-    glow: rgba(192, 132, 252, 0.22),
-    gradient: linear-gradient(135deg, #c084fc 0%, #9333ea 100%)
+    accent: #7e22ce,
+    bg-alpha: rgba(126, 34, 206, 0.08),
+    border-alpha: rgba(126, 34, 206, 0.25),
+    border-hover: rgba(126, 34, 206, 0.45),
+    glow: rgba(126, 34, 206, 0.15),
+    gradient: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%)
   ),
   'thu': (
-    accent: #fbbf24,
-    accent-light: #b45309,
-    bg-alpha: rgba(251, 191, 36, 0.12),
-    bg-alpha-light: rgba(180, 83, 9, 0.1),
-    border-alpha: rgba(251, 191, 36, 0.3),
-    border-hover: rgba(251, 191, 36, 0.45),
-    glow: rgba(251, 191, 36, 0.22),
-    gradient: linear-gradient(135deg, #fbbf24 0%, #d97706 100%)
+    accent: #b45309,
+    bg-alpha: rgba(180, 83, 9, 0.08),
+    border-alpha: rgba(180, 83, 9, 0.25),
+    border-hover: rgba(180, 83, 9, 0.45),
+    glow: rgba(180, 83, 9, 0.15),
+    gradient: linear-gradient(135deg, #f59e0b 0%, #b45309 100%)
   ),
   'fri': (
-    accent: #fb7185,
-    accent-light: #e11d48,
-    bg-alpha: rgba(251, 113, 133, 0.12),
-    bg-alpha-light: rgba(225, 29, 72, 0.1),
-    border-alpha: rgba(251, 113, 133, 0.3),
-    border-hover: rgba(251, 113, 133, 0.45),
-    glow: rgba(251, 113, 133, 0.22),
+    accent: #e11d48,
+    bg-alpha: rgba(225, 29, 72, 0.08),
+    border-alpha: rgba(225, 29, 72, 0.25),
+    border-hover: rgba(225, 29, 72, 0.45),
+    glow: rgba(225, 29, 72, 0.15),
     gradient: linear-gradient(135deg, #fb7185 0%, #e11d48 100%)
   )
 );
@@ -434,76 +422,6 @@ $category-colors: (
   }
 }
 
-/* Light Theme Category Overrides */
-[data-theme="light"] {
-  @each $day, $colors in $category-colors {
-    $accent-light: map.get($colors, accent-light);
-    $bg-alpha-light: map.get($colors, bg-alpha-light);
-
-    .category-icon-box.icon-#{$day} {
-      background: $bg-alpha-light;
-      color: $accent-light;
-      border-color: rgba(0, 0, 0, 0.12);
-    }
-
-    .category-item-row.day-#{$day} {
-      &:hover {
-        .category-item-name {
-          color: $accent-light;
-        }
-      }
-
-      &.active {
-        background: $bg-alpha-light;
-        border-color: $accent-light;
-
-        .category-item-name {
-          color: $accent-light;
-        }
-
-        .category-count-pill {
-          background: $bg-alpha-light;
-          color: $accent-light;
-        }
-      }
-    }
-
-    .schedule-day-badge.badge-#{$day} {
-      background: $bg-alpha-light;
-      color: $accent-light;
-      border-color: rgba(0, 0, 0, 0.12);
-    }
-
-    .category-rich-tooltip.tooltip-day-#{$day} {
-      border-color: rgba(0, 0, 0, 0.15);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 0 16px rgba(0, 0, 0, 0.06);
-    }
-
-    .blog-card.card-day-#{$day} {
-      &::before {
-        border-top-color: $accent-light;
-        border-right-color: $accent-light;
-      }
-
-      &::after {
-        border-bottom-color: $accent-light;
-      }
-
-      &:hover {
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 0 16px rgba(0, 0, 0, 0.06);
-
-        &::after {
-          border-left-color: $accent-light;
-        }
-
-        .blog-title {
-          color: $accent-light;
-        }
-      }
-    }
-  }
-}
-
 /* Sidebar Tag Cloud (Independently Scrollable) */
 .sidebar-tags-cloud {
   flex: 1;
@@ -661,23 +579,11 @@ $category-colors: (
   }
 
   &.is-stuck {
-    background: rgba(17, 24, 39, 0.92);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-color: var(--border-color);
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
-  }
-}
-
-[data-theme="light"] {
-  .blog-controls-panel {
-    box-shadow: none;
-
-    &.is-stuck {
-      background: rgba(255, 255, 255, 0.95);
-      border-color: var(--border-color);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-    }
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
   }
 }
 

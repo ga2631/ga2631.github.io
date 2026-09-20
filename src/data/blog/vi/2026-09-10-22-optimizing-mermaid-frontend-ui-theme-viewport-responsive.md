@@ -54,17 +54,12 @@ sequenceDiagram
     autonumber
     actor Reader as Người đọc (User)
     participant Article as ModalArticle.tsx
-    participant ThemeObs as MutationObserver data-theme
     participant MermaidEngine as Mermaid.js Dynamic ESM
     participant Viewer as ModalDiagramViewer.tsx
 
     Reader->>Article: Mở bài viết có chứa biểu đồ
-    Article->>MermaidEngine: Tải on-demand và render SVG với theme base
+    Article->>MermaidEngine: Tải on-demand và render SVG với Light Theme
     MermaidEngine-->>Article: Chèn SVG sắc nét và gắn nút Fit View
-    opt Người dùng chuyển Dark hoặc Light Theme
-        ThemeObs->>Article: Bắt sự kiện thay đổi thuộc tính data-theme
-        Article->>MermaidEngine: Re-render tức thì với bảng màu tương ứng
-    end
     opt Người dùng click vào biểu đồ
         Reader->>Article: Click chuột hoặc nhấn Enter hoặc Space
         Article->>Viewer: Kích hoạt Fullscreen Fit View Overlay
@@ -75,7 +70,7 @@ sequenceDiagram
 **Điểm mấu chốt trong mã nguồn:**
 
 - **Giới hạn selector CSS `> svg`:** Đảm bảo các thuộc tính kích thước lớn của sơ đồ không làm vỡ icon `11x11px` bên trong nút Fit View.
-- **Bắt sự kiện Theme bằng MutationObserver:** Tự động phát hiện khi `document.documentElement` đổi theme để re-render biểu đồ mượt mà mà không cần reload trang.
+- **Tối ưu hóa Theme đồng nhất:** Khởi tạo Mermaid trực tiếp ở chế độ Light Theme với bộ `themeVariables` chuẩn mực, loại bỏ hoàn toàn chi phí lắng nghe MutationObserver.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

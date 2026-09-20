@@ -62,17 +62,9 @@
   transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
 
   &.has-title {
-    background: rgba(17, 24, 39, 0.94);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom-color: var(--border-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  }
-}
-
-[data-theme="light"] {
-  .modal-sticky-header.has-title {
-    background: rgba(255, 255, 255, 0.95);
     border-bottom-color: var(--border-color);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   }
@@ -662,7 +654,7 @@
   position: fixed;
   inset: 0;
   z-index: 2100;
-  background: rgba(11, 15, 25, 0.92);
+  background: rgba(241, 245, 249, 0.92);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   display: flex;
@@ -671,10 +663,6 @@
   justify-content: center;
   overflow: hidden;
   animation: diagramViewerFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-[data-theme="light"] .diagram-viewer-backdrop {
-  background: rgba(241, 245, 249, 0.9);
 }
 
 .diagram-viewer-content {

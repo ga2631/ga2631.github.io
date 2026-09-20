@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { SunIcon, MoonIcon, MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons.tsx';
+import { MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
 import { PersonalInfo } from '../types/index.ts';
 import { DrawerMenu, NavItem } from './composite';
 import { Button } from './common';
 
 interface HeaderProps {
-  theme: 'dark' | 'light';
-  toggleTheme: () => void;
   lang: 'vi' | 'en';
   setLang: (lang: 'vi' | 'en') => void;
   t: UITranslation;
@@ -16,8 +14,6 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  theme,
-  toggleTheme,
   lang,
   setLang,
   t,
@@ -147,16 +143,6 @@ export const Header: React.FC<HeaderProps> = ({
               <span>{lang === 'vi' ? 'VI' : 'EN'}</span>
             </Button>
 
-            {/* Theme Toggle Button */}
-            <Button
-              variant="unstyled"
-              onClick={toggleTheme}
-              className="theme-toggle-btn"
-              aria-label="Toggle Theme"
-              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-              icon={theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
-            />
-
             {/* Mobile & Tablet Drawer Trigger Button */}
             <Button
               variant="unstyled"
@@ -176,8 +162,6 @@ export const Header: React.FC<HeaderProps> = ({
         onClose={() => setMobileMenuOpen(false)}
         navItems={navItems}
         onNavClick={handleNavClick}
-        theme={theme}
-        toggleTheme={toggleTheme}
         lang={lang}
         setLang={setLang}
         tNav={t.nav}

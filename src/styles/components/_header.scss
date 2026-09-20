@@ -115,25 +115,6 @@
   }
 }
 
-.theme-toggle-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  flex-shrink: 0;
-
-  &:hover {
-    border-color: var(--border-color-hover);
-    color: var(--text-accent);
-  }
-}
 
 .mobile-menu-btn {
   display: none;
