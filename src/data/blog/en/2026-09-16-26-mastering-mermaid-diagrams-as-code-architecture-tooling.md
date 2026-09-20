@@ -16,7 +16,7 @@ tags:
   - "Developer Productivity"
 ---
 
-## 1. Article Objectives & Motivation
+## Article Objectives & Motivation
 
 In modern software engineering, technical documentation and architecture diagrams play a vital role in maintaining team alignment. However, traditional diagramming tools (such as Draw.io, Visio, or Lucidchart) that export static binary image files (.png, .jpg) introduce severe workflow bottlenecks:
 
@@ -25,7 +25,7 @@ In modern software engineering, technical documentation and architecture diagram
 
 The purpose of this article is to introduce the **Diagrams as Code (DaC)** methodology using **Mermaid.js** - transforming diagrams into declarative, plain-text scripts that live right alongside source code, render natively on GitHub/GitLab, and version-control effortlessly.
 
-## 2. Architecture & Core Principles
+## Architecture & Core Principles
 
 The core principle of Mermaid.js is using a declarative text syntax to construct an Abstract Syntax Tree (AST), which is then dynamically compiled into crisp, scalable vector graphics (SVG). Here are the most essential diagram families used in software engineering:
 
@@ -58,7 +58,7 @@ flowchart LR
     SVG --> InteractiveUI
 ```
 
-## 3. Step-by-Step Setup & Implementation
+## Step-by-Step Setup & Implementation
 
 Step-by-step workflow for integrating Mermaid.js into engineering repositories and doc toolchains:
 
@@ -79,7 +79,7 @@ gitGraph
 
 3. **Automate PDF/PNG generation in CI/CD:** Integrate the `@mermaid-js/mermaid-cli` package (`mmdc` command) into GitHub Actions or GitLab CI to automatically compile diagrams into publication-ready technical manuals.
 
-## 4. Troubleshooting & Common Pitfalls
+## Troubleshooting & Common Pitfalls
 
 When authoring complex Mermaid diagrams, watch out for these three common pitfalls:
 
@@ -87,7 +87,7 @@ When authoring complex Mermaid diagrams, watch out for these three common pitfal
 2. **HTML Entity Escaping:** When Markdown preprocessors convert `<` to `<` or `>` to `>`, sanitize and decode HTML entities before passing the string to `mermaid.render()`.
 3. **Layout Overflow on High-Density Graphs:** Avoid placing 50+ services on a single flat canvas. Segment the topology using modular `subgraph` groups or divide them across bounded domain contexts.
 
-## 5. Evaluation & Future Scaling
+## Evaluation & Future Scaling
 
 **Evaluation & Future Outlook:**
 

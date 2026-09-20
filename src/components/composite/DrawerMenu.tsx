@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import {
   CloseIcon,
-  SunIcon,
-  MoonIcon,
   UserIcon,
   BriefcaseIcon,
   CodeIcon,
@@ -33,8 +31,6 @@ interface DrawerMenuProps {
   onClose: () => void;
   navItems: NavItem[];
   onNavClick: (href: string) => void;
-  theme: 'dark' | 'light';
-  toggleTheme: () => void;
   lang: 'vi' | 'en';
   setLang: (lang: 'vi' | 'en') => void;
   tNav: UITranslation['nav'];
@@ -49,8 +45,6 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
   onClose,
   navItems,
   onNavClick,
-  theme,
-  toggleTheme,
   lang,
   setLang,
   tNav,
@@ -194,30 +188,6 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                   <span>English</span>
                 </button>
               </div>
-            </div>
-
-            {/* Theme Mode Toggle */}
-            <div className="drawer-theme-selector">
-              <span className="drawer-label-text">
-                {tDrawer.theme}
-              </span>
-              <button
-                className="drawer-theme-toggle-btn"
-                onClick={toggleTheme}
-                title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-              >
-                {theme === 'dark' ? (
-                  <>
-                    <SunIcon size={18} />
-                    <span>{tDrawer.switchToLight}</span>
-                  </>
-                ) : (
-                  <>
-                    <MoonIcon size={18} />
-                    <span>{tDrawer.switchToDark}</span>
-                  </>
-                )}
-              </button>
             </div>
           </div>
         </div>

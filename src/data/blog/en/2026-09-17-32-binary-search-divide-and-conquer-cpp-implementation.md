@@ -16,32 +16,31 @@ tags:
   - "Data Structures"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 When datasets scale to millions of records (`N = 10⁷`), sequential `O(N)` searches choke throughput. Problem statement: Given an array of N integers **sorted in ascending order**, locate the index of a specified `target` value in minimum computational time.
 
 Binary Search leverages the Divide and Conquer paradigm to collapse search latency from linear `O(N)` to logarithmic `O(log₂ N)`.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 The naive approach:
 
 - Scanning sequentially from index zero using a linear loop.
 - *Inefficiency:* Discards the structural guarantee that elements are already sorted, inspecting millions of irrelevant items unnecessarily.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Divide and Conquer principles and engineering defenses:
 
 1. **50% Search Space Pruning:** Compare the midpoint element `arr[mid]` against `target`:
-
-- If `arr[mid] == target`: Match found immediately.
-- If `arr[mid] < target`: All elements to the left are strictly smaller &rarr; Prune the left half and constrain to `[mid + 1, right]`.
-- If `arr[mid] > target`: All elements to the right are strictly larger &rarr; Prune the right half and constrain to `[left, mid - 1]`.
+  - If `arr[mid] == target`: Match found immediately.
+  - If `arr[mid] < target`: All elements to the left are strictly smaller &rarr; Prune the left half and constrain to `[mid + 1, right]`.
+  - If `arr[mid] > target`: All elements to the right are strictly larger &rarr; Prune the right half and constrain to `[left, mid - 1]`.
 2. **Integer Overflow Mitigation:** The standard formula `mid = (left + right) / 2` overflows 32-bit signed integers when `left + right > 2^31 - 1`. *Robust pattern:* Always compute `mid = left + (right - left) / 2`.
 3. **Boundary Range Query (Lower Bound):** Finding the first element `>= target`, serving as the backbone for database range indices.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing search window halving on a 10-element array with `target = 23`:
 
@@ -60,7 +59,7 @@ flowchart TD
 
 **Standard C++ Implementation:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 
@@ -115,7 +114,7 @@ int main() {
 - *Pass 2:* `left = 5`, `right = 9` &rarr; `mid = 7`. `data[7] = 56 > 23` &rarr; `right = 6`.
 - *Pass 3:* `left = 5`, `right = 6` &rarr; `mid = 5`. `data[5] = 23 == 23` &rarr; Match found! Returns index `5` in exactly 3 comparisons.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Metrics Scorecard (Standard Evaluation Framework):**
 

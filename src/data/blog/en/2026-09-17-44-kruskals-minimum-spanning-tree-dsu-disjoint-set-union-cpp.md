@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 When engineering regional optical fiber backbones, electrical grids, or oil pipelines, the core economic requirement is: _How to interconnect all `V` municipalities at minimum capital expenditure while eliminating redundant, cyclic wiring?_
 
@@ -25,7 +25,7 @@ Problem statement: **Minimum Spanning Tree (MST)**. Given an undirected, connect
 
 Kruskal's algorithm (published by Joseph Kruskal in 1956) is the quintessential **Edge-Centric Greedy** strategy.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Sort all edges by ascending weight. Iteratively add edges from smallest to largest, provided adding edge `(u, v)` does not introduce a cycle.
 
@@ -33,20 +33,19 @@ Key Challenge: _How to efficiently test whether adding `(u, v)` creates a cycle?
 
 Executing BFS/DFS for cycle detection per candidate edge takes `O(V)` time, ballooning total runtime to `O(E x V)` - intractable on large graphs.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Kruskal's algorithm achieves near-linear efficiency by combining with **Disjoint Set Union (DSU / Union-Find)**:
 
 1. **Spanning Forest Model:** Initially, each vertex `v in V` constitutes an isolated 1-node tree. Kruskal merges these trees until exactly 1 spanning tree of `V - 1` edges remains.
 2. **Cycle Detection in `O(alpha(V))`:** Adding edge `(u, v)` creates a cycle if and only if both endpoints share the same root representative: `find(u) == find(v)`.
 3. **Two DSU Optimization Pillars:**
-
-- **Path Compression:** Inside `find(u)`, re-point traversed nodes directly to the root, flattening tree depth to near-constant height.
-- **Union by Rank:** Always attach the shallower tree beneath the root of the deeper tree to prevent degeneration into linked lists.
+  - **Path Compression:** Inside `find(u)`, re-point traversed nodes directly to the root, flattening tree depth to near-constant height.
+  - **Union by Rank:** Always attach the shallower tree beneath the root of the deeper tree to prevent degeneration into linked lists.
 
 DSU operations operate in inverse Ackermann amortized time `O(alpha(V)) <= 4`. Total time is strictly bounded by edge sorting: `O(E \log E) = O(E \log V)`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Edge sorting and DSU forest merging progression:
 
@@ -70,7 +69,7 @@ flowchart TD
 
 **Complete C++ Implementation (Kruskal's Algorithm with Path Compression & Union by Rank):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -180,17 +179,13 @@ int main() {
 - _Edge 4 (1-4, w=42):_ `find(1) == find(4)` &rarr; Discarded to prevent cycle.
 - _Edge 5 (2-3, w=51):_ Added &rarr; `total = 110`. Exactly `V - 1 = 4` edges selected &rarr; Converged!
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:** `O(E \log E) = O(E \log V)`. Edge sorting dominates; DSU processing runs in near-linear `O(E alpha(V))`.
 - **Space Complexity:** `O(V + E)` for DSU parent/rank vectors and edge storage.
 - **Real-World Applications:**
-  <ul>
-  **Telecommunications & Power Grid Layout:** Interconnecting regional transformers at minimum total cable length.
-- **Machine Learning Clustering:** Single-linkage hierarchical clustering terminating at `K` connected components.
-- **VLSI Circuit Layout:** Minimizing interconnect delay and silicon wire area.
-
-</li>
-</ul>
+  - **Telecommunications & Power Grid Layout:** Interconnecting regional transformers at minimum total cable length.
+  - **Machine Learning Clustering:** Single-linkage hierarchical clustering terminating at `K` connected components.
+  - **VLSI Circuit Layout:** Minimizing interconnect delay and silicon wire area.

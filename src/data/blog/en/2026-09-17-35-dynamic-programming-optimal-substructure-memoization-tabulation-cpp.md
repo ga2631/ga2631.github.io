@@ -16,7 +16,7 @@ tags:
   - "Computer Science"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In computer science, numerous optimization problems suffer from exponential search space explosions when approached naively via brute-force search. The quintessential archetype is the **0/1 Knapsack Problem**.
 
@@ -24,7 +24,7 @@ Given a knapsack with maximum weight capacity `W` and a set of `N` discrete item
 
 Evaluating all `2ᴺ` possible subsets via exhaustive brute force yields an impossible time complexity of `O(2ᴺ)` when `N >= 40` (exceeding 10¹² operations). **Dynamic Programming (DP)**, pioneered by mathematician Richard Bellman in the 1950s, eliminates this exponential barrier, reducing execution time to pseudo-polynomial `O(N x W)`.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 A naive recursive formulation branches into two choices at each item `i`:
 
@@ -42,7 +42,7 @@ knapsack(i, w) = max(
 
 This plain recursion explodes because identical subproblems `(i, w)` are re-evaluated exponentially across independent branches, causing severe Call Stack pressure and quadratic/exponential runtimes.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Dynamic Programming requires **two fundamental invariants**:
 
@@ -56,7 +56,7 @@ Two primary implementation paradigms exist:
 
 **Space Optimization:** Since computing row `i` strictly depends on row `i - 1`, the 2D matrix can be collapsed into a 1D array of size `W + 1`. Crucially, the capacity `w` must be traversed in reverse (from `W` down to `w[i]`) to prevent overwriting prior state values within the same iteration.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing DP state transitions and overlapping subproblem structure:
 
@@ -82,7 +82,7 @@ graph TD
 
 **Complete C++ Implementation (Bottom-Up Tabulation with 1D Space Optimization):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -142,34 +142,22 @@ int main() {
 - _Init:_ `dp = [0, 0, 0, 0, 0, 0]` (size `W + 1 = 6`).
 - _Item 1 (w=2, v=3):_ Loop `w` from 5 down to 2 &rarr; `dp = [0, 0, 3, 3, 3, 3]`.
 - _Item 2 (w=3, v=4):_ Loop `w` from 5 down to 3:
-  <ul>
-  `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Combo item 1 & 2: weight 5).
-- `w = 4: dp[4] = max(3, 4 + dp[1]) = 4`.
-- `w = 3: dp[3] = max(3, 4 + dp[0]) = 4` &rarr; `dp = [0, 0, 3, 4, 4, 7]`.
+  - `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Combo item 1 & 2: weight 5).
+  - `w = 4: dp[4] = max(3, 4 + dp[1]) = 4`.
+  - `w = 3: dp[3] = max(3, 4 + dp[0]) = 4` &rarr; `dp = [0, 0, 3, 4, 4, 7]`.
+- *Item 3 (w=4, v=5):* Loop `w` from 5 down to 4 &rarr; `dp = [0, 0, 3, 4, 5, 7]`.
+- *Item 4 (w=5, v=8):* Loop `w = 5`: `dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Final optimal value is `8`.
 
-</li>
-<li>*Item 3 (w=4, v=5):* Loop `w` from 5 down to 4 &rarr; `dp = [0, 0, 3, 4, 5, 7]`.</li>
-<li>*Item 4 (w=5, v=8):* Loop `w = 5`: `dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Final optimal value is `8`.</li>
-</ul>
-
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:** `Θ(N x W)` across all cases (Best, Average, Worst). Iterates through `N` items, each updating `W` capacity states in constant time.
 - **Space Complexity:**
-  <ul>
-  Standard 2D Matrix: `O(N x W)` Heap memory (required for solution path reconstruction).
-- 1D Rolling Array: `O(W)` Auxiliary Space, slashing memory consumption by &gt;95% when `N` is large.
-
-</li>
-<li>**Real-World Applications:**
-
-
-- **Cloud Resource Allocation:** Packing virtual machines (VMs) onto hypervisors to maximize throughput within memory/CPU constraints.
-- **Graph Routing:** Algorithmic foundation for Bellman-Ford and Floyd-Warshall shortest path algorithms.
-- **Bioinformatics:** DNA/RNA global and local sequence alignment via Needleman-Wunsch and Smith-Waterman algorithms.
-- **Natural Language Processing (NLP):** Viterbi decoding algorithm in Hidden Markov Models and beam-search decoders.
-
-</li>
-</ul>
+  - Standard 2D Matrix: `O(N x W)` Heap memory (required for solution path reconstruction).
+  - 1D Rolling Array: `O(W)` Auxiliary Space, slashing memory consumption by &gt;95% when `N` is large.
+- **Real-World Applications:**
+  - **Cloud Resource Allocation:** Packing virtual machines (VMs) onto hypervisors to maximize throughput within memory/CPU constraints.
+  - **Graph Routing:** Algorithmic foundation for Bellman-Ford and Floyd-Warshall shortest path algorithms.
+  - **Bioinformatics:** DNA/RNA global and local sequence alignment via Needleman-Wunsch and Smith-Waterman algorithms.
+  - **Natural Language Processing (NLP):** Viterbi decoding algorithm in Hidden Markov Models and beam-search decoders.

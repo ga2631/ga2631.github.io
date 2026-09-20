@@ -16,27 +16,27 @@ tags:
   - "Performance"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Sắp xếp danh sách là bài toán nền tảng trong khoa học máy tính. Đề bài đặt ra: Cho một mảng gồm N số nguyên chưa có thứ tự, hãy sắp xếp lại các phần tử theo thứ tự tăng dần sao cho `arr[0] <= arr[1] <= ... <= arr[N-1]`.
 
 Thuật toán Sắp xếp Nổi bọt (Bubble Sort) là thuật toán sắp xếp kinh điển đầu tiên mà mọi kỹ sư phần mềm cần nắm vững để hiểu rõ cơ chế so sánh và hoán đổi lân cận (Adjacent Comparison & Swapping).
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận nguyên bản không tối ưu:
 
 - Sử dụng hai vòng lặp lồng nhau duyệt qua mảng N - 1 lần. Mỗi lượt, duyệt từ đầu đến cuối mảng và so sánh cặp phần tử liền kề `arr[j]` và `arr[j+1]`, nếu `arr[j] > arr[j+1]` thì hoán đổi.
 - _Điểm yếu cốt tử:_ Thuật toán luôn thực hiện đủ `N * (N - 1) / 2` phép so sánh kể cả khi mảng đầu vào _đã được sắp xếp hoàn hảo_ ngay từ đầu, tiêu tốn lãng phí `O(N²)` chu kỳ CPU.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Tối ưu hóa Bubble Sort qua 2 cải tiến then chốt:
 
 1. **Thu hẹp phạm vi quét sau mỗi Pass (Boundary Shrinking):** Sau lượt duyệt thứ `i`, đúng `i` phần tử lớn nhất chắc chắn đã nằm cố định ở cuối mảng. Do đó, vòng lặp trong chỉ cần quét đến chỉ số `N - 1 - i`.
 2. **Cờ hiệu Dừng sớm (Swapped Flag Optimization):** Sử dụng cờ boolean `bool swapped = false` trước mỗi pass. Nếu sau một lượt quét mà không có bất kỳ thao tác hoán đổi nào diễn ra, mảng đã có thứ tự tuyệt đối &rarr; Ngắt vòng lặp ngay lập tức bằng `break`, đưa Best-case về mức lý tưởng `Ω(N)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Minh họa cơ chế nổi bọt của mảng mẫu `[5, 1, 4, 2, 8]` qua từng lượt duyệt:
 
@@ -60,7 +60,7 @@ flowchart TD
 
 **Triển khai mã nguồn C++ chuẩn hóa:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -101,7 +101,7 @@ int main() {
 - _Pass 2 (`i = 1`):_ Quét đến index 2: So sánh `(1, 4) ->` Ok; `(4, 2) ->` Swap `{1, 2, 4, 5, 8}`; `(4, 5) ->` Ok. Cờ `swapped = true`. Phần tử `5` khóa index 3.
 - _Pass 3 (`i = 2`):_ Quét `(1, 2)` và `(2, 4)`, không có hoán đổi &rarr; `swapped = false` &rarr; `break` ngay lập tức! Tiết kiệm 40% số phép tính so với bản gốc.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Đánh giá Hiệu năng theo Framework Chuẩn:**
 

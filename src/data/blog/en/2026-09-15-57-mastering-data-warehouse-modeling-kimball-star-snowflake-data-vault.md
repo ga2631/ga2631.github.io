@@ -19,7 +19,7 @@ tags:
   - "OLAP"
 ---
 
-## 1. Business Context & Data Requirements
+## Business Context & Data Requirements
 
 In data-driven enterprises, strategic executive decisions rely on timely, pristine analytical metrics. However, one of the most perilous architectural mistakes in early-stage engineering is: **Allowing Business Intelligence (BI/Dashboard) tools and Data Analysts to run analytical queries directly against Online Transaction Processing (OLTP) databases like PostgreSQL or MySQL**.
 
@@ -36,7 +36,7 @@ This anti-pattern inevitably leads to catastrophic failures:
 - **Sub-second Multi-Dimensional Slicing & Dicing:** Structure schemas so business analysts can filter, drill down, and aggregate enterprise metrics effortlessly with sub-second response times.
 - **Auditability & Time-Travel Traceability:** Faithfully preserve every historical state transition across time.
 
-## 2. Data Modeling & Schema Design
+## Data Modeling & Schema Design
 
 To design an enduring analytical foundation, Data Engineers must master three foundational modeling philosophies and modern dimensional design patterns.
 
@@ -53,28 +53,28 @@ To design an enduring analytical foundation, Data Engineers must master three fo
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Architectural Philosophy**</td>
-      <td style="padding: 8px;">Top-Down: Central 3NF Enterprise Data Warehouse feeds departmental Data Marts</td>
-      <td style="padding: 8px;">Bottom-Up: Conformed Dimensional Bus Architecture directly serving business domains</td>
-      <td style="padding: 8px;">Hybrid: Decoupled Business Keys (Hubs), Relationships (Links), and Context (Satellites)</td>
+      <td style="padding: 8px"><b>Architectural Philosophy</b></td>
+      <td style="padding: 8px">Top-Down: Central 3NF Enterprise Data Warehouse feeds departmental Data Marts</td>
+      <td style="padding: 8px">Bottom-Up: Conformed Dimensional Bus Architecture directly serving business domains</td>
+      <td style="padding: 8px">Hybrid: Decoupled Business Keys (Hubs), Relationships (Links), and Context (Satellites)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Data Normalization**</td>
-      <td style="padding: 8px;">Highly Normalized (Third Normal Form - 3NF)</td>
-      <td style="padding: 8px;">Denormalized (Fact & Dimension Star Schemas)</td>
-      <td style="padding: 8px;">Hyper-Normalized & Decomposed (Hub/Link/Sat)</td>
+      <td style="padding: 8px"><b>Data Normalization</b></td>
+      <td style="padding: 8px">Highly Normalized (Third Normal Form - 3NF)</td>
+      <td style="padding: 8px">Denormalized (Fact & Dimension Star Schemas)</td>
+      <td style="padding: 8px">Hyper-Normalized & Decomposed (Hub/Link/Sat)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Analyst Accessibility**</td>
-      <td style="padding: 8px;">Indirect (Must be transformed into marts first)</td>
-      <td style="padding: 8px;">Direct (Highly intuitive, simple SQL for BI and Analysts)</td>
-      <td style="padding: 8px;">Indirect (Requires Information Mart projections)</td>
+      <td style="padding: 8px"><b>Analyst Accessibility</b></td>
+      <td style="padding: 8px">Indirect (Must be transformed into marts first)</td>
+      <td style="padding: 8px">Direct (Highly intuitive, simple SQL for BI and Analysts)</td>
+      <td style="padding: 8px">Indirect (Requires Information Mart projections)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Extensibility & Automation**</td>
-      <td style="padding: 8px;">Rigid; high refactoring friction when upstream schema changes</td>
-      <td style="padding: 8px;">High; managed through Conformed Dimensions</td>
-      <td style="padding: 8px;">Infinite; 100% parallel ingestion and zero-downtime evolution</td>
+      <td style="padding: 8px"><b>Extensibility & Automation</b></td>
+      <td style="padding: 8px">Rigid; high refactoring friction when upstream schema changes</td>
+      <td style="padding: 8px">High; managed through Conformed Dimensions</td>
+      <td style="padding: 8px">Infinite; 100% parallel ingestion and zero-downtime evolution</td>
     </tr>
   </tbody>
 </table>
@@ -84,11 +84,9 @@ To design an enduring analytical foundation, Data Engineers must master three fo
 Kimball dimensional modeling remains the reigning standard for analytical data marts on modern Cloud Data Warehouses. It structures data into two distinct table archetypes:
 
 1. **Fact Tables (Quantitative Measurements):** Store numerical business metrics (e.g., `quantity`, `gross_amount`, `tax_amount`) alongside foreign keys referencing dimensions.
-
-- _Transaction Fact:_ One row per atomic discrete event (e.g., individual line items in a checkout order).
-- _Periodic Snapshot Fact:_ Captures cumulative status at regular intervals (e.g., daily bank account balances, monthly inventory levels).
-- _Accumulating Snapshot Fact:_ Tracks the full lifecycle of a multi-stage workflow with milestone timestamps (Order Created &rarr; Payment Captured &rarr; Warehouse Dispatched &rarr; Delivered &rarr; Closed).
-
+  - _Transaction Fact:_ One row per atomic discrete event (e.g., individual line items in a checkout order).
+  - _Periodic Snapshot Fact:_ Captures cumulative status at regular intervals (e.g., daily bank account balances, monthly inventory levels).
+  - _Accumulating Snapshot Fact:_ Tracks the full lifecycle of a multi-stage workflow with milestone timestamps (Order Created &rarr; Payment Captured &rarr; Warehouse Dispatched &rarr; Delivered &rarr; Closed).
 2. **Dimension Tables (Descriptive Context):** Store textual attributes providing the context for filtering, grouping, and labeling (e.g., `dim_customer`, `dim_product`, `dim_date`, `dim_store`).
 
 **Slowly Changing Dimensions (SCD) Management Strategies:**
@@ -127,7 +125,7 @@ flowchart TD
 
 _Engineering Rule of Thumb:_ On modern MPP Cloud Data Warehouses (Snowflake, BigQuery, ClickHouse) utilizing columnar storage and vectorized execution, **Star Schemas consistently outperform Snowflake Schemas** by eliminating expensive multi-hop distributed shuffle JOINs.
 
-## 3. Pipeline Construction & Processing Logic
+## Pipeline Construction & Processing Logic
 
 In modern data engineering workflows, combining **dbt (data build tool)** with a Cloud Data Warehouse represents the standard implementation pattern for Kimball dimensional marts.
 
@@ -296,7 +294,7 @@ FROM monthly_metrics
 ORDER BY category_name, year, month_number;
 ```
 
-## 4. Data Validation & Performance Tuning
+## Data Validation & Performance Tuning
 
 Operating a production Data Warehouse at scale requires disciplined physical tuning and automated data verification frameworks:
 
@@ -310,10 +308,9 @@ Operating a production Data Warehouse at scale requires disciplined physical tun
 **2. Automated Data Quality Guardrails (dbt Test & Great Expectations):**
 
 - Enforce continuous CI/CD data testing:
-  <ol>
-  **Uniqueness & Non-null Constraints:** Verify that surrogate keys maintain absolute uniqueness and never contain nulls.
-- **Referential Integrity Checks:** Ensure every dimension key in the Fact table resolves to a valid record in the corresponding dimension table (handling late-arriving facts via fallback `-1` 'Unknown' dimension keys).
-- **Business Domain Rules:** Assert that `net_amount >= 0`, `valid_to >= valid_from`, and `discount_amount <= unit_price * quantity`.
+  - **Uniqueness & Non-null Constraints:** Verify that surrogate keys maintain absolute uniqueness and never contain nulls.
+  - **Referential Integrity Checks:** Ensure every dimension key in the Fact table resolves to a valid record in the corresponding dimension table (handling late-arriving facts via fallback `-1` 'Unknown' dimension keys).
+  - **Business Domain Rules:** Assert that `net_amount >= 0`, `valid_to >= valid_from`, and `discount_amount <= unit_price * quantity`.
 
 **3. Empirical Performance Benchmark (100,000,000 Order Records):**
 
@@ -321,34 +318,34 @@ Operating a production Data Warehouse at scale requires disciplined physical tun
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Architecture & Execution Engine</th>
-      <th style="padding: 8px;">Revenue Report Latency</th>
-      <th style="padding: 8px;">Data Scanned</th>
-      <th style="padding: 8px;">Operational Impact</th>
+      <th style="padding: 8px">Revenue Report Latency</th>
+      <th style="padding: 8px">Data Scanned</th>
+      <th style="padding: 8px">Operational Impact</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Direct OLTP 3NF Queries (PostgreSQL)**</td>
-      <td style="padding: 8px;">32,500ms (32.5s)</td>
-      <td style="padding: 8px;">18.5 GB (Full table scan)</td>
-      <td style="padding: 8px;">98% CPU spike, table lock risks on active users</td>
+      <td style="padding: 8px"><b>Direct OLTP 3NF Queries (PostgreSQL)</b></td>
+      <td style="padding: 8px">32,500ms (32.5s)</td>
+      <td style="padding: 8px">18.5 GB (Full table scan)</td>
+      <td style="padding: 8px">98% CPU spike, table lock risks on active users</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Snowflake Schema (Multi-hop JOINs on Cloud DW)**</td>
-      <td style="padding: 8px;">1,240ms</td>
-      <td style="padding: 8px;">850 MB</td>
-      <td style="padding: 8px;">Zero OLTP impact, moderate shuffle join compute cost</td>
+      <td style="padding: 8px"><b>Snowflake Schema (Multi-hop JOINs on Cloud DW)</b></td>
+      <td style="padding: 8px">1,240ms</td>
+      <td style="padding: 8px">850 MB</td>
+      <td style="padding: 8px">Zero OLTP impact, moderate shuffle join compute cost</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Kimball Star Schema (Partitioned & Clustered)**</td>
-      <td style="padding: 8px;">**38ms**</td>
-      <td style="padding: 8px;">**12 MB** (Via Partition Pruning)</td>
+      <td style="padding: 8px;"><b>Kimball Star Schema (Partitioned & Clustered)</b></td>
+      <td style="padding: 8px;"><b>38ms</b></td>
+      <td style="padding: 8px;"><b>12 MB</b> (Via Partition Pruning)</td>
       <td style="padding: 8px;">Optimal performance, near-zero cloud compute cost</td>
     </tr>
   </tbody>
 </table>
 
-## 5. Summary & Recommendations
+## Summary & Recommendations
 
 Data Warehouse design is fundamentally about modeling business reality into a resilient, high-speed corporate memory asset.
 

@@ -16,19 +16,19 @@ tags:
   - "Memory Management"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 While Arrays require contiguous allocations and suffer `O(N)` overhead during arbitrary insertions or deletions, many systems (such as OS process schedulers, text editor buffers, and LRU Caches) demand **fragmented heap allocation** and **constant `O(1)` insertion/deletion** at designated pointer locations.
 
 A **Linked List** achieves this by structuring data as discrete **Nodes** scattered across heap memory, interconnected via **Explicit Pointers**.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 The simplest representation is the **Singly Linked List**: Each node contains payload data and a single `next` pointer. However, single linkage is strictly unidirectional; deleting a node requires finding its predecessor in `O(N)` time.
 
 A **Doubly Linked List** equips each node with both `next` and `prev` pointers, enabling bidirectional traversal and true `O(1)` node self-removal.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Managing raw pointer rearrangements frequently invites subtle bugs (e.g., null dereferences on empty lists or single-element lists). Production implementations utilize **Sentinel (Dummy) Nodes**:
 
@@ -36,7 +36,7 @@ Managing raw pointer rearrangements frequently invites subtle bugs (e.g., null d
 2. **Eliminating Edge-Case Branches:** Insertions and deletions at head, tail, or middle follow an identical 4-pointer assignment pattern, eliminating all `if (head == nullptr)` special cases.
 3. **Insertion Routine:**
 
-```
+```c++
 newNode->next = target;
 newNode->prev = target->prev;
 target->prev->next = newNode;
@@ -45,13 +45,13 @@ target->prev = newNode;
 
 4. **Deletion Routine:**
 
-```
+```c++
 target->prev->next = target->next;
 target->next->prev = target->prev;
 delete target;
 ```
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Doubly linked list architecture with Sentinel Dummy Head/Tail:
 
@@ -67,7 +67,7 @@ graph LR
 
 **Complete C++ Implementation (Doubly Linked List with Sentinel Nodes):**
 
-```
+```c++
 #include <iostream>
 
 template <typename T>
@@ -180,7 +180,7 @@ int main() {
 - _`pushFront(5)`:_ Inserted after `head` &rarr; `head <-> [5] <-> [10] <-> [20] <-> tail`.
 - _`popFront()`:_ Removes `[5]` &rarr; Re-links `head <-> [10]` in constant `O(1)` time.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
@@ -190,10 +190,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Access by Index:** `O(N)` (Random access unsupported).
 - **Space Complexity:** `O(N)` with 16-byte pointer overhead per node on 64-bit platforms.
 - **Real-World Applications:**
-  <ul>
-  **LRU Cache (Least Recently Used):** Pairing Doubly Linked List with Hash Maps for `O(1)` eviction and lookup.
-- **OS Process Scheduling:** Managing execution Ready Queues and Memory Free Lists.
-- **Media Players & Web Browsers:** Managing Next/Prev playlist tracks and browser history navigation.
-
-</li>
-</ul>
+  - **LRU Cache (Least Recently Used):** Pairing Doubly Linked List with Hash Maps for `O(1)` eviction and lookup.
+  - **OS Process Scheduling:** Managing execution Ready Queues and Memory Free Lists.
+  - **Media Players & Web Browsers:** Managing Next/Prev playlist tracks and browser history navigation.

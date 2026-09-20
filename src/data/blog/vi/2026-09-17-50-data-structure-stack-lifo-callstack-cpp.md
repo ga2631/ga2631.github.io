@@ -16,25 +16,25 @@ tags:
   - "Parsing"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
-Trong kiến trúc phần mềm, rất nhiều tác vụ đòi hỏi khả năng **quay lui (Backtracking)**, **hoàn tác hành động (Undo/Redo)**, hoặc **ghi nhớ ngữ cảnh lồng nhau (Nested Context)** như quá trình phân tích cú pháp mã nguồn (Syntax Parsing) hay cơ chế gọi hàm trong CPU. Đặc điểm chung của các tác vụ này: *Thao tác nào diễn ra sau cùng sẽ là thao tác cần được xử lý và hoàn tất đầu tiên.*
+Trong kiến trúc phần mềm, rất nhiều tác vụ đòi hỏi khả năng **quay lui (Backtracking)**, **hoàn tác hành động (Undo/Redo)**, hoặc **ghi nhớ ngữ cảnh lồng nhau (Nested Context)** như quá trình phân tích cú pháp mã nguồn (Syntax Parsing) hay cơ chế gọi hàm trong CPU. Đặc điểm chung của các tác vụ này: _Thao tác nào diễn ra sau cùng sẽ là thao tác cần được xử lý và hoàn tất đầu tiên._
 
 **Ngăn xếp (Stack)** là cấu trúc dữ liệu tuyến tính trừu tượng hoạt động theo nguyên lý nghiêm ngặt **Vào sau - Ra trước (Last-In, First-Out - LIFO)**. Mọi thao tác thêm hoặc loại bỏ phần tử đều chỉ được phép diễn ra tại một đầu duy nhất gọi là **Đỉnh ngăn xếp (Top)**.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Stack có thể được hiện thực hóa dựa trên hai cấu trúc nền tảng:
 
 1. **Cài đặt bằng Mảng động (Dynamic Array Stack):** Lưu trữ các phần tử trong một vector. Đỉnh ngăn xếp tương ứng với chỉ số `size - 1`. Ưu điểm: Bộ nhớ liền kề, tối ưu Cache tuyệt đối. Thao tác `push()` và `pop()` đạt chi phí khấu hao `O(1)`.
 2. **Cài đặt bằng Danh sách liên kết (Linked List Stack):** Mỗi phần tử là một nút trỏ tới nút bên dưới. Đỉnh ngăn xếp chính là `head`. Ưu điểm: Dung lượng mở rộng linh hoạt từng nút một mà không bao giờ tốn chi phí nhân đôi bộ nhớ.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Ba thao tác bất biến cốt lõi của Ngăn xếp:
 
 - `push(x)`: Đẩy một phần tử mới lên trên đỉnh Stack trong `O(1)`.
-- `pop()`: Loại bỏ và trả về phần tử đang nằm trên đỉnh Stack trong `O(1)`. Gặp lỗi *Stack Underflow* nếu thao tác trên Stack rỗng.
+- `pop()`: Loại bỏ và trả về phần tử đang nằm trên đỉnh Stack trong `O(1)`. Gặp lỗi _Stack Underflow_ nếu thao tác trên Stack rỗng.
 - `top() / peek()`: Xem giá trị của phần tử trên đỉnh mà không loại bỏ nó trong `O(1)`.
 
 **Bài toán Ứng dụng Tiêu biểu: Kiểm tra Dấu ngoặc Hợp lệ (Valid Parentheses):**
@@ -45,7 +45,7 @@ Cho một chuỗi gồm các ký tự ngoặc: `'('`, `')'`, `'{'`, `'}'`, `'['`
 - Khi gặp ngoặc đóng (`)`, `}`, `]`): Kiểm tra Stack. Nếu Stack rỗng &rarr; Bất hợp lệ (thừa ngoặc đóng). Ngược lại, `pop` phần tử đỉnh ra và so sánh xem có khớp cặp với ngoặc đóng hiện tại không. Nếu không khớp &rarr; Bất hợp lệ.
 - Kết thúc duyệt chuỗi: Nếu Stack rỗng hoàn toàn &rarr; Hợp lệ (Mọi ngoặc mở đều đã được đóng chính xác).
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cơ chế hoạt động LIFO và bài toán kiểm tra dấu ngoặc hợp lệ:
 
@@ -69,7 +69,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh: Stack Generic và Hàm Kiểm tra Dấu ngoặc:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <string>
@@ -150,35 +150,25 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Chuỗi kiểm thử:* `s1 = "{[()]}"`.
-- *Ký tự 1 (`'{'`):* Ngoặc mở &rarr; `push('{')`. Stack = `['{']`.
-- *Ký tự 2 (`'['`):* Ngoặc mở &rarr; `push('[')`. Stack = `['{', '[']`.
-- *Ký tự 3 (`'('`):* Ngoặc mở &rarr; `push('(')`. Stack = `['{', '[', '(']`.
-- *Ký tự 4 (`')'`):* Ngoặc đóng &rarr; `pop()` lấy được `'('` &rarr; Khớp hoàn hảo. Stack = `['{', '[']`.
-- *Ký tự 5 (`']'`):* Ngoặc đóng &rarr; `pop()` lấy được `'['` &rarr; Khớp hoàn hảo. Stack = `['{']`.
-- *Ký tự 6 (`'}'`):* Ngoặc đóng &rarr; `pop()` lấy được `'{'` &rarr; Khớp hoàn hảo. Stack = `[]`.
-- *Kết luận:* Chuỗi duyệt xong và Stack rỗng &rarr; Kết quả `true` (Hợp lệ).
+- _Chuỗi kiểm thử:_ `s1 = "{[()]}"`.
+- _Ký tự 1 (`'{'`):_ Ngoặc mở &rarr; `push('{')`. Stack = `['{']`.
+- _Ký tự 2 (`'['`):_ Ngoặc mở &rarr; `push('[')`. Stack = `['{', '[']`.
+- _Ký tự 3 (`'('`):_ Ngoặc mở &rarr; `push('(')`. Stack = `['{', '[', '(']`.
+- _Ký tự 4 (`')'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'('` &rarr; Khớp hoàn hảo. Stack = `['{', '[']`.
+- _Ký tự 5 (`']'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'['` &rarr; Khớp hoàn hảo. Stack = `['{']`.
+- _Ký tự 6 (`'}'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'{'` &rarr; Khớp hoàn hảo. Stack = `[]`.
+- _Kết luận:_ Chuỗi duyệt xong và Stack rỗng &rarr; Kết quả `true` (Hợp lệ).
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 - **Độ phức tạp Thời gian (Time Complexity):**
-  <ul>
-  `push()`: `O(1)` Amortized với Mảng động, `O(1)` Worst-case với Danh sách liên kết.
-- `pop()`: `O(1)` tuyệt đối.
-- `top() / peek()`: `O(1)` tuyệt đối.
-- Tìm kiếm phần tử bất kỳ: `O(N)` (phải dỡ toàn bộ Stack).
-
-</li>
-<li>**Độ phức tạp Không gian (Space Complexity):** `O(N)` bộ nhớ tuyến tính lưu trữ các phần tử.</li>
-<li>**Ứng dụng thực tế:**
-  
-
-- **Hệ thống thực thi Call Stack:** Quản lý các khung ngăn xếp (Stack Frames), lưu trữ biến cục bộ và địa chỉ trả về khi thực thi hàm đệ quy.
-- **Trình duyệt web và Ứng dụng văn phòng:** Tính năng Undo / Redo (Ctrl + Z) và nút lùi trang (Browser Back Button).
-- **Trình biên dịch (Compiler):** Đánh giá biểu thức toán học dạng Hậu tố (Reverse Polish Notation - RPN) và thuật toán Chuyển đổi Shunting-Yard.
-- **Thuật toán đồ thị:** Khử đệ quy cho thuật toán Tìm kiếm theo chiều sâu (Iterative DFS).
-
-</li>
-</ul>
+  - `push()`: `O(1)` Amortized với Mảng động, `O(1)` Worst-case với Danh sách liên kết.
+  - `pop()`: `O(1)` tuyệt đối.
+  - `top() / peek()`: `O(1)` tuyệt đối.
+  - Tìm kiếm phần tử bất kỳ: `O(N)` (phải dỡ toàn bộ Stack).
+- **Độ phức tạp Không gian (Space Complexity):** `O(N)` bộ nhớ tuyến tính lưu trữ các phần tử.
+- **Ứng dụng thực tế:**
+  - **Hệ thống thực thi Call Stack:** Quản lý các khung ngăn xếp (Stack Frames), lưu trữ biến cục bộ và địa chỉ trả về khi thực thi hàm đệ quy.
+  - **Trình duyệt web và Ứng dụng văn phòng:** Tính năng Undo / Redo (Ctrl + Z) và nút lùi trang (Browser Back Button).
+  - **Trình biên dịch (Compiler):** Đánh giá biểu thức toán học dạng Hậu tố (Reverse Polish Notation - RPN) và thuật toán Chuyển đổi Shunting-Yard.
+  - **Thuật toán đồ thị:** Khử đệ quy cho thuật toán Tìm kiếm theo chiều sâu (Iterative DFS).

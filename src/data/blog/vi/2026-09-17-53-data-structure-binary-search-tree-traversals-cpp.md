@@ -16,7 +16,7 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Các cấu trúc dữ liệu tuyến tính (Mảng, Danh sách liên kết, Ngăn xếp, Hàng chờ) chỉ biểu diễn dữ liệu theo một chiều tuần tự. Tuy nhiên, trong thế giới thực, thông tin thường có **mối quan hệ phân cấp có thứ bậc (Hierarchical Relationships)** - như cấu trúc thư mục tệp tin (File System Hierarchy), cây phân tích cú pháp DOM trong trình duyệt (HTML DOM Tree), hay cây quyết định trong trí tuệ nhân tạo.
 
@@ -28,7 +28,7 @@ Cấu trúc cây quan trọng bậc nhất là **Cây Tìm kiếm Nhị phân (B
 Mọi nút trong cây con Trái < Nút Gốc < Mọi nút trong cây con Phải
 ```
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Tại sao BST lại vượt trội hơn Mảng và Danh sách liên kết?
 
@@ -36,7 +36,7 @@ Tại sao BST lại vượt trội hơn Mảng và Danh sách liên kết?
 - Danh sách liên kết: Chèn/Xóa nhanh `O(1)` tại nút biết trước, nhưng Tìm kiếm chậm `O(N)`.
 - **BST kết hợp hoàn hảo ưu điểm của cả hai:** Cung cấp khả năng Tìm kiếm `O(\log N)`, Chèn `O(\log N)` và Xóa `O(\log N)` trong điều kiện cây cân bằng.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **Bốn Thuật toán Duyệt Cây Chuẩn mực (Tree Traversals):**
 
@@ -51,7 +51,7 @@ Tại sao BST lại vượt trội hơn Mảng và Danh sách liên kết?
 - _Kịch bản 2 (Nút có 1 con):_ Nối trực tiếp nút con duy nhất vào nút cha của nút bị xóa.
 - _Kịch bản 3 (Nút có đủ 2 con):_ Tìm **Phần tử Kế tiếp theo thứ tự (In-order Successor)** - tức là nút nhỏ nhất trong cây con Phải. Sao chép giá trị của Successor vào nút hiện tại, sau đó xóa đệ quy Successor khỏi cây con Phải.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cấu trúc Cây tìm kiếm nhị phân và thứ tự duyệt In-Order:
 
@@ -77,7 +77,7 @@ graph TD
 
 **Mã nguồn C++ hoàn chỉnh: Binary Search Tree đầy đủ Chèn, Xóa, Tìm kiếm & Duyệt:**
 
-```
+```c++
 #include <iostream>
 #include <queue>
 
@@ -203,27 +203,17 @@ int main() {
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
 - _Chèn các giá trị:_ `50, 30, 70, 20, 40, 60, 80`.
-  <ul>
-  `30 < 50` &rarr; Con trái của 50. `70 > 50` &rarr; Con phải của 50.
-- `40 > 30` &rarr; Con phải của 30. `60 < 70` &rarr; Con trái của 70.
+  - `30 < 50` &rarr; Con trái của 50. `70 > 50` &rarr; Con phải của 50.
+  - `40 > 30` &rarr; Con phải của 30. `60 < 70` &rarr; Con trái của 70.
+- _Duyệt In-order:_ Thăm cây con trái của 50 (`20, 30, 40`) &rarr; Gốc `50` &rarr; Cây con phải (`60, 70, 80`) &rarr; Xuất chuỗi đã sắp xếp hoàn hảo `[20, 30, 40, 50, 60, 70, 80]`.
+- _Xóa gốc 50:_ 50 có 2 con &rarr; Tìm In-order Successor trong cây con phải (nút nhỏ nhất của `{70, 60, 80}` là `60`) &rarr; Gán `root->val = 60`, xóa nút 60 cũ ở lá phải &rarr; Cây vẫn bảo toàn tuyệt đối bất biến BST.
 
-</li>
-<li>*Duyệt In-order:* Thăm cây con trái của 50 (`20, 30, 40`) &rarr; Gốc `50` &rarr; Cây con phải (`60, 70, 80`) &rarr; Xuất chuỗi đã sắp xếp hoàn hảo `[20, 30, 40, 50, 60, 70, 80]`.</li>
-<li>*Xóa gốc 50:* 50 có 2 con &rarr; Tìm In-order Successor trong cây con phải (nút nhỏ nhất của `{70, 60, 80}` là `60`) &rarr; Gán `root->val = 60`, xóa nút 60 cũ ở lá phải &rarr; Cây vẫn bảo toàn tuyệt đối bất biến BST.</li>
-</ul>
-
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 - **Tìm kiếm, Chèn, Xóa (Trường hợp Trung bình / Cây cân bằng):** `O(\log N)` tỷ lệ thuận với chiều cao của cây `h ~ \log₂ N`.
 - **Trường hợp Xấu nhất (Cây bị suy biến thành danh sách liên kết):** `O(N)` khi chèn dãy số đã có thứ tự sẵn (được giải quyết triệt để bởi Cây Tự cân bằng như AVL Tree và Red-Black Tree trong `std::map` / `std::set`).
 - **Duyệt toàn bộ cây (All Traversals):** `Θ(N)` thời gian và `O(h)` không gian Call Stack.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Cấu trúc dữ liệu std::map / std::set trong C++:** Được cài đặt bằng Cây Đỏ Đen (Red-Black BST) đảm bảo thời gian `O(\log N)` trong mọi trường hợp.
-- **Cơ sở dữ liệu B-Tree & B+ Tree:** Mở rộng của cây nhị phân sang cây đa phân nhiều nhánh để tối ưu hóa chỉ mục ổ cứng trong MySQL InnoDB và PostgreSQL.
-- **Thuật toán Nén Dữ liệu Huffman Coding:** Sử dụng Cây nhị phân để sinh mã tiền tố có độ dài biến thiên tối ưu dung lượng tệp.
-
-</li>
-</ul>
+  - **Cấu trúc dữ liệu std::map / std::set trong C++:** Được cài đặt bằng Cây Đỏ Đen (Red-Black BST) đảm bảo thời gian `O(\log N)` trong mọi trường hợp.
+  - **Cơ sở dữ liệu B-Tree & B+ Tree:** Mở rộng của cây nhị phân sang cây đa phân nhiều nhánh để tối ưu hóa chỉ mục ổ cứng trong MySQL InnoDB và PostgreSQL.
+  - **Thuật toán Nén Dữ liệu Huffman Coding:** Sử dụng Cây nhị phân để sinh mã tiền tố có độ dài biến thiên tối ưu dung lượng tệp.

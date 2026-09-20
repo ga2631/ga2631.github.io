@@ -16,19 +16,19 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
-Trong các hệ thống xử lý bất đồng bộ (Asynchronous Processing), máy chủ web đón nhận hàng nghìn kết nối đồng thời, hàng đợi in ấn (Print Spooler) hay hệ thống truyền thông điệp phân tán (Kafka, RabbitMQ), các yêu cầu cần được xử lý theo **đúng thứ tự thời gian chúng được gửi tới**: *Yêu cầu nào đến trước phải được phục vụ trước.*
+Trong các hệ thống xử lý bất đồng bộ (Asynchronous Processing), máy chủ web đón nhận hàng nghìn kết nối đồng thời, hàng đợi in ấn (Print Spooler) hay hệ thống truyền thông điệp phân tán (Kafka, RabbitMQ), các yêu cầu cần được xử lý theo **đúng thứ tự thời gian chúng được gửi tới**: _Yêu cầu nào đến trước phải được phục vụ trước._
 
 **Hàng chờ (Queue)** là cấu trúc dữ liệu tuyến tính hoạt động theo nguyên tắc **Vào trước - Ra trước (First-In, First-Out - FIFO)**. Dữ liệu được thêm vào ở một đầu gọi là **Đuôi (Rear / Tail)** và được lấy ra ở đầu đối diện gọi là **Đầu (Front / Head)**.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Nếu cài đặt Queue bằng một Mảng tĩnh thông thường: Mỗi khi thêm phần tử, ta tăng con trỏ `rear`; mỗi khi lấy phần tử (`dequeue`), ta tăng con trỏ `front`.
 
 Sau một số thao tác chèn và xóa, con trỏ `rear` sẽ chạm tới cuối mảng trong khi các ô nhớ phía trước `front` đã bị bỏ trống hoàn toàn. Mặc dù mảng còn rất nhiều chỗ trống, ta vẫn không thể chèn thêm phần tử mới. Hiện tượng này gọi là **Trôi chỉ số / Giả đầy hàng đợi (False Overflow)**.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Để giải quyết triệt để vấn đề lãng phí bộ nhớ, giải pháp chuẩn mực là **Hàng chờ Vòng (Circular Queue / Ring Buffer)**:
 
@@ -37,14 +37,15 @@ Sau một số thao tác chèn và xóa, con trỏ `rear` sẽ chạm tới cu�
 ```
 next_index = (current_index + 1) % capacity
 ```
-2. **Phân biệt Trạng thái Rỗng và Đầy:** Có 2 kỹ thuật phổ biến:
-  
 
-- *Kỹ thuật Biến đếm:* Duy trì biến `count` lưu số lượng phần tử thực tế. Rỗng khi `count == 0`, Đầy khi `count == capacity`.
-- *Kỹ thuật Bỏ trống 1 ô:* Rỗng khi `front == rear`, Đầy khi `(rear + 1) % capacity == front`.
+2. **Phân biệt Trạng thái Rỗng và Đầy:** Có 2 kỹ thuật phổ biến:
+
+- _Kỹ thuật Biến đếm:_ Duy trì biến `count` lưu số lượng phần tử thực tế. Rỗng khi `count == 0`, Đầy khi `count == capacity`.
+- _Kỹ thuật Bỏ trống 1 ô:_ Rỗng khi `front == rear`, Đầy khi `(rear + 1) % capacity == front`.
+
 3. **Hiệu năng Hằng số:** Cả thao tác thêm vào đuôi (`enqueue`) và lấy ra từ đầu (`dequeue`) đều chỉ tốn 1 vài phép toán số học đơn giản trong thời gian tuyệt đối **`O(1)`** mà không cần cấp phát lại hay sao chép bộ nhớ.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cơ chế hoạt động của Hàng chờ Vòng (Circular Ring Buffer):
 
@@ -61,7 +62,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh: Triển khai Circular Queue Ring Buffer:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <stdexcept>
@@ -76,7 +77,7 @@ private:
     size_t capacity;
 
 public:
-    CircularQueue(size_t cap) 
+    CircularQueue(size_t cap)
         : buffer(cap), frontIdx(0), rearIdx(0), count(0), capacity(cap) {}
 
     // Thêm phần tử vào đuôi hàng đợi (Enqueue): O(1)
@@ -141,34 +142,24 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Khởi tạo:* `capacity = 4, frontIdx = 0, rearIdx = 0, count = 0`.
-- *Enqueue 10, 20, 30, 40:* 
-  <ul>
-  Chèn 10 tại index 0 &rarr; `rearIdx = 1`.
-- Chèn 20 tại index 1 &rarr; `rearIdx = 2`.
-- Chèn 30 tại index 2 &rarr; `rearIdx = 3`.
-- Chèn 40 tại index 3 &rarr; `rearIdx = (3 + 1) % 4 = 0`. `count = 4` (Full!).
+- _Khởi tạo:_ `capacity = 4, frontIdx = 0, rearIdx = 0, count = 0`.
+- _Enqueue 10, 20, 30, 40:_
+  - Chèn 10 tại index 0 &rarr; `rearIdx = 1`.
+  - Chèn 20 tại index 1 &rarr; `rearIdx = 2`.
+  - Chèn 30 tại index 2 &rarr; `rearIdx = 3`.
+  - Chèn 40 tại index 3 &rarr; `rearIdx = (3 + 1) % 4 = 0`. `count = 4` (Full!).
+- _Dequeue 2 lần:_ Lấy ra 10 (`frontIdx = 1`), lấy ra 20 (`frontIdx = 2`). `count = 2`.
+- _Enqueue 50:_ Ghi tại `buffer[0] = 50` &rarr; `rearIdx = 1` (Quay vòng thành công mà không tràn bộ nhớ!).
+- _Enqueue 60:_ Ghi tại `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` vẫn trỏ chính xác về `buffer[2] = 30`.
 
-</li>
-<li>*Dequeue 2 lần:* Lấy ra 10 (`frontIdx = 1`), lấy ra 20 (`frontIdx = 2`). `count = 2`.</li>
-<li>*Enqueue 50:* Ghi tại `buffer[0] = 50` &rarr; `rearIdx = 1` (Quay vòng thành công mà không tràn bộ nhớ!).</li>
-<li>*Enqueue 60:* Ghi tại `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` vẫn trỏ chính xác về `buffer[2] = 30`.</li>
-</ul>
-
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 - **Thêm phần tử vào đuôi (Enqueue):** `O(1)` tuyệt đối.
 - **Lấy phần tử ở đầu (Dequeue):** `O(1)` tuyệt đối.
 - **Xem phần tử đầu (Front / Peek):** `O(1)` tuyệt đối.
 - **Độ phức tạp Không gian (Space Complexity):** `O(K)` với `K` là dung lượng cố định của Ring Buffer, không bao giờ phát sinh cấp phát động.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Thuật toán Tìm kiếm theo Chiều rộng (BFS):** Duyệt đồ thị và tìm đường đi ngắn nhất không trọng số theo từng lớp sóng lan truyền.
-- **Điều phối CPU trong Hệ điều hành (Round-Robin Scheduling):** Phân chia luân phiên các lát thời gian (Time Slices) cho các tiến trình.
-- **Mô hình Nhà sản xuất - Người tiêu dùng (Producer-Consumer Pattern):** Bộ đệm Ring Buffer không khóa (Lock-Free Ring Buffer) trong truyền thông điệp siêu tốc giữa các Thread.
-- **Xử lý Âm thanh Thời gian thực (Audio Streaming Buffers):** Truyền dữ liệu mẫu âm thanh liên tục đến card âm thanh mà không bị giật tiếng (Audio Dropouts).
-
-</li>
-</ul>
+  - **Thuật toán Tìm kiếm theo Chiều rộng (BFS):** Duyệt đồ thị và tìm đường đi ngắn nhất không trọng số theo từng lớp sóng lan truyền.
+  - **Điều phối CPU trong Hệ điều hành (Round-Robin Scheduling):** Phân chia luân phiên các lát thời gian (Time Slices) cho các tiến trình.
+  - **Mô hình Nhà sản xuất - Người tiêu dùng (Producer-Consumer Pattern):** Bộ đệm Ring Buffer không khóa (Lock-Free Ring Buffer) trong truyền thông điệp siêu tốc giữa các Thread.
+  - **Xử lý Âm thanh Thời gian thực (Audio Streaming Buffers):** Truyền dữ liệu mẫu âm thanh liên tục đến card âm thanh mà không bị giật tiếng (Audio Dropouts).

@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong các hệ thống phân phối dầu khí, mạng truyền tải điện, hạ tầng băng thông mạng Internet hay điều phối chuyến bay, bài toán cốt lõi đặt ra là: *Làm thế nào để vận chuyển khối lượng vật chất hoặc thông tin lớn nhất từ điểm phát đến điểm thu mà không làm quá tải bất kỳ đường ống/đường truyền nào?*
 
@@ -30,7 +30,7 @@ Hãy xác định một hàm luồng `f(u, v)` thỏa mãn hai điều kiện b�
 
 Mục tiêu: Cực đại hóa tổng luồng đi từ nguồn `s` đến đích `t`: `|f| = sum f(s, v)`.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận ngây thơ ban đầu là sử dụng giải thuật Tham lam (Greedy): Tìm một đường đi bất kỳ từ `s` đến `t` bằng DFS/BFS, đẩy luồng tối đa có thể qua đường đi này, giảm dung lượng của các cạnh đã đi qua và lặp lại cho đến khi không còn đường đi nào nối từ `s` đến `t`.
 
@@ -38,20 +38,18 @@ Chiến lược tham lam thuần túy này **thất bại** vì một khi luồn
 
 Lester Ford Jr. và Delbert Fulkerson vào năm 1956 đã đưa ra giải pháp đột phá: **Cung ngược (Backward Edge)** trên **Đồ thị dư (Residual Graph)**, cho phép thuật toán &quot;hoàn trả luồng&quot; (Undo/Reroute flow) đã gửi sai trước đó.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Phương pháp Ford-Fulkerson vận hành dựa trên 3 trụ cột lý thuyết vững chắc:
 
 1. **Đồ thị dư (Residual Graph `G_f`):** Với mỗi cạnh `(u, v)` có dung lượng `c` và luồng hiện thời `f`:
-  
-
-- *Cung xuôi (Forward Edge):* Có dung lượng dư là `c(u, v) - f(u, v)` (thể hiện khả năng đẩy thêm luồng).
-- *Cung ngược (Backward Edge):* Có dung lượng dư là `f(u, v)` (thể hiện khả năng hủy luồng đã gửi qua `(u, v)` để chuyển hướng luồng đi nơi khác).
+  - *Cung xuôi (Forward Edge):* Có dung lượng dư là `c(u, v) - f(u, v)` (thể hiện khả năng đẩy thêm luồng).
+  - *Cung ngược (Backward Edge):* Có dung lượng dư là `f(u, v)` (thể hiện khả năng hủy luồng đã gửi qua `(u, v)` để chuyển hướng luồng đi nơi khác).
 2. **Đường tăng luồng (Augmenting Path):** Một đường đi đơn từ nguồn `s` đến đích `t` trên đồ thị dư mà tất cả các cạnh trên đường đi đều có dung lượng dư `> 0`. Giá trị luồng tăng thêm (Bottleneck) chính là dung lượng dư nhỏ nhất trên đường đi đó.
 3. **Định lý Luồng cực đại - Lát cắt cực tiểu (Max-Flow Min-Cut Theorem):** Giá trị luồng cực đại từ `s` đến `t` chính xác bằng tổng dung lượng của lát cắt nhỏ nhất (Min-Cut) phân tách đồ thị thành 2 tập đỉnh chứa `s` và `t`.
 4. **Tối ưu hóa Edmonds-Karp (1972):** Thay vì dùng DFS có thể bị lặp vô hạn nếu dung lượng là số vô tỉ hoặc chạy rất chậm với `O(E x |f*|)`, Edmonds và Karp đề xuất luôn dùng **BFS** để tìm đường tăng luồng ngắn nhất (ít cạnh nhất). Điều này đảm bảo thuật toán đạt thời gian đa thức chặt chẽ `O(V x E²)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cơ chế cung ngược và tiến trình tăng luồng trên đồ thị dư:
 
@@ -71,7 +69,7 @@ flowchart LR
 
 **Mã nguồn C++ hoàn chỉnh (Thuật toán Edmonds-Karp với BFS):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -177,23 +175,15 @@ int main() {
 - *Đường tăng luồng 3:* BFS tìm thấy `0 -> 2 -> 4 -> 3 -> 5` với `bottleneck = min(9, 10, 7, 8) = 7` &rarr; Luồng tăng lên `16 + 7 = 23`.
 - *Kết thúc:* BFS không còn tìm thấy đường nào có dung lượng &gt; 0 từ 0 đến 5 &rarr; Luồng cực đại chốt giá trị `23`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
-  <ul>
-  Ford-Fulkerson nguyên bản (DFS): `O(E x |f*|)` với `|f*|` là giá trị luồng cực đại.
-- Edmonds-Karp (BFS): `O(V x E²)`. Mỗi lần tìm đường mất `O(E)`, số lần tăng luồng bị chặn trên bởi `O(V x E)`.
-
-</li>
-<li>**Độ phức tạp Không gian (Space Complexity):** `O(V²)` ma trận dung lượng hoặc `O(V + E)` nếu sử dụng danh sách cạnh đối xứng.</li>
-<li>**Ứng dụng thực tế:**
-  
-
-- **Mạng ống dẫn dầu và truyền tải nước:** Tính toán lưu lượng cấp nước tối đa của hệ thống thủy lợi đô thị.
-- **Cắt ảnh trong Thị giác máy tính (Graph Cut Image Segmentation):** Phân tách tiền cảnh (Foreground) và hậu cảnh (Background) trong xử lý ảnh y tế.
-- **Lập lịch phi hành đoàn hàng không:** Ghép cặp phi công - tiếp viên - chuyến bay tối ưu theo ràng buộc an toàn hàng không.
-
-</li>
-</ul>
+  - Ford-Fulkerson nguyên bản (DFS): `O(E x |f*|)` với `|f*|` là giá trị luồng cực đại.
+  - Edmonds-Karp (BFS): `O(V x E²)`. Mỗi lần tìm đường mất `O(E)`, số lần tăng luồng bị chặn trên bởi `O(V x E)`.
+- **Độ phức tạp Không gian (Space Complexity):** `O(V²)` ma trận dung lượng hoặc `O(V + E)` nếu sử dụng danh sách cạnh đối xứng.
+- **Ứng dụng thực tế:**
+  - **Mạng ống dẫn dầu và truyền tải nước:** Tính toán lưu lượng cấp nước tối đa của hệ thống thủy lợi đô thị.
+  - **Cắt ảnh trong Thị giác máy tính (Graph Cut Image Segmentation):** Phân tách tiền cảnh (Foreground) và hậu cảnh (Background) trong xử lý ảnh y tế.
+  - **Lập lịch phi hành đoàn hàng không:** Ghép cặp phi công - tiếp viên - chuyến bay tối ưu theo ràng buộc an toàn hàng không.

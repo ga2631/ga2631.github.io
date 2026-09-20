@@ -103,7 +103,7 @@ export function highlightCode(code: string, lang: string): string {
   let processed = code;
 
   // 1. Comments
-  if (['cpp', 'c', 'javascript', 'typescript', 'js', 'ts', 'jsx', 'tsx', 'css', 'scss', 'json'].includes(language)) {
+  if (['cpp', 'c++', 'c', 'javascript', 'typescript', 'js', 'ts', 'jsx', 'tsx', 'css', 'scss', 'json'].includes(language)) {
     processed = processed.replace(/\/\*[\s\S]*?\*\//g, (m) => addToken(`<span class="token-comment">${escapeHtml(m)}</span>`));
     processed = processed.replace(/\/\/.*$/gm, (m) => addToken(`<span class="token-comment">${escapeHtml(m)}</span>`));
   } else if (['python', 'py', 'sh', 'bash', 'yaml', 'yml'].includes(language)) {
@@ -184,7 +184,7 @@ export function markdownToHtml(markdown: string): string {
 
   // Extract and stash code blocks to protect them from inline formatting
   const codeBlocks: string[] = [];
-  let processed = markdown.replace(/```([a-zA-Z0-9_-]*)\r?\n([\s\S]*?)```/g, (_match, lang, code) => {
+  let processed = markdown.replace(/```([a-zA-Z0-9_+#-]*)\r?\n([\s\S]*?)```/g, (_match, lang, code) => {
     const trimmedCode = code.replace(/\r?\n$/, '');
     const cleanLang = (lang || '').trim().toLowerCase();
     let blockHtml = '';
@@ -202,8 +202,8 @@ export function markdownToHtml(markdown: string): string {
     return `\n\n${placeholder}\n\n`;
   });
 
-  // Split into block paragraphs
-  const rawParagraphs = processed.split(/\r?\n\r?\n+/);
+  // Split into structured Markdown blocks
+  const rawParagraphs = splitMarkdownIntoBlocks(processed);
   const htmlParagraphs: string[] = [];
 
   for (const block of rawParagraphs) {
@@ -249,23 +249,9 @@ export function markdownToHtml(markdown: string): string {
       continue;
     }
 
-    // Check Unordered List (- item or * item)
-    if (/^[-*]\s+/.test(trimmedBlock)) {
-      const items = trimmedBlock
-        .split(/\r?\n/)
-        .filter((l) => /^[-*]\s+/.test(l))
-        .map((l) => `<li>${formatInlineMarkdown(l.replace(/^[-*]\s+/, '').trim())}</li>`);
-      htmlParagraphs.push(`<ul>\n${items.join('\n')}\n</ul>`);
-      continue;
-    }
-
-    // Check Ordered List (1. item)
-    if (/^\d+\.\s+/.test(trimmedBlock)) {
-      const items = trimmedBlock
-        .split(/\r?\n/)
-        .filter((l) => /^\d+\.\s+/.test(l))
-        .map((l) => `<li>${formatInlineMarkdown(l.replace(/^\d+\.\s+/, '').trim())}</li>`);
-      htmlParagraphs.push(`<ol>\n${items.join('\n')}\n</ol>`);
+    // Check Ordered or Unordered List
+    if (/^\s*([-*]|\d+\.)\s+/.test(trimmedBlock)) {
+      htmlParagraphs.push(renderMarkdownList(trimmedBlock));
       continue;
     }
 
@@ -350,6 +336,198 @@ function renderMarkdownTable(tableStr: string): string {
     .join('\n');
 
   return `<table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">\n${theadHtml}\n<tbody>\n${tbodyRowsHtml}\n</tbody>\n</table>`;
+}
+
+/**
+ * Splits processed Markdown text into structured blocks, keeping continuous lists
+ * and their sub-items (even when separated by blank lines) within the same block.
+ */
+function splitMarkdownIntoBlocks(markdownText: string): string[] {
+  const lines = markdownText.split(/\r?\n/);
+  const blocks: string[] = [];
+  let currentBlock: string[] = [];
+  let currentType: 'code' | 'html' | 'table' | 'heading' | 'quote' | 'list' | 'paragraph' | null = null;
+
+  const flush = () => {
+    if (currentBlock.length > 0) {
+      blocks.push(currentBlock.join('\n'));
+      currentBlock = [];
+      currentType = null;
+    }
+  };
+
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      if (currentType === 'list') {
+        // Peek ahead to see if next non-blank line continues the list or its sub-items
+        let k = i + 1;
+        while (k < lines.length && !lines[k].trim()) {
+          k++;
+        }
+        if (k < lines.length) {
+          const nextTrimmed = lines[k].trim();
+          if (/^([-*]|\d+\.)\s+/.test(nextTrimmed) || /^\s{2,}/.test(lines[k])) {
+            currentBlock.push('');
+            i++;
+            continue;
+          }
+        }
+      }
+      flush();
+      i++;
+      continue;
+    }
+
+    if (trimmed.startsWith('\x1aCB') && trimmed.endsWith('\x1a')) {
+      flush();
+      blocks.push(trimmed);
+      i++;
+      continue;
+    }
+
+    if (/^<(table|pre|div|p|ul|ol|h[1-6]|blockquote|section|article)\b/i.test(trimmed)) {
+      flush();
+      const htmlLines = [line];
+      const matchTag = trimmed.match(/^<([a-zA-Z0-9]+)/);
+      const tagName = matchTag ? matchTag[1] : '';
+      if (tagName && !line.includes(`</${tagName}>`)) {
+        i++;
+        while (i < lines.length) {
+          htmlLines.push(lines[i]);
+          if (lines[i].includes(`</${tagName}>`)) {
+            break;
+          }
+          i++;
+        }
+      }
+      blocks.push(htmlLines.join('\n'));
+      i++;
+      continue;
+    }
+
+    if (/^#{1,6}\s+/.test(trimmed)) {
+      flush();
+      blocks.push(trimmed);
+      i++;
+      continue;
+    }
+
+    if (trimmed.startsWith('|') && trimmed.slice(1).includes('|')) {
+      if (currentType !== 'table') {
+        flush();
+        currentType = 'table';
+      }
+      currentBlock.push(line);
+      i++;
+      continue;
+    }
+
+    if (trimmed.startsWith('>')) {
+      if (currentType !== 'quote') {
+        flush();
+        currentType = 'quote';
+      }
+      currentBlock.push(line);
+      i++;
+      continue;
+    }
+
+    const isListItem = /^([-*]|\d+\.)\s+/.test(trimmed) || (currentType === 'list' && (/^\s{2,}/.test(line) || /^([-*]|\d+\.)\s+/.test(trimmed)));
+    if (isListItem) {
+      if (currentType !== 'list') {
+        flush();
+        currentType = 'list';
+      }
+      currentBlock.push(line);
+      i++;
+      continue;
+    }
+
+    if (currentType !== 'paragraph' && currentType !== null) {
+      flush();
+    }
+    currentType = 'paragraph';
+    currentBlock.push(line);
+    i++;
+  }
+
+  flush();
+  return blocks;
+}
+
+/**
+ * Converts an Ordered or Unordered Markdown list block into HTML, supporting nested sub-lists and continuous numbering.
+ */
+function renderMarkdownList(blockStr: string): string {
+  const lines = blockStr.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  if (lines.length === 0) return '';
+
+  const firstLine = lines[0];
+  const firstMatch = firstLine.match(/^\s*(\d+)\.\s+/);
+  const isTopOrdered = !!firstMatch;
+  const startNum = firstMatch ? parseInt(firstMatch[1], 10) : 1;
+  const topTag = isTopOrdered ? (startNum !== 1 ? `ol start="${startNum}"` : 'ol') : 'ul';
+  const closeTopTag = isTopOrdered ? '</ol>' : '</ul>';
+
+  const items: Array<{ text: string; subs: Array<{ text: string; type: 'ul' | 'ol' }> }> = [];
+  let currentItem: { text: string; subs: Array<{ text: string; type: 'ul' | 'ol' }> } | null = null;
+
+  for (const line of lines) {
+    const mTopOl = line.match(/^\s*(\d+)\.\s+(.*)$/);
+    const mTopUl = line.match(/^\s*[-*]\s+(.*)$/);
+    const isIndented = /^\s{2,}/.test(line);
+
+    if (isTopOrdered && mTopOl && !isIndented) {
+      if (currentItem) {
+        items.push(currentItem);
+      }
+      currentItem = { text: mTopOl[2].trim(), subs: [] };
+    } else if (!isTopOrdered && mTopUl && !isIndented && items.length === 0 && currentItem === null) {
+      currentItem = { text: mTopUl[1].trim(), subs: [] };
+    } else if (!isTopOrdered && mTopUl && !isIndented) {
+      if (currentItem) {
+        items.push(currentItem);
+      }
+      currentItem = { text: mTopUl[1].trim(), subs: [] };
+    } else if (mTopUl && currentItem !== null) {
+      const subText = mTopUl[1].trim();
+      currentItem.subs.push({ text: subText, type: 'ul' });
+    } else if (mTopOl && currentItem !== null && isIndented) {
+      const subText = mTopOl[2].trim();
+      currentItem.subs.push({ text: subText, type: 'ol' });
+    } else if (currentItem) {
+      currentItem.text += ' ' + line.trim();
+    } else {
+      currentItem = { text: line.trim(), subs: [] };
+    }
+  }
+
+  if (currentItem) {
+    items.push(currentItem);
+  }
+
+  const html: string[] = [`<${topTag}>`];
+  for (const it of items) {
+    const formattedText = formatInlineMarkdown(it.text);
+    if (it.subs.length === 0) {
+      html.push(`  <li>${formattedText}</li>`);
+    } else {
+      const subType = it.subs[0].type;
+      const subLines: string[] = [`    <${subType}>`];
+      for (const sub of it.subs) {
+        subLines.push(`      <li>${formatInlineMarkdown(sub.text)}</li>`);
+      }
+      subLines.push(`    </${subType}>`);
+      html.push(`  <li>${formattedText}\n${subLines.join('\n')}\n  </li>`);
+    }
+  }
+  html.push(closeTopTag);
+
+  return html.join('\n');
 }
 
 function escapeHtml(str: string): string {

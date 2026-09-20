@@ -16,20 +16,20 @@ tags:
   - "Memory Efficiency"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong các hệ thống nhúng hoặc phần cứng sử dụng bộ nhớ Flash / EEPROM, mỗi thao tác ghi (Write Operation) đều làm hao mòn tuổi thọ vật lý của chip nhớ và tiêu tốn năng lượng. Đề bài đặt ra: Làm thế nào để sắp xếp một mảng số nguyên N phần tử với **số lần hoán đổi (Memory Writes) tối thiểu nhất có thể**?
 
 Sắp xếp Chọn (Selection Sort) giải quyết bài toán này bằng cách phân vùng mảng và chỉ thực hiện đúng tối đa `N - 1` thao tác hoán đổi trong toàn bộ vòng đời sắp xếp.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Ý tưởng tiếp cận ngây thơ:
 
 - Mỗi khi duyệt mảng và gặp một phần tử nhỏ hơn `arr[i]`, lập tức gọi hàm `std::swap`.
 - *Hạn chế:* Cách làm này gây ra số lần ghi bộ nhớ không kiểm soát được (lên tới `O(N²)` lần hoán đổi), làm giảm hiệu năng ghi đệm của CPU và gây hao mòn bộ nhớ.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Tư duy phân vùng và chọn lọc cực tiểu của Selection Sort:
 
@@ -37,7 +37,7 @@ Tư duy phân vùng và chọn lọc cực tiểu của Selection Sort:
 2. **Quét Chỉ số Cực tiểu (Min-Index Scanning):** Tại mỗi bước `i`, chỉ ghi nhận chỉ số `minIndex = i`. Duyệt toàn bộ vùng chưa sắp xếp để tìm ra phần tử nhỏ nhất thực sự mà *không thực hiện bất kỳ phép hoán đổi nào trong quá trình quét*.
 3. **Đúng 1 phép Hoán đổi duy nhất mỗi Pass:** Sau khi tìm được `minIndex` toàn cục của vùng chưa sắp xếp, chỉ thực hiện duy nhất một lệnh `std::swap(arr[i], arr[minIndex])` nếu `minIndex != i`. Đảm bảo tổng số lần ghi bộ nhớ cố định ở mức `O(N)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Minh họa phân vùng và dịch chuyển phần tử cực tiểu của mảng `[64, 25, 12, 22, 11]`:
 
@@ -59,7 +59,7 @@ flowchart TD
 
 **Mã nguồn C++ chuẩn hóa:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -100,7 +100,7 @@ int main() {
 - *Pass `i = 2`:* Vùng chưa sắp xếp `[25, 22, 64]`. Quét tìm min `->` `minIndex = 3` (giá trị 22). Swap `arr[2]` và `arr[3]` `->` Mảng thành `{11, 12, 22, 25, 64}`.
 - *Pass `i = 3`:* Vùng chưa sắp xếp `[25, 64]`. `minIndex = 3` trùng `i` `->` Không tốn phép swap. Mảng hoàn thành hoàn hảo!
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Đánh giá Hiệu năng theo Framework Chuẩn:**
 

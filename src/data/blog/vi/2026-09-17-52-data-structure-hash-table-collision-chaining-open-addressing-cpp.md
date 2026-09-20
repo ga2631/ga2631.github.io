@@ -16,13 +16,13 @@ tags:
   - "Performance"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong các ứng dụng hiệu năng cao (như hệ thống quản lý phiên người dùng User Session Store, chỉ mục cơ sở dữ liệu Database Indexing, hay bộ nhớ đệm phân tán Redis), thao tác tra cứu dữ liệu theo Khóa (Key-Value Lookup) diễn ra hàng triệu lần mỗi giây. Nếu sử dụng Mảng hoặc Danh sách liên kết, chi phí tìm kiếm tuyến tính `O(N)` sẽ làm sập toàn bộ hệ thống khi quy mô dữ liệu vượt quá hàng triệu bản ghi.
 
 **Bảng băm (Hash Table / Hash Map)** là cấu trúc dữ liệu mang tính cách mạng, cho phép thực hiện cả 3 thao tác **Thêm (Insert)**, **Xóa (Delete)** và **Tra cứu (Lookup)** trong **thời gian trung bình hằng số `O(1)`**, bất kể kích thước tập dữ liệu lớn đến mức nào.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Bản chất của Bảng băm là sử dụng một **Hàm băm (Hash Function)** để chuyển đổi khóa đầu vào (chuỗi ký tự, đối tượng phức tạp) thành một chỉ số số nguyên đại diện cho vị trí ô nhớ (Bucket) trong mảng:
 
@@ -32,7 +32,7 @@ bucket_index = hash(key) % capacity
 
 Thách thức toán học cốt tử: Theo _Nguyên lý chuồng bồ câu (Pigeonhole Principle)_, vì không gian các khóa có thể có là vô hạn trong khi kích thước mảng băm là hữu hạn, luôn luôn tồn tại trường hợp **hai khóa khác nhau cùng sinh ra một chỉ số ô nhớ (`hash(k₁) % M == hash(k₂) % M`)**. Hiện tượng này gọi là **Đụng độ băm (Hash Collision)**.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Để giải quyết đụng độ và duy trì hiệu năng `O(1)`, hai chiến lược kiến trúc kinh điển được áp dụng:
 
@@ -51,7 +51,7 @@ Thách thức toán học cốt tử: Theo _Nguyên lý chuồng bồ câu (Pige
 - Hệ số tải `alpha = N / capacity` biểu thị mức độ đầy của bảng.
 - Khi `alpha >= 0.75`, bảng băm tự động cấp phát mảng mới có kích thước gấp đôi (`capacity x 2`) và băm lại toàn bộ các phần tử (Rehashing) để bảo toàn độ phức tạp trung bình `O(1)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ ánh xạ hàm băm và giải quyết đụng độ bằng Separate Chaining:
 
@@ -82,7 +82,7 @@ flowchart LR
 
 **Mã nguồn C++ hoàn chỉnh: HashTable tùy biến với Separate Chaining:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <list>
@@ -201,18 +201,12 @@ int main() {
 - _Thêm "cherry" (val 80):_ `hash("cherry") % 7 = 1` (Đụng độ với banana!) &rarr; Thêm vào danh sách liên kết tại `table[1]`. `table[1] = [banana, cherry]`.
 - _Tra cứu "banana":_ Băm ra bucket 1 &rarr; Quét phần tử đầu tiên của danh sách, thấy khóa "banana" &rarr; Trả về `40` trong `O(1)`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 - **Thao tác Trung bình (Average Case):** `O(1)` cho cả Insert, Delete, và Lookup khi hàm băm phân phối đồng đều.
 - **Trường hợp Xấu nhất (Worst Case):** `O(N)` khi tất cả các khóa đều bị băm về cùng một bucket (được khắc phục bằng cách dùng Red-Black Tree nâng cấp lên `O(\log N)`).
 - **Độ phức tạp Không gian (Space Complexity):** `O(N + M)` với `N` là số phần tử và `M` là kích thước mảng bucket.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Hệ thống Database Indexing:** Hash Indexes trong PostgreSQL / MySQL Memory Engine cho các phép so sánh bằng (`=`).
-- **Bộ nhớ đệm trong Bộ nhớ (In-Memory Cache):** Redis và Memcached lưu trữ cặp Key-Value siêu tốc.
-- **Trình biên dịch & Thông dịch viên:** Bảng ký hiệu (Symbol Table) quản lý tên biến, hàm và phạm vi tầm vực (Scope).
-
-</li>
-</ul>
+  - **Hệ thống Database Indexing:** Hash Indexes trong PostgreSQL / MySQL Memory Engine cho các phép so sánh bằng (`=`).
+  - **Bộ nhớ đệm trong Bộ nhớ (In-Memory Cache):** Redis và Memcached lưu trữ cặp Key-Value siêu tốc.
+  - **Trình biên dịch & Thông dịch viên:** Bảng ký hiệu (Symbol Table) quản lý tên biến, hàm và phạm vi tầm vực (Scope).

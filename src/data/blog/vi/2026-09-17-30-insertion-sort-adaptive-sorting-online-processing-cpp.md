@@ -16,20 +16,20 @@ tags:
   - "Data Structures"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong xử lý luồng dữ liệu thời gian thực (Data Streaming), dữ liệu đến từng phần tử một và cần được duy trì trạng thái đã sắp xếp liên tục. Đề bài đặt ra: Làm sao để chèn một phần tử mới vào mảng con đã có thứ tự với chi phí tính toán thấp nhất?
 
 Sắp xếp Chèn (Insertion Sort) mô phỏng chính xác hành vi sắp xếp các quân bài trên tay của con người: Rút từng quân bài mới và chèn vào đúng vị trí thích hợp trong bộ bài đã sắp xếp trước đó.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận ngây thơ:
 
 - Mỗi khi lấy phần tử mới `arr[i]`, hoán đổi liên tục lùi dần về đầu mảng bằng hàm `std::swap`.
 - *Điểm nghẽn:* Mỗi phép `std::swap` tốn 3 phép gán bộ nhớ (sử dụng biến tạm), dẫn đến lãng phí tài nguyên CPU khi phải dời nhiều phần tử.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Cơ chế Dịch chuyển (Shifting) và Tính thích ứng của Insertion Sort:
 
@@ -37,7 +37,7 @@ Cơ chế Dịch chuyển (Shifting) và Tính thích ứng của Insertion Sort
 2. **Tính thích ứng cao (Adaptive Sorting):** Với các mảng gần như đã sắp xếp (Nearly Sorted Arrays), vòng lặp trong dừng gần như ngay lập tức sau 1 phép so sánh &rarr; Thời gian thực thi đạt tuyến tính siêu tốc `Ω(N)`.
 3. **Thuật toán trực tuyến (Online Algorithm):** Có thể sắp xếp dữ liệu ngay khi đang nhận từng phần tử từ luồng mạng mà không cần biết trước toàn bộ kích thước N.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Minh họa quá trình dịch chuyển và chèn phần tử `key` trong mảng `[12, 11, 13, 5, 6]`:
 
@@ -59,7 +59,7 @@ flowchart TD
 
 **Mã nguồn C++ chuẩn hóa:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 
@@ -97,7 +97,7 @@ int main() {
 - *Pass `i = 3`:* `key = 5`. Dịch lần lượt 13, 12, 11 sang phải `->` Gán `arr[0] = 5` `->` Mảng: `{5, 11, 12, 13, 6}`.
 - *Pass `i = 4`:* `key = 6`. Dịch 13, 12, 11 sang phải `->` Gán `arr[1] = 6` `->` Mảng: `{5, 6, 11, 12, 13}`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Đánh giá Hiệu năng theo Framework Chuẩn:**
 

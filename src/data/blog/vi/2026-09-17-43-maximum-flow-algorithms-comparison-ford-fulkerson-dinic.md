@@ -17,13 +17,13 @@ tags:
   - "Bipartite Matching"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Lý thuyết Luồng trên Mạng (Network Flow) là một trong những phân nhánh quan trọng và ứng dụng sâu rộng nhất của khoa học máy tính ứng dụng. Khi đối mặt với các bài toán quy mô lớn, việc lựa chọn giữa giải thuật cổ điển **Ford-Fulkerson / Edmonds-Karp** và giải thuật hiện đại **Dinic** tạo ra sự cách biệt hiệu năng lên đến hàng nghìn lần.
 
 Bài viết này phân tích bản chất kiến trúc của hai trường phái, đo lường điểm nghẽn hiệu năng thực nghiệm và trình bày phương pháp quy nạp các bài toán kinh điển (như Cặp ghép Cực đại - Bipartite Matching) về bài toán Luồng cực đại.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Tại sao Edmonds-Karp lại trở nên chậm chạp trên mạng lưới dày?
 
@@ -31,7 +31,7 @@ Tại sao Edmonds-Karp lại trở nên chậm chạp trên mạng lưới dày?
 - Nếu mạng luồng có 10,000 đường tăng luồng độc lập có cùng độ dài, Edmonds-Karp phải thực thi 10,000 lần BFS lặp đi lặp lại.
 - Dinic khắc phục triệt để sự lãng phí này bằng cách gom toàn bộ 10,000 đường đi đó vào cùng một **Đồ thị Phân tầng (Level Graph)** và dùng DFS quét sạch sẽ (Blocking Flow) chỉ trong 1 pha duy nhất.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **Ma trận So sánh Chuyên sâu giữa Edmonds-Karp và Dinic:**
 
@@ -45,39 +45,39 @@ Tại sao Edmonds-Karp lại trở nên chậm chạp trên mạng lưới dày?
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cơ chế tăng luồng**</td>
-      <td style="padding: 8px;">Đơn luồng (1 đường đi mỗi lần BFS)</td>
-      <td style="padding: 8px;">Đa luồng đồng thời (Blocking Flow qua DFS)</td>
+      <td style="padding: 8px"><b>Cơ chế tăng luồng</b></td>
+      <td style="padding: 8px">Đơn luồng (1 đường đi mỗi lần BFS)</td>
+      <td style="padding: 8px">Đa luồng đồng thời (Blocking Flow qua DFS)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp (Tổng quát)**</td>
-      <td style="padding: 8px;">`O(V x E²)`</td>
-      <td style="padding: 8px;">`O(V² x E)` (Nhanh hơn từ 10x - 1000x)</td>
+      <td style="padding: 8px"><b>Độ phức tạp (Tổng quát)</b></td>
+      <td style="padding: 8px">`O(V x E²)`</td>
+      <td style="padding: 8px">`O(V² x E)` (Nhanh hơn từ 10x - 1000x)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Mạng Đơn vị (Unit Network)**</td>
-      <td style="padding: 8px;">`O(V x E)`</td>
-      <td style="padding: 8px;">`O(E sqrtV)` (Cực hạn tốc độ)</td>
+      <td style="padding: 8px"><b>Mạng Đơn vị (Unit Network)</b></td>
+      <td style="padding: 8px">`O(V x E)`</td>
+      <td style="padding: 8px">`O(E sqrtV)` (Cực hạn tốc độ)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Kỹ thuật Tối ưu cốt lõi**</td>
-      <td style="padding: 8px;">BFS tìm đường ngắn nhất (Shortest Path)</td>
-      <td style="padding: 8px;">Level Graph + Con trỏ `work[]` tỉa nhánh cụt</td>
+      <td style="padding: 8px"><b>Kỹ thuật Tối ưu cốt lõi</b></td>
+      <td style="padding: 8px">BFS tìm đường ngắn nhất (Shortest Path)</td>
+      <td style="padding: 8px">Level Graph + Con trỏ `work[]` tỉa nhánh cụt</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp Không gian**</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
+      <td style="padding: 8px"><b>Độ phức tạp Không gian</b></td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V + E)`</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Khuyến nghị Sử dụng**</td>
-      <td style="padding: 8px;">Mạng nhỏ, minh họa học thuật (`V <= 100`)</td>
-      <td style="padding: 8px;">Môi trường Production thực tế & Thi đấu lập trình</td>
+      <td style="padding: 8px"><b>Khuyến nghị Sử dụng</b></td>
+      <td style="padding: 8px">Mạng nhỏ, minh họa học thuật (`V <= 100`)</td>
+      <td style="padding: 8px">Môi trường Production thực tế & Thi đấu lập trình</td>
     </tr>
   </tbody>
 </table>
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ quy nạp bài toán Cặp ghép cực đại (Bipartite Matching) về Mạng luồng cực đại:
 
@@ -101,7 +101,7 @@ graph LR
 
 **Mã nguồn C++ thực tế: Giải bài toán Cặp ghép Cực đại bằng Dinic:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -209,9 +209,7 @@ int main() {
 }
 ```
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Kết luận kiến trúc dành cho hệ thống phân tán:
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 1. **Chuẩn hóa Thuật toán Dinic làm mặc định:** Trong mọi ứng dụng thực tế đòi hỏi xử lý mạng luồng, Dinic vượt trội hoàn toàn so với Edmonds-Karp về cả tốc độ lẫn khả năng mở rộng.
 2. **Khả năng quy nạp vạn năng:** Hàng loạt bài toán tưởng chừng không liên quan (Cặp ghép cực đại, Lát cắt cực tiểu phân vùng mạng, Bài toán lựa chọn dự án ROI, Cân bằng tải máy chủ) đều có thể được mô hình hóa và giải quyết thanh lịch trong thời gian `O(E \sqrt{V})` bằng Dinic.

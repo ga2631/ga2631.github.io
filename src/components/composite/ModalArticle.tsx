@@ -179,19 +179,6 @@ export const ModalArticle: ModalArticleComponent = ({
   closeAriaLabel = 'Close article popup',
 }) => {
   const [fitViewSvg, setFitViewSvg] = useState<string | null>(null);
-  const [currentTheme, setCurrentTheme] = useState<string>(() =>
-    typeof document !== 'undefined' ? document.documentElement.getAttribute('data-theme') || 'dark' : 'dark'
-  );
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const observer = new MutationObserver(() => {
-      const themeAttr = document.documentElement.getAttribute('data-theme') || 'dark';
-      setCurrentTheme(themeAttr);
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    return () => observer.disconnect();
-  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen || !post || !processedHtml) return;
@@ -206,81 +193,59 @@ export const ModalArticle: ModalArticleComponent = ({
       if (mermaidBlocks.length === 0) return;
 
       try {
-        const isDark = currentTheme !== 'light';
         mermaid.initialize({
           startOnLoad: false,
           theme: 'base',
           securityLevel: 'loose',
           fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          themeVariables: isDark
-            ? {
-                darkMode: true,
-                background: 'transparent',
-                mainBkg: '#1e293b',
-                primaryColor: '#1e293b',
-                primaryTextColor: '#f8fafc',
-                primaryBorderColor: '#ff385c',
-                secondaryColor: '#334155',
-                secondaryTextColor: '#f8fafc',
-                secondaryBorderColor: '#ff385c',
-                tertiaryColor: '#0f172a',
-                tertiaryTextColor: '#f8fafc',
-                tertiaryBorderColor: '#ff385c',
-                textColor: '#f8fafc',
-                lineColor: '#fb7185',
-                nodeBorder: '#ff385c',
-                nodeTextColor: '#f8fafc',
-                actorBkg: '#1e293b',
-                actorBorder: '#ff385c',
-                actorTextColor: '#f8fafc',
-                actorLineColor: '#fb7185',
-                signalColor: '#fb7185',
-                signalTextColor: '#f8fafc',
-                labelBoxBkgColor: '#1e293b',
-                labelBoxBorderColor: '#ff385c',
-                labelTextColor: '#f8fafc',
-                loopTextColor: '#f8fafc',
-                noteBorderColor: '#ff385c',
-                noteBkgColor: '#1e293b',
-                noteTextColor: '#f8fafc',
-                activationBorderColor: '#ff385c',
-                activationBkgColor: '#334155',
-                sequenceNumberColor: '#ffffff',
-              }
-            : {
-                darkMode: false,
-                background: 'transparent',
-                mainBkg: '#ffffff',
-                primaryColor: '#ffffff',
-                primaryTextColor: '#0f172a',
-                primaryBorderColor: '#dc2626',
-                secondaryColor: '#f8fafc',
-                secondaryTextColor: '#0f172a',
-                secondaryBorderColor: '#dc2626',
-                tertiaryColor: '#f1f5f9',
-                tertiaryTextColor: '#0f172a',
-                tertiaryBorderColor: '#dc2626',
-                textColor: '#0f172a',
-                lineColor: '#ef4444',
-                nodeBorder: '#dc2626',
-                nodeTextColor: '#0f172a',
-                actorBkg: '#f8fafc',
-                actorBorder: '#dc2626',
-                actorTextColor: '#0f172a',
-                actorLineColor: '#ef4444',
-                signalColor: '#ef4444',
-                signalTextColor: '#0f172a',
-                labelBoxBkgColor: '#f8fafc',
-                labelBoxBorderColor: '#dc2626',
-                labelTextColor: '#0f172a',
-                loopTextColor: '#0f172a',
-                noteBorderColor: '#dc2626',
-                noteBkgColor: '#fef2f2',
-                noteTextColor: '#0f172a',
-                activationBorderColor: '#dc2626',
-                activationBkgColor: '#fee2e2',
-                sequenceNumberColor: '#ffffff',
-              },
+          themeVariables: {
+            darkMode: false,
+            background: 'transparent',
+            mainBkg: '#ffffff',
+            primaryColor: '#ffffff',
+            primaryTextColor: '#0f172a',
+            primaryBorderColor: '#dc2626',
+            secondaryColor: '#f8fafc',
+            secondaryTextColor: '#0f172a',
+            secondaryBorderColor: '#dc2626',
+            tertiaryColor: '#f1f5f9',
+            tertiaryTextColor: '#0f172a',
+            tertiaryBorderColor: '#dc2626',
+            textColor: '#0f172a',
+            lineColor: '#ef4444',
+            nodeBorder: '#dc2626',
+            nodeTextColor: '#0f172a',
+            clusterBkg: '#f8fafc',
+            clusterBorder: '#cbd5e1',
+            titleColor: '#0f172a',
+            edgeLabelBackground: '#ffffff',
+            actorBkg: '#f8fafc',
+            actorBorder: '#dc2626',
+            actorTextColor: '#0f172a',
+            actorLineColor: '#ef4444',
+            signalColor: '#ef4444',
+            signalTextColor: '#0f172a',
+            labelBoxBkgColor: '#f8fafc',
+            labelBoxBorderColor: '#dc2626',
+            labelTextColor: '#0f172a',
+            loopTextColor: '#0f172a',
+            noteBorderColor: '#dc2626',
+            noteBkgColor: '#fef2f2',
+            noteTextColor: '#0f172a',
+            activationBorderColor: '#dc2626',
+            activationBkgColor: '#fee2e2',
+            sequenceNumberColor: '#ffffff',
+            git0: '#dc2626',
+            git1: '#0284c7',
+            git2: '#9333ea',
+            git3: '#16a34a',
+            git4: '#ca8a04',
+            gitBranchLabel0: '#ffffff',
+            gitBranchLabel1: '#ffffff',
+            gitBranchLabel2: '#ffffff',
+            gitBranchLabel3: '#ffffff',
+            gitBranchLabel4: '#ffffff',
+          },
         });
 
 
@@ -327,7 +292,7 @@ export const ModalArticle: ModalArticleComponent = ({
       isCancelled = true;
       clearTimeout(timer);
     };
-  }, [isOpen, post, processedHtml, modalContentRef, currentTheme]);
+  }, [isOpen, post, processedHtml, modalContentRef]);
 
 
   const handleArticleClick = (e: React.MouseEvent<HTMLDivElement>) => {

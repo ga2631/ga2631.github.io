@@ -16,7 +16,7 @@ tags:
   - "Computer Science"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong khoa học máy tính, nhiều bài toán tối ưu hóa có không gian tìm kiếm bùng nổ theo hàm mũ nếu giải bằng phương pháp vét cạn (Brute Force). Bài toán kinh điển đặt ra: **Bài toán Balo 0/1 (0/1 Knapsack Problem)**.
 
@@ -24,7 +24,7 @@ Cho một chiếc balo có sức chứa trọng lượng tối đa là `W` và m
 
 Nếu dùng vét cạn duyệt qua toàn bộ `2ᴺ` tập con có thể, độ phức tạp thời gian sẽ là `O(2ᴺ)` - một con số bất khả thi khi `N >= 40` (vượt quá 1000 tỷ phép tính). **Thuật toán Quy hoạch động (Dynamic Programming - DP)** được sáng tạo bởi nhà toán học Richard Bellman vào thập niên 1950 chính là chìa khóa phá vỡ sự bùng nổ hàm mũ này, đưa độ phức tạp về thời gian đa thức giả (Pseudo-polynomial time) `O(N x W)`.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận trực quan ban đầu là sử dụng giải thuật Đệ quy thuần túy (Plain Recursion). Tại mỗi đồ vật thứ `i`, ta có hai nhánh quyết định:
 
@@ -42,7 +42,7 @@ knapsack(i, w) = max(
 
 Cây đệ quy khi thực thi theo cách này gặp phải vấn đề nghiêm trọng: *Bài toán con gối nhau liên tục (Overlapping Subproblems)*. Cùng một trạng thái `(i, w)` bị tính toán lặp đi lặp lại hàng triệu lần trên các nhánh đệ quy độc lập, khiến Call Stack bị nghẽn và thời gian chạy tăng vọt theo cấp số nhân `O(2ᴺ)`.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Để áp dụng thành công Quy hoạch động, bài toán bắt buộc phải thỏa mãn **hai điều kiện tiên quyết**:
 
@@ -56,7 +56,7 @@ Có 2 trường phái hiện thực hóa Quy hoạch động:
 
 **Tối ưu không gian bộ nhớ (Space Optimization):** Quan sát thấy tại bước `i`, ta chỉ cần thông tin từ hàng `i - 1`. Do đó, ta có thể rút gọn bảng 2 chiều kích thước `(N + 1) x (W + 1)` thành mảng 1 chiều kích thước `W + 1`. Lưu ý: Duyệt biến sức chứa `w` theo chiều nghịch từ `W` lùi về `w[i]` để tránh ghi đè dữ liệu của bước trước đó trong cùng một lượt duyệt.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ chuyển trạng thái trong Quy hoạch động và cây bài toán con gối nhau:
 
@@ -82,7 +82,7 @@ graph TD
 
 **Mã nguồn C++ hoàn chỉnh (Bottom-Up Tabulation với Tối ưu Bộ nhớ 1D):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -141,54 +141,31 @@ int main() {
 - *Dữ liệu đầu vào:* `W = 5`, `weights = {2, 3, 4, 5}`, `values = {3, 4, 5, 8}`, `N = 4`.
 - *Khởi tạo:* Mảng `dp = [0, 0, 0, 0, 0, 0]` (kích thước `W + 1 = 6`).
 - *Vật 1 (w=2, v=3):* Duyệt `w` từ 5 về 2:
-  <ul>
-  `w = 5: dp[5] = max(0, 3 + dp[3]) = 3`
-- `w = 4: dp[4] = max(0, 3 + dp[2]) = 3`
-- `w = 3: dp[3] = max(0, 3 + dp[1]) = 3`
-- `w = 2: dp[2] = max(0, 3 + dp[0]) = 3` &rarr; `dp = [0, 0, 3, 3, 3, 3]`
+  - `w = 5: dp[5] = max(0, 3 + dp[3]) = 3`
+  - `w = 4: dp[4] = max(0, 3 + dp[2]) = 3`
+  - `w = 3: dp[3] = max(0, 3 + dp[1]) = 3`
+  - `w = 2: dp[2] = max(0, 3 + dp[0]) = 3` &rarr; `dp = [0, 0, 3, 3, 3, 3]`
+- *Vật 2 (w=3, v=4):* Duyệt `w` từ 5 về 3:
+  - `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Chọn vật 1 và vật 2: tổng trọng lượng 5)
+  - `w = 4: dp[4] = max(3, 4 + dp[1]) = max(3, 4 + 0) = 4`
+  - `w = 3: dp[3] = max(3, 4 + dp[0]) = max(3, 4 + 0) = 4` &rarr; `dp = [0, 0, 3, 4, 4, 7]`
+- *Vật 3 (w=4, v=5):* Duyệt `w` từ 5 về 4:
+  - `w = 5: dp[5] = max(7, 5 + dp[1]) = 7`
+  - `w = 4: dp[4] = max(4, 5 + dp[0]) = 5` &rarr; `dp = [0, 0, 3, 4, 5, 7]`
+- *Vật 4 (w=5, v=8):* Duyệt `w = 5`:
+  - `w = 5: dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Kết quả tối ưu cuối cùng là `8` (Chọn vật 4 có `w=5, v=8`).
 
-</li>
-<li>*Vật 2 (w=3, v=4):* Duyệt `w` từ 5 về 3:
-  
-
-- `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Chọn vật 1 và vật 2: tổng trọng lượng 5)
-- `w = 4: dp[4] = max(3, 4 + dp[1]) = max(3, 4 + 0) = 4`
-- `w = 3: dp[3] = max(3, 4 + dp[0]) = max(3, 4 + 0) = 4` &rarr; `dp = [0, 0, 3, 4, 4, 7]`
-
-</li>
-<li>*Vật 3 (w=4, v=5):* Duyệt `w` từ 5 về 4:
-  
-
-- `w = 5: dp[5] = max(7, 5 + dp[1]) = 7`
-- `w = 4: dp[4] = max(4, 5 + dp[0]) = 5` &rarr; `dp = [0, 0, 3, 4, 5, 7]`
-
-</li>
-<li>*Vật 4 (w=5, v=8):* Duyệt `w = 5`:
-  
-
-- `w = 5: dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Kết quả tối ưu cuối cùng là `8` (Chọn vật 4 có `w=5, v=8`).
-
-</li>
-</ul>
-
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):** `Θ(N x W)` trong mọi trường hợp (Best, Average, Worst). Cần duyệt qua `N` đồ vật, mỗi đồ vật cập nhật `W` trạng thái trong bảng quy hoạch.
 - **Độ phức tạp Không gian (Space Complexity):**
-  <ul>
-  Bảng 2D truyền thống: `O(N x W)` bộ nhớ Heap để lưu trữ toàn bộ ma trận (bắt buộc nếu cần truy vết lại chính xác danh sách đồ vật đã chọn).
-- Tối ưu mảng 1D: `O(W)` bộ nhớ phụ trợ, tiết kiệm đến 95% bộ nhớ khi `N` lớn.
+  - Bảng 2D truyền thống: `O(N x W)` bộ nhớ Heap để lưu trữ toàn bộ ma trận (bắt buộc nếu cần truy vết lại chính xác danh sách đồ vật đã chọn).
+  - Tối ưu mảng 1D: `O(W)` bộ nhớ phụ trợ, tiết kiệm đến 95% bộ nhớ khi `N` lớn.
+- **Ứng dụng thực tế:**
+  - **Hệ thống phân bổ tài nguyên đám mây (Cloud Resource Allocation):** Lựa chọn tổ hợp máy ảo (VM) tối ưu chi phí trong giới hạn ngân sách vCPU/RAM.
+  - **Thuật toán đồ thị:** Làm nền tảng cho thuật toán Bellman-Ford và Floyd-Warshall tìm đường đi ngắn nhất.
+  - **Tin sinh học (Bioinformatics):** Căn chỉnh chuỗi DNA/Protein bằng thuật toán Needleman-Wunsch và Smith-Waterman.
+  - **Xử lý ngôn ngữ tự nhiên (NLP):** Thuật toán Viterbi trong mô hình Hidden Markov Model (HMM) và giải mã mạng nơ-ron sinh từ.
 
-</li>
-<li>**Ứng dụng thực tế:**
-  
-
-- **Hệ thống phân bổ tài nguyên đám mây (Cloud Resource Allocation):** Lựa chọn tổ hợp máy ảo (VM) tối ưu chi phí trong giới hạn ngân sách vCPU/RAM.
-- **Thuật toán đồ thị:** Làm nền tảng cho thuật toán Bellman-Ford và Floyd-Warshall tìm đường đi ngắn nhất.
-- **Tin sinh học (Bioinformatics):** Căn chỉnh chuỗi DNA/Protein bằng thuật toán Needleman-Wunsch và Smith-Waterman.
-- **Xử lý ngôn ngữ tự nhiên (NLP):** Thuật toán Viterbi trong mô hình Hidden Markov Model (HMM) và giải mã mạng nơ-ron sinh từ.
-
-</li>
-</ul>

@@ -17,7 +17,7 @@ tags:
   - "Architecture"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In Minimum Spanning Tree construction, **Kruskal** and **Prim** produce equivalent optimal trees while operating on opposing architectural principles:
 
@@ -26,14 +26,14 @@ In Minimum Spanning Tree construction, **Kruskal** and **Prim** produce equivale
 
 Understanding the performance boundary dictated by Graph Density is essential for systems engineering.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Common production misconceptions:
 
 1. **Using Kruskal on Dense Graphs (`E ~ V²`):** Sorting `10⁶` edges incurs severe overhead compared to Prim's simple `O(V²)` matrix iteration.
 2. **Using Prim on Disconnected Graphs:** Prim only spans the component containing the seed node, whereas Kruskal naturally discovers the complete **Minimum Spanning Forest** without modifications.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 **Comprehensive Architectural Comparison Matrix:**
 
@@ -47,61 +47,61 @@ Common production misconceptions:
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Paradigm**</td>
-      <td style="padding: 8px;">Edge-Centric Greedy</td>
-      <td style="padding: 8px;">Vertex-Centric Greedy</td>
+      <td style="padding: 8px"><b>Paradigm</b></td>
+      <td style="padding: 8px">Edge-Centric Greedy</td>
+      <td style="padding: 8px">Vertex-Centric Greedy</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Primary Data Structure**</td>
-      <td style="padding: 8px;">Disjoint Set Union (DSU) + Sort</td>
-      <td style="padding: 8px;">Min-Heap Priority Queue / Matrix</td>
+      <td style="padding: 8px"><b>Primary Data Structure</b></td>
+      <td style="padding: 8px">Disjoint Set Union (DSU) + Sort</td>
+      <td style="padding: 8px">Min-Heap Priority Queue / Matrix</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Sparse Graph Time (`E ~ V`)**</td>
-      <td style="padding: 8px;">`O(E \log V)` (Exceptional)</td>
-      <td style="padding: 8px;">`O(E \log V)`</td>
+      <td style="padding: 8px"><b>Sparse Graph Time (`E ~ V`)</b></td>
+      <td style="padding: 8px">`O(E \log V)` (Exceptional)</td>
+      <td style="padding: 8px">`O(E \log V)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Dense Graph Time (`E ~ V²`)**</td>
-      <td style="padding: 8px;">`O(V² \log V)`</td>
-      <td style="padding: 8px;">`O(V²)` via Matrix (Optimal)</td>
+      <td style="padding: 8px"><b>Dense Graph Time (`E ~ V²`)</b></td>
+      <td style="padding: 8px">`O(V² \log V)`</td>
+      <td style="padding: 8px">`O(V²)` via Matrix (Optimal)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Graph Representation**</td>
-      <td style="padding: 8px;">Flat Edge List</td>
-      <td style="padding: 8px;">Adjacency List / Matrix</td>
+      <td style="padding: 8px"><b>Graph Representation</b></td>
+      <td style="padding: 8px">Flat Edge List</td>
+      <td style="padding: 8px">Adjacency List / Matrix</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Disconnected Graphs**</td>
-      <td style="padding: 8px;">Automatic Minimum Spanning Forest</td>
-      <td style="padding: 8px;">Requires outer component loop</td>
+      <td style="padding: 8px"><b>Disconnected Graphs</b></td>
+      <td style="padding: 8px">Automatic Minimum Spanning Forest</td>
+      <td style="padding: 8px">Requires outer component loop</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Parallelization**</td>
-      <td style="padding: 8px;">High (Parallel QuickSort)</td>
-      <td style="padding: 8px;">Low (Strictly sequential vertex absorption)</td>
+      <td style="padding: 8px"><b>Parallelization</b></td>
+      <td style="padding: 8px">High (Parallel QuickSort)</td>
+      <td style="padding: 8px">Low (Strictly sequential vertex absorption)</td>
     </tr>
   </tbody>
 </table>
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Decision Tree for Minimum Spanning Tree algorithm selection:
 
 ```mermaid
 flowchart TD
     Start["Minimum Spanning Tree (MST) Problem"] --> DensityCheck{"Graph Density?"}
-    
+
     DensityCheck -->|"Sparse Graph (E << V²)"| RepCheck{"Existing Data Format?"}
     DensityCheck -->|"Dense Graph (E ~ V²)"| RunPrimMatrix["Choose PRIM (Adjacency Matrix)<br/>Time: O(V²)"]
-    
+
     RepCheck -->|"Flat Edge List / Disconnected Forest"| RunKruskal["Choose KRUSKAL (DSU)<br/>Time: O(E log V)"]
     RepCheck -->|"Adjacency List In-Memory"| RunPrimPQ["Choose PRIM (Min-Heap)<br/>Time: O((V + E) log V)"]
 ```
 
 **C++ Side-by-Side Benchmark Test Suite:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -180,7 +180,7 @@ int main() {
 }
 ```
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Engineering heuristics:
 

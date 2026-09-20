@@ -49,25 +49,6 @@ describe('TI-01: Integration - App Routing, Theme & Localization', () => {
     expect(screen.getAllByText(/TAN HUYNH/i).length).toBeGreaterThan(0);
   });
 
-  it('should toggle theme between dark and light, syncing data-theme attribute and localStorage', () => {
-    render(<App />);
-
-    const themeToggleButtons = screen.getAllByLabelText(/toggle theme/i);
-    expect(themeToggleButtons.length).toBeGreaterThan(0);
-
-    const initialTheme = document.documentElement.getAttribute('data-theme');
-
-    // Click theme toggle
-    fireEvent.click(themeToggleButtons[0]);
-
-    const newTheme = document.documentElement.getAttribute('data-theme');
-    expect(newTheme).not.toBe(initialTheme);
-    expect(localStorage.getItem('app-theme')).toBe(newTheme);
-
-    // Toggle back
-    fireEvent.click(themeToggleButtons[0]);
-    expect(document.documentElement.getAttribute('data-theme')).toBe(initialTheme);
-  });
 
   it('should toggle language between EN and VI, updating document lang attribute and translated text', () => {
     render(<App />);

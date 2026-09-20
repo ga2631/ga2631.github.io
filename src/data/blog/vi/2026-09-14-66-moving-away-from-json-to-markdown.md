@@ -85,24 +85,24 @@ Mọi quyết định kiến trúc đều là sự đánh đổi (Trade-offs). D
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Tốc độ tải trang chi tiết</td>
-      <td style="padding: 8px;">Chậm (Phải parse cục data lớn)</td>
-      <td style="padding: 8px;">Cực nhanh (HTML render sẵn)</td>
+      <td style="padding: 8px"><b>Tốc độ tải trang chi tiết</b></td>
+      <td style="padding: 8px">Chậm (Phải parse cục data lớn)</td>
+      <td style="padding: 8px">Cực nhanh (HTML render sẵn)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Chi phí bảo trì Content</td>
-      <td style="padding: 8px;">Rất khó (Sửa lỗi syntax JSON)</td>
-      <td style="padding: 8px;">Rất dễ (Git Version Control, IDE support)</td>
+      <td style="padding: 8px"><b>Chi phí bảo trì Content</b></td>
+      <td style="padding: 8px">Rất khó (Sửa lỗi syntax JSON)</td>
+      <td style="padding: 8px">Rất dễ (Git Version Control, IDE support)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Thời gian Build (CI/CD)</td>
-      <td style="padding: 8px;">Nhanh (Chỉ copy file tĩnh)</td>
-      <td style="padding: 8px;">Tăng dần theo số lượng bài viết (Cần compile MD sang HTML)</td>
+      <td style="padding: 8px"><b>Thời gian Build (CI/CD)</b></td>
+      <td style="padding: 8px">Nhanh (Chỉ copy file tĩnh)</td>
+      <td style="padding: 8px">Tăng dần theo số lượng bài viết (Cần compile MD sang HTML)</td>
     </tr>
     <tr>
-      <td style="padding: 8px; font-weight: bold;">Tính năng động (Comments)</td>
-      <td style="padding: 8px;">Có thể tự chế qua API</td>
-      <td style="padding: 8px;">Phải dựa vào 3rd party (Giscus, Utterances)</td>
+      <td style="padding: 8px"><b>Tính năng động (Comments)</b></td>
+      <td style="padding: 8px">Có thể tự chế qua API</td>
+      <td style="padding: 8px">Phải dựa vào 3rd party (Giscus, Utterances)</td>
     </tr>
   </tbody>
 </table>

@@ -17,7 +17,7 @@ tags:
   - "Architecture"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong kỹ thuật phần mềm, việc lựa chọn sai thuật toán tìm đường đi ngắn nhất có thể dẫn đến hậu quả nghiêm trọng: Chương trình chạy chậm hàng nghìn lần (Time Limit Exceeded), tràn bộ nhớ (Out of Memory), hoặc sai lệch logic hoàn toàn khi gặp dữ liệu biên (như trọng số âm gây vòng lặp vô tận).
 
@@ -29,7 +29,7 @@ Ba trụ cột kinh điển trong bài toán tìm đường đi ngắn nhất g�
 
 Bài viết này thiết lập một khung so sánh chuẩn xác, định lượng và cung cấp Cây quyết định trực quan giúp các kỹ sư kiến trúc hệ thống đưa ra quyết định tối ưu.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án thực tế:
 
@@ -37,7 +37,7 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
 - **Dùng Bellman-Ford trên bản đồ giao thông khổng lồ:** Với mạng lưới đường bộ có hàng triệu nút, Bellman-Ford mất hàng giờ để xử lý trong khi Dijkstra với Min-Heap giải quyết chỉ trong vài mili-giây.
 - **Chạy Dijkstra V lần trên đồ thị dày thay vì Floyd-Warshall:** Gặp chi phí overhead quản lý hàng đợi ưu tiên và phân mảnh bộ nhớ lớn hơn nhiều so với thao tác duyệt ma trận tuần tự `O(V³)` có độ tối ưu hóa phần cứng cao.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **Ma trận So sánh Đa chiều (Comparative Architecture Matrix):**
 
@@ -52,64 +52,64 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Phạm vi bài toán**</td>
-      <td style="padding: 8px;">Một nguồn (Single-Source)</td>
-      <td style="padding: 8px;">Một nguồn (Single-Source)</td>
-      <td style="padding: 8px;">Mọi cặp đỉnh (All-Pairs)</td>
+      <td style="padding: 8px"><b>Phạm vi bài toán</b></td>
+      <td style="padding: 8px">Một nguồn (Single-Source)</td>
+      <td style="padding: 8px">Một nguồn (Single-Source)</td>
+      <td style="padding: 8px">Mọi cặp đỉnh (All-Pairs)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp Thời gian**</td>
-      <td style="padding: 8px;">`O((V + E) \log V)`</td>
-      <td style="padding: 8px;">`O(V x E)` (Best: `O(E)`)</td>
-      <td style="padding: 8px;">`Θ(V³)`</td>
+      <td style="padding: 8px"><b>Độ phức tạp Thời gian</b></td>
+      <td style="padding: 8px">`O((V + E) \log V)`</td>
+      <td style="padding: 8px">`O(V x E)` (Best: `O(E)`)</td>
+      <td style="padding: 8px">`Θ(V³)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp Không gian**</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V²)`</td>
+      <td style="padding: 8px"><b>Độ phức tạp Không gian</b></td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V²)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Trọng số cạnh âm**</td>
-      <td style="padding: 8px;">KHÔNG hỗ trợ</td>
-      <td style="padding: 8px;">HỖ TRỢ an toàn</td>
-      <td style="padding: 8px;">HỖ TRỢ an toàn</td>
+      <td style="padding: 8px"><b>Trọng số cạnh âm</b></td>
+      <td style="padding: 8px">KHÔNG hỗ trợ</td>
+      <td style="padding: 8px">HỖ TRỢ an toàn</td>
+      <td style="padding: 8px">HỖ TRỢ an toàn</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Phát hiện Chu trình âm**</td>
-      <td style="padding: 8px;">KHÔNG hỗ trợ</td>
-      <td style="padding: 8px;">CÓ (ở lượt duyệt V)</td>
-      <td style="padding: 8px;">CÓ (`dist[i][i] < 0`)</td>
+      <td style="padding: 8px"><b>Phát hiện Chu trình âm</b></td>
+      <td style="padding: 8px">KHÔNG hỗ trợ</td>
+      <td style="padding: 8px">CÓ (ở lượt duyệt V)</td>
+      <td style="padding: 8px">CÓ (`dist[i][i] < 0`)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cấu trúc Dữ liệu**</td>
-      <td style="padding: 8px;">Min-Heap + Adjacency List</td>
-      <td style="padding: 8px;">Edge List (Mảng cạnh)</td>
-      <td style="padding: 8px;">2D Matrix (Ma trận kề)</td>
+      <td style="padding: 8px"><b>Cấu trúc Dữ liệu</b></td>
+      <td style="padding: 8px">Min-Heap + Adjacency List</td>
+      <td style="padding: 8px">Edge List (Mảng cạnh)</td>
+      <td style="padding: 8px">2D Matrix (Ma trận kề)</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Giao thức / Ứng dụng**</td>
-      <td style="padding: 8px;">OSPF, Google Maps, GPS</td>
-      <td style="padding: 8px;">RIP, Currency Arbitrage</td>
-      <td style="padding: 8px;">Transitive Closure, Logistics</td>
+      <td style="padding: 8px"><b>Giao thức / Ứng dụng</b></td>
+      <td style="padding: 8px">OSPF, Google Maps, GPS</td>
+      <td style="padding: 8px">RIP, Currency Arbitrage</td>
+      <td style="padding: 8px">Transitive Closure, Logistics</td>
     </tr>
   </tbody>
 </table>
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Cây quyết định (Decision Tree) giúp kỹ sư lựa chọn thuật toán chuẩn mực theo bài toán:
 
 ```mermaid
 flowchart TD
     Start["Yêu Cầu Bài Toán Đường Đi Ngắn Nhất"] --> ScopeCheck{"Phạm vi cần tìm?"}
-    
+
     ScopeCheck -->|"Một nguồn duy nhất (Single Source)"| WeightCheck{"Đồ thị có cạnh mang trọng số âm?"}
     ScopeCheck -->|"Mọi cặp đỉnh (All Pairs)"| GraphSize{"Số lượng đỉnh V?"}
-    
+
     WeightCheck -->|"Không (Trọng số >= 0)"| RunDijkstra["Chọn DIJKSTRA (Min-Heap)<br/>Độ phức tạp: O((V + E) log V)"]
     WeightCheck -->|"Có cạnh âm / Bắt chu trình âm"| RunBellman["Chọn BELLMAN-FORD<br/>Độ phức tạp: O(V * E)"]
-    
+
     GraphSize -->|"V <= 500 (Vừa và nhỏ)"| RunFloyd["Chọn FLOYD-WARSHALL<br/>Độ phức tạp: O(V³), Bộ nhớ: O(V²)"]
     GraphSize -->|"V > 500 và Đồ thị thưa"| RunV_Dijkstra["Chạy DIJKSTRA V lần<br/>Độ phức tạp: O(V(V+E) log V)"]
     GraphSize -->|"V > 500 và Có cạnh âm"| RunJohnson["Thuật toán Johnson<br/>Độ phức tạp: O(V² log V + VE)"]
@@ -117,7 +117,7 @@ flowchart TD
 
 **Bộ kiểm thử Benchmark tích hợp C++ (Đo đạc và xác thực 3 thuật toán trên cùng đồ thị):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -215,7 +215,7 @@ int main() {
 }
 ```
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Tổng kết chiến lược ứng dụng cho kỹ sư phần mềm:
 

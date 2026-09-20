@@ -17,7 +17,7 @@ tags:
   - "Architecture"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong bài toán xây dựng Cây khung nhỏ nhất (MST), hai giải thuật kinh điển **Kruskal** và **Prim** cùng mang lại kết quả tối ưu toàn cục như nhau nhưng vận hành dựa trên hai mô hình kiến trúc hoàn toàn đối lập:
 
@@ -26,14 +26,14 @@ Trong bài toán xây dựng Cây khung nhỏ nhất (MST), hai giải thuật k
 
 Việc hiểu rõ ranh giới hiệu năng giữa hai thuật toán dựa trên mật độ đồ thị (Graph Density) là kiến thức cốt tử của kỹ sư hệ thống.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Các sai lầm thực chiến thường gặp:
 
 1. **Dùng Kruskal trên Đồ thị Dày (Dense Graph `E ~ V²`):** Sắp xếp `10⁶` cạnh tốn kém chi phí thời gian và bộ nhớ gấp nhiều lần so với việc chạy Prim bằng ma trận `O(V²)`.
 2. **Dùng Prim trên Đồ thị Không Liên thông:** Prim chỉ tìm được cây khung của thành phần liên thông chứa đỉnh xuất phát, trong khi Kruskal tự động tìm ra **Rừng khung nhỏ nhất (Minimum Spanning Forest)** cho toàn bộ đồ thị mà không cần sửa đổi mã nguồn.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **Bảng Ma trận So sánh Toàn diện giữa Kruskal và Prim:**
 
@@ -47,61 +47,61 @@ Các sai lầm thực chiến thường gặp:
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Triết lý thiết kế**</td>
-      <td style="padding: 8px;">Tham lam trên Cạnh (Edge-Centric)</td>
-      <td style="padding: 8px;">Tham lam trên Đỉnh (Vertex-Centric)</td>
+      <td style="padding: 8px"><b>Triết lý thiết kế</b></td>
+      <td style="padding: 8px">Tham lam trên Cạnh (Edge-Centric)</td>
+      <td style="padding: 8px">Tham lam trên Đỉnh (Vertex-Centric)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cấu trúc dữ liệu chính**</td>
-      <td style="padding: 8px;">Disjoint Set Union (DSU) + Sort</td>
-      <td style="padding: 8px;">Min-Heap Priority Queue / Ma trận</td>
+      <td style="padding: 8px"><b>Cấu trúc dữ liệu chính</b></td>
+      <td style="padding: 8px">Disjoint Set Union (DSU) + Sort</td>
+      <td style="padding: 8px">Min-Heap Priority Queue / Ma trận</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp (Đồ thị thưa)**</td>
-      <td style="padding: 8px;">`O(E \log V)` (Vượt trội)</td>
-      <td style="padding: 8px;">`O(E \log V)`</td>
+      <td style="padding: 8px"><b>Độ phức tạp (Đồ thị thưa)</b></td>
+      <td style="padding: 8px">`O(E \log V)` (Vượt trội)</td>
+      <td style="padding: 8px">`O(E \log V)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp (Đồ thị dày)**</td>
-      <td style="padding: 8px;">`O(V² \log V)` (Bị chậm do sort)</td>
-      <td style="padding: 8px;">`O(V²)` với ma trận (Tối ưu tuyệt đối)</td>
+      <td style="padding: 8px"><b>Độ phức tạp (Đồ thị dày)</b></td>
+      <td style="padding: 8px">`O(V² \log V)` (Bị chậm do sort)</td>
+      <td style="padding: 8px">`O(V²)` với ma trận (Tối ưu tuyệt đối)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Biểu diễn đồ thị**</td>
-      <td style="padding: 8px;">Danh sách cạnh rời rạc (Edge List)</td>
-      <td style="padding: 8px;">Danh sách kề hoặc Ma trận kề</td>
+      <td style="padding: 8px"><b>Biểu diễn đồ thị</b></td>
+      <td style="padding: 8px">Danh sách cạnh rời rạc (Edge List)</td>
+      <td style="padding: 8px">Danh sách kề hoặc Ma trận kề</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Đồ thị không liên thông**</td>
-      <td style="padding: 8px;">Tự động sinh Rừng khung (MSF)</td>
-      <td style="padding: 8px;">Cần vòng lặp ngoài duyệt từng thành phần</td>
+      <td style="padding: 8px"><b>Đồ thị không liên thông</b></td>
+      <td style="padding: 8px">Tự động sinh Rừng khung (MSF)</td>
+      <td style="padding: 8px">Cần vòng lặp ngoài duyệt từng thành phần</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Khả năng tính toán song song**</td>
-      <td style="padding: 8px;">Dễ song song hóa bước Sort</td>
-      <td style="padding: 8px;">Tuần tự theo từng đỉnh kết nạp</td>
+      <td style="padding: 8px"><b>Khả năng tính toán song song</b></td>
+      <td style="padding: 8px">Dễ song song hóa bước Sort</td>
+      <td style="padding: 8px">Tuần tự theo từng đỉnh kết nạp</td>
     </tr>
   </tbody>
 </table>
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Cây quyết định lựa chọn thuật toán Cây khung nhỏ nhất:
 
 ```mermaid
 flowchart TD
     Start["Yêu Cầu Tìm Cây Khung Nhỏ Nhất (MST)"] --> DensityCheck{"Mật độ đồ thị (Graph Density)?"}
-    
+
     DensityCheck -->|"Đồ thị thưa (E << V²)"| RepCheck{"Dữ liệu đồ thị sẵn có ở dạng nào?"}
     DensityCheck -->|"Đồ thị dày (E ~ V²)"| RunPrimMatrix["Chọn PRIM (Ma trận kề)<br/>Độ phức tạp: O(V²)"]
-    
+
     RepCheck -->|"Danh sách cạnh rời rạc / Rừng khung"| RunKruskal["Chọn KRUSKAL (DSU)<br/>Độ phức tạp: O(E log V)"]
     RepCheck -->|"Danh sách kề sẵn có"| RunPrimPQ["Chọn PRIM (Min-Heap)<br/>Độ phức tạp: O((V + E) log V)"]
 ```
 
 **Mã nguồn C++ thực thi kiểm thử so sánh Kruskal vs Prim:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -181,7 +181,7 @@ int main() {
 }
 ```
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Quy tắc ghi nhớ nhanh cho kỹ sư phần mềm:
 

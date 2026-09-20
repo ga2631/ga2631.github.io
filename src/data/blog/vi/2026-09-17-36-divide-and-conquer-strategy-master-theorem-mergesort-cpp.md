@@ -16,19 +16,19 @@ tags:
   - "Master Theorem"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Khi đối mặt với các bài toán có quy mô dữ liệu khổng lồ (hàng triệu đến hàng tỷ phần tử), việc xử lý trực tiếp toàn khối dữ liệu thường dẫn đến các giải thuật bậc hai `O(N²)` hoặc hàm mũ. Chiến lược **Chia để trị (Divide and Conquer - D&C)** là một trong những mô hình thiết kế thuật toán quyền năng nhất, dựa trên triết lý phân rã bài toán lớn thành các bài toán con độc lập có cùng cấu trúc nhưng quy mô nhỏ hơn.
 
 Một bài toán mẫu mực cho chiến lược này là **Sắp xếp mảng kích thước lớn (Large-Scale Sorting)**: Cho một mảng gồm `N` phần tử chưa có thứ tự, hãy sắp xếp mảng theo thứ tự không giảm sao cho thời gian thực thi trong mọi kịch bản đều bị chặn trên bởi `O(N \log N)` và đảm bảo _tính ổn định (Stability)_ - bảo toàn thứ tự ban đầu của các phần tử có giá trị tương đương.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Các thuật toán sắp xếp cơ bản như Bubble Sort, Selection Sort hay Insertion Sort chỉ thao tác lân cận từng phần tử, dẫn đến chi phí thời gian `O(N²)`. Khi `N = 10⁶`, `N² = 10¹²` phép tính, tiêu tốn hàng nghìn giây xử lý trên CPU hiện đại.
 
 Nếu ta chỉ đơn thuần chia nhỏ mảng mà không có chiến lược kết hợp hiệu quả, thời gian xử lý vẫn không được cải thiện. John von Neumann vào năm 1945 đã đề xuất thuật toán **MergeSort**: Chia đôi mảng thành 2 nửa bằng nhau, sắp xếp đệ quy từng nửa, rồi hợp nhất (Merge) hai dãy đã có thứ tự lại thành một dãy hoàn chỉnh chỉ với chi phí tuyến tính `O(N)`.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Chiến lược Chia để trị luôn tuân thủ **3 giai đoạn chuẩn mực**:
 
@@ -44,7 +44,7 @@ Hầu hết các hệ thức truy hồi dạng Chia để trị đều có dạn
 - **Trường hợp 2 (Chi phí phân bổ đều mọi tầng):** Nếu `d = log_b(a)` &rarr; `T(N) = Θ(Nᵈ log N)`. Với MergeSort: `a = 2, b = 2, d = 1` &rarr; `log_2(2) = 1 = d` &rarr; `T(N) = Θ(N log N)`.
 - **Trường hợp 3 (Chi phí tập trung ở gốc):** Nếu `d > log_b(a)` &rarr; `T(N) = Θ(f(N))`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cây phân rã đệ quy (Divide) và quá trình hợp nhất (Combine) của MergeSort:
 
@@ -88,7 +88,7 @@ graph TD
 
 **Mã nguồn C++ hoàn chỉnh (MergeSort chuẩn hóa với mảng đệm):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 
@@ -163,30 +163,18 @@ int main() {
 - _Input:_ `data = {38, 27, 43, 3, 9, 82, 10}` (`N = 7`).
 - _Tầng chia 1:_ `left=0, right=6, mid=3` &rarr; Nửa trái `[0..3] = {38, 27, 43, 3}`, Nửa phải `[4..6] = {9, 82, 10}`.
 - _Xử lý nửa trái:_
-  <ul>
-  Chia `[0..3]` thành `[0..1]={38, 27}` và `[2..3]={43, 3}`.
-- Hợp nhất `{38}` và `{27}` &rarr; `{27, 38}`.
-- Hợp nhất `{43}` và `{3}` &rarr; `{3, 43}`.
-- Hợp nhất `{27, 38}` và `{3, 43}`: So sánh 2 con trỏ &rarr; `{3, 27, 38, 43}`.
+  - Chia `[0..3]` thành `[0..1]={38, 27}` và `[2..3]={43, 3}`.
+  - Hợp nhất `{38}` và `{27}` &rarr; `{27, 38}`.
+  - Hợp nhất `{43}` và `{3}` &rarr; `{3, 43}`.
+  - Hợp nhất `{27, 38}` và `{3, 43}`: So sánh 2 con trỏ &rarr; `{3, 27, 38, 43}`.
+- *Xử lý nửa phải:*
+  - Chia `[4..6]` thành `[4..5]={9, 82}` và `[6..6]={10}`.
+  - Hợp nhất `{9}` và `{82}` &rarr; `{9, 82}`.
+  - Hợp nhất `{9, 82}` và `{10}` &rarr; `{9, 10, 82}`.
+- *Hợp nhất tầng gốc:* `merge({3, 27, 38, 43}, {9, 10, 82})`:
+  - 3 &lt; 9 &rarr; `[3]`; 27 &gt; 9 &rarr; `[3, 9]`; 27 &gt; 10 &rarr; `[3, 9, 10]`; 27 &lt; 82 &rarr; `[3, 9, 10, 27]`; 38 &lt; 82 &rarr; `[3, 9, 10, 27, 38]`; 43 &lt; 82 &rarr; `[3, 9, 10, 27, 38, 43]`; Chép phần tử còn lại 82 &rarr; Hoàn tất mảng sắp xếp trong đúng `O(N log N)`.
 
-</li>
-<li>*Xử lý nửa phải:*
-
-
-- Chia `[4..6]` thành `[4..5]={9, 82}` và `[6..6]={10}`.
-- Hợp nhất `{9}` và `{82}` &rarr; `{9, 82}`.
-- Hợp nhất `{9, 82}` và `{10}` &rarr; `{9, 10, 82}`.
-
-</li>
-<li>*Hợp nhất tầng gốc:* `merge({3, 27, 38, 43}, {9, 10, 82})`:
-
-
-- 3 &lt; 9 &rarr; `[3]`; 27 &gt; 9 &rarr; `[3, 9]`; 27 &gt; 10 &rarr; `[3, 9, 10]`; 27 &lt; 82 &rarr; `[3, 9, 10, 27]`; 38 &lt; 82 &rarr; `[3, 9, 10, 27, 38]`; 43 &lt; 82 &rarr; `[3, 9, 10, 27, 38, 43]`; Chép phần tử còn lại 82 &rarr; Hoàn tất mảng sắp xếp trong đúng `O(N log N)`.
-
-</li>
-</ul>
-
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
@@ -194,11 +182,7 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Độ phức tạp Không gian (Space Complexity):** `O(N)` bộ nhớ phụ trợ (Auxiliary Space) dành cho mảng đệm `temp` và `O(log N)` không gian Call Stack cho các khung đệ quy.
 - **Tính ổn định (Stability):** Đảm bảo tuyệt đối (Stable Sort) nhờ điều kiện so sánh `arr[i] <= arr[j]` trong vòng lặp `merge`.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Sắp xếp ngoài (External Sorting):** Sắp xếp các tệp dữ liệu kích thước hàng Terabyte vượt quá dung lượng RAM vật lý (nguyên lý của giai đoạn Shuffle/Sort trong Apache Spark và Hadoop MapReduce).
-- **Thuật toán Biến đổi Fourier Nhanh (FFT - Fast Fourier Transform):** Phân tích phổ tín hiệu trong viễn thông số và nén âm thanh MP3.
-- **Thuật toán Strassen:** Nhân ma trận nhanh trong đồ họa máy tính và mạng nơ-ron học sâu.
-- **Hình học tính toán (Computational Geometry):** Tìm cặp điểm gần nhau nhất (Closest Pair of Points) trong không gian 2D/3D với chi phí `O(N log N)`.
-
-</li>
-</ul>
+  - **Sắp xếp ngoài (External Sorting):** Sắp xếp các tệp dữ liệu kích thước hàng Terabyte vượt quá dung lượng RAM vật lý (nguyên lý của giai đoạn Shuffle/Sort trong Apache Spark và Hadoop MapReduce).
+  - **Thuật toán Biến đổi Fourier Nhanh (FFT - Fast Fourier Transform):** Phân tích phổ tín hiệu trong viễn thông số và nén âm thanh MP3.
+  - **Thuật toán Strassen:** Nhân ma trận nhanh trong đồ họa máy tính và mạng nơ-ron học sâu.
+  - **Hình học tính toán (Computational Geometry):** Tìm cặp điểm gần nhau nhất (Closest Pair of Points) trong không gian 2D/3D với chi phí `O(N log N)`.

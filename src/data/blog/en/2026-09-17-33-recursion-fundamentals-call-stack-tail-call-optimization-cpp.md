@@ -16,31 +16,30 @@ tags:
   - "Divide and Conquer"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 Complex hierarchical problems (binary tree traversals, directory tree walking, Backtracking searches, Divide and Conquer algorithms) are notoriously difficult to formulate using flat iterative loops. Problem statement: How can we solve a macro problem by decomposing it into *smaller subproblems of identical structure*?
 
 Recursion is the foundational programming paradigm where a function calls itself repeatedly until reaching a well-defined base termination state.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Common recursion pitfalls:
 
 - Missing or unreachable Base Cases &rarr; Unbounded recursive dispatch triggering catastrophic **Call Stack Overflow crashes**.
 - Overlapping subproblem recalculation (e.g. naive Fibonacci) causing exponential `O(2ᴺ)` time explosion.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Recursion invariants and Call Stack optimization:
 
 1. **Two Invariant Components of Recursive Functions:**
-
-- *Base Case:* The non-recursive boundary that returns an explicit result immediately without further function dispatch.
-- *Recursive Step:* Calling the function with strictly narrowed arguments moving closer to the Base Case.
+  - *Base Case:* The non-recursive boundary that returns an explicit result immediately without further function dispatch.
+  - *Recursive Step:* Calling the function with strictly narrowed arguments moving closer to the Base Case.
 2. **Call Stack Frame Lifecycle:** Each invocation allocates an active Stack Frame (holding parameters, local variables, return pointers). Frames are popped sequentially upon unwinding.
 3. **Tail Call Optimization (TCO):** When the recursive invocation is the *final operation* of the function with zero deferred computations, modern C++ compilers reuse the existing Stack Frame &rarr; Collapsing Auxiliary Space from `O(N)` to strict `O(1)`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing Call Stack Push and Pop frame mechanics during `factorial(3)` execution:
 
@@ -65,7 +64,7 @@ sequenceDiagram
 
 **Standard C++ Implementation:**
 
-```
+```c++
 #include <iostream>
 
 // 1. Traditional Recursion: O(N) Call Stack Depth
@@ -109,7 +108,7 @@ int main() {
 - `N = 1, 	ext{acc} = 6`: Hits Base Case (`N <= 1`) &rarr; Returns `6` directly without frame unwinding delays.
 - *Tracing `fastPower(2, 10)`:* Recursion divides exponent `10 -> 5 -> 2 -> 1 -> 0` &rarr; Completed in 4 invocations rather than 10 iterations.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Metrics Scorecard (Standard Evaluation Framework):**
 

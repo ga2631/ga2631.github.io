@@ -15,13 +15,13 @@ tags:
   - "UI Engineering"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 When building rich catalog or engineering blog interfaces with a 2-column layout (Left Sidebar + Right Content Area), the search and filter controls bar is typically designed to stick at the top of the viewport (`position: sticky; top: 16px;`) so users can filter by category or tag at any moment.
 
 However, during testing with 20+ articles (scroll depth exceeding 3,000px), an elusive issue emerged: when scrolling past the 15th article, the sticky filter bar drifted upward off-screen instead of staying pinned at the top. This article analyzes the root cause of CSS Sticky containing block containment and provides the definitive layout architecture to fix it.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 The common initial implementation in React web applications:
 
@@ -30,7 +30,7 @@ The common initial implementation in React web applications:
 
 **Why did this fail?** Under the CSS Positioning specification, a `position: sticky` element is bound to the height of its immediate _containing block_ (its parent). As the user scrolls deep into the list, when the scroll offset reaches the bottom boundary of the parent container, the sticky element is pulled away along with the natural document flow.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 To resolve this cleanly without brittle workarounds, I evaluated two strategies:
 
@@ -39,7 +39,7 @@ To resolve this cleanly without brittle workarounds, I evaluated two strategies:
 
 In CSS Grid, children occupy a single grid cell by default. To make the sticky filter bar span across all columns as a full-width header, I apply: `grid-column: 1 / -1;`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Standard implementation in JSX and SCSS:
 
@@ -47,7 +47,7 @@ Standard implementation in JSX and SCSS:
 - **CSS Grid & Sticky Rules:** Assign `grid-column: 1 / -1; position: sticky; top: 16px; z-index: 25;` to `.blog-controls-panel` so it spans across all grid columns and sticks to the top throughout the entire scroll.
 - **Smooth Glassmorphic State:** Leverage `backdrop-filter: blur(16px)` and dynamically toggle the `.is-stuck` shadow class when scrolling past 40px threshold.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Complexity & Performance Analysis:**
 

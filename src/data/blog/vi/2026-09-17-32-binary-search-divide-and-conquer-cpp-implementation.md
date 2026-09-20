@@ -16,32 +16,31 @@ tags:
   - "Data Structures"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Khi khối lượng dữ liệu phình to lên hàng triệu bản ghi (`N = 10⁷`), tìm kiếm tuyến tính với thời gian `O(N)` sẽ làm tê liệt hệ thống. Đề bài đặt ra: Cho một mảng số nguyên `N` phần tử **đã được sắp xếp tăng dần**, hãy tìm chỉ số của giá trị `target` trong thời gian ngắn nhất.
 
 Tìm kiếm Nhị phân (Binary Search) áp dụng mô hình Chia để Trị (Divide and Conquer) để giảm thời gian tìm kiếm từ tuyến tính `O(N)` xuống thang đo logarit `O(log₂ N)`.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận ngây thơ:
 
 - Sử dụng vòng lặp duyệt tuần tự từ đầu mảng `for (int i = 0; i < n; ++i)`.
 - *Lãng phí:* Hoàn toàn bỏ qua thuộc tính vô giá rằng mảng *đã có thứ tự sẵn*, dẫn đến việc phải duyệt qua hàng triệu phần tử vô ích.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Tư duy Chia để Trị và các kỹ thuật cốt lõi của Binary Search:
 
 1. **Loại trừ 50% Không gian sau mỗi bước:** So sánh `arr[mid]` với `target`:
-
-- Nếu `arr[mid] == target`: Tìm thấy ngay lập tức.
-- Nếu `arr[mid] < target`: Toàn bộ nửa trái chắc chắn nhỏ hơn target &rarr; Thu hẹp tìm kiếm về nửa phải `[mid + 1, right]`.
-- Nếu `arr[mid] > target`: Toàn bộ nửa phải chắc chắn lớn hơn &rarr; Thu hẹp về nửa trái `[left, mid - 1]`.
+  - Nếu `arr[mid] == target`: Tìm thấy ngay lập tức.
+  - Nếu `arr[mid] < target`: Toàn bộ nửa trái chắc chắn nhỏ hơn target &rarr; Thu hẹp tìm kiếm về nửa phải `[mid + 1, right]`.
+  - Nếu `arr[mid] > target`: Toàn bộ nửa phải chắc chắn lớn hơn &rarr; Thu hẹp về nửa trái `[left, mid - 1]`.
 2. **Phòng chống Cạm bẫy Tràn số nguyên (Integer Overflow):** Công thức `mid = (left + right) / 2` có thể tràn số nguyên 32-bit có dấu khi `left + right > 2^31 - 1`. *Kỹ thuật chuẩn:* Luôn viết `mid = left + (right - left) / 2`.
 3. **Mở rộng Tìm kiếm Biên (Lower Bound):** Tìm phần tử đầu tiên `>= target`, nền tảng của các chỉ mục cơ sở dữ liệu B-Tree.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Minh họa không gian tìm kiếm bị thu hẹp 50% sau mỗi vòng lặp với `target = 23`:
 
@@ -60,7 +59,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 
@@ -115,7 +114,7 @@ int main() {
 - *Lần lặp 2:* `left = 5`, `right = 9` &rarr; `mid = 5 + (9 - 5) / 2 = 7`. Giá trị `data[7] = 56 > 23` &rarr; `right = mid - 1 = 6`. Loại bỏ 2 phần tử nửa phải.
 - *Lần lặp 3:* `left = 5`, `right = 6` &rarr; `mid = 5 + (6 - 5) / 2 = 5`. Giá trị `data[5] = 23 == 23` &rarr; Khớp chính xác! Trả về chỉ số `5` chỉ sau đúng 3 phép so sánh.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Đánh giá Hiệu năng theo Framework Chuẩn:**
 

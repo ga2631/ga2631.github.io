@@ -16,7 +16,7 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 Linear data structures organize elements sequentially. However, real-world information is intrinsically **Hierarchical** - such as file directory trees, HTML DOM element graphs in web browsers, or decision trees in machine learning.
 
@@ -28,7 +28,7 @@ The preeminent tree structure is the **Binary Search Tree (BST)**: Each node pos
 All keys in Left Subtree < Root Key < All keys in Right Subtree
 ```
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Why does BST outperform Arrays and Linked Lists?
 
@@ -36,7 +36,7 @@ Why does BST outperform Arrays and Linked Lists?
 - Linked List: Fast `O(1)` insertion with known pointer, but sluggish `O(N)` lookup.
 - **BST synthesizes the best of both:** Providing `O(\log N)` Search, Insert, and Delete simultaneously on balanced trees.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 **The 4 Foundational Tree Traversals:**
 
@@ -51,7 +51,7 @@ Why does BST outperform Arrays and Linked Lists?
 - _Case 2 (1 child):_ Splice child directly into parent.
 - _Case 3 (2 children):_ Locate the **In-order Successor** (minimum node in right subtree), copy its value into current node, and recursively delete the successor.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Binary Search Tree structure and In-Order sorted progression:
 
@@ -77,7 +77,7 @@ graph TD
 
 **Complete C++ Implementation: Binary Search Tree with Search, Insert, Delete & Traversals:**
 
-```
+```c++
 #include <iostream>
 #include <queue>
 
@@ -199,7 +199,7 @@ int main() {
 - _In-order:_ Traverses left subtree `[20, 30, 40]` &rarr; Root `50` &rarr; Right subtree `[60, 70, 80]` &rarr; Yields sorted sequence.
 - _Delete 50:_ Successor located at `60` &rarr; Roots becomes `60`, leaf 60 unlinked &rarr; BST invariant fully preserved.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
@@ -207,10 +207,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Worst Case (Degenerate Tree):** `O(N)` (resolved by self-balancing Red-Black trees in `std::map`).
 - **Traversals:** `Θ(N)` time with `O(h)` Call Stack memory.
 - **Real-World Applications:**
-  <ul>
-  **C++ STL std::map / std::set:** Backed by Red-Black Trees guaranteeing `O(\log N)` operations.
-- **Database Indexes (B-Tree / B+ Tree):** Multi-way tree extensions optimizing disk block lookups.
-- **Huffman Compression Coding:** Binary prefix trees generating minimal-length bit encodings.
-
-</li>
-</ul>
+  - **C++ STL std::map / std::set:** Backed by Red-Black Trees guaranteeing `O(\log N)` operations.
+  - **Database Indexes (B-Tree / B+ Tree):** Multi-way tree extensions optimizing disk block lookups.
+  - **Huffman Compression Coding:** Binary prefix trees generating minimal-length bit encodings.

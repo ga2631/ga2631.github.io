@@ -18,7 +18,7 @@ tags:
   - "Data Engineering"
 ---
 
-## 1. Business Context & Data Requirements
+## Business Context & Data Requirements
 
 In modern mission-critical user applications—such as E-Commerce platforms, Digital Banking cores, Payment Gateways, and Ride-Hailing networks—the **Online Transaction Processing (OLTP) Database** represents the heartbeat of the enterprise.
 
@@ -32,7 +32,7 @@ Consider the uncompromising engineering and business demands placed upon product
 
 OLTP engines are tuned for single-row indexed primary-key CRUD operations. Executing analytical aggregate queries (e.g., `COUNT DISTINCT`, multi-table analytical joins across tens of millions of rows) directly on primary transactional instances exhausts I/O bandwidth, triggers table locks, saturates connection pools, and risks customer-facing checkout outages.
 
-## 2. Data Modeling & Schema Design
+## Data Modeling & Schema Design
 
 To strike an optimal balance between absolute ACID integrity and blazing write throughput, data and system engineers must master three fundamental design pillars:
 
@@ -57,24 +57,24 @@ The primary mandate of OLTP schema design is normalizing to **3NF (Third Normal 
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**1NF (First Normal Form)**</td>
-      <td style="padding: 8px;">Every column holds strictly atomic, scalar values (no arrays or repeating groups)</td>
-      <td style="padding: 8px;">Extract multi-valued phone numbers into dedicated relation rows</td>
+      <td style="padding: 8px"><b>1NF (First Normal Form)</b></td>
+      <td style="padding: 8px">Every column holds strictly atomic, scalar values (no arrays or repeating groups)</td>
+      <td style="padding: 8px">Extract multi-valued phone numbers into dedicated relation rows</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**2NF (Second Normal Form)**</td>
-      <td style="padding: 8px;">Achieves 1NF and removes partial key dependencies in composite primary keys</td>
-      <td style="padding: 8px;">Ensure non-key attributes depend on the complete compound key</td>
+      <td style="padding: 8px"><b>2NF (Second Normal Form)</b></td>
+      <td style="padding: 8px">Achieves 1NF and removes partial key dependencies in composite primary keys</td>
+      <td style="padding: 8px">Ensure non-key attributes depend on the complete compound key</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**3NF (Third Normal Form)**</td>
-      <td style="padding: 8px;">Achieves 2NF and eliminates all transitive dependencies between non-key attributes</td>
-      <td style="padding: 8px;">Decouple City/Postal metadata from core customer profile tables</td>
+      <td style="padding: 8px"><b>3NF (Third Normal Form)</b></td>
+      <td style="padding: 8px">Achieves 2NF and eliminates all transitive dependencies between non-key attributes</td>
+      <td style="padding: 8px">Decouple City/Postal metadata from core customer profile tables</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Controlled Denormalization**</td>
-      <td style="padding: 8px;">Deliberately snapshots immutable context (e.g., `unit_price_at_purchase` inside `order_items`)</td>
-      <td style="padding: 8px;">Preserves historical transaction values when base product catalog prices evolve</td>
+      <td style="padding: 8px"><b>Controlled Denormalization</b></td>
+      <td style="padding: 8px">Deliberately snapshots immutable context (e.g., `unit_price_at_purchase` inside `order_items`)</td>
+      <td style="padding: 8px">Preserves historical transaction values when base product catalog prices evolve</td>
     </tr>
   </tbody>
 </table>
@@ -116,7 +116,7 @@ flowchart TD
     end
 ```
 
-## 3. Pipeline Construction & Processing Logic
+## Pipeline Construction & Processing Logic
 
 To demonstrate production OLTP concurrency control, below is a fully normalized 3NF schema implementation paired with Python transaction controllers solving high-concurrency inventory reservation without race conditions.
 
@@ -234,7 +234,7 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
     return False # Retry threshold exhausted
 ```
 
-## 4. Data Validation & Performance Tuning
+## Data Validation & Performance Tuning
 
 Operating OLTP databases under sustained tens of thousands of TPS without query degradation requires disciplined physical optimization:
 
@@ -255,40 +255,40 @@ Operating OLTP databases under sustained tens of thousands of TPS without query 
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Concurrency Mechanism</th>
-      <th style="padding: 8px;">Sustained Throughput (TPS)</th>
-      <th style="padding: 8px;">p99 Latency SLA</th>
-      <th style="padding: 8px;">Conflict Abort Rate</th>
+      <th style="padding: 8px">Sustained Throughput (TPS)</th>
+      <th style="padding: 8px">p99 Latency SLA</th>
+      <th style="padding: 8px">Conflict Abort Rate</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Serializable Isolation (Strict SSI)**</td>
-      <td style="padding: 8px;">850 TPS</td>
-      <td style="padding: 8px;">420ms</td>
-      <td style="padding: 8px;">High (35% Serialization Aborts)</td>
+      <td style="padding: 8px"><b>Serializable Isolation (Strict SSI)</b></td>
+      <td style="padding: 8px">850 TPS</td>
+      <td style="padding: 8px">420ms</td>
+      <td style="padding: 8px">High (35% Serialization Aborts)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Pessimistic Locking (SELECT FOR UPDATE)**</td>
-      <td style="padding: 8px;">4,200 TPS</td>
-      <td style="padding: 8px;">48ms</td>
-      <td style="padding: 8px;">0.00% (Absolute safety, serialized lock queue)</td>
+      <td style="padding: 8px"><b>Pessimistic Locking (SELECT FOR UPDATE)</b></td>
+      <td style="padding: 8px">4,200 TPS</td>
+      <td style="padding: 8px">48ms</td>
+      <td style="padding: 8px">0.00% (Absolute safety, serialized lock queue)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Optimistic Concurrency Control (Version CAS)**</td>
-      <td style="padding: 8px;">6,800 TPS</td>
-      <td style="padding: 8px;">18ms</td>
-      <td style="padding: 8px;">Low (99.8% backoff resolution success)</td>
+      <td style="padding: 8px"><b>Optimistic Concurrency Control (Version CAS)</b></td>
+      <td style="padding: 8px">6,800 TPS</td>
+      <td style="padding: 8px">18ms</td>
+      <td style="padding: 8px">Low (99.8% backoff resolution success)</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Redis In-Memory Token + Async DB Write**</td>
-      <td style="padding: 8px;">**45,000 TPS**</td>
-      <td style="padding: 8px;">**2.1ms**</td>
-      <td style="padding: 8px;">0.00% (Decoupled in-memory stock reservation)</td>
+      <td style="padding: 8px"><b>Redis In-Memory Token + Async DB Write</b></td>
+      <td style="padding: 8px"><b>45,000 TPS</b></td>
+      <td style="padding: 8px"><b>2.1ms</b></td>
+      <td style="padding: 8px">0.00% (Decoupled in-memory stock reservation)</td>
     </tr>
   </tbody>
 </table>
 
-## 5. Summary & Recommendations
+## Summary & Recommendations
 
 OLTP databases form the immutable transactional cornerstone of modern software architecture. Mastering their invariants prevents catastrophic financial and operational losses.
 

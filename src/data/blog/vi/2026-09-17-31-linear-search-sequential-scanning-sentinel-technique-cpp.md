@@ -16,20 +16,20 @@ tags:
   - "Data Structures"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Truy xuất dữ liệu là thao tác xuất hiện nhiều nhất trong mọi ứng dụng phần mềm. Đề bài đặt ra: Cho một danh sách `N` phần tử *chưa được sắp xếp* hoặc một luồng dữ liệu liên kết không hỗ trợ truy xuất ngẫu nhiên (như Single Linked List), hãy tìm vị trí xuất hiện đầu tiên của giá trị `target` hoặc trả về `-1` nếu không tìm thấy.
 
 Tìm kiếm Tuyến tính (Linear Search) là giải pháp tổng quát duy nhất khả thi khi dữ liệu không có bất kỳ cấu trúc bổ trợ hay trật tự sắp xếp nào từ trước.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận tiêu chuẩn (Standard Loop):
 
 - Sử dụng vòng lặp `for (int i = 0; i < n; ++i)` duyệt tuần tự từ đầu đến cuối mảng.
 - *Điểm nghẽn CPU:* Tại mỗi bước lặp, CPU phải thực hiện **2 phép so sánh**: một phép kiểm tra điều kiện biên `i < n` và một phép kiểm tra giá trị `arr[i] == target`. Trên tập dữ liệu lớn, việc kiểm tra biên chiếm tới 50% thời gian thực thi của vòng lặp.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Tối ưu hóa bằng Kỹ thuật Phần tử Lính canh (Sentinel Linear Search):
 
@@ -37,7 +37,7 @@ Tối ưu hóa bằng Kỹ thuật Phần tử Lính canh (Sentinel Linear Searc
 2. **Loại bỏ hoàn toàn phép kiểm tra biên `i < n`:** Vì chắc chắn `target` sẽ xuất hiện ở cuối mảng, vòng lặp `while (arr[i] != target) ++i;` sẽ không bao giờ bị tràn mảng. Số lượng lệnh so sánh của CPU giảm đúng 50%.
 3. **Khôi phục và Xác thực:** Sau khi thoát vòng lặp, khôi phục lại giá trị `arr[n - 1] = last` và kiểm tra xem vị trí `i` tìm thấy là phần tử thật trong mảng hay chính là lính canh.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Minh họa cơ chế duyệt tuần tự và kỹ thuật lính canh trên mảng `[20, 35, 10, 80, 45]` với `target = 10`:
 
@@ -56,7 +56,7 @@ flowchart LR
 
 **Mã nguồn C++ hoàn chỉnh cả 2 phương pháp:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 
@@ -108,7 +108,7 @@ int main() {
 - *Vòng lặp:* `i = 0` (20 != 10) `-> i = 1` (35 != 10) `-> i = 2` (`10 == 10` &rarr; Thoát vòng lặp).
 - *Kiểm tra:* Khôi phục `data[4] = 45`. `i = 2 < 4` `->` Kết luận phần tử nằm tại index `2`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Đánh giá Hiệu năng theo Framework Chuẩn:**
 

@@ -16,33 +16,31 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 Unlike Kruskal's algorithm which aggregates disjoint edges into a forest, Prim's algorithm (originated by Vojtěch Jarník in 1930 and independently Robert Prim in 1957) constructs the Minimum Spanning Tree via **Vertex-Centric Growth**.
 
 Starting from an arbitrary seed node, Prim continuously expands the boundary of a single connected component, absorbing the closest unvisited vertex until all vertices are incorporated.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 A naive implementation scans all unvisited nodes linearly at each step, yielding `O(V²)` runtime.
 
 On dense graphs (where `E ~ V²`), `O(V²)` is asymptotically optimal. However, on sparse graphs (`E ~ V`), linear scanning introduces substantial latency.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Prim's algorithm rests upon the **Cut Property** of graph theory:
 
 1. **The Cut Property:** Partition vertex set `V` into two disjoint sets: Set `S` (vertices currently inside the MST) and set `V \ S` (unvisited vertices). The lightest edge crossing this cut *must belong to the global Minimum Spanning Tree*.
 2. **Frontier Expansion:** Track `inMST[v]` status. Seed with `inMST[0] = true`.
 3. **Min-Heap Acceleration:**
-  
-
-- Store candidate cut-crossing edges in a binary min-heap (`std::priority_queue`).
-- Pop the lightest edge `(u, v, w)`. If `v` is unvisited, mark `inMST[v] = true`, accumulate weight `w`, and enqueue all outgoing edges from `v` to unvisited neighbors.
+  - Store candidate cut-crossing edges in a binary min-heap (`std::priority_queue`).
+  - Pop the lightest edge `(u, v, w)`. If `v` is unvisited, mark `inMST[v] = true`, accumulate weight `w`, and enqueue all outgoing edges from `v` to unvisited neighbors.
 
 Min-Heap optimization slashes sparse graph runtime to `O((V + E) \log V)`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing the Cut Property boundary expansion in Prim's algorithm:
 
@@ -69,7 +67,7 @@ graph TD
 
 **Complete C++ Implementation (Prim's Algorithm with std::priority_queue):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -170,24 +168,16 @@ int main() {
 - *Step 3:* Pops `(w=31, u=4)` &rarr; Settle node 4.
 - *Step 4:* Pops `(w=51, u=2)` &rarr; Settle node 2. Total weight converges to `110`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:**
-  <ul>
-  Binary Min-Heap: `O((V + E) \log V)`.
-- Adjacency Matrix on Dense Graphs (`E ~ V²`): `O(V²)`.
-- Fibonacci Heap (Theoretical): `O(E + V \log V)`.
-
-</li>
-<li>**Space Complexity:** `O(V + E)` for adjacency list and priority queue.</li>
-<li>**Real-World Applications:**
-  
-
-- **Spanning Tree Protocol (STP - IEEE 802.1D):** Preventing bridge loops in Ethernet switched networks.
-- **Approximation of Traveling Salesperson Problem (TSP):** MST-based 2-approximation metric tours.
-- **Multicast Routing Trees:** Distributing single-origin video streams to millions of subscribers.
-
-</li>
-</ul>
+  - Binary Min-Heap: `O((V + E) \log V)`.
+  - Adjacency Matrix on Dense Graphs (`E ~ V²`): `O(V²)`.
+  - Fibonacci Heap (Theoretical): `O(E + V \log V)`.
+- **Space Complexity:** `O(V + E)` for adjacency list and priority queue.
+- **Real-World Applications:**
+  - **Spanning Tree Protocol (STP - IEEE 802.1D):** Preventing bridge loops in Ethernet switched networks.
+  - **Approximation of Traveling Salesperson Problem (TSP):** MST-based 2-approximation metric tours.
+  - **Multicast Routing Trees:** Distributing single-origin video streams to millions of subscribers.

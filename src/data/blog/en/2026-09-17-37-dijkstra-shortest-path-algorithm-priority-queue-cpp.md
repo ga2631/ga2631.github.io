@@ -16,7 +16,7 @@ tags:
   - "Priority Queue"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 The Single-Source Shortest Path (SSSP) problem is foundational to network routing and graph algorithms. Problem statement:
 
@@ -24,20 +24,20 @@ Given a directed or undirected weighted graph `G = (V, E)` with `V` vertices and
 
 Invented in 1956 by Edsger W. Dijkstra, Dijkstra's algorithm remains the premier algorithm for non-negative graph routing.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Standard Breadth-First Search (BFS) computes shortest paths only when all edge weights are uniformly 1. On non-uniform graphs, BFS prematurely marks nodes visited along low-hop but high-weight paths.
 
 Dijkstra's original 1959 formulation performed linear array scanning to extract the minimum distance node, yielding `O(V²)` complexity. On sparse road networks (where `E ~ V`), scanning arrays across millions of vertices introduces excessive latency.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Dijkstra's algorithm relies on the **Greedy Choice Property** and **Edge Relaxation**:
 
 1. **Distance Array & Settled Invariant:** Maintain `dist[v]` initialized to `&infin;`, with `dist[s] = 0`. Once vertex `u` with the minimal unvisited distance is extracted, its distance is finalized and immutable because all remaining path extensions through non-negative edges can only increase cost.
 2. **Edge Relaxation:** For each neighbor `v` of `u`, check if routing through `u` provides a shorter path:
 
-```
+```c++
 if (dist[u] + w(u, v) < dist[v]) {
     dist[v] = dist[u] + w(u, v);
     parent[v] = u; // Track parent for path reconstruction
@@ -48,7 +48,7 @@ if (dist[u] + w(u, v) < dist[v]) {
 
 **Critical Invariant:** Dijkstra fails on graphs containing negative edge weights because future negative edges can invalidate previously settled greedy assumptions.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 State transitions and relaxation progression using Min-Heap priority queue:
 
@@ -71,7 +71,7 @@ flowchart TD
 
 **Complete C++ Implementation (Dijkstra with std::priority_queue and Path Reconstruction):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -170,18 +170,14 @@ int main() {
 - _Step 5:_ Pop `(6, 3)`. Relaxes node 4: `6 + 1 = 7 < 9` &rarr; Updates `dist[4]=7, parent[4]=3`.
 - _Outcome:_ Shortest path to node 4 converges to `7` along route `0 -> 2 -> 1 -> 3 -> 4`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:** `O((V + E) \log V)` utilizing Binary Heap priority queue. Every vertex is extracted once (`V \log V`) and every edge relaxed at most once (`E \log V`).
 - **Space Complexity:** `O(V + E)` to maintain Adjacency List graph representation, distance vectors, and priority queue elements.
 - **Real-World Applications:**
-  <ul>
-  **Digital Maps & Navigation:** Engine powering Google Maps, Apple Maps, and OSRM (coupled with Contraction Hierarchies and A* heuristics).
-- **Internet Protocol Routing:** Open Shortest Path First (OSPF) and IS-IS interior gateway protocols.
-- **Game Engine AI:** Real-time pathfinding on navigation meshes (NavMesh).
-- **Social Graphs:** Calculating degrees of separation and shortest connection chains.
-
-</li>
-</ul>
+  - **Digital Maps & Navigation:** Engine powering Google Maps, Apple Maps, and OSRM (coupled with Contraction Hierarchies and A* heuristics).
+  - **Internet Protocol Routing:** Open Shortest Path First (OSPF) and IS-IS interior gateway protocols.
+  - **Game Engine AI:** Real-time pathfinding on navigation meshes (NavMesh).
+  - **Social Graphs:** Calculating degrees of separation and shortest connection chains.

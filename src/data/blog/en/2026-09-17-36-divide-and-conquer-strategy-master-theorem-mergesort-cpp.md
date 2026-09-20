@@ -16,19 +16,19 @@ tags:
   - "Master Theorem"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 When operating on massive datasets comprising millions or billions of elements, processing monolithic blocks sequentially often triggers quadratic `O(N²)` bottlenecks. The **Divide and Conquer (D&C)** paradigm solves this by recursively decomposing complex problems into smaller, independent subproblems of identical structure.
 
 The classical benchmark is **Large-Scale Array Sorting**: Given an unsorted array of `N` items, rearrange elements in non-decreasing order such that worst-case execution time is strictly bounded by `O(N \log N)` while guaranteeing _Stability_ - preserving the relative input order of equivalent keys.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Elementary sorting algorithms (Bubble, Selection, Insertion) operate locally via adjacent comparisons, requiring `O(N²)` time. At `N = 10⁶`, `N² = 10¹²` operations, taking thousands of CPU seconds.
 
 Arbitrary division without an efficient recombination mechanism provides no asymptotic benefit. In 1945, John von Neumann designed **MergeSort**: Recursively halving the array into symmetric partitions, sorting each recursively, and linearly merging the two sorted subarrays in `O(N)` time.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 The Divide and Conquer lifecycle follows **3 rigid phases**:
 
@@ -44,7 +44,7 @@ Recurrence relations following `T(N) = a x T(N / b) + f(N)` with `f(N) = O(Nᵈ)
 - **Case 2 (Even Distribution):** If `d = log_b(a)` &rarr; `T(N) = Θ(Nᵈ log N)`. For MergeSort: `a = 2, b = 2, d = 1` &rarr; `log_2(2) = 1 = d` &rarr; `T(N) = Θ(N log N)`.
 - **Case 3 (Root Dominant):** If `d > log_b(a)` &rarr; `T(N) = Θ(f(N))`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing MergeSort recursive division tree and linear combine phases:
 
@@ -88,7 +88,7 @@ graph TD
 
 **Standard C++ Implementation (MergeSort with pre-allocated temporary buffer):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 
@@ -157,23 +157,15 @@ int main() {
 - _Input:_ `data = {38, 27, 43, 3, 9, 82, 10}` (`N = 7`).
 - _Division Level 1:_ `mid = 3` &rarr; Left `[0..3] = {38, 27, 43, 3}`, Right `[4..6] = {9, 82, 10}`.
 - _Left Branch:_
-  <ul>
-  Divides to `{38, 27}` and `{43, 3}`.
-- Merges `{38}` & `{27}` &rarr; `{27, 38}`.
-- Merges `{43}` & `{3}` &rarr; `{3, 43}`.
-- Merges `{27, 38}` & `{3, 43}` &rarr; `{3, 27, 38, 43}`.
+  - Divides to `{38, 27}` and `{43, 3}`.
+  - Merges `{38}` & `{27}` &rarr; `{27, 38}`.
+  - Merges `{43}` & `{3}` &rarr; `{3, 43}`.
+  - Merges `{27, 38}` & `{3, 43}` &rarr; `{3, 27, 38, 43}`.
+- *Right Branch:*
+  - Divides to `{9, 82}` and `{10}` &rarr; Merges to `{9, 10, 82}`.
+- *Final Root Merge:* Combines `{3, 27, 38, 43}` and `{9, 10, 82}` into `{3, 9, 10, 27, 38, 43, 82}` in 7 pointer steps.
 
-</li>
-<li>*Right Branch:*
-
-
-- Divides to `{9, 82}` and `{10}` &rarr; Merges to `{9, 10, 82}`.
-
-</li>
-<li>*Final Root Merge:* Combines `{3, 27, 38, 43}` and `{9, 10, 82}` into `{3, 9, 10, 27, 38, 43, 82}` in 7 pointer steps.</li>
-</ul>
-
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
@@ -181,11 +173,7 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Space Complexity:** `O(N)` Auxiliary Space for the temporary buffer plus `O(log N)` Call Stack memory depth.
 - **Stability:** Fully preserved due to the `arr[i] <= arr[j]` comparator during merging.
 - **Real-World Applications:**
-  <ul>
-  **External Sorting:** Processing multi-terabyte log files exceeding physical RAM capacity (underpins MapReduce and Spark shuffle engines).
-- **Fast Fourier Transform (FFT):** Core signal processing for telecommunications and MP3 audio encoding.
-- **Strassen Matrix Multiplication:** Accelerated tensor multiplications in deep learning frameworks.
-- **Computational Geometry:** Closest Pair of Points in 2D/3D spaces in `O(N log N)` time.
-
-</li>
-</ul>
+  - **External Sorting:** Processing multi-terabyte log files exceeding physical RAM capacity (underpins MapReduce and Spark shuffle engines).
+  - **Fast Fourier Transform (FFT):** Core signal processing for telecommunications and MP3 audio encoding.
+  - **Strassen Matrix Multiplication:** Accelerated tensor multiplications in deep learning frameworks.
+  - **Computational Geometry:** Closest Pair of Points in 2D/3D spaces in `O(N log N)` time.

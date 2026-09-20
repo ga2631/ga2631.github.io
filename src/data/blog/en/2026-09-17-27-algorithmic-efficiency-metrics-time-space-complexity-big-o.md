@@ -17,13 +17,13 @@ tags:
   - "Performance"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In software engineering and distributed systems optimization, the pivotal question every engineer must answer before deploying code to Production is: _"How fast does this algorithm execute, and how much computational resources will it consume when user traffic scales by 1,000x?"_.
 
 A classic pitfall among junior developers is relying solely on physical Wall-clock timers via `console.time()` or `System.nanoTime()` to benchmark speed. This empirical approach is fundamentally non-deterministic because physical execution time fluctuates with CPU architecture, operating system load, background threads, and compiler optimizations. Computer science resolves this by introducing a **Standardized Mathematical Evaluation Framework** independent of hardware environments.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Empirical benchmarking pitfalls:
 
@@ -32,22 +32,19 @@ Empirical benchmarking pitfalls:
 
 We require Asymptotic Analysis to mathematically model and predict resource consumption as input size N approaches infinity.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 To rigorously benchmark algorithms across this series, we establish an evaluation model rooted in the **Random Access Machine (RAM) Model of Computation** across three core pillars:
 
 1. **Asymptotic Notation Hierarchy:**
-
-- **Big-O (O):** Mathematical Upper Bound - Represents the worst-case scenario. This is the primary contractual metric for system SLAs.
-- **Big-Omega (Ω):** Mathematical Lower Bound - Represents the best-case theoretical execution limit.
-- **Big-Theta (Θ):** Tight Bound - When upper and lower asymptotic bounds coincide, capturing true average behavior.
-
+  - **Big-O (O):** Mathematical Upper Bound - Represents the worst-case scenario. This is the primary contractual metric for system SLAs.
+  - **Big-Omega (Ω):** Mathematical Lower Bound - Represents the best-case theoretical execution limit.
+  - **Big-Theta (Θ):** Tight Bound - When upper and lower asymptotic bounds coincide, capturing true average behavior.
 2. **Decoupling Time vs Space Complexity:**
+  - **Time Complexity:** Number of primitive machine operations (assignments, comparisons, arithmetic) expressed as a function of input size N.
+  - **Space Complexity (Total Space vs Auxiliary Space):** Total memory consumed during runtime. _Auxiliary Space_ specifically denotes extra temporary memory allocated by the algorithm itself (excluding input storage), encompassing dynamic Heap buffers and recursive Call Stack frames.
 
-- **Time Complexity:** Number of primitive machine operations (assignments, comparisons, arithmetic) expressed as a function of input size N.
-- **Space Complexity (Total Space vs Auxiliary Space):** Total memory consumed during runtime. _Auxiliary Space_ specifically denotes extra temporary memory allocated by the algorithm itself (excluding input storage), encompassing dynamic Heap buffers and recursive Call Stack frames.
-
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Big-O growth hierarchy diagram and system memory allocation dimensions:
 
@@ -81,7 +78,7 @@ flowchart TD
 - **O(N log N) Linearithmic Time:** Divide-and-conquer sorting algorithms like QuickSort, MergeSort, TimSort.
 - **O(N²) Quadratic Time:** Nested loops inspecting all candidate pairs (i, j).
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **The Standardized 5-Point Evaluation Framework for the Series:**
 

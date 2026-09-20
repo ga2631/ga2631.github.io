@@ -18,7 +18,7 @@ tags:
   - "Row-Level Security"
 ---
 
-## 1. Business Context & Data Requirements
+## Business Context & Data Requirements
 
 As enterprise operations expand, a monolithic Enterprise Data Warehouse (EDW) inevitably encounters severe organizational and operational friction:
 
@@ -31,7 +31,7 @@ As enterprise operations expand, a monolithic Enterprise Data Warehouse (EDW) in
 
 A **Data Mart** is a specialized, curated subject-oriented database partition designed specifically for a single department, team, or business process. Its primary mission is delivering _clean, analytics-ready, highly performant dimensional models_ that empower domain analysts with sub-second self-service business intelligence.
 
-## 2. Data Modeling & Schema Design
+## Data Modeling & Schema Design
 
 To design an enduring Data Mart architecture, engineers must master the trade-offs across three primary delivery topologies and choose the appropriate table modeling paradigms.
 
@@ -48,22 +48,22 @@ To design an enduring Data Mart architecture, engineers must master the trade-of
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Dependent Data Mart**</td>
-      <td style="padding: 8px;">Ingested directly from the Central Enterprise Data Warehouse (EDW)</td>
-      <td style="padding: 8px;">Guarantees a Single Source of Truth, absolute metric consistency, strict governance</td>
-      <td style="padding: 8px;">Requires central EDW readiness; higher initial deployment timeline</td>
+      <td style="padding: 8px"><b>Dependent Data Mart</b></td>
+      <td style="padding: 8px">Ingested directly from the Central Enterprise Data Warehouse (EDW)</td>
+      <td style="padding: 8px">Guarantees a Single Source of Truth, absolute metric consistency, strict governance</td>
+      <td style="padding: 8px">Requires central EDW readiness; higher initial deployment timeline</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Independent Data Mart**</td>
-      <td style="padding: 8px;">Fed directly from raw source applications (OLTP, CRM, APIs)</td>
-      <td style="padding: 8px;">Rapid autonomous deployment; solves immediate localized departmental pain points</td>
-      <td style="padding: 8px;">Creates isolated data silos, metric discrepancies, and unmaintainable spaghetti pipelines</td>
+      <td style="padding: 8px"><b>Independent Data Mart</b></td>
+      <td style="padding: 8px">Fed directly from raw source applications (OLTP, CRM, APIs)</td>
+      <td style="padding: 8px">Rapid autonomous deployment; solves immediate localized departmental pain points</td>
+      <td style="padding: 8px">Creates isolated data silos, metric discrepancies, and unmaintainable spaghetti pipelines</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Hybrid Data Mart**</td>
-      <td style="padding: 8px;">Combines central warehouse dimensions with departmental external ad-hoc sources</td>
-      <td style="padding: 8px;">Balances corporate standard governance with departmental speed and agility</td>
-      <td style="padding: 8px;">Requires automated cross-source data reconciliation workflows</td>
+      <td style="padding: 8px"><b>Hybrid Data Mart</b></td>
+      <td style="padding: 8px">Combines central warehouse dimensions with departmental external ad-hoc sources</td>
+      <td style="padding: 8px">Balances corporate standard governance with departmental speed and agility</td>
+      <td style="padding: 8px">Requires automated cross-source data reconciliation workflows</td>
     </tr>
   </tbody>
 </table>
@@ -106,7 +106,7 @@ flowchart TD
 - **Star Schema:** Fact table surrounded by Conformed Dimension tables (e.g., `dim_date`, `dim_customer`). _Ideal when:_ The Data Mart must support varied ad-hoc multi-dimensional slicing and maintain reusable enterprise dimensions.
 - **One Big Table (OBT - Wide Denormalized Table):** Collapses facts and all associated dimension attributes into a single flat table containing 50-200 columns. _Ideal when:_ Powering interactive BI tools (ClickHouse, PowerBI DirectQuery, Apache Superset) where avoiding all runtime JOINs unlocks instantaneous sub-50ms dashboard loads.
 
-## 3. Pipeline Construction & Processing Logic
+## Pipeline Construction & Processing Logic
 
 To demonstrate a production implementation, below is a complete **dbt (data build tool)** model constructing a **Marketing Performance Data Mart** that fuses advertising spend (Google/Facebook Ads) with core transactional conversions to compute Customer Acquisition Cost (CAC), Return on Ad Spend (ROAS), and funnel click-through rates.
 
@@ -197,7 +197,7 @@ ALTER TABLE finance_mart.marts_branch_pnl
 ADD ROW ACCESS POLICY finance_region_policy ON (region_code);
 ```
 
-## 4. Data Validation & Performance Tuning
+## Data Validation & Performance Tuning
 
 To operate high-performing Data Marts without metric drift, Data Engineers implement automated reconciliation suites and optimized caching layers:
 
@@ -235,34 +235,34 @@ WHERE ABS(f.total_fin - s.total_sales) > 0.01; -- Alarm if delta exceeds 1 cent
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Architecture Strategy</th>
-      <th style="padding: 8px;">Dashboard Latency (p95)</th>
-      <th style="padding: 8px;">Metric Consistency</th>
-      <th style="padding: 8px;">Self-Service Usability</th>
+      <th style="padding: 8px">Dashboard Latency (p95)</th>
+      <th style="padding: 8px">Metric Consistency</th>
+      <th style="padding: 8px">Self-Service Usability</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Direct Queries on Raw Enterprise Warehouse**</td>
-      <td style="padding: 8px;">18,400ms (18.4s)</td>
-      <td style="padding: 8px;">High, but SQL logic is overly complex</td>
-      <td style="padding: 8px;">Very Low (Requires dedicated Data Engineers)</td>
+      <td style="padding: 8px"><b>Direct Queries on Raw Enterprise Warehouse</b></td>
+      <td style="padding: 8px">18,400ms (18.4s)</td>
+      <td style="padding: 8px">High, but SQL logic is overly complex</td>
+      <td style="padding: 8px">Very Low (Requires dedicated Data Engineers)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Independent Siloed Data Marts**</td>
-      <td style="padding: 8px;">650ms</td>
-      <td style="padding: 8px;">Very Low (Conflicting metric definitions)</td>
-      <td style="padding: 8px;">Moderate (Siloed teams work in isolation)</td>
+      <td style="padding: 8px"><b>Independent Siloed Data Marts</b></td>
+      <td style="padding: 8px">650ms</td>
+      <td style="padding: 8px">Very Low (Conflicting metric definitions)</td>
+      <td style="padding: 8px">Moderate (Siloed teams work in isolation)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Dependent Star / OBT Data Marts**</td>
-      <td style="padding: 8px;">**45ms**</td>
-      <td style="padding: 8px;">**100% Absolute** (Single Source of Truth)</td>
-      <td style="padding: 8px;">**Very High** (Business analysts drag-and-drop easily)</td>
+      <td style="padding: 8px"><b>Dependent Star / OBT Data Marts</b></td>
+      <td style="padding: 8px"><b>45ms</b></td>
+      <td style="padding: 8px"><b>100% Absolute</b> (Single Source of Truth)</td>
+      <td style="padding: 8px"><b>Very High</b> (Business analysts drag-and-drop easily)</td>
     </tr>
   </tbody>
 </table>
 
-## 5. Summary & Recommendations
+## Summary & Recommendations
 
 Data Marts represent the critical transformation bridge between heavy centralized data platforms and agile, domain-specific business execution.
 

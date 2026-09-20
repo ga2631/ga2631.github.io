@@ -15,13 +15,13 @@ tags:
   - "UI Engineering"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Khi xây dựng giao diện Catalog hoặc trang Blog kỹ thuật với bố cục 2 cột (Left Sidebar + Right Content Area), thanh tìm kiếm và bộ lọc nhanh (Filter Controls Bar) thường được thiết kế với hiệu ứng ghim đầu trang (`position: sticky; top: 16px;`) để người dùng có thể lọc theo chuyên đề hoặc từ khóa bất cứ lúc nào.
 
 Tuy nhiên, trong quá trình thử nghiệm thực tế với danh sách hơn 20 bài viết (chiều cao cuộn vượt trên 3,000px), một lỗi khó chịu xuất hiện: Khi người dùng cuộn tới khoảng bài viết thứ 15 trở đi, thanh Filter Bar bỗng nhiên bị trôi dần lên trên và biến mất khỏi khung nhìn (viewport) thay vì giữ vị trí cố định trên đầu trang. Mục tiêu bài viết là phân tích nguyên nhân gốc rễ về ranh giới chứa (Containing Block) của CSS Sticky và đưa ra giải pháp kiến trúc layout chuẩn xác.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận ban đầu thường thấy trong các ứng dụng React:
 
@@ -30,7 +30,7 @@ Cách tiếp cận ban đầu thường thấy trong các ứng dụng React:
 
 **Tại sao cách này thất bại?** Theo đặc tả CSS Positioning, một phần tử `position: sticky` chỉ có thể hoạt động trong phạm vi chiều cao của _Containing Block_ (phần tử cha trực tiếp) của nó. Khi cuộn sâu xuống dưới, nếu container cha có các ràng buộc về flex alignment hoặc khi vùng nhìn cuộn chạm tới giới hạn biên dưới của container cha, phần tử sticky sẽ bị đẩy trôi theo dòng chảy tự nhiên của trang.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Để giải quyết triệt để vấn đề mà không làm phức tạp hóa mã nguồn, tôi phân tích các phương án:
 
@@ -39,7 +39,7 @@ Cách tiếp cận ban đầu thường thấy trong các ứng dụng React:
 
 Trong CSS Grid, các phần tử con mặc định sẽ chiếm 1 ô (cell). Do đó, bí quyết mấu chốt để thanh Filter vẫn hiển thị toàn chiều ngang (full-width banner) nằm trên tất cả các cột card là áp dụng thuộc tính: `grid-column: 1 / -1;`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Triển khai giải pháp chuẩn trong JSX và SCSS:
 
@@ -47,7 +47,7 @@ Triển khai giải pháp chuẩn trong JSX và SCSS:
 - **Cấu hình CSS Grid & Sticky:** Gán `grid-column: 1 / -1; position: sticky; top: 16px; z-index: 25;` cho `.blog-controls-panel` để bao trọn toàn bộ chiều rộng grid và ghim cố định ở đầu trang suốt hành trình cuộn.
 - **Hiệu ứng chuyển đổi mượt mà:** Kết hợp `backdrop-filter: blur(16px)` và tự động kích hoạt class `.is-stuck` với hiệu ứng đổ bóng khi cuộn vượt ngưỡng 40px.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Phân tích hiệu năng & Độ phức tạp:**
 

@@ -6,8 +6,6 @@ import { uiTranslations, cvDataEn } from '../../src/data/cvData';
 
 describe('TI-02: Integration - Header & Mobile Drawer Navigation', () => {
   const defaultProps = {
-    theme: 'dark' as const,
-    toggleTheme: vi.fn(),
     lang: 'en' as const,
     setLang: vi.fn(),
     t: uiTranslations.en,

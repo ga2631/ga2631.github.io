@@ -88,39 +88,39 @@ flowchart TD
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Độ linh hoạt Schema</td>
-      <td style="padding: 8px;">Kém (Phải chạy DDL ALTER TABLE)</td>
-      <td style="padding: 8px;">Rất cao (Thêm dòng trong bảng Attribute)</td>
-      <td style="padding: 8px;">Rất cao (Schemaless / Semi-structured)</td>
-      <td style="padding: 8px;">Tuyệt đối (Dynamic JSON Document)</td>
+      <td style="padding: 8px"><b>Độ linh hoạt Schema</b></td>
+      <td style="padding: 8px">Kém (Phải chạy DDL ALTER TABLE)</td>
+      <td style="padding: 8px">Rất cao (Thêm dòng trong bảng Attribute)</td>
+      <td style="padding: 8px">Rất cao (Schemaless / Semi-structured)</td>
+      <td style="padding: 8px">Tuyệt đối (Dynamic JSON Document)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Hiệu năng Ghi (Write)</td>
-      <td style="padding: 8px;">Cực nhanh (1 lệnh INSERT duy nhất)</td>
-      <td style="padding: 8px;">Chậm (1 Entity cần 10-30 INSERT vào nhiều bảng)</td>
-      <td style="padding: 8px;">Nhanh (1 lệnh INSERT chứa object JSON)</td>
-      <td style="padding: 8px;">Cực nhanh (Atomic Document Insert)</td>
+      <td style="padding: 8px"><b>Hiệu năng Ghi (Write)</b></td>
+      <td style="padding: 8px">Cực nhanh (1 lệnh INSERT duy nhất)</td>
+      <td style="padding: 8px">Chậm (1 Entity cần 10-30 INSERT vào nhiều bảng)</td>
+      <td style="padding: 8px">Nhanh (1 lệnh INSERT chứa object JSON)</td>
+      <td style="padding: 8px">Cực nhanh (Atomic Document Insert)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Hiệu năng Đọc 1 Entity (Point Read)</td>
-      <td style="padding: 8px;">Tức thì (Index scan trên 1 bảng)</td>
-      <td style="padding: 8px;">Chậm (Phải JOIN từ 10-20 lần)</td>
-      <td style="padding: 8px;">Rất nhanh (Đọc 1 dòng, parse JSON)</td>
-      <td style="padding: 8px;">Cực nhanh (Đọc nguyên Document theo _id)</td>
+      <td style="padding: 8px"><b>Hiệu năng Đọc 1 Entity (Point Read)</b></td>
+      <td style="padding: 8px">Tức thì (Index scan trên 1 bảng)</td>
+      <td style="padding: 8px">Chậm (Phải JOIN từ 10-20 lần)</td>
+      <td style="padding: 8px">Rất nhanh (Đọc 1 dòng, parse JSON)</td>
+      <td style="padding: 8px">Cực nhanh (Đọc nguyên Document theo _id)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Độ phức tạp Câu lệnh SQL</td>
-      <td style="padding: 8px;">Đơn giản, trực quan</td>
-      <td style="padding: 8px;">Cực kỳ phức tạp (Nhiều JOIN / PIVOT)</td>
-      <td style="padding: 8px;">Trung bình (Sử dụng toán tử `->>`, `@>`)</td>
-      <td style="padding: 8px;">Dễ dàng qua MongoDB Query API</td>
+      <td style="padding: 8px"><b>Độ phức tạp Câu lệnh SQL</b></td>
+      <td style="padding: 8px">Đơn giản, trực quan</td>
+      <td style="padding: 8px">Cực kỳ phức tạp (Nhiều JOIN / PIVOT)</td>
+      <td style="padding: 8px">Trung bình (Sử dụng toán tử `->>`, `@>`)</td>
+      <td style="padding: 8px">Dễ dàng qua MongoDB Query API</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Hiệu năng Phân tích Dữ liệu (OLAP)</td>
-      <td style="padding: 8px;">Tối ưu cao (Định dạng cột chuẩn)</td>
-      <td style="padding: 8px;">Thảm họa (Không thể phân tích trực tiếp)</td>
-      <td style="padding: 8px;">Khá (Có thể đánh GIN Index)</td>
-      <td style="padding: 8px;">Trung bình (Cần Pipeline Aggregation)</td>
+      <td style="padding: 8px"><b>Hiệu năng Phân tích Dữ liệu (OLAP)</b></td>
+      <td style="padding: 8px">Tối ưu cao (Định dạng cột chuẩn)</td>
+      <td style="padding: 8px">Thảm họa (Không thể phân tích trực tiếp)</td>
+      <td style="padding: 8px">Khá (Có thể đánh GIN Index)</td>
+      <td style="padding: 8px">Trung bình (Cần Pipeline Aggregation)</td>
     </tr>
   </tbody>
 </table>
@@ -277,35 +277,35 @@ CREATE INDEX idx_attr_val ON catalog_product_entity_varchar (attribute_id, value
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Kịch bản Thao tác (Dataset 5,000,000 Sản phẩm)</th>
-      <th style="padding: 8px;">Mô hình EAV Thô (MySQL 8)</th>
-      <th style="padding: 8px;">PostgreSQL JSONB (GIN Index)</th>
-      <th style="padding: 8px;">Bảng Phẳng Parquet (ClickHouse/Spark)</th>
+      <th style="padding: 8px">Mô hình EAV Thô (MySQL 8)</th>
+      <th style="padding: 8px">PostgreSQL JSONB (GIN Index)</th>
+      <th style="padding: 8px">Bảng Phẳng Parquet (ClickHouse/Spark)</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Lọc sản phẩm theo 3 thuộc tính động</td>
-      <td style="padding: 8px;">340ms (3 JOINs + Index Scan)</td>
-      <td style="padding: 8px;">18ms (GIN JSONB index lookup)</td>
-      <td style="padding: 8px;">4ms (Columnar Scan & MinMax Pruning)</td>
+      <td style="padding: 8px"><b>Lọc sản phẩm theo 3 thuộc tính động</b></td>
+      <td style="padding: 8px">340ms (3 JOINs + Index Scan)</td>
+      <td style="padding: 8px">18ms (GIN JSONB index lookup)</td>
+      <td style="padding: 8px">4ms (Columnar Scan & MinMax Pruning)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Tính giá trị trung bình (AVG Price) theo ngành hàng</td>
-      <td style="padding: 8px;">4,250ms (Full table scan trên bảng Decimal)</td>
-      <td style="padding: 8px;">520ms (JSON parse on-the-fly)</td>
-      <td style="padding: 8px;">8ms (Vectorized Columnar Aggregation)</td>
+      <td style="padding: 8px"><b>Tính giá trị trung bình (AVG Price) theo ngành hàng</b></td>
+      <td style="padding: 8px">4,250ms (Full table scan trên bảng Decimal)</td>
+      <td style="padding: 8px">520ms (JSON parse on-the-fly)</td>
+      <td style="padding: 8px">8ms (Vectorized Columnar Aggregation)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Thêm 1 trường thuộc tính mới vào hệ thống</td>
-      <td style="padding: 8px;">0.01ms (1 dòng INSERT vào eav_attribute)</td>
-      <td style="padding: 8px;">0.00ms (Không cần thao tác DDL)</td>
-      <td style="padding: 8px;">0.05ms (Schema Evolution tự động)</td>
+      <td style="padding: 8px"><b>Thêm 1 trường thuộc tính mới vào hệ thống</b></td>
+      <td style="padding: 8px">0.01ms (1 dòng INSERT vào eav_attribute)</td>
+      <td style="padding: 8px">0.00ms (Không cần thao tác DDL)</td>
+      <td style="padding: 8px">0.05ms (Schema Evolution tự động)</td>
     </tr>
     <tr>
-      <td style="padding: 8px; font-weight: bold;">Dung lượng lưu trữ đĩa cứng</td>
-      <td style="padding: 8px;">Cao (Do trùng lặp entity_id, attribute_id, index)</td>
-      <td style="padding: 8px;">Trung bình (Nén JSONB nhị phân)</td>
-      <td style="padding: 8px;">Rất thấp (Nén Snappy/ZSTD dạng cột)</td>
+      <td style="padding: 8px"><b>Dung lượng lưu trữ đĩa cứng</b></td>
+      <td style="padding: 8px">Cao (Do trùng lặp entity_id, attribute_id, index)</td>
+      <td style="padding: 8px">Trung bình (Nén JSONB nhị phân)</td>
+      <td style="padding: 8px">Rất thấp (Nén Snappy/ZSTD dạng cột)</td>
     </tr>
   </tbody>
 </table>
