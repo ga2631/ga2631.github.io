@@ -102,7 +102,11 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                       {cert.issuer}
                     </div>
                   </div>
-                  <Badge>{cert.issueDate}</Badge>
+                  <Badge 
+                    variant={cert.isCompleted ? "emerald" : "amber"}
+                  >
+                    {cert.issueDate}
+                  </Badge>
                 </div>
               </Card.Header>
 
@@ -120,10 +124,9 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                       href={cert.credentialUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      variant="outline"
+                      variant="primary"
                       size="sm"
-                      style={{ padding: '4px 10px', fontSize: '0.8rem' }}
-                      icon={<ExternalLinkIcon size={12} />}
+                      icon={<ExternalLinkIcon size={14} />}
                       iconPosition="right"
                     >
                       <span>{t.viewCredential}</span>

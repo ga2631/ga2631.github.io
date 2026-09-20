@@ -150,7 +150,6 @@ export interface UITranslation {
     linkedinLabel: string;
     linkedinHint: string;
     copied: string;
-    copyEmail: string;
     compose: string;
     call: string;
     zalo: string;
