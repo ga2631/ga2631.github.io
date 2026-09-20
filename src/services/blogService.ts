@@ -97,13 +97,50 @@ export function getAvailableMonthArchives(lang: 'vi' | 'en'): MonthArchiveInfo[]
 
 
 /**
- * Sorts articles descending by date or publishedAt.
+ * Helper to convert date strings (ISO "YYYY-MM-DD" or "DD/MM/YYYY") into numeric timestamp.
+ */
+function parseDateToTimestamp(dateStr?: string, publishedAtStr?: string): number {
+  if (dateStr) {
+    const timestamp = new Date(dateStr).getTime();
+    if (!isNaN(timestamp)) return timestamp;
+  }
+  if (publishedAtStr) {
+    const parts = publishedAtStr.split('/');
+    if (parts.length === 3) {
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const year = parseInt(parts[2], 10);
+      const timestamp = new Date(year, month, day).getTime();
+      if (!isNaN(timestamp)) return timestamp;
+    }
+  }
+  return 0;
+}
+
+/**
+ * Sorts articles descending by date/publishedAt, then numeric ID descending, then slug.
+ * Ensures the latest articles always appear first.
  */
 export function sortPostsByDateDesc(posts: BlogPost[]): BlogPost[] {
   return [...posts].sort((a, b) => {
-    const dateA = a.date ? new Date(a.date).getTime() : 0;
-    const dateB = b.date ? new Date(b.date).getTime() : 0;
-    return dateB - dateA;
+    // 1. Primary: Compare timestamp descending (e.g. 2026-09-18 > 2026-09-17)
+    const timeA = parseDateToTimestamp(a.date, a.publishedAt);
+    const timeB = parseDateToTimestamp(b.date, b.publishedAt);
+    if (timeB !== timeA) {
+      return timeB - timeA;
+    }
+
+    // 2. Secondary: Compare numeric article ID descending (e.g. ID 55 > 25, 54 > 27)
+    const numIdA = parseInt(String(a.id), 10);
+    const numIdB = parseInt(String(b.id), 10);
+    if (!isNaN(numIdA) && !isNaN(numIdB) && numIdB !== numIdA) {
+      return numIdB - numIdA;
+    }
+
+    // 3. Fallback: Reverse alphabetical by slug / ID
+    const keyA = a.slug || String(a.id) || '';
+    const keyB = b.slug || String(b.id) || '';
+    return keyB.localeCompare(keyA);
   });
 }
 

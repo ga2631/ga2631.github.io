@@ -95,4 +95,32 @@ describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
     expect(sorted[1].id).toBe('3');
     expect(sorted[2].id).toBe('1');
   });
+
+  it('should sort posts with the same date descending by numeric ID and fallback to slug', () => {
+    const posts = [
+      { id: '25', date: '2026-09-18', slug: 'refactoring' } as any,
+      { id: '55', date: '2026-09-18', slug: 'data-engineering' } as any,
+      { id: '23', date: '2026-09-17', slug: 'sticky-grid' } as any,
+      { id: '54', date: '2026-09-17', slug: 'graph-bfs-dfs' } as any,
+      { id: '53', date: '2026-09-17', slug: 'bst-traversal' } as any,
+    ];
+
+    const sorted = sortPostsByDateDesc(posts);
+    expect(sorted[0].id).toBe('55');
+    expect(sorted[1].id).toBe('25');
+    expect(sorted[2].id).toBe('54');
+    expect(sorted[3].id).toBe('53');
+    expect(sorted[4].id).toBe('23');
+  });
+
+  it('should correctly prioritize publishedAt when date is absent', () => {
+    const posts = [
+      { id: '1', publishedAt: '10/01/2026', title: 'Jan 10' } as any,
+      { id: '2', publishedAt: '20/05/2026', title: 'May 20' } as any,
+    ];
+
+    const sorted = sortPostsByDateDesc(posts);
+    expect(sorted[0].id).toBe('2');
+    expect(sorted[1].id).toBe('1');
+  });
 });
