@@ -34,9 +34,8 @@ Cạm bẫy đệ quy ngây thơ:
 Nguyên lý cốt lõi và Kỹ thuật tối ưu hóa Đệ quy:
 
 1. **Hai Thành phần Bất biến của Hàm Đệ quy:**
-
-- *Điều kiện cơ sở (Base Case):* Điểm dừng không cần đệ quy, trả về kết quả trực tiếp ngay lập tức.
-- *Bước đệ quy (Recursive Step):* Gọi lại hàm với tham số `N` đã được thu hẹp về phía Base Case.
+  - *Điều kiện cơ sở (Base Case):* Điểm dừng không cần đệ quy, trả về kết quả trực tiếp ngay lập tức.
+  - *Bước đệ quy (Recursive Step):* Gọi lại hàm với tham số `N` đã được thu hẹp về phía Base Case.
 2. **Cơ chế Phân bổ Call Stack:** Mỗi lần gọi hàm, hệ điều hành cấp phát một Stack Frame (chứa tham số, biến cục bộ, địa chỉ trả về). Khi đạt Base Case, các frame lần lượt được thu hồi (Unwind/Pop).
 3. **Tối ưu hóa Đệ quy Đuôi (Tail Call Optimization - TCO):** Nếu lời gọi đệ quy là *thao tác cuối cùng* của hàm (không còn phép tính tồn đọng nào), trình biên dịch C++ hiện đại có thể tái sử dụng ngay Stack Frame hiện tại &rarr; Giảm dung lượng Call Stack từ `O(N)` về `O(1)`.
 

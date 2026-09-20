@@ -38,10 +38,8 @@ Sau một số thao tác chèn và xóa, con trỏ `rear` sẽ chạm tới cu�
 next_index = (current_index + 1) % capacity
 ```
 2. **Phân biệt Trạng thái Rỗng và Đầy:** Có 2 kỹ thuật phổ biến:
-  
-
-- *Kỹ thuật Biến đếm:* Duy trì biến `count` lưu số lượng phần tử thực tế. Rỗng khi `count == 0`, Đầy khi `count == capacity`.
-- *Kỹ thuật Bỏ trống 1 ô:* Rỗng khi `front == rear`, Đầy khi `(rear + 1) % capacity == front`.
+  - *Kỹ thuật Biến đếm:* Duy trì biến `count` lưu số lượng phần tử thực tế. Rỗng khi `count == 0`, Đầy khi `count == capacity`.
+  - *Kỹ thuật Bỏ trống 1 ô:* Rỗng khi `front == rear`, Đầy khi `(rear + 1) % capacity == front`.
 3. **Hiệu năng Hằng số:** Cả thao tác thêm vào đuôi (`enqueue`) và lấy ra từ đầu (`dequeue`) đều chỉ tốn 1 vài phép toán số học đơn giản trong thời gian tuyệt đối **`O(1)`** mà không cần cấp phát lại hay sao chép bộ nhớ.
 
 ## Triển khai mã nguồn & Dry Run

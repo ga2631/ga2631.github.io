@@ -249,23 +249,9 @@ export function markdownToHtml(markdown: string): string {
       continue;
     }
 
-    // Check Unordered List (- item or * item)
-    if (/^\s*[-*]\s+/.test(trimmedBlock)) {
-      const items = trimmedBlock
-        .split(/\r?\n/)
-        .filter((l) => /^\s*[-*]\s+/.test(l))
-        .map((l) => `<li>${formatInlineMarkdown(l.replace(/^\s*[-*]\s+/, '').trim())}</li>`);
-      htmlParagraphs.push(`<ul>\n${items.join('\n')}\n</ul>`);
-      continue;
-    }
-
-    // Check Ordered List (1. item)
-    if (/^\s*\d+\.\s+/.test(trimmedBlock)) {
-      const items = trimmedBlock
-        .split(/\r?\n/)
-        .filter((l) => /^\s*\d+\.\s+/.test(l))
-        .map((l) => `<li>${formatInlineMarkdown(l.replace(/^\s*\d+\.\s+/, '').trim())}</li>`);
-      htmlParagraphs.push(`<ol>\n${items.join('\n')}\n</ol>`);
+    // Check Ordered or Unordered List
+    if (/^\s*([-*]|\d+\.)\s+/.test(trimmedBlock)) {
+      htmlParagraphs.push(renderMarkdownList(trimmedBlock));
       continue;
     }
 
@@ -350,6 +336,67 @@ function renderMarkdownTable(tableStr: string): string {
     .join('\n');
 
   return `<table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">\n${theadHtml}\n<tbody>\n${tbodyRowsHtml}\n</tbody>\n</table>`;
+}
+
+/**
+ * Converts an Ordered or Unordered Markdown list block into HTML, supporting nested sub-lists.
+ */
+function renderMarkdownList(blockStr: string): string {
+  const lines = blockStr.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  if (lines.length === 0) return '';
+
+  const firstLine = lines[0];
+  const isTopOrdered = /^\s*\d+\.\s+/.test(firstLine);
+  const topTag = isTopOrdered ? 'ol' : 'ul';
+
+  const items: Array<{ text: string; subs: Array<{ text: string; type: 'ul' | 'ol' }> }> = [];
+  let currentItem: { text: string; subs: Array<{ text: string; type: 'ul' | 'ol' }> } | null = null;
+
+  for (const line of lines) {
+    const isTopOl = /^\d+\.\s+/.test(line);
+    const isTopUl = /^[-*]\s+/.test(line);
+    const isSub = /^\s+([-*]|\d+\.)\s+/.test(line);
+
+    if ((isTopOrdered && isTopOl) || (!isTopOrdered && isTopUl)) {
+      if (currentItem) {
+        items.push(currentItem);
+      }
+      const text = line.replace(/^\d+\.\s+|^[-*]\s+/, '').trim();
+      currentItem = { text, subs: [] };
+    } else if (isSub && currentItem) {
+      const subText = line.replace(/^\s*([-*]|\d+\.)\s+/, '').trim();
+      const isSubOl = /^\s+\d+\.\s+/.test(line);
+      currentItem.subs.push({ text: subText, type: isSubOl ? 'ol' : 'ul' });
+    } else if (currentItem) {
+      currentItem.text += ' ' + line.trim();
+    } else {
+      const text = line.replace(/^\s*([-*]|\d+\.)\s+/, '').trim();
+      currentItem = { text, subs: [] };
+    }
+  }
+
+  if (currentItem) {
+    items.push(currentItem);
+  }
+
+  const html: string[] = [`<${topTag}>`];
+  for (const it of items) {
+    const formattedText = formatInlineMarkdown(it.text);
+    if (it.subs.length === 0) {
+      html.push(`  <li>${formattedText}</li>`);
+    } else {
+      const subType = it.subs[0].type;
+      const subLines: string[] = [`    <${subType}>`];
+      for (const sub of it.subs) {
+        subLines.push(`      <li>${formatInlineMarkdown(sub.text)}</li>`);
+      }
+      subLines.push(`    </${subType}>`);
+      html.push(`  <li>${formattedText}\n${subLines.join('\n')}\n  </li>`);
+    }
+  }
+  html.push(`</${topTag}>`);
+
+  return html.join('\n');
 }
 
 function escapeHtml(str: string): string {

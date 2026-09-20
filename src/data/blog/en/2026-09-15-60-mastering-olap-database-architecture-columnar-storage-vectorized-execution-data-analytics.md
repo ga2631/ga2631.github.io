@@ -258,11 +258,9 @@ Columnar OLAP engines represent the pinnacle of modern data engineering, uniting
 **Actionable Architecture Recommendations for Data Teams:**
 
 1. **Select the Right OLAP Engine for Your Workload:**
-
-- Deploy **ClickHouse / StarRocks** for real-time, sub-second interactive analytics over high-velocity streaming ingestion (Clickstreams, Security Logs, Real-Time Dashboards).
-- Deploy **Snowflake / BigQuery** for enterprise-wide dimensional data warehousing (Star Schemas, Data Marts) serving multi-departmental business intelligence.
-- Deploy **DuckDB** for lightweight, embedded columnar analysis directly inside Python and Jupyter environments without cluster operational overhead.
-
+  - Deploy **ClickHouse / StarRocks** for real-time, sub-second interactive analytics over high-velocity streaming ingestion (Clickstreams, Security Logs, Real-Time Dashboards).
+  - Deploy **Snowflake / BigQuery** for enterprise-wide dimensional data warehousing (Star Schemas, Data Marts) serving multi-departmental business intelligence.
+  - Deploy **DuckDB** for lightweight, embedded columnar analysis directly inside Python and Jupyter environments without cluster operational overhead.
 2. **Enforce Type-Specific Compression Codecs:** Apply `LowCardinality` or Dictionary encoding for repetitive categorical strings, `DoubleDelta` for monotonic timestamps, and `Gorilla/T64` for floating-point and numerical metrics.
 3. **Champion Probabilistic Sketching in Analytics:** Transition BI dashboards from exact `COUNT(DISTINCT)` to `HyperLogLog (HLL)` approximations whenever calculating unique reach or active user counts to unlock 50x performance gains.
 

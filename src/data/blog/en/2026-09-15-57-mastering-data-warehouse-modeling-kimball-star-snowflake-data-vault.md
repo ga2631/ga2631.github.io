@@ -84,11 +84,9 @@ To design an enduring analytical foundation, Data Engineers must master three fo
 Kimball dimensional modeling remains the reigning standard for analytical data marts on modern Cloud Data Warehouses. It structures data into two distinct table archetypes:
 
 1. **Fact Tables (Quantitative Measurements):** Store numerical business metrics (e.g., `quantity`, `gross_amount`, `tax_amount`) alongside foreign keys referencing dimensions.
-
-- _Transaction Fact:_ One row per atomic discrete event (e.g., individual line items in a checkout order).
-- _Periodic Snapshot Fact:_ Captures cumulative status at regular intervals (e.g., daily bank account balances, monthly inventory levels).
-- _Accumulating Snapshot Fact:_ Tracks the full lifecycle of a multi-stage workflow with milestone timestamps (Order Created &rarr; Payment Captured &rarr; Warehouse Dispatched &rarr; Delivered &rarr; Closed).
-
+  - _Transaction Fact:_ One row per atomic discrete event (e.g., individual line items in a checkout order).
+  - _Periodic Snapshot Fact:_ Captures cumulative status at regular intervals (e.g., daily bank account balances, monthly inventory levels).
+  - _Accumulating Snapshot Fact:_ Tracks the full lifecycle of a multi-stage workflow with milestone timestamps (Order Created &rarr; Payment Captured &rarr; Warehouse Dispatched &rarr; Delivered &rarr; Closed).
 2. **Dimension Tables (Descriptive Context):** Store textual attributes providing the context for filtering, grouping, and labeling (e.g., `dim_customer`, `dim_product`, `dim_date`, `dim_store`).
 
 **Slowly Changing Dimensions (SCD) Management Strategies:**

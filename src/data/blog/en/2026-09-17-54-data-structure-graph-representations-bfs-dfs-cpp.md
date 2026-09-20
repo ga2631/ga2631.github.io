@@ -31,31 +31,23 @@ A **Graph** is the most generalized non-linear data structure, formally defined 
 Two foundational graph representations in memory:
 
 1. **Adjacency Matrix:**
-  
-
-- A 2D array `adj[V][V]` where `adj[u][v] = 1` indicates an edge between `u` and `v`.
-- *Pros:* Instantaneous `O(1)` edge existence checks.
-- *Cons:* High fixed `O(V²)` memory consumption on sparse networks.
+  - A 2D array `adj[V][V]` where `adj[u][v] = 1` indicates an edge between `u` and `v`.
+  - *Pros:* Instantaneous `O(1)` edge existence checks.
+  - *Cons:* High fixed `O(V²)` memory consumption on sparse networks.
 2. **Adjacency List:**
-  
-
-- An array of lists: `std::vector<std::vector<int>> adj(V)` storing only incident neighbors.
-- *Pros:* Optimal `O(V + E)` memory scaling and linear `O(deg(u))` neighbor traversal. Standard representation in 99% of production systems.
+  - An array of lists: `std::vector<std::vector<int>> adj(V)` storing only incident neighbors.
+  - *Pros:* Optimal `O(V + E)` memory scaling and linear `O(deg(u))` neighbor traversal. Standard representation in 99% of production systems.
 
 ## Optimization Thinking & Algorithm Design
 
 **Two Foundational Graph Traversals:**
 
 1. **Breadth-First Search (BFS):**
-  
-
-- Operates via a **Queue**, radiating outwards level-by-level.
-- *Key Property:* Guarantees finding the **shortest unweighted path** from source to all destinations.
+  - Operates via a **Queue**, radiating outwards level-by-level.
+  - *Key Property:* Guarantees finding the **shortest unweighted path** from source to all destinations.
 2. **Depth-First Search (DFS):**
-  
-
-- Operates via **Recursion / Call Stack**, exploring branches deeply before backtracking.
-- *Key Property:* Used for cycle detection, topological sorting, and strongly connected components (SCC).
+  - Operates via **Recursion / Call Stack**, exploring branches deeply before backtracking.
+  - *Key Property:* Used for cycle detection, topological sorting, and strongly connected components (SCC).
 
 *Safety Invariant:* A boolean `visited[V]` table is mandatory to prevent infinite loops on cyclic topologies.
 

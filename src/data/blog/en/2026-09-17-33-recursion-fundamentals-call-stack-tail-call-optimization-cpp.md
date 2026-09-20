@@ -34,9 +34,8 @@ Common recursion pitfalls:
 Recursion invariants and Call Stack optimization:
 
 1. **Two Invariant Components of Recursive Functions:**
-
-- *Base Case:* The non-recursive boundary that returns an explicit result immediately without further function dispatch.
-- *Recursive Step:* Calling the function with strictly narrowed arguments moving closer to the Base Case.
+  - *Base Case:* The non-recursive boundary that returns an explicit result immediately without further function dispatch.
+  - *Recursive Step:* Calling the function with strictly narrowed arguments moving closer to the Base Case.
 2. **Call Stack Frame Lifecycle:** Each invocation allocates an active Stack Frame (holding parameters, local variables, return pointers). Frames are popped sequentially upon unwinding.
 3. **Tail Call Optimization (TCO):** When the recursive invocation is the *final operation* of the function with zero deferred computations, modern C++ compilers reuse the existing Stack Frame &rarr; Collapsing Auxiliary Space from `O(N)` to strict `O(1)`.
 

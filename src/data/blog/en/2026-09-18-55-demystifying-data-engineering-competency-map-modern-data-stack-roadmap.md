@@ -140,30 +140,21 @@ flowchart TD
 A structured Competency Skill Matrix for engineers transitioning into or leveling up in Data Engineering:
 
 1. **Core Software Engineering & Computer Science Foundations:**
-
-- Master **Python** (scripting, object-oriented design, async I/O) and **Advanced SQL** (Window functions, CTEs, physical query plan optimization).
-- Understand low-level computer science concepts: Data structures, memory hierarchies (I/O-bound vs CPU-bound bottlenecks), and network protocols.
-- Explore **Scala/Java** or **Rust** for high-performance distributed engine development.
-
+  - Master **Python** (scripting, object-oriented design, async I/O) and **Advanced SQL** (Window functions, CTEs, physical query plan optimization).
+  - Understand low-level computer science concepts: Data structures, memory hierarchies (I/O-bound vs CPU-bound bottlenecks), and network protocols.
+  - Explore **Scala/Java** or **Rust** for high-performance distributed engine development.
 2. **Dimensional Data Modeling:**
-
-- Master Kimball Dimensional Modeling (Fact tables, Dimension tables, Conformed Dimensions, Star/Snowflake schemas).
-- Implement Slowly Changing Dimensions (SCD Type 1, 2, 3) and Data Vault patterns.
-
+  - Master Kimball Dimensional Modeling (Fact tables, Dimension tables, Conformed Dimensions, Star/Snowflake schemas).
+  - Implement Slowly Changing Dimensions (SCD Type 1, 2, 3) and Data Vault patterns.
 3. **Distributed Compute & Big Data Frameworks:**
-
-- Deeply study **Apache Spark**: RDD lifecycle, Catalyst query optimizer, Tungsten execution engine, memory partition tuning, and mitigating data skew.
-- Master modern data transformation workflows using **dbt (data build tool)** on cloud warehouses.
-
+  - Deeply study **Apache Spark**: RDD lifecycle, Catalyst query optimizer, Tungsten execution engine, memory partition tuning, and mitigating data skew.
+  - Master modern data transformation workflows using **dbt (data build tool)** on cloud warehouses.
 4. **Event Streaming & Workflow Orchestration:**
-
-- Architect event backbones with **Apache Kafka** (topics, partitions, consumer group rebalancing, exactly-once semantics).
-- Construct maintainable DAG workflows using **Apache Airflow** or **Dagster**.
-
+  - Architect event backbones with **Apache Kafka** (topics, partitions, consumer group rebalancing, exactly-once semantics).
+  - Construct maintainable DAG workflows using **Apache Airflow** or **Dagster**.
 5. **DataOps & Observability:**
-
-- Automate data quality testing using `dbt test`, `Great Expectations`, or `Soda`.
-- Implement CI/CD automated validation and end-to-end Data Lineage tracking with `DataHub`.
+  - Automate data quality testing using `dbt test`, `Great Expectations`, or `Soda`.
+  - Implement CI/CD automated validation and end-to-end Data Lineage tracking with `DataHub`.
 
 ## Open Questions & Discussion
 

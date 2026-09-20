@@ -40,9 +40,8 @@ Kruskal's algorithm achieves near-linear efficiency by combining with **Disjoint
 1. **Spanning Forest Model:** Initially, each vertex `v in V` constitutes an isolated 1-node tree. Kruskal merges these trees until exactly 1 spanning tree of `V - 1` edges remains.
 2. **Cycle Detection in `O(alpha(V))`:** Adding edge `(u, v)` creates a cycle if and only if both endpoints share the same root representative: `find(u) == find(v)`.
 3. **Two DSU Optimization Pillars:**
-
-- **Path Compression:** Inside `find(u)`, re-point traversed nodes directly to the root, flattening tree depth to near-constant height.
-- **Union by Rank:** Always attach the shallower tree beneath the root of the deeper tree to prevent degeneration into linked lists.
+  - **Path Compression:** Inside `find(u)`, re-point traversed nodes directly to the root, flattening tree depth to near-constant height.
+  - **Union by Rank:** Always attach the shallower tree beneath the root of the deeper tree to prevent degeneration into linked lists.
 
 DSU operations operate in inverse Ackermann amortized time `O(alpha(V)) <= 4`. Total time is strictly bounded by edge sorting: `O(E \log E) = O(E \log V)`.
 

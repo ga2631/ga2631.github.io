@@ -37,15 +37,12 @@ We require Asymptotic Analysis to mathematically model and predict resource cons
 To rigorously benchmark algorithms across this series, we establish an evaluation model rooted in the **Random Access Machine (RAM) Model of Computation** across three core pillars:
 
 1. **Asymptotic Notation Hierarchy:**
-
-- **Big-O (O):** Mathematical Upper Bound - Represents the worst-case scenario. This is the primary contractual metric for system SLAs.
-- **Big-Omega (Ω):** Mathematical Lower Bound - Represents the best-case theoretical execution limit.
-- **Big-Theta (Θ):** Tight Bound - When upper and lower asymptotic bounds coincide, capturing true average behavior.
-
+  - **Big-O (O):** Mathematical Upper Bound - Represents the worst-case scenario. This is the primary contractual metric for system SLAs.
+  - **Big-Omega (Ω):** Mathematical Lower Bound - Represents the best-case theoretical execution limit.
+  - **Big-Theta (Θ):** Tight Bound - When upper and lower asymptotic bounds coincide, capturing true average behavior.
 2. **Decoupling Time vs Space Complexity:**
-
-- **Time Complexity:** Number of primitive machine operations (assignments, comparisons, arithmetic) expressed as a function of input size N.
-- **Space Complexity (Total Space vs Auxiliary Space):** Total memory consumed during runtime. _Auxiliary Space_ specifically denotes extra temporary memory allocated by the algorithm itself (excluding input storage), encompassing dynamic Heap buffers and recursive Call Stack frames.
+  - **Time Complexity:** Number of primitive machine operations (assignments, comparisons, arithmetic) expressed as a function of input size N.
+  - **Space Complexity (Total Space vs Auxiliary Space):** Total memory consumed during runtime. _Auxiliary Space_ specifically denotes extra temporary memory allocated by the algorithm itself (excluding input storage), encompassing dynamic Heap buffers and recursive Call Stack frames.
 
 ## Code Implementation & Execution Trace
 

@@ -37,16 +37,12 @@ Architectural distinction between Edmonds-Karp and Dinic:
 Dinic operates in 2 repeating phases:
 
 1. **Phase 1: Level Graph Construction (BFS):**
-  
-
-- Assign source `level[s] = 0`.
-- BFS propagates levels: For each edge with residual capacity `cap > 0`, set `level[v] = level[u] + 1`.
-- If sink `t` is unreachable (`level[t] == -1`), terminate immediately &rarr; Max flow achieved.
+  - Assign source `level[s] = 0`.
+  - BFS propagates levels: For each edge with residual capacity `cap > 0`, set `level[v] = level[u] + 1`.
+  - If sink `t` is unreachable (`level[t] == -1`), terminate immediately &rarr; Max flow achieved.
 2. **Phase 2: Blocking Flow Push (DFS):**
-  
-
-- Only advance across adjacent levels: `level[v] == level[u] + 1` and `cap > 0`.
-- **Dead-End Pruning (Work Pointer Optimization):** Maintain array `work[u]` tracking current edge index. When a sub-branch yields zero flow, `work[u]` increments to discard that dead-end for the remainder of the phase, eliminating redundant traversals.
+  - Only advance across adjacent levels: `level[v] == level[u] + 1` and `cap > 0`.
+  - **Dead-End Pruning (Work Pointer Optimization):** Maintain array `work[u]` tracking current edge index. When a sub-branch yields zero flow, `work[u]` increments to discard that dead-end for the remainder of the phase, eliminating redundant traversals.
 
 ## Code Implementation & Execution Trace
 

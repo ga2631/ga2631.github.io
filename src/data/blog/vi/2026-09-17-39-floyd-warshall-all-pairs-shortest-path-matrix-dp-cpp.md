@@ -39,10 +39,8 @@ Tư duy Quy hoạch động của Floyd-Warshall định nghĩa trạng thái d�
 
 1. **Định nghĩa trạng thái DP:** Gọi `dp[k][i][j]` là độ dài đường đi ngắn nhất từ đỉnh `i` đến đỉnh `j`, với điều kiện mọi đỉnh trung gian trên hành trình chỉ được phép chọn từ tập hợp `{0, 1, 2, ..., k}`.
 2. **Hệ thức chuyển trạng thái:** Khi mở rộng tập đỉnh trung gian cho phép từ `k - 1` lên `k`, ta có hai lựa chọn:
-  
-
-- *Không đi qua đỉnh trung gian `k`:* Khoảng cách giữ nguyên là `dp[k - 1][i][j]`.
-- *Đi qua đỉnh trung gian `k`:* Đường đi tách thành hai đoạn `i -> k` và `k -> j`, có tổng chi phí là `dp[k - 1][i][k] + dp[k - 1][k][j]`.
+  - *Không đi qua đỉnh trung gian `k`:* Khoảng cách giữ nguyên là `dp[k - 1][i][j]`.
+  - *Đi qua đỉnh trung gian `k`:* Đường đi tách thành hai đoạn `i -> k` và `k -> j`, có tổng chi phí là `dp[k - 1][i][k] + dp[k - 1][k][j]`.
 
 ```
 dp[k][i][j] = min(

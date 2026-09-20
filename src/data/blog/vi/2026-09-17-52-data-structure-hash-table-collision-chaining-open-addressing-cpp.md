@@ -37,19 +37,14 @@ Thách thức toán học cốt tử: Theo _Nguyên lý chuồng bồ câu (Pige
 Để giải quyết đụng độ và duy trì hiệu năng `O(1)`, hai chiến lược kiến trúc kinh điển được áp dụng:
 
 1. **Phương pháp Dây chuyền Tách biệt (Separate Chaining):**
-
-- Mỗi ô nhớ (Bucket) của bảng băm là một Danh sách liên kết (Linked List) hoặc Cây đỏ đen (Red-Black Tree khi chuỗi dài &gt; 8).
-- Khi xảy ra đụng độ, cặp `{key, value}` mới chỉ việc được thêm vào danh sách tại bucket đó trong `O(1)`.
-- Đây là cơ chế mặc định trong `std::unordered_map` của C++ và `HashMap` của Java.
-
+  - Mỗi ô nhớ (Bucket) của bảng băm là một Danh sách liên kết (Linked List) hoặc Cây đỏ đen (Red-Black Tree khi chuỗi dài &gt; 8).
+  - Khi xảy ra đụng độ, cặp `{key, value}` mới chỉ việc được thêm vào danh sách tại bucket đó trong `O(1)`.
+  - Đây là cơ chế mặc định trong `std::unordered_map` của C++ và `HashMap` của Java.
 2. **Phương pháp Địa chỉ Mở (Open Addressing / Linear Probing):**
-
-- Mọi phần tử đều nằm trực tiếp trong mảng. Khi ô `bucket` bị chiếm dụng, thuật toán dò tiếp các ô lân cận `(bucket + 1) % capacity` cho đến khi tìm thấy ô trống.
-
+  - Mọi phần tử đều nằm trực tiếp trong mảng. Khi ô `bucket` bị chiếm dụng, thuật toán dò tiếp các ô lân cận `(bucket + 1) % capacity` cho đến khi tìm thấy ô trống.
 3. **Kiểm soát Hệ số tải & Tái băm (Load Factor & Dynamic Rehashing):**
-
-- Hệ số tải `alpha = N / capacity` biểu thị mức độ đầy của bảng.
-- Khi `alpha >= 0.75`, bảng băm tự động cấp phát mảng mới có kích thước gấp đôi (`capacity x 2`) và băm lại toàn bộ các phần tử (Rehashing) để bảo toàn độ phức tạp trung bình `O(1)`.
+  - Hệ số tải `alpha = N / capacity` biểu thị mức độ đầy của bảng.
+  - Khi `alpha >= 0.75`, bảng băm tự động cấp phát mảng mới có kích thước gấp đôi (`capacity x 2`) và băm lại toàn bộ các phần tử (Rehashing) để bảo toàn độ phức tạp trung bình `O(1)`.
 
 ## Triển khai mã nguồn & Dry Run
 

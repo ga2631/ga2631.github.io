@@ -317,19 +317,14 @@ The EAV model is a textbook demonstration of software engineering trade-offs: _S
 **Actionable Architecture Recommendations for System & Data Engineers:**
 
 1. **When SHOULD You Use EAV?**
-
-- When the universe of potential attributes is vast (hundreds or thousands), but any single entity only possesses a tiny, sparse subset.
-- When attributes are dynamically defined at runtime by end-users or multi-tenant configurations without prior schema certainty.
-- When operating within legacy relational databases lacking robust native document/JSON capabilities.
-
+  - When the universe of potential attributes is vast (hundreds or thousands), but any single entity only possesses a tiny, sparse subset.
+  - When attributes are dynamically defined at runtime by end-users or multi-tenant configurations without prior schema certainty.
+  - When operating within legacy relational databases lacking robust native document/JSON capabilities.
 2. **When SHOULD You AVOID EAV?**
-
-- When attributes are relatively fixed and predictable across entities.
-- When workloads are heavily analytical, aggregative, or report-driven (OLAP / BI).
-- If you are running modern databases like **PostgreSQL 14+**: Strongly prefer **JSONB with GIN indexing** over building multi-table EAV scaffolding.
-
+  - When attributes are relatively fixed and predictable across entities.
+  - When workloads are heavily analytical, aggregative, or report-driven (OLAP / BI).
+  - If you are running modern databases like **PostgreSQL 14+**: Strongly prefer **JSONB with GIN indexing** over building multi-table EAV scaffolding.
 3. **Embrace CQRS (Command Query Responsibility Segregation):**
-
-- If EAV is indispensable for your transactional Write Model (OLTP) to enable business flexibility, always decouple it from your Read Model: Deploy an automated CDC/Flattening pipeline to sync structured projections into **Elasticsearch/OpenSearch** (for user-facing catalog search) and **Columnar Lakehouses** (for Data Analysts).
+  - If EAV is indispensable for your transactional Write Model (OLTP) to enable business flexibility, always decouple it from your Read Model: Deploy an automated CDC/Flattening pipeline to sync structured projections into **Elasticsearch/OpenSearch** (for user-facing catalog search) and **Columnar Lakehouses** (for Data Analysts).
 
 **Closing Takeaway:** _EAV is neither obsolete nor a silver bullet; it is a specialized tool for specialized requirements. Mastering its trade-offs and architecting clean transformation boundaries between OLTP and OLAP separates novice practitioners from veteran Data Engineers!_

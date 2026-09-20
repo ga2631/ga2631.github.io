@@ -35,10 +35,8 @@ Prim's algorithm rests upon the **Cut Property** of graph theory:
 1. **The Cut Property:** Partition vertex set `V` into two disjoint sets: Set `S` (vertices currently inside the MST) and set `V \ S` (unvisited vertices). The lightest edge crossing this cut *must belong to the global Minimum Spanning Tree*.
 2. **Frontier Expansion:** Track `inMST[v]` status. Seed with `inMST[0] = true`.
 3. **Min-Heap Acceleration:**
-  
-
-- Store candidate cut-crossing edges in a binary min-heap (`std::priority_queue`).
-- Pop the lightest edge `(u, v, w)`. If `v` is unvisited, mark `inMST[v] = true`, accumulate weight `w`, and enqueue all outgoing edges from `v` to unvisited neighbors.
+  - Store candidate cut-crossing edges in a binary min-heap (`std::priority_queue`).
+  - Pop the lightest edge `(u, v, w)`. If `v` is unvisited, mark `inMST[v] = true`, accumulate weight `w`, and enqueue all outgoing edges from `v` to unvisited neighbors.
 
 Min-Heap optimization slashes sparse graph runtime to `O((V + E) \log V)`.
 

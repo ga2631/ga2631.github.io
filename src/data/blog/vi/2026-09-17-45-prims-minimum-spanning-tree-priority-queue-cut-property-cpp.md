@@ -35,10 +35,8 @@ Thuật toán Prim dựa trên định lý nền tảng của lý thuyết đồ
 1. **Định lý Lát cắt:** Cho một lát cắt chia tập đỉnh `V` thành 2 tập rời nhau: Tập `S` (các đỉnh đã thuộc cây MST) và tập `V \ S` (các đỉnh chưa thuộc cây). Cạnh `(u, v)` có **trọng số nhỏ nhất** nối giữa một đỉnh trong `S` và một đỉnh trong `V \ S` (gọi là Cạnh nhẹ nhất cắt qua lát cắt) *chắc chắn thuộc về Cây khung nhỏ nhất*.
 2. **Cơ chế Biên mở rộng (Frontier Expansion):** Duy trì một tập đỉnh `inMST[v]`. Ban đầu `inMST[0] = true`, các đỉnh còn lại là `false`.
 3. **Tối ưu hóa Hàng đợi ưu tiên (Min-Heap Priority Queue):**
-  
-
-- Lưu trữ các cạnh vượt lát cắt trong `std::priority_queue`.
-- Tại mỗi bước, lấy ra cạnh `(u, v, w)` có trọng số nhỏ nhất. Nếu `v` chưa thuộc cây, kết nạp `v` vào `inMST`, cộng trọng số `w` vào tổng chi phí, và đẩy tất cả các cạnh kề của `v` nối tới các đỉnh chưa thuộc cây vào Min-Heap.
+  - Lưu trữ các cạnh vượt lát cắt trong `std::priority_queue`.
+  - Tại mỗi bước, lấy ra cạnh `(u, v, w)` có trọng số nhỏ nhất. Nếu `v` chưa thuộc cây, kết nạp `v` vào `inMST`, cộng trọng số `w` vào tổng chi phí, và đẩy tất cả các cạnh kề của `v` nối tới các đỉnh chưa thuộc cây vào Min-Heap.
 
 Nhờ cấu trúc Min-Heap, độ phức tạp của Prim trên đồ thị thưa giảm mạnh xuống `O((V + E) \log V)`.
 

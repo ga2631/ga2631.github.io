@@ -34,10 +34,9 @@ The naive approach:
 Divide and Conquer principles and engineering defenses:
 
 1. **50% Search Space Pruning:** Compare the midpoint element `arr[mid]` against `target`:
-
-- If `arr[mid] == target`: Match found immediately.
-- If `arr[mid] < target`: All elements to the left are strictly smaller &rarr; Prune the left half and constrain to `[mid + 1, right]`.
-- If `arr[mid] > target`: All elements to the right are strictly larger &rarr; Prune the right half and constrain to `[left, mid - 1]`.
+  - If `arr[mid] == target`: Match found immediately.
+  - If `arr[mid] < target`: All elements to the left are strictly smaller &rarr; Prune the left half and constrain to `[mid + 1, right]`.
+  - If `arr[mid] > target`: All elements to the right are strictly larger &rarr; Prune the right half and constrain to `[left, mid - 1]`.
 2. **Integer Overflow Mitigation:** The standard formula `mid = (left + right) / 2` overflows 32-bit signed integers when `left + right > 2^31 - 1`. *Robust pattern:* Always compute `mid = left + (right - left) / 2`.
 3. **Boundary Range Query (Lower Bound):** Finding the first element `>= target`, serving as the backbone for database range indices.
 

@@ -84,11 +84,9 @@ Hành vi này nhanh chóng dẫn đến thảm họa kép:
 Mô hình của Ralph Kimball là tiêu chuẩn vàng được áp dụng rộng rãi nhất trong các hệ thống Modern Data Warehouse ngày nay nhờ tính trực quan và hiệu năng truy vấn siêu tốc. Mô hình chia dữ liệu thành 2 loại bảng cốt lõi:
 
 1. **Fact Tables (Bảng Sự kiện / Đo lường):** Chứa các chỉ số định lượng nghiệp vụ (Metrics / Measures như: `quantity`, `amount`, `discount_value`) và các khóa ngoại liên kết tới các bảng Chiều.
-
-- _Transaction Fact:_ Ghi lại từng sự kiện nguyên tử tại một thời điểm (ví dụ: Mỗi lần quẹt thẻ, mỗi dòng đơn hàng).
-- _Periodic Snapshot Fact:_ Chụp ảnh trạng thái tích lũy định kỳ (ví dụ: Số dư tài khoản cuối ngày, Tồn kho cuối tháng).
-- _Accumulating Snapshot Fact:_ Theo dõi toàn bộ vòng đời của quy trình có nhiều mốc thời gian (Đơn đặt hàng &rarr; Thanh toán &rarr; Xuất kho &rarr; Giao hàng &rarr; Đóng đơn).
-
+  - _Transaction Fact:_ Ghi lại từng sự kiện nguyên tử tại một thời điểm (ví dụ: Mỗi lần quẹt thẻ, mỗi dòng đơn hàng).
+  - _Periodic Snapshot Fact:_ Chụp ảnh trạng thái tích lũy định kỳ (ví dụ: Số dư tài khoản cuối ngày, Tồn kho cuối tháng).
+  - _Accumulating Snapshot Fact:_ Theo dõi toàn bộ vòng đời của quy trình có nhiều mốc thời gian (Đơn đặt hàng &rarr; Thanh toán &rarr; Xuất kho &rarr; Giao hàng &rarr; Đóng đơn).
 2. **Dimension Tables (Bảng Chiều / Ngữ cảnh):** Chứa các thuộc tính văn bản dùng để lọc, nhóm và cắt lát dữ liệu (ví dụ: `dim_customer`, `dim_product`, `dim_date`, `dim_store`).
 
 **Kỹ thuật Quản lý Chiều Biến đổi Chậm (Slowly Changing Dimensions - SCD):**

@@ -37,19 +37,14 @@ Core Mathematical Obstacle: By the _Pigeonhole Principle_, mapping an infinite d
 Two primary architectural strategies resolve collisions to sustain `O(1)` performance:
 
 1. **Separate Chaining:**
-
-- Each bucket houses a Linked List (or Red-Black Tree for deep collision chains).
-- Colliding keys are appended to the bucket chain in `O(1)` time.
-- Default strategy in C++ `std::unordered_map` and Java `HashMap`.
-
+  - Each bucket houses a Linked List (or Red-Black Tree for deep collision chains).
+  - Colliding keys are appended to the bucket chain in `O(1)` time.
+  - Default strategy in C++ `std::unordered_map` and Java `HashMap`.
 2. **Open Addressing (Linear Probing):**
-
-- Elements reside directly in the table array. Upon collision, search sequentially for the next vacant slot: `(bucket + 1) % capacity`.
-
+  - Elements reside directly in the table array. Upon collision, search sequentially for the next vacant slot: `(bucket + 1) % capacity`.
 3. **Load Factor & Dynamic Rehashing:**
-
-- Load Factor `alpha = N / capacity` tracks table saturation.
-- When `alpha >= 0.75`, the table allocates double capacity (`capacity x 2`) and re-hashes all entries, preserving average `O(1)` lookups.
+  - Load Factor `alpha = N / capacity` tracks table saturation.
+  - When `alpha >= 0.75`, the table allocates double capacity (`capacity x 2`) and re-hashes all entries, preserving average `O(1)` lookups.
 
 ## Code Implementation & Execution Trace
 

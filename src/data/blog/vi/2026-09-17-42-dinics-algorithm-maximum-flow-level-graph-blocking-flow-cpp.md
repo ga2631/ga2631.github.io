@@ -37,16 +37,12 @@ Sự khác biệt căn bản giữa Edmonds-Karp và Dinic nằm ở kiến trú
 Thuật toán Dinic vận hành theo cấu trúc 2 pha lặp đi lặp lại:
 
 1. **Pha 1: Xây dựng Đồ thị Phân tầng (Level Graph bằng BFS):**
-  
-
-- Gán cấp độ cho đỉnh nguồn: `level[s] = 0`.
-- Dùng BFS lan truyền: Với mỗi cạnh `(u, v)` có dung lượng dư `capacity[u][v] > 0`, nếu `level[v] == -1` thì gán `level[v] = level[u] + 1`.
-- Nếu đỉnh đích `t` không thể chạm tới (`level[t] == -1`), thuật toán dừng ngay lập tức &rarr; Đã đạt luồng cực đại.
+  - Gán cấp độ cho đỉnh nguồn: `level[s] = 0`.
+  - Dùng BFS lan truyền: Với mỗi cạnh `(u, v)` có dung lượng dư `capacity[u][v] > 0`, nếu `level[v] == -1` thì gán `level[v] = level[u] + 1`.
+  - Nếu đỉnh đích `t` không thể chạm tới (`level[t] == -1`), thuật toán dừng ngay lập tức &rarr; Đã đạt luồng cực đại.
 2. **Pha 2: Đẩy Luồng chặn (Blocking Flow bằng DFS):**
-  
-
-- Chỉ cho phép đẩy luồng từ tầng `level[u]` sang tầng kế tiếp `level[u] + 1`: Tức là điều kiện duyệt cạnh hợp lệ là `level[v] == level[u] + 1` và `cap > 0`.
-- **Tối ưu hóa con trỏ nhánh cụt (Work Pointer / Head Optimization):** Duy trì mảng `work[u]` lưu chỉ số của cạnh kề đang xét. Khi một nhánh DFS từ đỉnh `u` bị nghẽn (không đẩy được thêm luồng), con trỏ `work[u]` tự động tăng lên để loại bỏ vĩnh viễn nhánh cụt đó trong pha hiện tại, tránh duyệt lại các cạnh vô ích.
+  - Chỉ cho phép đẩy luồng từ tầng `level[u]` sang tầng kế tiếp `level[u] + 1`: Tức là điều kiện duyệt cạnh hợp lệ là `level[v] == level[u] + 1` và `cap > 0`.
+  - **Tối ưu hóa con trỏ nhánh cụt (Work Pointer / Head Optimization):** Duy trì mảng `work[u]` lưu chỉ số của cạnh kề đang xét. Khi một nhánh DFS từ đỉnh `u` bị nghẽn (không đẩy được thêm luồng), con trỏ `work[u]` tự động tăng lên để loại bỏ vĩnh viễn nhánh cụt đó trong pha hiện tại, tránh duyệt lại các cạnh vô ích.
 
 ## Triển khai mã nguồn & Dry Run
 

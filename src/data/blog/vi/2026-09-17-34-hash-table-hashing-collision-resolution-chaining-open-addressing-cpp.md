@@ -36,10 +36,8 @@ Kiến trúc Bảng băm và Chiến lược giải quyết Đụng độ (Colli
 
 1. **Hàm băm (Hash Function):** Ánh xạ một khóa có kích thước bất kỳ (chuỗi ký tự, object) thành một số nguyên `index = hash(key) % Capacity` phân bố đều khắp các ô nhớ (Buckets). Thuật toán băm chuỗi nổi tiếng: `djb2` (nhân 33 kết hợp XOR).
 2. **Xử lý Đụng độ (Collision Resolution):** Khi hai khóa khác nhau tạo ra cùng một chỉ số băm:
-
-- _Separate Chaining (Chuỗi liên kết riêng biệt):_ Mỗi bucket là một danh sách liên kết (Linked List). Khi đụng độ, chèn phần tử mới vào danh sách tại bucket đó.
-- _Open Addressing (Địa chỉ mở):_ Dò tìm ô trống tiếp theo trong bảng (Linear Probing, Quadratic Probing, Double Hashing).
-
+  - _Separate Chaining (Chuỗi liên kết riêng biệt):_ Mỗi bucket là một danh sách liên kết (Linked List). Khi đụng độ, chèn phần tử mới vào danh sách tại bucket đó.
+  - _Open Addressing (Địa chỉ mở):_ Dò tìm ô trống tiếp theo trong bảng (Linear Probing, Quadratic Probing, Double Hashing).
 3. **Hệ số Tải (Load Factor `α`) & Tái băm (Rehashing):** Khi tỷ lệ `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, bảng băm tự động nhân đôi kích thước và phân bổ lại toàn bộ phần tử để ngăn ngừa danh sách liên kết bị kéo dài, giữ vững hiệu năng `O(1)`.
 
 ## Triển khai mã nguồn & Dry Run

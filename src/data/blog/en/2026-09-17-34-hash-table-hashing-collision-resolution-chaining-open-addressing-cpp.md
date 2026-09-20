@@ -36,10 +36,8 @@ Hash Table Architecture and Collision Resolution Strategies:
 
 1. **Hash Function Mechanics:** Uniformly maps variable-length keys into array indices via `index = hash(key) % Capacity`. Industry standard string hashing algorithm: `djb2` (bitwise shift multiplication by 33 + character value).
 2. **Collision Resolution Mechanisms:** When two distinct keys produce identical hash indices:
-
-- _Separate Chaining:_ Each bucket houses a dynamic linked list. Collisions append to the bucket list.
-- _Open Addressing:_ Probing for subsequent empty slots across the primary array (Linear Probing, Quadratic Probing, Double Hashing).
-
+  - _Separate Chaining:_ Each bucket houses a dynamic linked list. Collisions append to the bucket list.
+  - _Open Addressing:_ Probing for subsequent empty slots across the primary array (Linear Probing, Quadratic Probing, Double Hashing).
 3. **Load Factor (`α`) & Dynamic Rehashing:** When `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, the table automatically doubles capacity and re-inserts all items to maintain short bucket chains and sustain strict `O(1)` lookup guarantees.
 
 ## Code Implementation & Execution Trace

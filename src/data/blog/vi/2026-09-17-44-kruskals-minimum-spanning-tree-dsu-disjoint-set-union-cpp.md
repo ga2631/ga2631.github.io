@@ -40,10 +40,8 @@ Thuật toán Kruskal đạt hiệu năng siêu việt nhờ kết hợp với c
 1. **Mô hình Rừng phân mảnh (Spanning Forest):** Ban đầu, mỗi đỉnh `v in V` tạo thành một cây độc lập gồm 1 nút (tương ứng với một tập hợp rời rạc). Cây khung hoàn chỉnh sẽ được tạo ra bằng cách hợp nhất dần các cây này thành một cây duy nhất gồm `V - 1` cạnh.
 2. **Kiểm tra Chu trình trong `O(alpha(V))`:** Hai đỉnh `u` và `v` sẽ tạo thành chu trình khi và chỉ khi chúng đã thuộc về cùng một thành phần liên thông (tức là có cùng gốc đại diện: `find(u) == find(v)`).
 3. **Hai Kỹ thuật Tối ưu DSU Thần thánh:**
-  
-
-- **Nén đường (Path Compression):** Trong hàm `find(u)`, trỏ trực tiếp tất cả các nút trên đường đi thẳng về nút gốc đại diện. Chiều cao cây bị triệt tiêu gần như bằng 1.
-- **Hợp nhất theo Hạng (Union by Rank):** Luôn gắn cây có độ sâu/kích thước nhỏ hơn vào gốc của cây lớn hơn để ngăn cây bị biến dạng thành danh sách liên kết.
+  - **Nén đường (Path Compression):** Trong hàm `find(u)`, trỏ trực tiếp tất cả các nút trên đường đi thẳng về nút gốc đại diện. Chiều cao cây bị triệt tiêu gần như bằng 1.
+  - **Hợp nhất theo Hạng (Union by Rank):** Luôn gắn cây có độ sâu/kích thước nhỏ hơn vào gốc của cây lớn hơn để ngăn cây bị biến dạng thành danh sách liên kết.
 
 Nhờ DSU, mọi thao tác kiểm tra chu trình và hợp nhất tập hợp chỉ tiêu tốn thời gian **gần như hằng số** `O(alpha(V))` (với `alpha` là hàm Ackermann nghịch đảo, `alpha(V) <= 4` với mọi `V <= 10⁸⁰`). Tổng thời gian của Kruskal hoàn toàn bị chi phối bởi bước sắp xếp cạnh `O(E \log E) = O(E \log V)`.
 

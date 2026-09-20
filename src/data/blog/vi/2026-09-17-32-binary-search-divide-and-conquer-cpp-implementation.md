@@ -34,10 +34,9 @@ Cách tiếp cận ngây thơ:
 Tư duy Chia để Trị và các kỹ thuật cốt lõi của Binary Search:
 
 1. **Loại trừ 50% Không gian sau mỗi bước:** So sánh `arr[mid]` với `target`:
-
-- Nếu `arr[mid] == target`: Tìm thấy ngay lập tức.
-- Nếu `arr[mid] < target`: Toàn bộ nửa trái chắc chắn nhỏ hơn target &rarr; Thu hẹp tìm kiếm về nửa phải `[mid + 1, right]`.
-- Nếu `arr[mid] > target`: Toàn bộ nửa phải chắc chắn lớn hơn &rarr; Thu hẹp về nửa trái `[left, mid - 1]`.
+  - Nếu `arr[mid] == target`: Tìm thấy ngay lập tức.
+  - Nếu `arr[mid] < target`: Toàn bộ nửa trái chắc chắn nhỏ hơn target &rarr; Thu hẹp tìm kiếm về nửa phải `[mid + 1, right]`.
+  - Nếu `arr[mid] > target`: Toàn bộ nửa phải chắc chắn lớn hơn &rarr; Thu hẹp về nửa trái `[left, mid - 1]`.
 2. **Phòng chống Cạm bẫy Tràn số nguyên (Integer Overflow):** Công thức `mid = (left + right) / 2` có thể tràn số nguyên 32-bit có dấu khi `left + right > 2^31 - 1`. *Kỹ thuật chuẩn:* Luôn viết `mid = left + (right - left) / 2`.
 3. **Mở rộng Tìm kiếm Biên (Lower Bound):** Tìm phần tử đầu tiên `>= target`, nền tảng của các chỉ mục cơ sở dữ liệu B-Tree.
 

@@ -43,10 +43,8 @@ In 1956, Lester Ford Jr. and Delbert Fulkerson revolutionized flow optimization 
 The Ford-Fulkerson method is established on 3 foundational pillars:
 
 1. **Residual Graph (`G_f`):** For each edge with capacity `c` and current flow `f`:
-  
-
-- *Forward Edge:* Residual capacity `c(u, v) - f(u, v)` (represents available headroom to push additional flow).
-- *Backward Edge:* Residual capacity `f(u, v)` (represents capability to cancel/reroute previously sent flow).
+  - *Forward Edge:* Residual capacity `c(u, v) - f(u, v)` (represents available headroom to push additional flow).
+  - *Backward Edge:* Residual capacity `f(u, v)` (represents capability to cancel/reroute previously sent flow).
 2. **Augmenting Path:** A simple path from `s` to `t` in `G_f` where every constituent edge has residual capacity `> 0`. The path bottleneck is the minimum residual capacity along this path.
 3. **Max-Flow Min-Cut Theorem:** The maximum flow value from `s` to `t` strictly equals the total capacity of the Minimum Cut separating `s` from `t`.
 4. **Edmonds-Karp Specialization (1972):** Utilizing **BFS** rather than DFS to consistently choose the shortest augmenting path guarantees polynomial convergence in `O(V x E²)` time, eliminating risks of infinite loops on irrational capacities.
