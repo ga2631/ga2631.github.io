@@ -17,13 +17,13 @@ tags:
   - "Performance"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong phát triển phần mềm và tối ưu hóa hệ thống, câu hỏi cốt tử mà mỗi kỹ sư phải trả lời trước khi đưa bất kỳ đoạn mã nào lên môi trường Production là: _'Thuật toán này chạy nhanh đến mức nào, và nó tiêu tốn bao nhiêu tài nguyên khi lượng dữ liệu người dùng tăng trưởng gấp 1,000 lần?'_.
 
 Một sai lầm kinh điển của người mới lập trình là dùng đồng hồ bấm giờ (Wall-clock Time) qua các hàm như `console.time()` hay `System.nanoTime()` để đánh giá tốc độ. Cách làm này không thể đưa ra kết luận chuẩn xác vì thời gian chạy vật lý phụ thuộc hoàn toàn vào cấu hình phần cứng CPU, nhiệt độ máy, trình biên dịch, và các tiến trình chạy nền của hệ điều hành. Do đó, khoa học máy tính cần một **hệ thống thước đo toán học chuẩn hóa (Mathematical Framework)** để phân tích độc lập với môi trường phần cứng.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận thực nghiệm ban đầu (Empirical Benchmarking):
 
@@ -32,7 +32,7 @@ Cách tiếp cận thực nghiệm ban đầu (Empirical Benchmarking):
 
 Chúng ta cần một tư duy định lượng tiệm cận (Asymptotic Analysis) để dự đoán xu hướng tăng trưởng của tài nguyên theo quy mô đầu vào N.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Để đánh giá một thuật toán toàn diện, tôi thiết lập mô hình tính toán chuẩn dựa trên **Mô hình Máy tính RAM (Random Access Machine Model)** và 3 hệ số đo lường trụ cột:
 
@@ -47,7 +47,7 @@ Chúng ta cần một tư duy định lượng tiệm cận (Asymptotic Analysis
 - **Time Complexity:** Số lượng phép toán nguyên thủy (Primitive Operations: gán, so sánh, số học) theo hàm của N.
 - **Space Complexity (Total Space vs Auxiliary Space):** Tổng dung lượng bộ nhớ thuật toán cần dùng. Trong đó, _Auxiliary Space_ (Bộ nhớ phụ trợ) là phần bộ nhớ tạm do thuật toán tự cấp phát thêm (không tính mảng đầu vào), bao gồm Heap allocations và Call Stack frames trong đệ quy.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Bản đồ phân cấp tăng trưởng độ phức tạp thuật toán và cấu trúc bộ nhớ:
 
@@ -81,7 +81,7 @@ flowchart TD
 - **O(N log N) Linearithmic Time:** Các giải thuật chia để trị tối ưu như QuickSort, MergeSort, TimSort.
 - **O(N²) Quadratic Time:** 2 vòng lặp lồng nhau duyệt qua tất cả các cặp (i, j).
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Bộ khung Đánh giá Chuẩn mực (Evaluation Framework) cho Toàn bộ Series:**
 

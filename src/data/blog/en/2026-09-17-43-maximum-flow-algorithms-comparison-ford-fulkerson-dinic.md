@@ -17,13 +17,13 @@ tags:
   - "Bipartite Matching"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 Network Flow theory forms one of the most powerful paradigms in computer science. When engineering large-scale routing pipelines, choosing between classical **Ford-Fulkerson / Edmonds-Karp** and modern **Dinic's algorithm** results in orders-of-magnitude performance variance.
 
 This article provides an architectural dissection of both methods, evaluates real-world scalability limits, and demonstrates reducing classical problems like Maximum Bipartite Matching to network flow.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Why Edmonds-Karp suffers on dense networks:
 
@@ -31,7 +31,7 @@ Why Edmonds-Karp suffers on dense networks:
 - With 10,000 parallel paths of equal length, Edmonds-Karp executes 10,000 separate BFS traversals.
 - Dinic bundles all 10,000 paths into a single **Level Graph**, saturating them simultaneously via DFS (Blocking Flow) in one consolidated phase.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 **Comprehensive Comparison Matrix:**
 
@@ -77,7 +77,7 @@ Why Edmonds-Karp suffers on dense networks:
   </tbody>
 </table>
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Transforming Maximum Bipartite Matching into a Network Flow problem:
 
@@ -203,7 +203,7 @@ int main() {
 }
 ```
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Architectural takeaways for distributed systems:
 

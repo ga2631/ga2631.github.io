@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Khi mô hình hóa các mạng lưới phức tạp trong thế giới thực - như mạng lưới bạn bè trên Facebook, mạng liên kết trang web của Google PageRank, hệ thống giao thông đường bay quốc tế, hay lưới phân phối điện năng - các mối quan hệ không còn đơn thuần là tuyến tính hay phân cấp một chiều. Các thực thể có thể **kết nối tùy ý với nhau tạo thành mạng lưới đa chiều**.
 
@@ -26,7 +26,7 @@ Khi mô hình hóa các mạng lưới phức tạp trong thế giới thực - 
 - `V` (Vertices / Nodes): Tập hợp các **Đỉnh** (đại diện cho người dùng, thành phố, máy chủ).
 - `E` (Edges / Links): Tập hợp các **Cạnh** kết nối giữa các cặp đỉnh (đại diện cho quan hệ bạn bè, đường bay, cáp mạng). Cạnh có thể có hướng (Directed) hoặc vô hướng (Undirected), có trọng số (Weighted) hoặc không trọng số.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Hai phương pháp kinh điển để biểu diễn đồ thị trong bộ nhớ máy tính:
 
@@ -41,7 +41,7 @@ Hai phương pháp kinh điển để biểu diễn đồ thị trong bộ nhớ
 - Sử dụng mảng gồm `V` danh sách: `std::vector<std::vector<int>> adj(V)`. Mỗi đỉnh `u` lưu danh sách các đỉnh kề trực tiếp với nó.
 - _Ưu điểm:_ Tiết kiệm bộ nhớ tối đa `O(V + E)`. Duyệt các đỉnh kề cực nhanh chỉ tốn `O(deg(u))`. Đây là cấu trúc chuẩn mực được sử dụng trong 99% các ứng dụng thực tế.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **Hai Thuật toán Duyệt Đồ thị Cơ bản (Graph Traversals):**
 
@@ -57,7 +57,7 @@ Hai phương pháp kinh điển để biểu diễn đồ thị trong bộ nhớ
 
 _Nguyên tắc an toàn:_ Bắt buộc phải duy trì mảng `visited[V]` để đánh dấu các đỉnh đã thăm, ngăn ngừa thuật toán rơi vào vòng lặp vô tận khi đồ thị chứa chu trình.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cấu trúc Danh sách kề và Cây duyệt đồ thị BFS / DFS:
 
@@ -175,7 +175,7 @@ int main() {
 - *DFS từ đỉnh 0:*
   - Thăm 0 &rarr; Đi sâu vào nhánh 1 &rarr; Đi sâu vào nhánh 3 (hết đường, quay lui) &rarr; Đi sang nhánh 4 &rarr; Từ 4 đi sang 2 &rarr; Kết quả DFS: `0 1 3 4 2`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

@@ -16,13 +16,13 @@ tags:
   - "Performance"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In high-throughput systems (such as user session stores, database index lookups, and distributed in-memory caches like Redis), Key-Value lookups execute millions of times per second. Linear scans across Arrays or Linked Lists taking `O(N)` time would bring production infrastructure to a halt.
 
 A **Hash Table (Hash Map)** is a revolutionary data structure enabling **Insert**, **Delete**, and **Lookup** in **average constant time `O(1)`**, irrespective of dataset scale.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 A Hash Table applies a **Hash Function** to map arbitrary keys to integer array slot indices (Buckets):
 
@@ -32,7 +32,7 @@ bucket_index = hash(key) % capacity
 
 Core Mathematical Obstacle: By the _Pigeonhole Principle_, mapping an infinite domain of keys to a finite array space inevitably causes **two distinct keys to produce the exact same bucket index (`hash(k₁) % M == hash(k₂) % M`)**. This collision event is termed a **Hash Collision**.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Two primary architectural strategies resolve collisions to sustain `O(1)` performance:
 
@@ -51,7 +51,7 @@ Two primary architectural strategies resolve collisions to sustain `O(1)` perfor
 - Load Factor `alpha = N / capacity` tracks table saturation.
 - When `alpha >= 0.75`, the table allocates double capacity (`capacity x 2`) and re-hashes all entries, preserving average `O(1)` lookups.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Hash function mapping and Separate Chaining collision handling:
 
@@ -199,7 +199,7 @@ int main() {
 - _Insert "cherry" (val 80):_ Collision at `bucket 1` &rarr; Appends to linked list at `table[1]`.
 - _Lookup "banana":_ Hashes to `bucket 1` &rarr; Traverses first node, matches "banana" &rarr; Returns `40` in `O(1)`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

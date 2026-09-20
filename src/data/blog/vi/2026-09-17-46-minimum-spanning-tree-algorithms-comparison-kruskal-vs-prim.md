@@ -17,7 +17,7 @@ tags:
   - "Architecture"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong bài toán xây dựng Cây khung nhỏ nhất (MST), hai giải thuật kinh điển **Kruskal** và **Prim** cùng mang lại kết quả tối ưu toàn cục như nhau nhưng vận hành dựa trên hai mô hình kiến trúc hoàn toàn đối lập:
 
@@ -26,14 +26,14 @@ Trong bài toán xây dựng Cây khung nhỏ nhất (MST), hai giải thuật k
 
 Việc hiểu rõ ranh giới hiệu năng giữa hai thuật toán dựa trên mật độ đồ thị (Graph Density) là kiến thức cốt tử của kỹ sư hệ thống.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Các sai lầm thực chiến thường gặp:
 
 1. **Dùng Kruskal trên Đồ thị Dày (Dense Graph `E ~ V²`):** Sắp xếp `10⁶` cạnh tốn kém chi phí thời gian và bộ nhớ gấp nhiều lần so với việc chạy Prim bằng ma trận `O(V²)`.
 2. **Dùng Prim trên Đồ thị Không Liên thông:** Prim chỉ tìm được cây khung của thành phần liên thông chứa đỉnh xuất phát, trong khi Kruskal tự động tìm ra **Rừng khung nhỏ nhất (Minimum Spanning Forest)** cho toàn bộ đồ thị mà không cần sửa đổi mã nguồn.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **Bảng Ma trận So sánh Toàn diện giữa Kruskal và Prim:**
 
@@ -84,7 +84,7 @@ Các sai lầm thực chiến thường gặp:
   </tbody>
 </table>
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Cây quyết định lựa chọn thuật toán Cây khung nhỏ nhất:
 
@@ -181,7 +181,7 @@ int main() {
 }
 ```
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Quy tắc ghi nhớ nhanh cho kỹ sư phần mềm:
 

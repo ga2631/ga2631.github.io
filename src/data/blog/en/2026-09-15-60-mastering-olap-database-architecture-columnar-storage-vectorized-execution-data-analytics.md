@@ -18,7 +18,7 @@ tags:
   - "Big Data"
 ---
 
-## 1. Business Context & Data Requirements
+## Business Context & Data Requirements
 
 While OLTP databases are architected to handle millions of discrete single-row transactional writes with sub-millisecond latencies, Data Analysts and Data Scientists encounter the exact reciprocal challenge: **How can we scan, filter, and aggregate billions of historical records in real-time to deliver interactive, sub-second analytical business dashboards?**
 
@@ -32,7 +32,7 @@ Consider the enterprise workloads demanding massive analytical throughput:
 
 In traditional row-oriented storage engines (e.g., PostgreSQL, MySQL), all columns for a given record are laid out contiguously on disk pages. Executing a simple aggregate query like `SELECT AVG(total_amount) FROM orders WHERE order_date >= '2026-01-01';` forces the database engine to fetch every single unneeded column (customer names, billing addresses, free-text remarks) into memory, wasting 95-99% of storage I/O bandwidth. To conquer this physical constraint, **Column-Oriented OLAP Architectures** were invented.
 
-## 2. Data Modeling & Schema Design
+## Data Modeling & Schema Design
 
 To design and operate analytical platforms with peak computational efficiency, engineers must understand the architectural evolution of OLAP and the physical mechanics of columnar storage.
 
@@ -100,7 +100,7 @@ flowchart TD
 
 Traditional databases employ the Volcano Iterator Model (tuple-at-a-time `next()` calls), incurring catastrophic CPU branch mispredictions and function call overheads. In contrast, a **Vectorized Execution Engine** streams tight arrays of 1,024 to 2,048 primitive column elements directly into CPU registers, leveraging hardware **SIMD (Single Instruction, Multiple Data - AVX2/AVX-512)** instructions to execute dozens of mathematical and filtering operations in a single CPU clock cycle.
 
-## 3. Pipeline Construction & Processing Logic
+## Pipeline Construction & Processing Logic
 
 To demonstrate a modern production OLAP pipeline, below is an end-to-end streaming architecture paired with optimized **ClickHouse MergeTree DDL** and advanced analytical SQL queries.
 
@@ -198,7 +198,7 @@ GROUP BY event_date, country, device_type
 ORDER BY event_date DESC, gross_merchandise_value DESC;
 ```
 
-## 4. Data Validation & Performance Tuning
+## Data Validation & Performance Tuning
 
 Sustaining sub-100ms query response SLAs over petabyte-scale data lakes requires disciplined physical layout and approximation strategies:
 
@@ -251,7 +251,7 @@ Sustaining sub-100ms query response SLAs over petabyte-scale data lakes requires
   </tbody>
 </table>
 
-## 5. Summary & Recommendations
+## Summary & Recommendations
 
 Columnar OLAP engines represent the pinnacle of modern data engineering, uniting hardware-aware data layouts with high-speed vectorized algorithms.
 

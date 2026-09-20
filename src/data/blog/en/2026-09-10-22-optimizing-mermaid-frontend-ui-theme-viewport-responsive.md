@@ -17,7 +17,7 @@ tags:
   - "CSS Architecture"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 Embedding dynamic architectural and sequence diagrams into technical blogs and documentation portals creates an engaging reading experience. However, integrating `mermaid` into a React/TypeScript Single Page Application (SPA) presents four significant engineering hurdles:
 
@@ -26,7 +26,7 @@ Embedding dynamic architectural and sequence diagrams into technical blogs and d
 3. **Mobile Viewport Constraints:** Complex microservice topologies or multi-actor sequence diagrams either shrink into unreadable sizes or overflow horizontally.
 4. **Artificial Box Isolation:** Wrapping diagrams in heavy card borders and shadows makes illustrations feel disjointed from the surrounding narrative.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Common naive integration patterns in React applications:
 
@@ -36,7 +36,7 @@ Common naive integration patterns in React applications:
 
 **Why this fails in practice:** Diagrams cannot dynamically update when toggling themes during reading sessions. Mobile users cannot pan or zoom into high-density flows, and rigid card borders disrupt typography rhythm.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 To deliver an uncompromised reader experience, I engineered an end-to-end integration architecture:
 
@@ -45,7 +45,7 @@ To deliver an uncompromised reader experience, I engineered an end-to-end integr
 3. **Viewport Fit View Modal:** An interactive, compact micro-pill button triggers full-viewport expansion (95vw x 86vh) equipped with 60 FPS GPU-accelerated Pan and Zoom (40% - 350%).
 4. **Seamless Text-Flow Integration:** Eliminate heavy box borders and backgrounds, allowing vector diagrams to breathe naturally between paragraphs.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Implementation workflow across React components and SCSS:
 
@@ -77,7 +77,7 @@ sequenceDiagram
 - **CSS Child Selector Scoping (`> svg`):** Prevents diagram container sizing rules from overriding micro-icons inside button pills.
 - **Theme Synchronization via MutationObserver:** Automatically captures root theme switches to refresh vector colors without page reloads.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Performance & Production Impact:**
 

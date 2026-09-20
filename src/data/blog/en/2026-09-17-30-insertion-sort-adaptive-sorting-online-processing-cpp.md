@@ -16,20 +16,20 @@ tags:
   - "Data Structures"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In real-time streaming pipelines, incoming data arrives incrementally item-by-item and must be continuously integrated into an ongoing sorted sequence. Problem statement: How can we insert a new element into an already-sorted subarray with minimal CPU operations?
 
 Insertion Sort directly models the human card-sorting intuition: picking one card at a time and inserting it into its correct position within an already sorted hand.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 The naive approach:
 
 - Iteratively swapping adjacent elements backwards using `std::swap` until the current item reaches its proper place.
 - *Bottleneck:* Each `std::swap` executes 3 memory assignments, creating substantial overhead compared to one-way array shifting.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Subarray Shifting mechanics and Adaptive Sorting power:
 
@@ -37,7 +37,7 @@ Subarray Shifting mechanics and Adaptive Sorting power:
 2. **High Adaptability (Adaptive Sorting):** On nearly-sorted collections, the inner loop terminates after a single comparison &rarr; Achieving blazing linear `Ω(N)` runtime.
 3. **Online Algorithm Capability:** Can sort records on-the-fly as they are received across network sockets without needing prior knowledge of total collection size N.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing subarray shifting and key insertion on `[12, 11, 13, 5, 6]`:
 
@@ -97,7 +97,7 @@ int main() {
 - *Pass `i = 3`:* `key = 5`. Shift 13, 12, 11 to the right `->` Insert 5 at `arr[0]` `->` `{5, 11, 12, 13, 6}`.
 - *Pass `i = 4`:* `key = 6`. Shift 13, 12, 11 to the right `->` Insert 6 at `arr[1]` `->` `{5, 6, 11, 12, 13}`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Metrics Scorecard (Standard Evaluation Framework):**
 

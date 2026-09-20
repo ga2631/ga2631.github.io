@@ -16,7 +16,7 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In distributed telecom backbones, logistics route matrix precomputation, and game engines, applications often require instant `O(1)` query responses for the shortest distance between **any arbitrary pair of nodes `(u, v)`**.
 
@@ -24,7 +24,7 @@ Problem statement: **All-Pairs Shortest Path (APSP)**. Given a directed graph `G
 
 The Floyd-Warshall algorithm (published by Robert Floyd and Stephen Warshall in 1962) provides a remarkably elegant 3-nested-loop dynamic programming solution.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Iterating Single-Source Shortest Path (SSSP) algorithms `V` times across every vertex:
 
@@ -33,7 +33,7 @@ Iterating Single-Source Shortest Path (SSSP) algorithms `V` times across every v
 
 Floyd-Warshall provides a uniform `O(V³)` bound through in-place matrix dynamic programming with exceptional cache locality.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 The DP state characterizes shortest paths through **permitted intermediate vertices**:
 
@@ -50,7 +50,7 @@ dp[k][i][j] = min(
 3. **In-Place 2D Matrix Optimization:** Because values in row `k` and column `k` remain unchanged when vertex `k` is the pivot, dimension `k` can be dropped, computing directly on `dist[i][j]`. _Crucial Rule:_ The intermediate pivot loop `k` must be the **outermost** loop.
 4. **Negative Cycle Detection:** Inspect the main diagonal: If any `dist[i][i] < 0`, vertex `i` participates in a negative cycle.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Matrix transformation mechanics via intermediate pivot vertex `k`:
 
@@ -166,7 +166,7 @@ int main() {
 - _Pivot `k = 2`:_ Relaxes path `0 -> 2 -> 3`: `dist[0][2] + dist[2][3] = 8 + 1 = 9 < 10` &rarr; Updates `dist[0][3] = 9`. Route optimizes from direct edge (10) to 3-hop path `0 -> 1 -> 2 -> 3` (9).
 - _Convergence:_ Matrix stably settles across all pairs.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

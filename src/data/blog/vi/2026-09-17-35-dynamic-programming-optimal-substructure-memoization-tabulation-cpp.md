@@ -16,7 +16,7 @@ tags:
   - "Computer Science"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong khoa học máy tính, nhiều bài toán tối ưu hóa có không gian tìm kiếm bùng nổ theo hàm mũ nếu giải bằng phương pháp vét cạn (Brute Force). Bài toán kinh điển đặt ra: **Bài toán Balo 0/1 (0/1 Knapsack Problem)**.
 
@@ -24,7 +24,7 @@ Cho một chiếc balo có sức chứa trọng lượng tối đa là `W` và m
 
 Nếu dùng vét cạn duyệt qua toàn bộ `2ᴺ` tập con có thể, độ phức tạp thời gian sẽ là `O(2ᴺ)` - một con số bất khả thi khi `N >= 40` (vượt quá 1000 tỷ phép tính). **Thuật toán Quy hoạch động (Dynamic Programming - DP)** được sáng tạo bởi nhà toán học Richard Bellman vào thập niên 1950 chính là chìa khóa phá vỡ sự bùng nổ hàm mũ này, đưa độ phức tạp về thời gian đa thức giả (Pseudo-polynomial time) `O(N x W)`.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận trực quan ban đầu là sử dụng giải thuật Đệ quy thuần túy (Plain Recursion). Tại mỗi đồ vật thứ `i`, ta có hai nhánh quyết định:
 
@@ -42,7 +42,7 @@ knapsack(i, w) = max(
 
 Cây đệ quy khi thực thi theo cách này gặp phải vấn đề nghiêm trọng: *Bài toán con gối nhau liên tục (Overlapping Subproblems)*. Cùng một trạng thái `(i, w)` bị tính toán lặp đi lặp lại hàng triệu lần trên các nhánh đệ quy độc lập, khiến Call Stack bị nghẽn và thời gian chạy tăng vọt theo cấp số nhân `O(2ᴺ)`.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Để áp dụng thành công Quy hoạch động, bài toán bắt buộc phải thỏa mãn **hai điều kiện tiên quyết**:
 
@@ -56,7 +56,7 @@ Có 2 trường phái hiện thực hóa Quy hoạch động:
 
 **Tối ưu không gian bộ nhớ (Space Optimization):** Quan sát thấy tại bước `i`, ta chỉ cần thông tin từ hàng `i - 1`. Do đó, ta có thể rút gọn bảng 2 chiều kích thước `(N + 1) x (W + 1)` thành mảng 1 chiều kích thước `W + 1`. Lưu ý: Duyệt biến sức chứa `w` theo chiều nghịch từ `W` lùi về `w[i]` để tránh ghi đè dữ liệu của bước trước đó trong cùng một lượt duyệt.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ chuyển trạng thái trong Quy hoạch động và cây bài toán con gối nhau:
 
@@ -155,7 +155,7 @@ int main() {
 - *Vật 4 (w=5, v=8):* Duyệt `w = 5`:
   - `w = 5: dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Kết quả tối ưu cuối cùng là `8` (Chọn vật 4 có `w=5, v=8`).
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

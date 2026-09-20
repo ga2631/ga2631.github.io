@@ -16,7 +16,7 @@ tags:
   - "Negative Cycle"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In production graph architectures, edge costs are not universally positive. In financial systems (such as FX Currency Arbitrage) or renewable energy trading grids, edges frequently carry **negative weights** representing arbitrage gains or energy credits.
 
@@ -27,13 +27,13 @@ Problem statement: Given a directed graph `G = (V, E)` with `V` vertices and `E`
 
 The Bellman-Ford algorithm (developed by Richard Bellman and Lester Ford Jr.) serves as the definitive solution for negative-weight routing.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Dijkstra's algorithm fundamentally collapses in the presence of negative weights because its greedy invariant permanently locks nodes once popped from the priority queue. If a negative edge relaxes an already-settled node later, Dijkstra has no rollback mechanism to propagate updates downstream.
 
 To eliminate greedy assumptions, Bellman-Ford adopts dynamic programming by globally and iteratively relaxing _all edges_ across the entire graph.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 The mathematical foundation of Bellman-Ford rests on the **Simple Path Invariant**:
 
@@ -42,7 +42,7 @@ The mathematical foundation of Bellman-Ford rests on the **Simple Path Invariant
 3. **Negative Cycle Detection (Pass `V`):** Executing a `V`-th relaxation pass tests for negative cycles: If any edge `(u, v)` still satisfies `dist[u] + w < dist[v]`, a negative cycle exists along the path.
 4. **Early-Exit Optimization:** If an iteration completes without a single distance update (`updated == false`), the algorithm terminates immediately, reducing best-case time to `O(E)`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Progression of edge relaxation passes and negative cycle detection lifecycle:
 
@@ -154,7 +154,7 @@ int main() {
 - _Pass 3 (i = 3):_ Zero updates occur &rarr; `updated = false` triggers early break.
 - _Verification:_ Pass 5 finds zero further reductions &rarr; Stable optimal shortest path distances confirmed.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

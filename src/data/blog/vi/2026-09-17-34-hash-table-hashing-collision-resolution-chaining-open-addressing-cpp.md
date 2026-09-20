@@ -17,20 +17,20 @@ tags:
   - "Performance"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong các hệ thống phân tán, cơ sở dữ liệu và máy chủ web chịu tải cao, việc tìm kiếm dữ liệu theo khóa (Key-Value Lookup) phải diễn ra tức thì với độ trễ cực thấp. Đề bài đặt ra: Thiết kế một cấu trúc dữ liệu lưu trữ cho phép thực hiện các thao tác **Thêm (Insert), Tìm kiếm (Get) và Xóa (Delete) với thời gian trung bình kỳ vọng đạt `O(1)`**.
 
 Bảng băm (Hash Table) kết hợp cùng Thuật toán Băm (Hashing) là giải pháp tiêu chuẩn toàn cầu để đạt được tốc độ truy xuất `O(1)` hằng số độc lập với kích thước dữ liệu.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 So sánh với các cấu trúc dữ liệu truyền thống:
 
 - _Mảng phẳng (Array):_ Tìm kiếm tốn `O(N)` phép so sánh tuần tự.
 - _Cây tìm kiếm nhị phân cân bằng (AVL / Red-Black Tree):_ Duy trì thời gian `O(log N)`, nhưng vẫn phát sinh chi phí so sánh khóa và mất chi phí xoay cây (Tree Rebalancing).
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Kiến trúc Bảng băm và Chiến lược giải quyết Đụng độ (Collision Resolution):
 
@@ -42,7 +42,7 @@ Kiến trúc Bảng băm và Chiến lược giải quyết Đụng độ (Colli
 
 3. **Hệ số Tải (Load Factor `α`) & Tái băm (Rehashing):** Khi tỷ lệ `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, bảng băm tự động nhân đôi kích thước và phân bổ lại toàn bộ phần tử để ngăn ngừa danh sách liên kết bị kéo dài, giữ vững hiệu năng `O(1)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Minh họa kiến trúc Bảng băm Separate Chaining xử lý đụng độ:
 
@@ -182,7 +182,7 @@ int main() {
 - _Chèn "cherry" (giá trị 80):_ Giả sử băm ra cùng bucket `1` &rarr; Đụng độ băm! Separate Chaining gắn tiếp `{"cherry", 80}` vào cuối danh sách liên kết tại `table[1]`.
 - _Truy xuất `get("banana")`:_ Tính băm ra bucket `1` &rarr; Duyệt node đầu tiên của danh sách tìm thấy ngay khóa "banana" &rarr; Trả về `40` trong thời gian `O(1)`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Đánh giá Hiệu năng theo Framework Chuẩn:**
 

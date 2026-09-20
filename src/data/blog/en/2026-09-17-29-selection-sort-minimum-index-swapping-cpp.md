@@ -16,20 +16,20 @@ tags:
   - "Memory Efficiency"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In embedded systems and hardware environments with Flash or EEPROM memory, physical memory write operations cause wear and consume substantial energy. Problem statement: How can we sort an array of N integers while **strictly minimizing memory write and swap operations**?
 
 Selection Sort addresses this challenge by ensuring that at most `N - 1` swaps (`O(N)` memory writes) occur across the entire sorting lifecycle.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 The naive approach:
 
 - Swapping immediately whenever an element smaller than `arr[i]` is encountered during the scan.
 - *Drawback:* Triggers uncontrolled memory writes (up to `O(N²)` swaps), destroying CPU cache efficiency and degrading hardware memory endurance.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Partitioning and minimum index selection principles:
 
@@ -37,7 +37,7 @@ Partitioning and minimum index selection principles:
 2. **Index-Only Scanning:** In each pass `i`, record `minIndex = i`. Scan the entire unsorted subarray to find the true global minimum *without performing any intermediate swaps during iteration*.
 3. **Single Swap per Pass:** Once the global minimum is identified, perform exactly one `std::swap(arr[i], arr[minIndex])` if `minIndex != i`. Guarantees that total memory writes never exceed `N - 1`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing subarray segregation and minimum element selection on `[64, 25, 12, 22, 11]`:
 
@@ -100,7 +100,7 @@ int main() {
 - *Pass `i = 2`:* Unsorted `[25, 22, 64]`. Scan finds min at `minIndex = 3` (value 22). Swap `arr[2]` with `arr[3]` `->` `{11, 12, 22, 25, 64}`.
 - *Pass `i = 3`:* Unsorted `[25, 64]`. `minIndex = 3` matches `i` `->` Zero swaps executed. Sorted!
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Metrics Scorecard (Standard Evaluation Framework):**
 

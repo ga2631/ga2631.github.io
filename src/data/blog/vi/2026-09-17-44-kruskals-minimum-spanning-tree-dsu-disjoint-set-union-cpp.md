@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Khi thiết kế mạng lưới đường trục cáp quang viễn thông, hệ thống đường ống dẫn khí đốt liên đô thị hay lưới điện quốc gia, mục tiêu kinh tế hàng đầu là: *Làm sao để kết nối toàn bộ `V` đô thị lại với nhau sao cho tổng chi phí xây lắp là thấp nhất và không tồn tại bất kỳ chu trình lãng phí nào?*
 
@@ -25,7 +25,7 @@ Bài toán đặt ra: **Cây khung nhỏ nhất (Minimum Spanning Tree - MST)**.
 
 Thuật toán Kruskal do Joseph Kruskal phát minh năm 1956 là giải thuật kinh điển hàng đầu tiếp cận bài toán theo tư duy **Tham lam trên cạnh (Edge-Centric Greedy)**.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Ý tưởng tham lam trực quan: Sắp xếp tất cả các cạnh theo trọng số tăng dần. Lần lượt duyệt từng cạnh từ nhỏ nhất đến lớn nhất, nếu thêm cạnh `(u, v)` vào mà không tạo thành chu trình thì ta chọn cạnh đó vào cây khung.
 
@@ -33,7 +33,7 @@ Thách thức cốt tử: *Làm thế nào để kiểm tra nhanh chóng việc 
 
 Nếu dùng DFS hoặc BFS để kiểm tra chu trình mỗi lần xét một cạnh, chi phí kiểm tra sẽ là `O(V)`, khiến tổng thời gian thuật toán lên tới `O(E x V)` - quá chậm khi đồ thị có hàng trăm nghìn cạnh.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Thuật toán Kruskal đạt hiệu năng siêu việt nhờ kết hợp với cấu trúc dữ liệu **Các tập hợp rời nhau (Disjoint Set Union - DSU / Union-Find)**:
 
@@ -47,7 +47,7 @@ Thuật toán Kruskal đạt hiệu năng siêu việt nhờ kết hợp với c
 
 Nhờ DSU, mọi thao tác kiểm tra chu trình và hợp nhất tập hợp chỉ tiêu tốn thời gian **gần như hằng số** `O(alpha(V))` (với `alpha` là hàm Ackermann nghịch đảo, `alpha(V) <= 4` với mọi `V <= 10⁸⁰`). Tổng thời gian của Kruskal hoàn toàn bị chi phối bởi bước sắp xếp cạnh `O(E \log E) = O(E \log V)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ tiến trình chọn cạnh tham lam và cơ chế hợp nhất DSU:
 
@@ -189,7 +189,7 @@ int main() {
 - *Cạnh 4 (1-4, w=42):* `find(1) == find(4)` (đều thuộc tập `{0, 1, 3, 4}`) &rarr; Bỏ qua để tránh tạo chu trình `1-3-4-1`.
 - *Cạnh 5 (2-3, w=51):* `find(2)!=find(3)` &rarr; Chọn! `total=59+51=110`, gom đủ `V-1 = 4` cạnh &rarr; Thuật toán kết thúc với tổng trọng số `110`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

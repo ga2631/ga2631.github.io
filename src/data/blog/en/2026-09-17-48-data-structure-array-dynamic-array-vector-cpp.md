@@ -16,19 +16,19 @@ tags:
   - "Computer Science"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In modern computer architecture (Von Neumann model), physical RAM is structured as a contiguous sequence of byte-addressable memory cells. An **Array** is the most primitive and fundamental data structure in computer science, storing elements of identical data type in a **strictly contiguous block of memory**.
 
 However, traditional static arrays require compile-time fixed dimensions. In real-world software engineering, dataset sizes fluctuate dynamically at runtime. The core engineering challenge: _How to design a **Dynamic Array (equivalent to `std::vector` in C++ or `ArrayList` in Java)** capable of dynamic growth while preserving instantaneous `O(1)` random access and maximizing CPU Cache Locality?_
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 A naive approach reallocates an array of size `N + 1` upon every insertion, copies all `N` existing elements, and frees the previous buffer.
 
 This linear expansion strategy causes quadratic performance degradation: Appending `N` items requires `1 + 2 + ... + N = O(N²)` copy operations, driving the average cost per insertion to `O(N)` - unfeasible for scalable production systems.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Modern runtimes resolve this through **Geometric (Exponential) Resizing**:
 
@@ -42,7 +42,7 @@ Address(arr[i]) = Base_Address + i x sizeof(ElementType)
 
 4. **CPU Cache Locality:** Accessing one element automatically pre-fetches adjacent elements into the 64-byte L1/L2 CPU Cache line, making sequential array iteration significantly faster than linked structures.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Contiguous memory layout and geometric capacity doubling mechanics:
 
@@ -150,7 +150,7 @@ int main() {
 - _Append 40 (i=4):_ Stored at `data[3]` &rarr; `size = 4, capacity = 4`.
 - _Append 50 (i=5):_ Triggers `reallocate(8)` &rarr; `size = 5, capacity = 8`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

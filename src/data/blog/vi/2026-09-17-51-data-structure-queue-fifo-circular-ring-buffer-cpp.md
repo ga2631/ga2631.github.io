@@ -16,19 +16,19 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong các hệ thống xử lý bất đồng bộ (Asynchronous Processing), máy chủ web đón nhận hàng nghìn kết nối đồng thời, hàng đợi in ấn (Print Spooler) hay hệ thống truyền thông điệp phân tán (Kafka, RabbitMQ), các yêu cầu cần được xử lý theo **đúng thứ tự thời gian chúng được gửi tới**: *Yêu cầu nào đến trước phải được phục vụ trước.*
 
 **Hàng chờ (Queue)** là cấu trúc dữ liệu tuyến tính hoạt động theo nguyên tắc **Vào trước - Ra trước (First-In, First-Out - FIFO)**. Dữ liệu được thêm vào ở một đầu gọi là **Đuôi (Rear / Tail)** và được lấy ra ở đầu đối diện gọi là **Đầu (Front / Head)**.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Nếu cài đặt Queue bằng một Mảng tĩnh thông thường: Mỗi khi thêm phần tử, ta tăng con trỏ `rear`; mỗi khi lấy phần tử (`dequeue`), ta tăng con trỏ `front`.
 
 Sau một số thao tác chèn và xóa, con trỏ `rear` sẽ chạm tới cuối mảng trong khi các ô nhớ phía trước `front` đã bị bỏ trống hoàn toàn. Mặc dù mảng còn rất nhiều chỗ trống, ta vẫn không thể chèn thêm phần tử mới. Hiện tượng này gọi là **Trôi chỉ số / Giả đầy hàng đợi (False Overflow)**.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Để giải quyết triệt để vấn đề lãng phí bộ nhớ, giải pháp chuẩn mực là **Hàng chờ Vòng (Circular Queue / Ring Buffer)**:
 
@@ -44,7 +44,7 @@ next_index = (current_index + 1) % capacity
 - *Kỹ thuật Bỏ trống 1 ô:* Rỗng khi `front == rear`, Đầy khi `(rear + 1) % capacity == front`.
 3. **Hiệu năng Hằng số:** Cả thao tác thêm vào đuôi (`enqueue`) và lấy ra từ đầu (`dequeue`) đều chỉ tốn 1 vài phép toán số học đơn giản trong thời gian tuyệt đối **`O(1)`** mà không cần cấp phát lại hay sao chép bộ nhớ.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cơ chế hoạt động của Hàng chờ Vòng (Circular Ring Buffer):
 
@@ -151,7 +151,7 @@ int main() {
 - *Enqueue 50:* Ghi tại `buffer[0] = 50` &rarr; `rearIdx = 1` (Quay vòng thành công mà không tràn bộ nhớ!).
 - *Enqueue 60:* Ghi tại `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` vẫn trỏ chính xác về `buffer[2] = 30`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

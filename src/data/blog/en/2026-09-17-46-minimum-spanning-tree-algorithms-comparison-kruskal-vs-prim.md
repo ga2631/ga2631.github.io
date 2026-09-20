@@ -17,7 +17,7 @@ tags:
   - "Architecture"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In Minimum Spanning Tree construction, **Kruskal** and **Prim** produce equivalent optimal trees while operating on opposing architectural principles:
 
@@ -26,14 +26,14 @@ In Minimum Spanning Tree construction, **Kruskal** and **Prim** produce equivale
 
 Understanding the performance boundary dictated by Graph Density is essential for systems engineering.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Common production misconceptions:
 
 1. **Using Kruskal on Dense Graphs (`E ~ V²`):** Sorting `10⁶` edges incurs severe overhead compared to Prim's simple `O(V²)` matrix iteration.
 2. **Using Prim on Disconnected Graphs:** Prim only spans the component containing the seed node, whereas Kruskal naturally discovers the complete **Minimum Spanning Forest** without modifications.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 **Comprehensive Architectural Comparison Matrix:**
 
@@ -84,7 +84,7 @@ Common production misconceptions:
   </tbody>
 </table>
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Decision Tree for Minimum Spanning Tree algorithm selection:
 
@@ -180,7 +180,7 @@ int main() {
 }
 ```
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Engineering heuristics:
 

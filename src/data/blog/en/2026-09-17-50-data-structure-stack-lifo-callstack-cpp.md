@@ -16,20 +16,20 @@ tags:
   - "Parsing"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In systems engineering, numerous tasks require **Backtracking**, **Undo/Redo capabilities**, or **Nested Context Evaluation** (such as compiler syntax parsing or CPU function call dispatching). Common invariant: *The most recently initiated operation must be the first to complete.*
 
 A **Stack** is a linear abstract data structure governed strictly by the **Last-In, First-Out (LIFO)** principle. All element additions and removals occur exclusively at a single boundary designated as the **Top**.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Stack can be implemented via two foundational architectures:
 
 1. **Dynamic Array Stack:** Elements stored in a resizing vector with top at index `size - 1`. Delivers superior cache locality and amortized `O(1)` operations.
 2. **Linked List Stack:** Nodes linked dynamically with top at `head`. Guarantees true worst-case `O(1)` operations without resize pauses.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Three core Stack invariants:
 
@@ -45,7 +45,7 @@ Given a string containing bracket characters `'('`, `')'`, `'{'`, `'}'`, `'['`, 
 - When encountering closing brackets (`)`, `}`, `]`): If Stack is empty, fail immediately. Otherwise `pop` Top and verify matching pair type.
 - End of string: If Stack is empty, string is strictly valid.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing LIFO semantics and bracket validation pipeline:
 
@@ -146,7 +146,7 @@ int main() {
 - *Scan `'}'`:* Pops `'{'` &rarr; Match! Stack = `[]`.
 - *Result:* Empty stack confirms valid nesting.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

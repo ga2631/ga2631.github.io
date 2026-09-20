@@ -17,7 +17,7 @@ tags:
   - "Architecture"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong kỹ thuật phần mềm, việc lựa chọn sai thuật toán tìm đường đi ngắn nhất có thể dẫn đến hậu quả nghiêm trọng: Chương trình chạy chậm hàng nghìn lần (Time Limit Exceeded), tràn bộ nhớ (Out of Memory), hoặc sai lệch logic hoàn toàn khi gặp dữ liệu biên (như trọng số âm gây vòng lặp vô tận).
 
@@ -29,7 +29,7 @@ Ba trụ cột kinh điển trong bài toán tìm đường đi ngắn nhất g�
 
 Bài viết này thiết lập một khung so sánh chuẩn xác, định lượng và cung cấp Cây quyết định trực quan giúp các kỹ sư kiến trúc hệ thống đưa ra quyết định tối ưu.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án thực tế:
 
@@ -37,7 +37,7 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
 - **Dùng Bellman-Ford trên bản đồ giao thông khổng lồ:** Với mạng lưới đường bộ có hàng triệu nút, Bellman-Ford mất hàng giờ để xử lý trong khi Dijkstra với Min-Heap giải quyết chỉ trong vài mili-giây.
 - **Chạy Dijkstra V lần trên đồ thị dày thay vì Floyd-Warshall:** Gặp chi phí overhead quản lý hàng đợi ưu tiên và phân mảnh bộ nhớ lớn hơn nhiều so với thao tác duyệt ma trận tuần tự `O(V³)` có độ tối ưu hóa phần cứng cao.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **Ma trận So sánh Đa chiều (Comparative Architecture Matrix):**
 
@@ -96,7 +96,7 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
   </tbody>
 </table>
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Cây quyết định (Decision Tree) giúp kỹ sư lựa chọn thuật toán chuẩn mực theo bài toán:
 
@@ -215,7 +215,7 @@ int main() {
 }
 ```
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Tổng kết chiến lược ứng dụng cho kỹ sư phần mềm:
 

@@ -18,7 +18,7 @@ tags:
   - "Row-Level Security"
 ---
 
-## 1. Business Context & Data Requirements
+## Business Context & Data Requirements
 
 As enterprise operations expand, a monolithic Enterprise Data Warehouse (EDW) inevitably encounters severe organizational and operational friction:
 
@@ -31,7 +31,7 @@ As enterprise operations expand, a monolithic Enterprise Data Warehouse (EDW) in
 
 A **Data Mart** is a specialized, curated subject-oriented database partition designed specifically for a single department, team, or business process. Its primary mission is delivering _clean, analytics-ready, highly performant dimensional models_ that empower domain analysts with sub-second self-service business intelligence.
 
-## 2. Data Modeling & Schema Design
+## Data Modeling & Schema Design
 
 To design an enduring Data Mart architecture, engineers must master the trade-offs across three primary delivery topologies and choose the appropriate table modeling paradigms.
 
@@ -106,7 +106,7 @@ flowchart TD
 - **Star Schema:** Fact table surrounded by Conformed Dimension tables (e.g., `dim_date`, `dim_customer`). _Ideal when:_ The Data Mart must support varied ad-hoc multi-dimensional slicing and maintain reusable enterprise dimensions.
 - **One Big Table (OBT - Wide Denormalized Table):** Collapses facts and all associated dimension attributes into a single flat table containing 50-200 columns. _Ideal when:_ Powering interactive BI tools (ClickHouse, PowerBI DirectQuery, Apache Superset) where avoiding all runtime JOINs unlocks instantaneous sub-50ms dashboard loads.
 
-## 3. Pipeline Construction & Processing Logic
+## Pipeline Construction & Processing Logic
 
 To demonstrate a production implementation, below is a complete **dbt (data build tool)** model constructing a **Marketing Performance Data Mart** that fuses advertising spend (Google/Facebook Ads) with core transactional conversions to compute Customer Acquisition Cost (CAC), Return on Ad Spend (ROAS), and funnel click-through rates.
 
@@ -197,7 +197,7 @@ ALTER TABLE finance_mart.marts_branch_pnl
 ADD ROW ACCESS POLICY finance_region_policy ON (region_code);
 ```
 
-## 4. Data Validation & Performance Tuning
+## Data Validation & Performance Tuning
 
 To operate high-performing Data Marts without metric drift, Data Engineers implement automated reconciliation suites and optimized caching layers:
 
@@ -262,7 +262,7 @@ WHERE ABS(f.total_fin - s.total_sales) > 0.01; -- Alarm if delta exceeds 1 cent
   </tbody>
 </table>
 
-## 5. Summary & Recommendations
+## Summary & Recommendations
 
 Data Marts represent the critical transformation bridge between heavy centralized data platforms and agile, domain-specific business execution.
 

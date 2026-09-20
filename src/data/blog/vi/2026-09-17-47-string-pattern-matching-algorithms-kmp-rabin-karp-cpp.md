@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong các công cụ soạn thảo mã nguồn (VS Code, Vim), công cụ tìm kiếm văn bản (grep, ripgrep), hệ thống phát hiện xâm nhập mạng (Snort) hay các phần mềm phân tích hệ gen sinh học (BLAST), thao tác phổ biến nhất là: _Tìm kiếm sự xuất hiện của một chuỗi mẫu con `Pattern` (độ dài `M`) bên trong một văn bản lớn `Text` (độ dài `N`)._
 
@@ -25,13 +25,13 @@ Bài toán đặt ra: **Đối sánh mẫu chính xác (Exact String Matching)**
 
 Hai giải thuật đỉnh cao thống trị lĩnh vực này là **Thuật toán Knuth-Morris-Pratt (KMP)** và **Thuật toán Rabin-Karp**.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Thuật toán ngây thơ (Naive String Matching) trượt mẫu `Pattern` qua từng vị trí `i` của `Text` và so khớp từng ký tự từ trái sang phải. Nếu gặp ký tự không khớp (Mismatch) ở vị trí `j`, thuật toán lùi con trỏ `Text` về `i + 1` và bắt đầu so khớp lại từ `Pattern[0]`.
 
 Trường hợp xấu nhất xảy ra khi văn bản và mẫu chứa các ký tự lặp lại (ví dụ: `Text = "AAAAAAAAB"`, `Pattern = "AAAB"`). Mỗi lần mismatch, thuật toán phải so sánh `M` ký tự vô ích, đẩy độ phức tạp lên bậc hai `O(N x M)`. Khi `N = 10⁷` và `M = 10⁴`, thuật toán ngây thơ mất hàng trăm tỷ phép tính!
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **1. Thuật toán Knuth-Morris-Pratt (KMP - 1977):**
 
@@ -53,7 +53,7 @@ H_{new} = (H_{old} - Text[i] x B^{M-1}) x B + Text[i + M] \pmod P
 
 - Chỉ khi mã băm của cửa sổ trùng với mã băm của `Pattern`, ta mới thực hiện so sánh từng ký tự để loại trừ đụng độ băm (Hash Collision).
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ chuyển trạng thái tự động và bước nhảy LPS trong KMP:
 
@@ -216,7 +216,7 @@ int main() {
   - Tiếp tục so sánh `Text[4] = 'D'` với `Pattern[2] = 'A'` &rarr; Tiết kiệm 4 phép so sánh dư thừa!
   - Tại `i = 10`, toàn bộ mẫu khớp hoàn toàn &rarr; Ghi nhận vị trí xuất hiện tại `index = 10`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 When engineering regional optical fiber backbones, electrical grids, or oil pipelines, the core economic requirement is: _How to interconnect all `V` municipalities at minimum capital expenditure while eliminating redundant, cyclic wiring?_
 
@@ -25,7 +25,7 @@ Problem statement: **Minimum Spanning Tree (MST)**. Given an undirected, connect
 
 Kruskal's algorithm (published by Joseph Kruskal in 1956) is the quintessential **Edge-Centric Greedy** strategy.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Sort all edges by ascending weight. Iteratively add edges from smallest to largest, provided adding edge `(u, v)` does not introduce a cycle.
 
@@ -33,7 +33,7 @@ Key Challenge: _How to efficiently test whether adding `(u, v)` creates a cycle?
 
 Executing BFS/DFS for cycle detection per candidate edge takes `O(V)` time, ballooning total runtime to `O(E x V)` - intractable on large graphs.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Kruskal's algorithm achieves near-linear efficiency by combining with **Disjoint Set Union (DSU / Union-Find)**:
 
@@ -46,7 +46,7 @@ Kruskal's algorithm achieves near-linear efficiency by combining with **Disjoint
 
 DSU operations operate in inverse Ackermann amortized time `O(alpha(V)) <= 4`. Total time is strictly bounded by edge sorting: `O(E \log E) = O(E \log V)`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Edge sorting and DSU forest merging progression:
 
@@ -180,7 +180,7 @@ int main() {
 - _Edge 4 (1-4, w=42):_ `find(1) == find(4)` &rarr; Discarded to prevent cycle.
 - _Edge 5 (2-3, w=51):_ Added &rarr; `total = 110`. Exactly `V - 1 = 4` edges selected &rarr; Converged!
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

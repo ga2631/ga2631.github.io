@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 While Edmonds-Karp provides polynomial `O(V x E²)` guarantees, on modern graphs with tens of thousands of nodes and hundreds of thousands of edges, executing a full BFS pass to push flow along a *single augmenting path* introduces severe latency.
 
@@ -25,14 +25,14 @@ In 1970, mathematician Yefim A. Dinitz formulated **Dinic's Algorithm**. Dinic s
 
 Dinic achieves `O(V² x E)` on general networks and `O(E \sqrt{V})` on unit networks (equivalent to the Hopcroft-Karp maximum bipartite matching bound).
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Architectural distinction between Edmonds-Karp and Dinic:
 
 - **Edmonds-Karp:** Runs BFS &rarr; Augments 1 path &rarr; Destroys BFS tree &rarr; Repeats up to `O(V x E)` times.
 - **Dinic:** Runs BFS to build a layered level graph &rarr; Runs DFS to push flow until all paths at that distance are completely saturated (Blocking Flow) &rarr; Advances to next phase. Strictly capped at `V - 1` phases.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Dinic operates in 2 repeating phases:
 
@@ -48,7 +48,7 @@ Dinic operates in 2 repeating phases:
 - Only advance across adjacent levels: `level[v] == level[u] + 1` and `cap > 0`.
 - **Dead-End Pruning (Work Pointer Optimization):** Maintain array `work[u]` tracking current edge index. When a sub-branch yields zero flow, `work[u]` increments to discard that dead-end for the remainder of the phase, eliminating redundant traversals.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Two-phase architecture of Dinic's Algorithm:
 
@@ -186,7 +186,7 @@ int main() {
 - *Phase 2:* Re-levels network &rarr; DFS pushes remaining capacity across `0->2->4->3->5` (5) &rarr; Flow = 19.
 - *Phase 3:* BFS discovers sink unreachable &rarr; Maximum flow converged at `19`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

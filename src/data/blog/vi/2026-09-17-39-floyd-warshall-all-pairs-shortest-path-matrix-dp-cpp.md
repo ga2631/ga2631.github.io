@@ -16,7 +16,7 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong nhiều hệ thống thực tế như mạng lưới giao thông liên tỉnh, hệ thống chuyển mạch viễn thông hay game nhập vai thế giới mở, hệ thống cần tra cứu khoảng cách ngắn nhất giữa **bất kỳ cặp đỉnh nào `(u, v)`** trong thời gian tức thời `O(1)` sau một pha tiền tính toán duy nhất.
 
@@ -24,7 +24,7 @@ Bài toán đặt ra: **Tìm đường đi ngắn nhất giữa mọi cặp đ�
 
 Thuật toán Floyd-Warshall (do Robert Floyd và Stephen Warshall công bố năm 1962) là lời giải kinh điển, thanh lịch bậc nhất với cấu trúc 3 vòng lặp lồng nhau cực kỳ tinh gọn.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Ta có thể giải bài toán APSP bằng cách chạy các thuật toán Single-Source Shortest Path (SSSP) lặp lại `V` lần với từng đỉnh làm nguồn:
 
@@ -33,7 +33,7 @@ Ta có thể giải bài toán APSP bằng cách chạy các thuật toán Singl
 
 Floyd-Warshall giải quyết bài toán này chỉ trong `O(V³)` bằng Quy hoạch động ma trận tại chỗ (In-Place Matrix DP), không đòi hỏi cấu trúc dữ liệu phức tạp như Heap hay danh sách kề.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Tư duy Quy hoạch động của Floyd-Warshall định nghĩa trạng thái dựa trên **Tập hợp các đỉnh trung gian cho phép**:
 
@@ -53,7 +53,7 @@ dp[k][i][j] = min(
 3. **Tối ưu bộ nhớ tại chỗ (In-Place 2D Matrix):** Vì các giá trị ở hàng `k` và cột `k` không bị thay đổi khi dùng chính đỉnh `k` làm trung gian, ta có thể bỏ chiều `k` và cập nhật trực tiếp trên ma trận 2 chiều `dist[i][j]`. *Quy tắc vàng:* Vòng lặp biến `k` bắt buộc phải nằm ở **ngoài cùng**.
 4. **Phát hiện Chu trình Âm:** Sau khi hoàn tất `V` bước, kiểm tra đường chéo chính: Nếu tồn tại bất kỳ đỉnh `i` nào có `dist[i][i] < 0`, chứng tỏ đỉnh `i` nằm trong một chu trình âm.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ chuyển trạng thái ma trận qua đỉnh trung gian `k`:
 
@@ -174,7 +174,7 @@ int main() {
 - *Khi `k = 2`:* Dùng đỉnh 2 làm trung gian &rarr; Xét cặp `(0, 3)`: `dist[0][2] + dist[2][3] = 8 + 1 = 9 < dist[0][3]=10` &rarr; Cập nhật `dist[0][3] = 9`! Hành trình chuyển từ đường trực tiếp `0->3 (w=10)` sang đi vòng `0 -> 1 -> 2 -> 3 (w=9)`.
 - *Khi `k = 3`:* Dùng đỉnh 3 làm trung gian, ma trận ổn định hoàn toàn.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

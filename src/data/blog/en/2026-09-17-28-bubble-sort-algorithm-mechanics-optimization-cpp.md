@@ -16,27 +16,27 @@ tags:
   - "Performance"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 Sorting collections is one of the most fundamental operations in software engineering. Problem statement: Given an unsorted array of N integers, rearrange the elements in ascending order such that `arr[0] <= arr[1] <= ... <= arr[N-1]`.
 
 Bubble Sort is the foundational comparison-based sorting algorithm every engineer studies to understand adjacent comparison and swapping mechanics.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 The naive unoptimized approach:
 
 - Run two nested loops across N - 1 iterations. In each iteration, scan through the entire array and compare adjacent pairs `arr[j]` and `arr[j+1]`, swapping them if `arr[j] > arr[j+1]`.
 - *Core Flaw:* The algorithm always performs exactly `(N * (N - 1)) / 2` comparisons even if the input array is *already fully sorted*, wasting `O(N²)` CPU cycles.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Optimizing Bubble Sort via two crucial techniques:
 
 1. **Inner Boundary Shrinking:** After pass `i`, the `i` largest elements are guaranteed to be placed at their final sorted positions at the tail. Thus, the inner loop only needs to scan up to index `N - 1 - i`.
 2. **Swapped Flag Early-Exit:** Introduce a boolean flag `bool swapped = false` at the start of each pass. If no swaps occurred during a full pass, the array is already sorted &rarr; Terminate immediately via `break`, improving Best-case complexity to linear `Ω(N)`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing bubble progression on sample array `[5, 1, 4, 2, 8]` across passes:
 
@@ -101,7 +101,7 @@ int main() {
 - *Pass 2 (`i = 1`):* Scan up to index 2: `(1, 4) ->` Ok; `(4, 2) ->` Swap `{1, 2, 4, 5, 8}`; `(4, 5) ->` Ok. Value `5` locked at index 3.
 - *Pass 3 (`i = 2`):* Inspect `(1, 2)` and `(2, 4)`, no swaps occurred &rarr; `swapped = false` &rarr; `break` immediately! Eliminates 40% redundant iterations.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Metrics Scorecard (Standard Evaluation Framework):**
 

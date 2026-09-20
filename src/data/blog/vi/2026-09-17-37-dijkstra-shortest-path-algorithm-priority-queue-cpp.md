@@ -16,7 +16,7 @@ tags:
   - "Priority Queue"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Bài toán Tìm đường đi ngắn nhất từ một nguồn duy nhất (Single-Source Shortest Path - SSSP) là bài toán cốt lõi trong lý thuyết đồ thị và kỹ thuật định tuyến mạng. Đề bài đặt ra:
 
@@ -24,13 +24,13 @@ Cho một đồ thị có hướng hoặc vô hướng `G = (V, E)` gồm `V` đ
 
 Thuật toán Dijkstra do nhà khoa học máy tính huyền thoại Edsger W. Dijkstra phát minh năm 1956 là giải thuật tối ưu nhất và được sử dụng rộng rãi nhất cho bài toán này khi đồ thị không chứa trọng số âm.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận ngây thơ ban đầu là sử dụng giải thuật Tìm kiếm theo chiều rộng (BFS). Tuy nhiên, BFS truyền thống chỉ hoạt động chính xác khi tất cả các cạnh có _trọng số đồng nhất bằng 1_. Khi đồ thị có trọng số biến thiên, đỉnh được duyệt đầu tiên chưa chắc đã có khoảng cách ngắn nhất.
 
 Phiên bản Dijkstra nguyên bản duyệt mảng tuyến tính: Tại mỗi bước, thuật toán quét qua toàn bộ `V` đỉnh để chọn ra đỉnh có khoảng cách nhỏ nhất chưa được cố định. Độ phức tạp của phiên bản này là `O(V²)`. Với các đồ thị thưa (Sparse Graph có `E ~ V`), việc duyệt mảng tốn kém tài nguyên không cần thiết và hoạt động rất chậm trên các mạng lưới giao thông hàng triệu đỉnh.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Thuật toán Dijkstra vận hành dựa trên **Nguyên lý Tham lam (Greedy Paradigm)** và cơ chế **Tối ưu hóa cạnh (Edge Relaxation)**:
 
@@ -49,7 +49,7 @@ if (dist[u] + w(u, v) < dist[v]) {
 
 **Lưu ý quan trọng:** Dijkstra _không hoạt động chính xác_ trên đồ thị có cạnh mang trọng số âm, vì giả định tham lam bị phá vỡ (việc đi qua một cạnh âm trong tương lai có thể làm giảm khoảng cách của một đỉnh đã bị chốt).
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ chuyển trạng thái và cơ chế Relaxation trong Dijkstra với Min-Heap:
 
@@ -183,7 +183,7 @@ int main() {
   - Cạnh `(3->4, w=1)`: `6 + 1 = 7 < dist[4]=9` &rarr; Relaxation! `dist[4] = 7, parent[4] = 3` &rarr; Push `(7, 4)`.
 - *Bước 6 & 7:* Pop `(7, 4)`, sau đó các trạng thái cũ bị bỏ qua &rarr; Đường đi đến đỉnh 4 chốt giá trị tối ưu là `7` với hành trình `0 -> 2 -> 1 -> 3 -> 4`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

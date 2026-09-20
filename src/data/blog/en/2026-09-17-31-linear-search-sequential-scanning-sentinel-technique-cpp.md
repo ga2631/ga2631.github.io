@@ -16,20 +16,20 @@ tags:
   - "Data Structures"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 Data lookup is ubiquitous across all software layers. Problem statement: Given an *unsorted* collection of N elements or a non-random-access stream (such as a Singly Linked List), locate the first occurrence of a specified `target` value, or return `-1` if not present.
 
 Linear Search is the universal baseline retrieval algorithm when data lacks any prior indexing or ordering guarantees.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 The standard loop approach:
 
 - Iterate with a standard `for (int i = 0; i < n; ++i)` loop from head to tail.
 - *CPU Bottleneck:* In each iteration, the CPU evaluates **2 conditional checks**: one for boundary safety `i < n` and one for value equality `arr[i] == target`. Across large arrays, boundary checking consumes ~50% of inner-loop CPU instructions.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Optimization via the Sentinel Linear Search technique:
 
@@ -37,7 +37,7 @@ Optimization via the Sentinel Linear Search technique:
 2. **Eliminate Boundary Checks `i < n`:** Because `target` is guaranteed to exist at the tail, `while (arr[i] != target) ++i;` will never step out of bounds. This reduces conditional branch evaluations by exactly 50%.
 3. **Restore and Validate:** After exiting the loop, restore `arr[n - 1] = last` and verify whether the matched index `i` represents a genuine element or the temporary sentinel.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing sequential comparison vs sentinel mechanics on `[20, 35, 10, 80, 45]` with `target = 10`:
 
@@ -108,7 +108,7 @@ int main() {
 - *Execution:* `i = 0` (20 != 10) `-> i = 1` (35 != 10) `-> i = 2` (`10 == 10` &rarr; Loop exits).
 - *Resolution:* Restore `data[4] = 45`. Since `i = 2 < 4`, returns verified index `2`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Metrics Scorecard (Standard Evaluation Framework):**
 

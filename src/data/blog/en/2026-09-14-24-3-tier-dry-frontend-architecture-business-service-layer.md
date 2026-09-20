@@ -16,13 +16,13 @@ tags:
   - "Frontend Engineering"
 ---
 
-## 1. Context & Problem Statement
+## Context & Problem Statement
 
 As Single Page Applications (SPAs) scale in feature set, a common architectural anti-pattern is the 'God Component'-a state where presentation, UI state, routing, and data hydration/fetching logic are tightly entangled.
 
 In the legacy codebase, components like `BlogSection` and `App.tsx` shouldered excessive responsibilities: managing theme/routes, parsing raw HTML headings, filtering articles, and rendering cards directly. This violated the Single Responsibility Principle, introduced WET duplication, and resulted in bloated, fragile unit tests.
 
-## 2. System Requirements
+## System Requirements
 
 To resolve these structural bottlenecks, the target architecture had to fulfill four fundamental engineering requirements:
 
@@ -31,7 +31,7 @@ To resolve these structural bottlenecks, the target architecture had to fulfill 
 3. **Decoupled Business Service Layer:** Month/year archive glob loaders, article hydration, and assembling structured HTML dictionaries must reside in pure TypeScript services independent of React component lifecycles.
 4. **100% Type Safety & High Testability:** Clear interfaces for every entity, enabling isolated unit testing without cumbersome DOM mocking.
 
-## 3. Architecture Design
+## Architecture Design
 
 I established a 3-Tier DRY UI component hierarchy coupled with an independent Business Service Layer as illustrated below:
 
@@ -86,7 +86,7 @@ graph TD
 - **Business Services (`src/services`):** Houses pure business logic (dynamic glob loaders, date parsing, section assemblers), freeing UI components to focus solely on presentation.
 - **Pages Layer (`src/pages`):** Encapsulates complete screens (`Home.tsx`, `Blog.tsx`), reducing `App.tsx` into a lean Root Router.
 
-## 4. Trade-offs Analysis
+## Trade-offs Analysis
 
 **Architectural Trade-offs & Benefits:**
 
@@ -98,7 +98,7 @@ graph TD
   - _Increased File Count:_ Requires rigorous directory discipline and maintained barrel exports (`index.ts`).
   - _Team Discipline:_ Strict prohibition of upward imports (a lower tier component must never import from an upper tier).
 
-## 5. Real-World Lessons & Best Practices
+## Real-World Lessons & Best Practices
 
 **Key Practical Takeaways & Best Practices:**
 

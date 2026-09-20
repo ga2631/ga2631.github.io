@@ -19,7 +19,7 @@ tags:
   - "OLAP"
 ---
 
-## 1. Business Context & Data Requirements
+## Business Context & Data Requirements
 
 In data-driven enterprises, strategic executive decisions rely on timely, pristine analytical metrics. However, one of the most perilous architectural mistakes in early-stage engineering is: **Allowing Business Intelligence (BI/Dashboard) tools and Data Analysts to run analytical queries directly against Online Transaction Processing (OLTP) databases like PostgreSQL or MySQL**.
 
@@ -36,7 +36,7 @@ This anti-pattern inevitably leads to catastrophic failures:
 - **Sub-second Multi-Dimensional Slicing & Dicing:** Structure schemas so business analysts can filter, drill down, and aggregate enterprise metrics effortlessly with sub-second response times.
 - **Auditability & Time-Travel Traceability:** Faithfully preserve every historical state transition across time.
 
-## 2. Data Modeling & Schema Design
+## Data Modeling & Schema Design
 
 To design an enduring analytical foundation, Data Engineers must master three foundational modeling philosophies and modern dimensional design patterns.
 
@@ -127,7 +127,7 @@ flowchart TD
 
 _Engineering Rule of Thumb:_ On modern MPP Cloud Data Warehouses (Snowflake, BigQuery, ClickHouse) utilizing columnar storage and vectorized execution, **Star Schemas consistently outperform Snowflake Schemas** by eliminating expensive multi-hop distributed shuffle JOINs.
 
-## 3. Pipeline Construction & Processing Logic
+## Pipeline Construction & Processing Logic
 
 In modern data engineering workflows, combining **dbt (data build tool)** with a Cloud Data Warehouse represents the standard implementation pattern for Kimball dimensional marts.
 
@@ -296,7 +296,7 @@ FROM monthly_metrics
 ORDER BY category_name, year, month_number;
 ```
 
-## 4. Data Validation & Performance Tuning
+## Data Validation & Performance Tuning
 
 Operating a production Data Warehouse at scale requires disciplined physical tuning and automated data verification frameworks:
 
@@ -347,7 +347,7 @@ Operating a production Data Warehouse at scale requires disciplined physical tun
   </tbody>
 </table>
 
-## 5. Summary & Recommendations
+## Summary & Recommendations
 
 Data Warehouse design is fundamentally about modeling business reality into a resilient, high-speed corporate memory asset.
 

@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In municipal water grids, oil pipeline topologies, Internet routing backbones, and airline logistics, a core operational challenge is: *How to transport the maximum possible volume from source to destination without violating individual segment capacities?*
 
@@ -30,7 +30,7 @@ Find a flow assignment function `f(u, v)` satisfying two strict invariants:
 
 Objective: Maximize total net flow exiting source `s`: `|f| = sum f(s, v)`.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 A naive greedy heuristic locates arbitrary paths from `s` to `t`, pushes maximum allowable capacity, reduces edge bounds, and repeats until disconnected.
 
@@ -38,7 +38,7 @@ Pure greedy strategies **fail** because committing flow along a suboptimal path 
 
 In 1956, Lester Ford Jr. and Delbert Fulkerson revolutionized flow optimization by introducing **Backward Edges** on the **Residual Graph**, allowing the algorithm to dynamically cancel and redirect prior flow decisions.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 The Ford-Fulkerson method is established on 3 foundational pillars:
 
@@ -51,7 +51,7 @@ The Ford-Fulkerson method is established on 3 foundational pillars:
 3. **Max-Flow Min-Cut Theorem:** The maximum flow value from `s` to `t` strictly equals the total capacity of the Minimum Cut separating `s` from `t`.
 4. **Edmonds-Karp Specialization (1972):** Utilizing **BFS** rather than DFS to consistently choose the shortest augmenting path guarantees polynomial convergence in `O(V x E²)` time, eliminating risks of infinite loops on irrational capacities.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Residual graph mechanics and flow augmentation with backward edges:
 
@@ -172,7 +172,7 @@ int main() {
 - *Augmentation 3:* BFS discovers `0 -> 2 -> 4 -> 3 -> 5` with `bottleneck = 7` &rarr; Flow = 23.
 - *Convergence:* Next BFS fails to reach sink `5` &rarr; Max flow confirmed at `23`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 When modeling complex interconnected systems - such as social media friend networks, Google PageRank hyperlink topologies, international airline flight routes, or power distribution grids - relationships transcend linear and hierarchical structures into **arbitrary multi-dimensional meshes**.
 
@@ -26,7 +26,7 @@ A **Graph** is the most generalized non-linear data structure, formally defined 
 - `V` (Vertices / Nodes): Discrete entities (users, airports, servers).
 - `E` (Edges / Links): Connections between pairs of vertices (friendships, flight routes, network cables). Edges can be Directed or Undirected, Weighted or Unweighted.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Two foundational graph representations in memory:
 
@@ -42,7 +42,7 @@ Two foundational graph representations in memory:
 - An array of lists: `std::vector<std::vector<int>> adj(V)` storing only incident neighbors.
 - *Pros:* Optimal `O(V + E)` memory scaling and linear `O(deg(u))` neighbor traversal. Standard representation in 99% of production systems.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 **Two Foundational Graph Traversals:**
 
@@ -59,7 +59,7 @@ Two foundational graph representations in memory:
 
 *Safety Invariant:* A boolean `visited[V]` table is mandatory to prevent infinite loops on cyclic topologies.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Adjacency list structure and graph traversal topology:
 
@@ -168,7 +168,7 @@ int main() {
 - *BFS from 0:* Pops 0 &rarr; Enqueues `1, 2` &rarr; Pops 1 &rarr; Enqueues `3, 4` &rarr; Pops 2, 3, 4 &rarr; Traversal sequence: `0 1 2 3 4`.
 - *DFS from 0:* Visits `0 -> 1 -> 3 (backtracks) -> 4 -> 2` &rarr; Traversal sequence: `0 1 3 4 2`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

@@ -17,7 +17,7 @@ tags:
   - "Architecture"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In production software engineering, selecting an incorrect shortest path algorithm causes critical system failure: Severe Time Limit Exceeded (TLE), memory exhaustion, or logic corruption from unhandled negative cycles.
 
@@ -29,7 +29,7 @@ The 3 classical shortest path pillars are:
 
 This article provides an objective quantitative comparison and an actionable Decision Tree for systems architects.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Common architectural anti-patterns in production:
 
@@ -37,7 +37,7 @@ Common architectural anti-patterns in production:
 - **Running Bellman-Ford on massive road maps:** Processing millions of vertices takes hours where Dijkstra with Min-Heap executes in milliseconds.
 - **Executing Dijkstra V times on dense matrices instead of Floyd-Warshall:** Overhead from priority queues and pointer indirection degrades performance compared to cache-friendly contiguous matrix DP.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 **Multi-Dimensional Comparison Matrix:**
 
@@ -96,7 +96,7 @@ Common architectural anti-patterns in production:
   </tbody>
 </table>
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Architectural Decision Tree for shortest path algorithm selection:
 
@@ -211,7 +211,7 @@ int main() {
 }
 ```
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Key architectural rules of thumb:
 

@@ -16,19 +16,19 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Khác với thuật toán Kruskal xây dựng cây khung bằng cách gom nhặt các cạnh rời rạc trên toàn đồ thị tạo thành một rừng cây (Forest), thuật toán Prim (do Vojtěch Jarník tìm ra năm 1930 và Robert Prim tái khám phá năm 1957) tiếp cận bài toán Cây khung nhỏ nhất theo hướng **Phát triển Cây liên tục từ Đỉnh (Vertex-Centric Growth)**.
 
 Bắt đầu từ một đỉnh nguồn tùy ý, thuật toán Prim liên tục mở rộng ranh giới của cây khung hiện tại bằng cách kết nạp thêm đỉnh gần nhất chưa thuộc cây, đảm bảo đồ thị con luôn giữ vững cấu trúc là một cây liên thông tại mọi thời điểm trong suốt quá trình chạy.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Phiên bản Prim ngây thơ sử dụng mảng tuyến tính: Tại mỗi bước, thuật toán quét qua toàn bộ các đỉnh chưa thuộc cây để tìm đỉnh có cạnh nối nhẹ nhất đến cây hiện tại. Độ phức tạp là `O(V²)`.
 
 Với các đồ thị dày (Dense Graph có số cạnh `E ~ V²`), độ phức tạp `O(V²)` là tối ưu tuyệt đối. Tuy nhiên, trên các đồ thị thưa (Sparse Graph có `E ~ V`), việc quét mảng tạo ra độ trễ không cần thiết.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Thuật toán Prim dựa trên định lý nền tảng của lý thuyết đồ thị: **Nguyên lý Lát cắt (Cut Property)**:
 
@@ -42,7 +42,7 @@ Thuật toán Prim dựa trên định lý nền tảng của lý thuyết đồ
 
 Nhờ cấu trúc Min-Heap, độ phức tạp của Prim trên đồ thị thưa giảm mạnh xuống `O((V + E) \log V)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cơ chế Lát cắt (Cut Property) và sự mở rộng cây khung của Prim:
 
@@ -176,7 +176,7 @@ int main() {
 - *Bước 4:* Pop `(w=42, u=4)` &rarr; Đỉnh 4 đã có trong cây &rarr; Bỏ qua (Lazy Deletion).
 - *Bước 5:* Pop `(w=51, u=2)` &rarr; Kết nạp đỉnh 2. Đã kết nạp đủ 5 đỉnh &rarr; Tổng trọng số chốt `9 + 19 + 31 + 51 = 110` (đồng nhất với Kruskal).
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

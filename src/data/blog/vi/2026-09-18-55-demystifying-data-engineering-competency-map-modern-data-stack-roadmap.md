@@ -17,7 +17,7 @@ tags:
   - "Distributed Systems"
 ---
 
-## 1. Đặt vấn đề & Tổng quan
+## Đặt vấn đề & Tổng quan
 
 Trong kỷ nguyên bùng nổ của Trí tuệ nhân tạo (AI), Học máy (Machine Learning) và Dữ liệu lớn (Big Data), có một câu châm ngôn kinh điển trong giới công nghệ: _'Without reliable data pipelines, AI is just math on a whiteboard'_ (Nếu không có những đường ống dữ liệu tin cậy, AI chỉ là những công thức toán học trên bảng trắng). Mọi mô hình Deep Learning tối tân, mọi thuật toán gợi ý hay bảng điều khiển kinh doanh (BI Dashboard) đều trở nên vô nghĩa nếu dữ liệu đầu vào bị sai lệch, phân mảnh hoặc chậm trễ.
 
@@ -25,7 +25,7 @@ Trong kỷ nguyên bùng nổ của Trí tuệ nhân tạo (AI), Học máy (Mac
 
 Bài viết này sẽ mang đến một góc nhìn toàn cảnh về bức tranh nghề nghiệp Data Engineering, giải mã sự chuyển dịch từ các hệ thống Data Warehouse truyền thống sang **Modern Data Stack (Lakehouse Architecture)** và cung cấp một lộ trình năng lực chuẩn mực cho các kỹ sư phần mềm muốn làm chủ lĩnh vực này.
 
-## 2. Đánh giá đa chiều / So sánh đối chuẩn
+## Đánh giá đa chiều / So sánh đối chuẩn
 
 Để hiểu rõ vị trí của Data Engineer trong hệ sinh thái công nghệ, ta cần phân tích qua 2 lăng kính: Phân định vai trò nhân sự và So sánh các mô hình kiến trúc xử lý dữ liệu.
 
@@ -74,7 +74,7 @@ Bài viết này sẽ mang đến một góc nhìn toàn cảnh về bức tranh
 - **ELT Hiện đại (Extract &rarr; Load &rarr; Transform):** Nhờ sức mạnh tính toán mở rộng theo chiều ngang (Massively Parallel Processing - MPP) của Cloud Data Warehouses (Snowflake, BigQuery), dữ liệu thô được nạp thẳng vào kho trước (Load Raw), sau đó mới sử dụng SQL và **dbt (data build tool)** để biến đổi dữ liệu trực tiếp trong kho.
 - **Kiến trúc Lakehouse (Data Lake + Data Warehouse):** Kết hợp dung lượng lưu trữ giá rẻ không giới hạn của Object Storage (S3, GCS) dưới định dạng mở (Apache Parquet, Apache Iceberg, Delta Lake) với khả năng thực thi giao dịch ACID và truy vấn SQL siêu tốc.
 
-## 3. Kinh nghiệm thực chiến / Case Study
+## Kinh nghiệm thực chiến / Case Study
 
 Để minh họa thực tế công việc của Data Engineer, dưới đây là kiến trúc nền tảng dữ liệu hiện đại (Modern Data Platform) xử lý hơn 100 triệu sự kiện/ngày trong một hệ sinh thái Thương mại điện tử & Fintech:
 
@@ -135,7 +135,7 @@ flowchart TD
 2. **Hợp đồng Dữ liệu (Data Contracts):** Tránh việc các kỹ sư Backend tự ý đổi tên cột hoặc kiểu dữ liệu trong cơ sở dữ liệu làm sập toàn bộ hệ thống báo cáo phía sau. Áp dụng Schema Registry (Avro / Protobuf) để quản lý phiên bản schema chặt chẽ.
 3. **Chiến lược Phân tầng Medallion (Bronze &rarr; Silver &rarr; Gold):** Luôn lưu trữ nguyên vẹn dữ liệu thô (Bronze) để có thể phục hồi trong mọi tình huống thảm họa, làm sạch và chuẩn hóa ở tầng Silver, và chỉ cung cấp các bảng tổng hợp nghiệp vụ đã tối ưu cho người dùng cuối ở tầng Gold.
 
-## 4. Gợi ý hành động
+## Gợi ý hành động
 
 Bản đồ lộ trình kỹ năng (Skill Matrix) dành cho kỹ sư muốn chuyển hướng hoặc phát triển chuyên sâu trong ngành Data Engineering:
 
@@ -165,7 +165,7 @@ Bản đồ lộ trình kỹ năng (Skill Matrix) dành cho kỹ sư muốn chuy
 - Tự động hóa kiểm thử dữ liệu với `dbt test`, `Great Expectations` hoặc `Soda`.
 - Thiết lập hệ thống CI/CD cho mã nguồn data pipeline và theo dõi nguồn gốc dữ liệu (Data Lineage).
 
-## 5. Câu hỏi mở, thảo luận
+## Câu hỏi mở, thảo luận
 
 Những xu hướng công nghệ nổi bật đang định hình lại tương lai của Data Engineering mà cộng đồng đang thảo luận sôi nổi:
 

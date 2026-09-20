@@ -16,20 +16,20 @@ tags:
   - "Parsing"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong kiến trúc phần mềm, rất nhiều tác vụ đòi hỏi khả năng **quay lui (Backtracking)**, **hoàn tác hành động (Undo/Redo)**, hoặc **ghi nhớ ngữ cảnh lồng nhau (Nested Context)** như quá trình phân tích cú pháp mã nguồn (Syntax Parsing) hay cơ chế gọi hàm trong CPU. Đặc điểm chung của các tác vụ này: *Thao tác nào diễn ra sau cùng sẽ là thao tác cần được xử lý và hoàn tất đầu tiên.*
 
 **Ngăn xếp (Stack)** là cấu trúc dữ liệu tuyến tính trừu tượng hoạt động theo nguyên lý nghiêm ngặt **Vào sau - Ra trước (Last-In, First-Out - LIFO)**. Mọi thao tác thêm hoặc loại bỏ phần tử đều chỉ được phép diễn ra tại một đầu duy nhất gọi là **Đỉnh ngăn xếp (Top)**.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Stack có thể được hiện thực hóa dựa trên hai cấu trúc nền tảng:
 
 1. **Cài đặt bằng Mảng động (Dynamic Array Stack):** Lưu trữ các phần tử trong một vector. Đỉnh ngăn xếp tương ứng với chỉ số `size - 1`. Ưu điểm: Bộ nhớ liền kề, tối ưu Cache tuyệt đối. Thao tác `push()` và `pop()` đạt chi phí khấu hao `O(1)`.
 2. **Cài đặt bằng Danh sách liên kết (Linked List Stack):** Mỗi phần tử là một nút trỏ tới nút bên dưới. Đỉnh ngăn xếp chính là `head`. Ưu điểm: Dung lượng mở rộng linh hoạt từng nút một mà không bao giờ tốn chi phí nhân đôi bộ nhớ.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Ba thao tác bất biến cốt lõi của Ngăn xếp:
 
@@ -45,7 +45,7 @@ Cho một chuỗi gồm các ký tự ngoặc: `'('`, `')'`, `'{'`, `'}'`, `'['`
 - Khi gặp ngoặc đóng (`)`, `}`, `]`): Kiểm tra Stack. Nếu Stack rỗng &rarr; Bất hợp lệ (thừa ngoặc đóng). Ngược lại, `pop` phần tử đỉnh ra và so sánh xem có khớp cặp với ngoặc đóng hiện tại không. Nếu không khớp &rarr; Bất hợp lệ.
 - Kết thúc duyệt chuỗi: Nếu Stack rỗng hoàn toàn &rarr; Hợp lệ (Mọi ngoặc mở đều đã được đóng chính xác).
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cơ chế hoạt động LIFO và bài toán kiểm tra dấu ngoặc hợp lệ:
 
@@ -159,7 +159,7 @@ int main() {
 - *Ký tự 6 (`'}'`):* Ngoặc đóng &rarr; `pop()` lấy được `'{'` &rarr; Khớp hoàn hảo. Stack = `[]`.
 - *Kết luận:* Chuỗi duyệt xong và Stack rỗng &rarr; Kết quả `true` (Hợp lệ).
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

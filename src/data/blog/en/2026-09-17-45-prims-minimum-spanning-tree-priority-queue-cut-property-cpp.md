@@ -16,19 +16,19 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 Unlike Kruskal's algorithm which aggregates disjoint edges into a forest, Prim's algorithm (originated by Vojtěch Jarník in 1930 and independently Robert Prim in 1957) constructs the Minimum Spanning Tree via **Vertex-Centric Growth**.
 
 Starting from an arbitrary seed node, Prim continuously expands the boundary of a single connected component, absorbing the closest unvisited vertex until all vertices are incorporated.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 A naive implementation scans all unvisited nodes linearly at each step, yielding `O(V²)` runtime.
 
 On dense graphs (where `E ~ V²`), `O(V²)` is asymptotically optimal. However, on sparse graphs (`E ~ V`), linear scanning introduces substantial latency.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Prim's algorithm rests upon the **Cut Property** of graph theory:
 
@@ -42,7 +42,7 @@ Prim's algorithm rests upon the **Cut Property** of graph theory:
 
 Min-Heap optimization slashes sparse graph runtime to `O((V + E) \log V)`.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing the Cut Property boundary expansion in Prim's algorithm:
 
@@ -170,7 +170,7 @@ int main() {
 - *Step 3:* Pops `(w=31, u=4)` &rarr; Settle node 4.
 - *Step 4:* Pops `(w=51, u=2)` &rarr; Settle node 2. Total weight converges to `110`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

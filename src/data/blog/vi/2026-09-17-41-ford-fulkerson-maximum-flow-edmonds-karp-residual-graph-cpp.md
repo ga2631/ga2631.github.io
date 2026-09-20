@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong các hệ thống phân phối dầu khí, mạng truyền tải điện, hạ tầng băng thông mạng Internet hay điều phối chuyến bay, bài toán cốt lõi đặt ra là: *Làm thế nào để vận chuyển khối lượng vật chất hoặc thông tin lớn nhất từ điểm phát đến điểm thu mà không làm quá tải bất kỳ đường ống/đường truyền nào?*
 
@@ -30,7 +30,7 @@ Hãy xác định một hàm luồng `f(u, v)` thỏa mãn hai điều kiện b�
 
 Mục tiêu: Cực đại hóa tổng luồng đi từ nguồn `s` đến đích `t`: `|f| = sum f(s, v)`.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cách tiếp cận ngây thơ ban đầu là sử dụng giải thuật Tham lam (Greedy): Tìm một đường đi bất kỳ từ `s` đến `t` bằng DFS/BFS, đẩy luồng tối đa có thể qua đường đi này, giảm dung lượng của các cạnh đã đi qua và lặp lại cho đến khi không còn đường đi nào nối từ `s` đến `t`.
 
@@ -38,7 +38,7 @@ Chiến lược tham lam thuần túy này **thất bại** vì một khi luồn
 
 Lester Ford Jr. và Delbert Fulkerson vào năm 1956 đã đưa ra giải pháp đột phá: **Cung ngược (Backward Edge)** trên **Đồ thị dư (Residual Graph)**, cho phép thuật toán &quot;hoàn trả luồng&quot; (Undo/Reroute flow) đã gửi sai trước đó.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Phương pháp Ford-Fulkerson vận hành dựa trên 3 trụ cột lý thuyết vững chắc:
 
@@ -51,7 +51,7 @@ Phương pháp Ford-Fulkerson vận hành dựa trên 3 trụ cột lý thuyết
 3. **Định lý Luồng cực đại - Lát cắt cực tiểu (Max-Flow Min-Cut Theorem):** Giá trị luồng cực đại từ `s` đến `t` chính xác bằng tổng dung lượng của lát cắt nhỏ nhất (Min-Cut) phân tách đồ thị thành 2 tập đỉnh chứa `s` và `t`.
 4. **Tối ưu hóa Edmonds-Karp (1972):** Thay vì dùng DFS có thể bị lặp vô hạn nếu dung lượng là số vô tỉ hoặc chạy rất chậm với `O(E x |f*|)`, Edmonds và Karp đề xuất luôn dùng **BFS** để tìm đường tăng luồng ngắn nhất (ít cạnh nhất). Điều này đảm bảo thuật toán đạt thời gian đa thức chặt chẽ `O(V x E²)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ cơ chế cung ngược và tiến trình tăng luồng trên đồ thị dư:
 
@@ -177,7 +177,7 @@ int main() {
 - *Đường tăng luồng 3:* BFS tìm thấy `0 -> 2 -> 4 -> 3 -> 5` với `bottleneck = min(9, 10, 7, 8) = 7` &rarr; Luồng tăng lên `16 + 7 = 23`.
 - *Kết thúc:* BFS không còn tìm thấy đường nào có dung lượng &gt; 0 từ 0 đến 5 &rarr; Luồng cực đại chốt giá trị `23`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

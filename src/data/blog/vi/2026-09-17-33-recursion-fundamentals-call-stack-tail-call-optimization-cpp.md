@@ -16,20 +16,20 @@ tags:
   - "Divide and Conquer"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Nhiều bài toán phức tạp (duyệt cây nhị phân, phân tách tệp tin thư mục, quay lui Backtracking, giải thuật Chia để Trị) rất khó giải quyết bằng các vòng lặp tuần tự phẳng. Đề bài đặt ra: Làm thế nào để giải quyết một bài toán lớn bằng cách phân rã thành các bài toán con *cùng dạng nhưng có quy mô nhỏ hơn*?
 
 Đệ quy (Recursion) là kỹ thuật lập trình mà trong đó hàm tự gọi lại chính nó để giải quyết bài toán con cho tới khi chạm điểm dừng cơ sở.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Cạm bẫy đệ quy ngây thơ:
 
 - Thiếu điều kiện dừng (Missing Base Case) hoặc điều kiện dừng không bao giờ đạt tới &rarr; Hàm tự gọi vô tận dẫn đến **Tràn ngăn xếp (Call Stack Overflow Crash)**.
 - Đệ quy giải quyết các bài toán con trùng lặp (Overlapping Subproblems) như tính số Fibonacci ngây thơ làm bùng nổ độ phức tạp lên cấp số mũ `O(2ᴺ)`.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Nguyên lý cốt lõi và Kỹ thuật tối ưu hóa Đệ quy:
 
@@ -40,7 +40,7 @@ Nguyên lý cốt lõi và Kỹ thuật tối ưu hóa Đệ quy:
 2. **Cơ chế Phân bổ Call Stack:** Mỗi lần gọi hàm, hệ điều hành cấp phát một Stack Frame (chứa tham số, biến cục bộ, địa chỉ trả về). Khi đạt Base Case, các frame lần lượt được thu hồi (Unwind/Pop).
 3. **Tối ưu hóa Đệ quy Đuôi (Tail Call Optimization - TCO):** Nếu lời gọi đệ quy là *thao tác cuối cùng* của hàm (không còn phép tính tồn đọng nào), trình biên dịch C++ hiện đại có thể tái sử dụng ngay Stack Frame hiện tại &rarr; Giảm dung lượng Call Stack từ `O(N)` về `O(1)`.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Minh họa quá trình Đẩy (Push) và Thu hồi (Pop) Call Stack khi tính `factorial(3)`:
 
@@ -109,7 +109,7 @@ int main() {
 - `N = 1, 	ext{acc} = 6`: Chạm Base Case (`N <= 1`) &rarr; Trả về trực tiếp `6` mà không cần tích lũy phép nhân khi quay lui.
 - *Tính `fastPower(2, 10)`:* Chia bài toán thành `2^5 -> 2^2 -> 2^1 -> 2^0` &rarr; Chỉ mất đúng 4 bước đệ quy thay vì 10 vòng lặp.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 **Đánh giá Hiệu năng theo Framework Chuẩn:**
 

@@ -16,7 +16,7 @@ tags:
   - "Negative Cycle"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Trong thực tế, không phải mọi mạng lưới đều có chi phí dương. Trong thị trường tài chính (giao dịch chênh lệch tỷ giá - Currency Arbitrage) hay các mô hình trao đổi năng lượng tái tạo, các cạnh đồ thị có thể mang **trọng số âm** (thể hiện lợi nhuận thu được khi thực hiện giao dịch).
 
@@ -27,13 +27,13 @@ Trong thực tế, không phải mọi mạng lưới đều có chi phí dươn
 
 Thuật toán Bellman-Ford (phát triển bởi Richard Bellman và Lester Ford Jr.) là giải thuật chuẩn mực giải quyết trọn vẹn thách thức này.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Thuật toán Dijkstra thất bại hoàn toàn trên đồ thị có trọng số âm vì chiến lược Tham lam chốt cố định đỉnh có khoảng cách nhỏ nhất tại mỗi bước. Khi một cạnh âm xuất hiện ở bước sau, khoảng cách đến đỉnh đã chốt có thể bị giảm xuống, nhưng Dijkstra không có cơ chế hoàn tác hoặc cập nhật lại các đỉnh đã bị loại khỏi hàng đợi ưu tiên.
 
 Để đảm bảo tính chính xác tuyệt đối mà không cần giả định tham lam, ta phải chuyển sang tư duy Quy hoạch động: Thực hiện nới lỏng (Relax) trên _toàn bộ danh sách cạnh_ một cách có hệ thống.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Bản chất toán học của thuật toán Bellman-Ford dựa trên **Nguyên lý đường đi đơn (Simple Path Invariant)**:
 
@@ -42,7 +42,7 @@ Bản chất toán học của thuật toán Bellman-Ford dựa trên **Nguyên 
 3. **Cơ chế Phát hiện Chu trình Âm (Lượt duyệt thứ `V`):** Thực hiện thêm lượt duyệt thứ `V`. Nếu vẫn tồn tại bất kỳ cạnh `(u, v)` nào thỏa mãn `dist[u] + w < dist[v]`, điều đó chứng tỏ tồn tại một chu trình âm có thể tiếp tục rút ngắn khoảng cách vô hạn lần.
 4. **Tối ưu hóa Cờ hiệu Dừng sớm (Early-Exit Flag):** Nếu trong một lượt duyệt mà không có bất kỳ cạnh nào được nới lỏng (`updated = false`), thuật toán có thể dừng ngay lập tức. Điều này giúp Bellman-Ford đạt `O(E)` trong Best-case khi đồ thị có cấu trúc thuận lợi.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ tiến trình nới lỏng qua các lượt và cơ chế phát hiện chu trình âm:
 
@@ -165,7 +165,7 @@ int main() {
 - *Lượt 3 (i = 3):* Không còn cạnh nào cải thiện thêm &rarr; Cờ `updated = false` &rarr; Thoát sớm ở lượt 3 thay vì chờ hết 4 lượt.
 - *Kiểm tra chu trình âm:* Duyệt toàn bộ 8 cạnh, không có cạnh nào giảm thêm khoảng cách &rarr; Đồ thị an toàn, kết quả chốt `[0, -1, 2, -2, 1]`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

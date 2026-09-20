@@ -16,19 +16,19 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In asynchronous event-driven architectures, web server connection listeners, OS print spoolers, and message brokers (Kafka, RabbitMQ), incoming tasks must be processed in **chronological arrival sequence**: *The earliest submitted job must be served first.*
 
 A **Queue** is a linear structure governed by the **First-In, First-Out (FIFO)** principle. Elements are appended at the **Rear / Tail** and extracted from the opposing **Front / Head**.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Implementing a queue on a linear array increments `rear` on enqueue and `front` on dequeue.
 
 Over time, `rear` hits the buffer boundary while vacated slots before `front` sit idle. The queue mistakenly rejects insertions despite ample free memory - a defect known as **False Overflow**.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 The standard architectural solution is the **Circular Queue (Ring Buffer)**:
 
@@ -40,7 +40,7 @@ next_index = (current_index + 1) % capacity
 2. **Full vs Empty Distinction:** Track explicit element count `count`: Empty when `count == 0`, Full when `count == capacity`.
 3. **Constant Time Invariant:** Both `enqueue` and `dequeue` execute in deterministic **`O(1)`** time with zero memory allocations or element copying.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Circular Queue Ring Buffer architecture:
 
@@ -131,7 +131,7 @@ int main() {
 - *Enqueue 50, 60:* Stored at indices 0 and 1 via modulo arithmetic without allocation delays.
 - *Front check:* Points stably to index 2 (value `30`).
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

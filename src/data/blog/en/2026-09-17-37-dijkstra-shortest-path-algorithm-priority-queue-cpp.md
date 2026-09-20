@@ -16,7 +16,7 @@ tags:
   - "Priority Queue"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 The Single-Source Shortest Path (SSSP) problem is foundational to network routing and graph algorithms. Problem statement:
 
@@ -24,13 +24,13 @@ Given a directed or undirected weighted graph `G = (V, E)` with `V` vertices and
 
 Invented in 1956 by Edsger W. Dijkstra, Dijkstra's algorithm remains the premier algorithm for non-negative graph routing.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Standard Breadth-First Search (BFS) computes shortest paths only when all edge weights are uniformly 1. On non-uniform graphs, BFS prematurely marks nodes visited along low-hop but high-weight paths.
 
 Dijkstra's original 1959 formulation performed linear array scanning to extract the minimum distance node, yielding `O(V²)` complexity. On sparse road networks (where `E ~ V`), scanning arrays across millions of vertices introduces excessive latency.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Dijkstra's algorithm relies on the **Greedy Choice Property** and **Edge Relaxation**:
 
@@ -48,7 +48,7 @@ if (dist[u] + w(u, v) < dist[v]) {
 
 **Critical Invariant:** Dijkstra fails on graphs containing negative edge weights because future negative edges can invalidate previously settled greedy assumptions.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 State transitions and relaxation progression using Min-Heap priority queue:
 
@@ -170,7 +170,7 @@ int main() {
 - _Step 5:_ Pop `(6, 3)`. Relaxes node 4: `6 + 1 = 7 < 9` &rarr; Updates `dist[4]=7, parent[4]=3`.
 - _Outcome:_ Shortest path to node 4 converges to `7` along route `0 -> 2 -> 1 -> 3 -> 4`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

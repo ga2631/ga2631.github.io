@@ -17,20 +17,20 @@ tags:
   - "Performance"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In high-throughput distributed systems, databases, and web servers, key-value lookup operations must execute instantaneously. Problem statement: Design a storage data structure that achieves **constant `O(1)` expected average time complexity for Insert, Lookup (Get), and Delete operations**.
 
 Hash Tables combined with robust Hashing Algorithms represent the global standard for achieving `O(1)` retrieval speeds independent of dataset magnitude.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Comparing against classical structures:
 
 - _Flat Arrays:_ Lookup requires sequential `O(N)` comparisons.
 - _Balanced Binary Search Trees (AVL / Red-Black Tree):_ Maintains `O(log N)` lookups, but incurs tree rebalancing rotations and pointer chasing overhead.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Hash Table Architecture and Collision Resolution Strategies:
 
@@ -42,7 +42,7 @@ Hash Table Architecture and Collision Resolution Strategies:
 
 3. **Load Factor (`α`) & Dynamic Rehashing:** When `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, the table automatically doubles capacity and re-inserts all items to maintain short bucket chains and sustain strict `O(1)` lookup guarantees.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing Separate Chaining collision handling across buckets:
 
@@ -182,7 +182,7 @@ int main() {
 - _Insert "cherry" (value 80):_ Resolves to bucket `1` &rarr; Collision! Appends `{"cherry", 80}` to the linked list in `table[1]`.
 - _Lookup `get("banana")`:_ Hash points directly to bucket `1` &rarr; Traverses first node, finds key "banana" &rarr; Outputs `40` in `O(1)` time.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 **Metrics Scorecard (Standard Evaluation Framework):**
 

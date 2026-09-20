@@ -18,7 +18,7 @@ tags:
   - "Data Engineering"
 ---
 
-## 1. Business Context & Data Requirements
+## Business Context & Data Requirements
 
 In modern mission-critical user applications—such as E-Commerce platforms, Digital Banking cores, Payment Gateways, and Ride-Hailing networks—the **Online Transaction Processing (OLTP) Database** represents the heartbeat of the enterprise.
 
@@ -32,7 +32,7 @@ Consider the uncompromising engineering and business demands placed upon product
 
 OLTP engines are tuned for single-row indexed primary-key CRUD operations. Executing analytical aggregate queries (e.g., `COUNT DISTINCT`, multi-table analytical joins across tens of millions of rows) directly on primary transactional instances exhausts I/O bandwidth, triggers table locks, saturates connection pools, and risks customer-facing checkout outages.
 
-## 2. Data Modeling & Schema Design
+## Data Modeling & Schema Design
 
 To strike an optimal balance between absolute ACID integrity and blazing write throughput, data and system engineers must master three fundamental design pillars:
 
@@ -116,7 +116,7 @@ flowchart TD
     end
 ```
 
-## 3. Pipeline Construction & Processing Logic
+## Pipeline Construction & Processing Logic
 
 To demonstrate production OLTP concurrency control, below is a fully normalized 3NF schema implementation paired with Python transaction controllers solving high-concurrency inventory reservation without race conditions.
 
@@ -234,7 +234,7 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
     return False # Retry threshold exhausted
 ```
 
-## 4. Data Validation & Performance Tuning
+## Data Validation & Performance Tuning
 
 Operating OLTP databases under sustained tens of thousands of TPS without query degradation requires disciplined physical optimization:
 
@@ -288,7 +288,7 @@ Operating OLTP databases under sustained tens of thousands of TPS without query 
   </tbody>
 </table>
 
-## 5. Summary & Recommendations
+## Summary & Recommendations
 
 OLTP databases form the immutable transactional cornerstone of modern software architecture. Mastering their invariants prevents catastrophic financial and operational losses.
 

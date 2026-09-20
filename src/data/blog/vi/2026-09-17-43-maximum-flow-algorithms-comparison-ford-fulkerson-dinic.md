@@ -17,13 +17,13 @@ tags:
   - "Bipartite Matching"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Lý thuyết Luồng trên Mạng (Network Flow) là một trong những phân nhánh quan trọng và ứng dụng sâu rộng nhất của khoa học máy tính ứng dụng. Khi đối mặt với các bài toán quy mô lớn, việc lựa chọn giữa giải thuật cổ điển **Ford-Fulkerson / Edmonds-Karp** và giải thuật hiện đại **Dinic** tạo ra sự cách biệt hiệu năng lên đến hàng nghìn lần.
 
 Bài viết này phân tích bản chất kiến trúc của hai trường phái, đo lường điểm nghẽn hiệu năng thực nghiệm và trình bày phương pháp quy nạp các bài toán kinh điển (như Cặp ghép Cực đại - Bipartite Matching) về bài toán Luồng cực đại.
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Tại sao Edmonds-Karp lại trở nên chậm chạp trên mạng lưới dày?
 
@@ -31,7 +31,7 @@ Tại sao Edmonds-Karp lại trở nên chậm chạp trên mạng lưới dày?
 - Nếu mạng luồng có 10,000 đường tăng luồng độc lập có cùng độ dài, Edmonds-Karp phải thực thi 10,000 lần BFS lặp đi lặp lại.
 - Dinic khắc phục triệt để sự lãng phí này bằng cách gom toàn bộ 10,000 đường đi đó vào cùng một **Đồ thị Phân tầng (Level Graph)** và dùng DFS quét sạch sẽ (Blocking Flow) chỉ trong 1 pha duy nhất.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 **Ma trận So sánh Chuyên sâu giữa Edmonds-Karp và Dinic:**
 
@@ -77,7 +77,7 @@ Tại sao Edmonds-Karp lại trở nên chậm chạp trên mạng lưới dày?
   </tbody>
 </table>
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ quy nạp bài toán Cặp ghép cực đại (Bipartite Matching) về Mạng luồng cực đại:
 
@@ -209,7 +209,7 @@ int main() {
 }
 ```
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Kết luận kiến trúc dành cho hệ thống phân tán:
 

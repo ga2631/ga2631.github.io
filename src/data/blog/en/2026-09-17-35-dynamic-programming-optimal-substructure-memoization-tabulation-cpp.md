@@ -16,7 +16,7 @@ tags:
   - "Computer Science"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In computer science, numerous optimization problems suffer from exponential search space explosions when approached naively via brute-force search. The quintessential archetype is the **0/1 Knapsack Problem**.
 
@@ -24,7 +24,7 @@ Given a knapsack with maximum weight capacity `W` and a set of `N` discrete item
 
 Evaluating all `2ᴺ` possible subsets via exhaustive brute force yields an impossible time complexity of `O(2ᴺ)` when `N >= 40` (exceeding 10¹² operations). **Dynamic Programming (DP)**, pioneered by mathematician Richard Bellman in the 1950s, eliminates this exponential barrier, reducing execution time to pseudo-polynomial `O(N x W)`.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 A naive recursive formulation branches into two choices at each item `i`:
 
@@ -42,7 +42,7 @@ knapsack(i, w) = max(
 
 This plain recursion explodes because identical subproblems `(i, w)` are re-evaluated exponentially across independent branches, causing severe Call Stack pressure and quadratic/exponential runtimes.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 Dynamic Programming requires **two fundamental invariants**:
 
@@ -56,7 +56,7 @@ Two primary implementation paradigms exist:
 
 **Space Optimization:** Since computing row `i` strictly depends on row `i - 1`, the 2D matrix can be collapsed into a 1D array of size `W + 1`. Crucially, the capacity `w` must be traversed in reverse (from `W` down to `w[i]`) to prevent overwriting prior state values within the same iteration.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 Visualizing DP state transitions and overlapping subproblem structure:
 
@@ -148,7 +148,7 @@ int main() {
 - *Item 3 (w=4, v=5):* Loop `w` from 5 down to 4 &rarr; `dp = [0, 0, 3, 4, 5, 7]`.
 - *Item 4 (w=5, v=8):* Loop `w = 5`: `dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Final optimal value is `8`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 

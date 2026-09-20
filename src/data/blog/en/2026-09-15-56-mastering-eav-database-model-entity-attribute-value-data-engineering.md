@@ -17,7 +17,7 @@ tags:
   - "PostgreSQL JSONB"
 ---
 
-## 1. Business Context & Data Requirements
+## Business Context & Data Requirements
 
 In traditional relational database design (RDBMS), Third Normal Form (3NF) principles dictate flat, structured tables with predefined columns (e.g., a `users` table with `id`, `email`, and `created_at`). However, software and data engineers inevitably encounter an intractable enterprise problem: **Heterogeneous, Highly Dynamic, and Sparse Attribute Catalogs**.
 
@@ -34,7 +34,7 @@ Consider these prevalent production scenarios:
 
 To provide infinite schema flexibility while remaining within a robust relational DBMS, the **Entity-Attribute-Value (EAV)** data modeling paradigm was forged.
 
-## 2. Data Modeling & Schema Design
+## Data Modeling & Schema Design
 
 The core concept of the **EAV (Entity - Attribute - Value)** model is transforming database growth from _horizontal expansion (adding columns)_ to _vertical expansion (adding rows)_. Data is decomposed into three atomic primitives:
 
@@ -125,7 +125,7 @@ flowchart TD
   </tbody>
 </table>
 
-## 3. Pipeline Construction & Processing Logic
+## Pipeline Construction & Processing Logic
 
 To understand why EAV is notorious in analytical engineering and how Data Engineers resolve this impedance mismatch, let us inspect both the SQL query bottlenecks and the automated ETL Flattening Engine.
 
@@ -249,7 +249,7 @@ def flatten_eav_to_flat_table(spark: SparkSession):
 print("EAV Flattening Pipeline executed with zero data loss!")
 ```
 
-## 4. Data Validation & Performance Tuning
+## Data Validation & Performance Tuning
 
 To operate EAV databases reliably in OLTP while guaranteeing pristine data quality for downstream analytics, Data Engineers implement the following operational safeguards:
 
@@ -310,7 +310,7 @@ CREATE INDEX idx_attr_val ON catalog_product_entity_varchar (attribute_id, value
   </tbody>
 </table>
 
-## 5. Summary & Recommendations
+## Summary & Recommendations
 
 The EAV model is a textbook demonstration of software engineering trade-offs: _Sacrificing relational simplicity and query performance in exchange for complete, runtime schema flexibility_.
 

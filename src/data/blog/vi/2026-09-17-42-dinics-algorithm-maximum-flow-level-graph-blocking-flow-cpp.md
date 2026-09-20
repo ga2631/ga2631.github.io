@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Mô tả bài toán
+## Mô tả bài toán
 
 Mặc dù thuật toán Edmonds-Karp đảm bảo tính đa thức với độ phức tạp `O(V x E²)`, nhưng trên các đồ thị có quy mô lớn trong thực tế (hàng chục nghìn đỉnh và hàng trăm nghìn cạnh), việc chạy lại toàn bộ thuật toán BFS từ đầu chỉ để tăng luồng trên *một con đường duy nhất* là một nút thắt cổ chai hiệu năng nghiêm trọng.
 
@@ -25,14 +25,14 @@ Nhà toán học Yefim A. Dinitz vào năm 1970 đã phát minh ra **Thuật to�
 
 Thuật toán đạt độ phức tạp xuất sắc `O(V² x E)` trên đồ thị tổng quát và đạt tốc độ không tưởng `O(E sqrtV)` trên mạng đơn vị (Unit Network - tương đương giải thuật Hopcroft-Karp trong bài toán Cặp ghép cực đại).
 
-## 2. Ý tưởng tiếp cận ban đầu
+## Ý tưởng tiếp cận ban đầu
 
 Sự khác biệt căn bản giữa Edmonds-Karp và Dinic nằm ở kiến trúc xử lý:
 
 - **Edmonds-Karp:** Chạy 1 lần BFS &rarr; Tìm 1 đường tăng luồng &rarr; Cập nhật đồ thị dư &rarr; Lặp lại. Phải thực hiện tới `O(V x E)` lần BFS độc lập.
 - **Dinic:** Chạy 1 lần BFS để phân tầng toàn bộ đồ thị theo khoảng cách ngắn nhất &rarr; Chạy DFS liên tục đẩy luồng qua tất cả các đường hợp lệ trên đồ thị phân tầng cho đến khi bị bão hòa hoàn toàn (Luồng chặn) &rarr; Tiến sang pha phân tầng kế tiếp. Số pha phân tầng bị chặn cứng ở `V - 1` pha.
 
-## 3. Tư duy tối ưu & Cấu trúc thuật toán
+## Tư duy tối ưu & Cấu trúc thuật toán
 
 Thuật toán Dinic vận hành theo cấu trúc 2 pha lặp đi lặp lại:
 
@@ -48,7 +48,7 @@ Thuật toán Dinic vận hành theo cấu trúc 2 pha lặp đi lặp lại:
 - Chỉ cho phép đẩy luồng từ tầng `level[u]` sang tầng kế tiếp `level[u] + 1`: Tức là điều kiện duyệt cạnh hợp lệ là `level[v] == level[u] + 1` và `cap > 0`.
 - **Tối ưu hóa con trỏ nhánh cụt (Work Pointer / Head Optimization):** Duy trì mảng `work[u]` lưu chỉ số của cạnh kề đang xét. Khi một nhánh DFS từ đỉnh `u` bị nghẽn (không đẩy được thêm luồng), con trỏ `work[u]` tự động tăng lên để loại bỏ vĩnh viễn nhánh cụt đó trong pha hiện tại, tránh duyệt lại các cạnh vô ích.
 
-## 4. Triển khai mã nguồn & Dry Run
+## Triển khai mã nguồn & Dry Run
 
 Sơ đồ kiến trúc 2 pha của Thuật toán Dinic:
 
@@ -195,7 +195,7 @@ int main() {
 - *Pha 2 (BFS 2):* Đồ thị dư cập nhật &rarr; BFS gán lại tầng &rarr; DFS đẩy tiếp luồng qua đường `0 -> 2 -> 4 -> 3 -> 5` thêm `5` đơn vị &rarr; Luồng = `19`.
 - *Pha 3 (BFS 3):* `level[T] = -1` (không còn đường) &rarr; Dừng ngay lập tức với kết quả luồng cực đại bằng `19`.
 
-## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 

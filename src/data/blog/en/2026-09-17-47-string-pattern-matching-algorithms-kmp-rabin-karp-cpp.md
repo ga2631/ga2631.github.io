@@ -17,7 +17,7 @@ tags:
   - "C++"
 ---
 
-## 1. Problem Statement & Objectives
+## Problem Statement & Objectives
 
 In source code editors (VS Code, Vim), text search utilities (grep, ripgrep), network intrusion detection systems (Snort), and bioinformatics alignment software (BLAST), a core operation is: _Locate all occurrences of a search `Pattern` (length `M`) inside a large body of `Text` (length `N`)._
 
@@ -25,13 +25,13 @@ Problem statement: **Exact String Matching**. Given `Text[0..N-1]` and `Pattern[
 
 The two preeminent algorithms for this problem are **Knuth-Morris-Pratt (KMP)** and **Rabin-Karp**.
 
-## 2. Initial Naive Approach
+## Initial Naive Approach
 
 Naive string matching slides `Pattern` over `Text` character by character. Upon a mismatch at index `j`, the text pointer rewinds to `i + 1` and pattern matching restarts from index 0.
 
 Worst-case inputs with repetitive characters (e.g., `Text = "AAAAAAAAB"`, `Pattern = "AAAB"`) cause `O(N x M)` quadratic explosions, requiring hundreds of billions of comparisons on large corpora.
 
-## 3. Optimization Thinking & Algorithm Design
+## Optimization Thinking & Algorithm Design
 
 **1. Knuth-Morris-Pratt (KMP - 1977):**
 
@@ -53,7 +53,7 @@ H_{new} = (H_{old} - Text[i] x B^{M-1}) x B + Text[i + M] \pmod P
 
 - Character comparisons execute strictly when window hash equals pattern hash.
 
-## 4. Code Implementation & Execution Trace
+## Code Implementation & Execution Trace
 
 KMP state machine and deterministic LPS fallback transitions:
 
@@ -208,7 +208,7 @@ int main() {
   - Compares `Text[4] = 'D'` with `Pattern[2] = 'A'` directly &rarr; zero backtracking.
   - Pattern match confirmed at `index = 10`.
 
-## 5. Complexity Evaluation & Real-world Applications
+## Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
