@@ -378,7 +378,7 @@
       "skills": [
         {
           "name": "Golang",
-          "level": 4
+          "level": 3
         },
         {
           "name": "Java (Spring Boot, WebFlux, Batch)",
@@ -390,7 +390,7 @@
         },
         {
           "name": "JavaScript / TypeScript (Node.js, VueJS, ReactJS)",
-          "level": 4
+          "level": 5
         },
         {
           "name": "PHP (Laravel, CodeIgniter)",
@@ -398,7 +398,7 @@
         },
         {
           "name": "Rust",
-          "level": 3
+          "level": 2
         }
       ]
     },
@@ -407,7 +407,7 @@
       "description": "Mô hình hóa CSDL quan hệ, hàng đợi thông điệp và triển khai container hóa",
       "skills": [
         {
-          "name": "PostgreSQL (Indexing & Tối ưu hóa)",
+          "name": "PostgreSQL",
           "level": 5
         },
         {
@@ -416,7 +416,7 @@
         },
         {
           "name": "Redis (Caching & Rate Limiting)",
-          "level": 4
+          "level": 3
         },
         {
           "name": "RabbitMQ / Apache Kafka",
@@ -424,11 +424,11 @@
         },
         {
           "name": "Docker & Docker Compose",
-          "level": 5
+          "level": 4
         },
         {
           "name": "Linux / CentOS Server Administration",
-          "level": 4
+          "level": 3
         },
         {
           "name": "CI/CD Pipelines & Nginx",
@@ -442,11 +442,11 @@
       "skills": [
         {
           "name": "Google Analytics 4 (GA4)",
-          "level": 5
+          "level": 4
         },
         {
           "name": "Google Tag Manager (GTM)",
-          "level": 5
+          "level": 4
         },
         {
           "name": "Looker Studio Reporting",
@@ -458,11 +458,11 @@
         },
         {
           "name": "Medallion Data Architecture (Bronze-Silver-Gold)",
-          "level": 4
+          "level": 5
         },
         {
           "name": "Change Data Capture (CDC) Pipelines",
-          "level": 4
+          "level": 5
         }
       ]
     },
@@ -491,8 +491,12 @@
           "level": 5
         },
         {
-          "name": "Tiếng Anh & Tiếng Việt (Song ngữ)",
+          "name": "Tiếng Việt",
           "level": 5
+        },
+        {
+          "name": "Tiếng Anh",
+          "level": 3
         }
       ]
     }
@@ -503,7 +507,7 @@
       "degree": "Sư phạm Tin học",
       "institution": "Trường Đại học Sư phạm TP.HCM (HCMUE)",
       "location": "TP. Hồ Chí Minh, Việt Nam",
-      "period": "2018 - 2023",
+      "period": "2018",
       "gpaOrHonors": "Hoàn thành chương trình chuyên ngành",
       "details": [
         "Nền tảng Khoa học Máy tính Toàn diện: Nắm vững Cấu trúc Dữ liệu & Giải thuật (DSA), Lập trình Hướng đối tượng (OOP), Cơ sở Dữ liệu (DBMS / Relational SQL), Kiến trúc Máy tính, Hệ điều hành, Mạng máy tính và Phương pháp luận Kỹ thuật Phần mềm.",
@@ -515,10 +519,26 @@
   "certifications": [
     {
       "id": "cert-1",
+      "name": "Chứng chỉ SQL (Nâng cao)",
+      "issuer": "HackerRank",
+      "issueDate": "30/10/2024",
+      "isCompleted": true,
+      "credentialUrl": "https://www.hackerrank.com/certificates/4cd77b00adfc"
+    },
+    {
+      "id": "cert-2",
+      "name": "Chứng chỉ Kỹ sư phần mềm",
+      "issuer": "HackerRank",
+      "issueDate": "21/12/2026",
+      "isCompleted": true,
+      "credentialUrl": "https://www.hackerrank.com/certificates/8340f11edaf9"
+    },
+    {
+      "id": "cert-3",
       "name": "Google Cloud Professional Data Engineer",
       "issuer": "Google Cloud",
       "issueDate": "Mục tiêu 2027",
-      "status": "Đang theo học"
+      "isCompleted": false
     }
   ]
 }

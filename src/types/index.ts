@@ -83,7 +83,7 @@ export interface CertificationItem {
   issueDate: string;
   credentialUrl?: string;
   badgeCode?: string;
-  status?: string;
+  isCompleted?: boolean;
 }
 
 export interface BlogPost {

@@ -12,18 +12,6 @@ interface ContactProps {
 }
 
 export const Contact: React.FC<ContactProps> = ({ data, t }) => {
-  const [copied, setCopied] = useState(false);
-
-  const copyEmailToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(getSecureEmail());
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    } catch {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    }
-  };
 
   const handleEmailCompose = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -66,15 +54,6 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
 
           <Card.Footer className="contact-card-actions">
             <Button
-              variant={copied ? 'primary' : 'secondary'}
-              size="sm"
-              onClick={copyEmailToClipboard}
-              icon={copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
-              title="Copy email to clipboard"
-            >
-              <span>{copied ? t.copied : t.copyEmail}</span>
-            </Button>
-            <Button
               as="a"
               href="#"
               variant="primary"
@@ -110,7 +89,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
               <Button
                 as="a"
                 href="#"
-                variant="secondary"
+                variant="primary"
                 size="sm"
                 onClick={handlePhoneCall}
                 onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureTelUrl(); }}
@@ -122,7 +101,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
               <Button
                 as="a"
                 href="#"
-                variant="primary"
+                variant="secondary"
                 size="sm"
                 onClick={handleZaloChat}
                 onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureZaloUrl(); }}
