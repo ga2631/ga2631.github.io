@@ -195,8 +195,6 @@ int main() {
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
-
 - **Chèn / Xóa tại vị trí biết trước (Insert / Delete with pointer):** `O(1)` tuyệt đối (không cần dịch chuyển các phần tử khác).
 - **Chèn / Xóa ở đầu hoặc đuôi (Push / Pop Front/Back):** `O(1)` với danh sách liên kết đôi có con trỏ tail.
 - **Tìm kiếm phần tử theo giá trị (Search by Value):** `O(N)` vì phải duyệt tuần tự qua từng nút con trỏ.

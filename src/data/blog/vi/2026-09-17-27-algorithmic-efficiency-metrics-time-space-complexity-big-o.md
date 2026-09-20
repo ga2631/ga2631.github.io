@@ -37,12 +37,15 @@ Chúng ta cần một tư duy định lượng tiệm cận (Asymptotic Analysis
 Để đánh giá một thuật toán toàn diện, tôi thiết lập mô hình tính toán chuẩn dựa trên **Mô hình Máy tính RAM (Random Access Machine Model)** và 3 hệ số đo lường trụ cột:
 
 1. **Phân cấp Ký hiệu Tiệm cận (Asymptotic Notations):**
-  - **Big-O (O):** Chặn trên (Upper Bound) - Đại diện cho kịch bản xấu nhất (Worst-Case Scenario). Đây là metric quan trọng nhất để cam kết SLA hệ thống.
-  - **Big-Omega (Ω):** Chặn dưới (Lower Bound) - Kịch bản tốt nhất (Best-Case Scenario).
-  - **Big-Theta (Θ):** Chặn chặt (Tight Bound) - Khi chặn trên và chặn dưới tiệm cận trùng nhau, phản ánh hành vi trung bình thực tế.
+
+- **Big-O (O):** Chặn trên (Upper Bound) - Đại diện cho kịch bản xấu nhất (Worst-Case Scenario). Đây là metric quan trọng nhất để cam kết SLA hệ thống.
+- **Big-Omega (Ω):** Chặn dưới (Lower Bound) - Kịch bản tốt nhất (Best-Case Scenario).
+- **Big-Theta (Θ):** Chặn chặt (Tight Bound) - Khi chặn trên và chặn dưới tiệm cận trùng nhau, phản ánh hành vi trung bình thực tế.
+
 2. **Phân biệt Rạch ròi Time vs Space Complexity:**
-  - **Time Complexity:** Số lượng phép toán nguyên thủy (Primitive Operations: gán, so sánh, số học) theo hàm của N.
-  - **Space Complexity (Total Space vs Auxiliary Space):** Tổng dung lượng bộ nhớ thuật toán cần dùng. Trong đó, _Auxiliary Space_ (Bộ nhớ phụ trợ) là phần bộ nhớ tạm do thuật toán tự cấp phát thêm (không tính mảng đầu vào), bao gồm Heap allocations và Call Stack frames trong đệ quy.
+
+- **Time Complexity:** Số lượng phép toán nguyên thủy (Primitive Operations: gán, so sánh, số học) theo hàm của N.
+- **Space Complexity (Total Space vs Auxiliary Space):** Tổng dung lượng bộ nhớ thuật toán cần dùng. Trong đó, _Auxiliary Space_ (Bộ nhớ phụ trợ) là phần bộ nhớ tạm do thuật toán tự cấp phát thêm (không tính mảng đầu vào), bao gồm Heap allocations và Call Stack frames trong đệ quy.
 
 ## Triển khai mã nguồn & Dry Run
 
@@ -79,8 +82,6 @@ flowchart TD
 - **O(N²) Quadratic Time:** 2 vòng lặp lồng nhau duyệt qua tất cả các cặp (i, j).
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
-
-**Bộ khung Đánh giá Chuẩn mực (Evaluation Framework) cho Toàn bộ Series:**
 
 Từ bài viết này trở đi, mỗi thuật toán trong series sẽ được giải phẫu và chấm điểm dựa trên đúng 5 tiêu chí cốt lõi:
 

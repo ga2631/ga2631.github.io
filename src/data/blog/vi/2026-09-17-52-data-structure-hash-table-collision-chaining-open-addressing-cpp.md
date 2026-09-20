@@ -37,14 +37,19 @@ Thách thức toán học cốt tử: Theo _Nguyên lý chuồng bồ câu (Pige
 Để giải quyết đụng độ và duy trì hiệu năng `O(1)`, hai chiến lược kiến trúc kinh điển được áp dụng:
 
 1. **Phương pháp Dây chuyền Tách biệt (Separate Chaining):**
-  - Mỗi ô nhớ (Bucket) của bảng băm là một Danh sách liên kết (Linked List) hoặc Cây đỏ đen (Red-Black Tree khi chuỗi dài &gt; 8).
-  - Khi xảy ra đụng độ, cặp `{key, value}` mới chỉ việc được thêm vào danh sách tại bucket đó trong `O(1)`.
-  - Đây là cơ chế mặc định trong `std::unordered_map` của C++ và `HashMap` của Java.
+
+- Mỗi ô nhớ (Bucket) của bảng băm là một Danh sách liên kết (Linked List) hoặc Cây đỏ đen (Red-Black Tree khi chuỗi dài &gt; 8).
+- Khi xảy ra đụng độ, cặp `{key, value}` mới chỉ việc được thêm vào danh sách tại bucket đó trong `O(1)`.
+- Đây là cơ chế mặc định trong `std::unordered_map` của C++ và `HashMap` của Java.
+
 2. **Phương pháp Địa chỉ Mở (Open Addressing / Linear Probing):**
-  - Mọi phần tử đều nằm trực tiếp trong mảng. Khi ô `bucket` bị chiếm dụng, thuật toán dò tiếp các ô lân cận `(bucket + 1) % capacity` cho đến khi tìm thấy ô trống.
+
+- Mọi phần tử đều nằm trực tiếp trong mảng. Khi ô `bucket` bị chiếm dụng, thuật toán dò tiếp các ô lân cận `(bucket + 1) % capacity` cho đến khi tìm thấy ô trống.
+
 3. **Kiểm soát Hệ số tải & Tái băm (Load Factor & Dynamic Rehashing):**
-  - Hệ số tải `alpha = N / capacity` biểu thị mức độ đầy của bảng.
-  - Khi `alpha >= 0.75`, bảng băm tự động cấp phát mảng mới có kích thước gấp đôi (`capacity x 2`) và băm lại toàn bộ các phần tử (Rehashing) để bảo toàn độ phức tạp trung bình `O(1)`.
+
+- Hệ số tải `alpha = N / capacity` biểu thị mức độ đầy của bảng.
+- Khi `alpha >= 0.75`, bảng băm tự động cấp phát mảng mới có kích thước gấp đôi (`capacity x 2`) và băm lại toàn bộ các phần tử (Rehashing) để bảo toàn độ phức tạp trung bình `O(1)`.
 
 ## Triển khai mã nguồn & Dry Run
 
@@ -197,8 +202,6 @@ int main() {
 - _Tra cứu "banana":_ Băm ra bucket 1 &rarr; Quét phần tử đầu tiên của danh sách, thấy khóa "banana" &rarr; Trả về `40` trong `O(1)`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Thao tác Trung bình (Average Case):** `O(1)` cho cả Insert, Delete, và Lookup khi hàm băm phân phối đồng đều.
 - **Trường hợp Xấu nhất (Worst Case):** `O(N)` khi tất cả các khóa đều bị băm về cùng một bucket (được khắc phục bằng cách dùng Red-Black Tree nâng cấp lên `O(\log N)`).

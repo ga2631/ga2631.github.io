@@ -32,11 +32,12 @@ Với các đồ thị dày (Dense Graph có số cạnh `E ~ V²`), độ phứ
 
 Thuật toán Prim dựa trên định lý nền tảng của lý thuyết đồ thị: **Nguyên lý Lát cắt (Cut Property)**:
 
-1. **Định lý Lát cắt:** Cho một lát cắt chia tập đỉnh `V` thành 2 tập rời nhau: Tập `S` (các đỉnh đã thuộc cây MST) và tập `V \ S` (các đỉnh chưa thuộc cây). Cạnh `(u, v)` có **trọng số nhỏ nhất** nối giữa một đỉnh trong `S` và một đỉnh trong `V \ S` (gọi là Cạnh nhẹ nhất cắt qua lát cắt) *chắc chắn thuộc về Cây khung nhỏ nhất*.
+1. **Định lý Lát cắt:** Cho một lát cắt chia tập đỉnh `V` thành 2 tập rời nhau: Tập `S` (các đỉnh đã thuộc cây MST) và tập `V \ S` (các đỉnh chưa thuộc cây). Cạnh `(u, v)` có **trọng số nhỏ nhất** nối giữa một đỉnh trong `S` và một đỉnh trong `V \ S` (gọi là Cạnh nhẹ nhất cắt qua lát cắt) _chắc chắn thuộc về Cây khung nhỏ nhất_.
 2. **Cơ chế Biên mở rộng (Frontier Expansion):** Duy trì một tập đỉnh `inMST[v]`. Ban đầu `inMST[0] = true`, các đỉnh còn lại là `false`.
 3. **Tối ưu hóa Hàng đợi ưu tiên (Min-Heap Priority Queue):**
-  - Lưu trữ các cạnh vượt lát cắt trong `std::priority_queue`.
-  - Tại mỗi bước, lấy ra cạnh `(u, v, w)` có trọng số nhỏ nhất. Nếu `v` chưa thuộc cây, kết nạp `v` vào `inMST`, cộng trọng số `w` vào tổng chi phí, và đẩy tất cả các cạnh kề của `v` nối tới các đỉnh chưa thuộc cây vào Min-Heap.
+
+- Lưu trữ các cạnh vượt lát cắt trong `std::priority_queue`.
+- Tại mỗi bước, lấy ra cạnh `(u, v, w)` có trọng số nhỏ nhất. Nếu `v` chưa thuộc cây, kết nạp `v` vào `inMST`, cộng trọng số `w` vào tổng chi phí, và đẩy tất cả các cạnh kề của `v` nối tới các đỉnh chưa thuộc cây vào Min-Heap.
 
 Nhờ cấu trúc Min-Heap, độ phức tạp của Prim trên đồ thị thưa giảm mạnh xuống `O((V + E) \log V)`.
 
@@ -52,13 +53,13 @@ graph TD
             Node1((Đỉnh 1))
             Node0 --- Node1
         end
-        
+
         subgraph SetNotS ["Tập V - S: Chưa Thuộc Cây"]
             Node2((Đỉnh 2))
             Node3((Đỉnh 3))
             Node4((Đỉnh 4))
         end
-        
+
         Node1 -.->|"w=19 (Nhẹ nhất: Chốt!)"| Node3
         Node1 -.->|"w=42"| Node4
         Node0 -.->|"w=75"| Node2
@@ -167,16 +168,14 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Bắt đầu:* Đỉnh 0 được kết nạp. Đẩy cạnh `(0-1: 9)` và `(0-2: 75)` vào heap.
-- *Bước 1:* Pop `(w=9, u=1)` &rarr; Kết nạp đỉnh 1 vào cây. Đẩy các cạnh kề của 1: `(1-3: 19)`, `(1-4: 42)`, `(1-2: 95)`.
-- *Bước 2:* Pop `(w=19, u=3)` (nhẹ nhất vượt lát cắt) &rarr; Kết nạp đỉnh 3. Đẩy `(3-4: 31)`, `(3-2: 51)`.
-- *Bước 3:* Pop `(w=31, u=4)` &rarr; Kết nạp đỉnh 4.
-- *Bước 4:* Pop `(w=42, u=4)` &rarr; Đỉnh 4 đã có trong cây &rarr; Bỏ qua (Lazy Deletion).
-- *Bước 5:* Pop `(w=51, u=2)` &rarr; Kết nạp đỉnh 2. Đã kết nạp đủ 5 đỉnh &rarr; Tổng trọng số chốt `9 + 19 + 31 + 51 = 110` (đồng nhất với Kruskal).
+- _Bắt đầu:_ Đỉnh 0 được kết nạp. Đẩy cạnh `(0-1: 9)` và `(0-2: 75)` vào heap.
+- _Bước 1:_ Pop `(w=9, u=1)` &rarr; Kết nạp đỉnh 1 vào cây. Đẩy các cạnh kề của 1: `(1-3: 19)`, `(1-4: 42)`, `(1-2: 95)`.
+- _Bước 2:_ Pop `(w=19, u=3)` (nhẹ nhất vượt lát cắt) &rarr; Kết nạp đỉnh 3. Đẩy `(3-4: 31)`, `(3-2: 51)`.
+- _Bước 3:_ Pop `(w=31, u=4)` &rarr; Kết nạp đỉnh 4.
+- _Bước 4:_ Pop `(w=42, u=4)` &rarr; Đỉnh 4 đã có trong cây &rarr; Bỏ qua (Lazy Deletion).
+- _Bước 5:_ Pop `(w=51, u=2)` &rarr; Kết nạp đỉnh 2. Đã kết nạp đủ 5 đỉnh &rarr; Tổng trọng số chốt `9 + 19 + 31 + 51 = 110` (đồng nhất với Kruskal).
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
   - Với Binary Min-Heap (`std::priority_queue`): `O((V + E) \log V)`.

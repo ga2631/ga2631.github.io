@@ -211,7 +211,5 @@ int main() {
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 
-Kết luận kiến trúc dành cho hệ thống phân tán:
-
 1. **Chuẩn hóa Thuật toán Dinic làm mặc định:** Trong mọi ứng dụng thực tế đòi hỏi xử lý mạng luồng, Dinic vượt trội hoàn toàn so với Edmonds-Karp về cả tốc độ lẫn khả năng mở rộng.
 2. **Khả năng quy nạp vạn năng:** Hàng loạt bài toán tưởng chừng không liên quan (Cặp ghép cực đại, Lát cắt cực tiểu phân vùng mạng, Bài toán lựa chọn dự án ROI, Cân bằng tải máy chủ) đều có thể được mô hình hóa và giải quyết thanh lịch trong thời gian `O(E \sqrt{V})` bằng Dinic.

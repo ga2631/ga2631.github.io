@@ -18,7 +18,7 @@ tags:
 
 ## Mô tả bài toán
 
-Trong các hệ thống xử lý bất đồng bộ (Asynchronous Processing), máy chủ web đón nhận hàng nghìn kết nối đồng thời, hàng đợi in ấn (Print Spooler) hay hệ thống truyền thông điệp phân tán (Kafka, RabbitMQ), các yêu cầu cần được xử lý theo **đúng thứ tự thời gian chúng được gửi tới**: *Yêu cầu nào đến trước phải được phục vụ trước.*
+Trong các hệ thống xử lý bất đồng bộ (Asynchronous Processing), máy chủ web đón nhận hàng nghìn kết nối đồng thời, hàng đợi in ấn (Print Spooler) hay hệ thống truyền thông điệp phân tán (Kafka, RabbitMQ), các yêu cầu cần được xử lý theo **đúng thứ tự thời gian chúng được gửi tới**: _Yêu cầu nào đến trước phải được phục vụ trước._
 
 **Hàng chờ (Queue)** là cấu trúc dữ liệu tuyến tính hoạt động theo nguyên tắc **Vào trước - Ra trước (First-In, First-Out - FIFO)**. Dữ liệu được thêm vào ở một đầu gọi là **Đuôi (Rear / Tail)** và được lấy ra ở đầu đối diện gọi là **Đầu (Front / Head)**.
 
@@ -37,9 +37,12 @@ Sau một số thao tác chèn và xóa, con trỏ `rear` sẽ chạm tới cu�
 ```
 next_index = (current_index + 1) % capacity
 ```
+
 2. **Phân biệt Trạng thái Rỗng và Đầy:** Có 2 kỹ thuật phổ biến:
-  - *Kỹ thuật Biến đếm:* Duy trì biến `count` lưu số lượng phần tử thực tế. Rỗng khi `count == 0`, Đầy khi `count == capacity`.
-  - *Kỹ thuật Bỏ trống 1 ô:* Rỗng khi `front == rear`, Đầy khi `(rear + 1) % capacity == front`.
+
+- _Kỹ thuật Biến đếm:_ Duy trì biến `count` lưu số lượng phần tử thực tế. Rỗng khi `count == 0`, Đầy khi `count == capacity`.
+- _Kỹ thuật Bỏ trống 1 ô:_ Rỗng khi `front == rear`, Đầy khi `(rear + 1) % capacity == front`.
+
 3. **Hiệu năng Hằng số:** Cả thao tác thêm vào đuôi (`enqueue`) và lấy ra từ đầu (`dequeue`) đều chỉ tốn 1 vài phép toán số học đơn giản trong thời gian tuyệt đối **`O(1)`** mà không cần cấp phát lại hay sao chép bộ nhớ.
 
 ## Triển khai mã nguồn & Dry Run
@@ -74,7 +77,7 @@ private:
     size_t capacity;
 
 public:
-    CircularQueue(size_t cap) 
+    CircularQueue(size_t cap)
         : buffer(cap), frontIdx(0), rearIdx(0), count(0), capacity(cap) {}
 
     // Thêm phần tử vào đuôi hàng đợi (Enqueue): O(1)
@@ -139,19 +142,17 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Khởi tạo:* `capacity = 4, frontIdx = 0, rearIdx = 0, count = 0`.
-- *Enqueue 10, 20, 30, 40:* 
+- _Khởi tạo:_ `capacity = 4, frontIdx = 0, rearIdx = 0, count = 0`.
+- _Enqueue 10, 20, 30, 40:_
   - Chèn 10 tại index 0 &rarr; `rearIdx = 1`.
   - Chèn 20 tại index 1 &rarr; `rearIdx = 2`.
   - Chèn 30 tại index 2 &rarr; `rearIdx = 3`.
   - Chèn 40 tại index 3 &rarr; `rearIdx = (3 + 1) % 4 = 0`. `count = 4` (Full!).
-- *Dequeue 2 lần:* Lấy ra 10 (`frontIdx = 1`), lấy ra 20 (`frontIdx = 2`). `count = 2`.
-- *Enqueue 50:* Ghi tại `buffer[0] = 50` &rarr; `rearIdx = 1` (Quay vòng thành công mà không tràn bộ nhớ!).
-- *Enqueue 60:* Ghi tại `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` vẫn trỏ chính xác về `buffer[2] = 30`.
+- _Dequeue 2 lần:_ Lấy ra 10 (`frontIdx = 1`), lấy ra 20 (`frontIdx = 2`). `count = 2`.
+- _Enqueue 50:_ Ghi tại `buffer[0] = 50` &rarr; `rearIdx = 1` (Quay vòng thành công mà không tràn bộ nhớ!).
+- _Enqueue 60:_ Ghi tại `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` vẫn trỏ chính xác về `buffer[2] = 30`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Thêm phần tử vào đuôi (Enqueue):** `O(1)` tuyệt đối.
 - **Lấy phần tử ở đầu (Dequeue):** `O(1)` tuyệt đối.

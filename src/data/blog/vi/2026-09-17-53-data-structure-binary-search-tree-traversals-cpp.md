@@ -205,12 +205,10 @@ int main() {
 - _Chèn các giá trị:_ `50, 30, 70, 20, 40, 60, 80`.
   - `30 < 50` &rarr; Con trái của 50. `70 > 50` &rarr; Con phải của 50.
   - `40 > 30` &rarr; Con phải của 30. `60 < 70` &rarr; Con trái của 70.
-- *Duyệt In-order:* Thăm cây con trái của 50 (`20, 30, 40`) &rarr; Gốc `50` &rarr; Cây con phải (`60, 70, 80`) &rarr; Xuất chuỗi đã sắp xếp hoàn hảo `[20, 30, 40, 50, 60, 70, 80]`.
-- *Xóa gốc 50:* 50 có 2 con &rarr; Tìm In-order Successor trong cây con phải (nút nhỏ nhất của `{70, 60, 80}` là `60`) &rarr; Gán `root->val = 60`, xóa nút 60 cũ ở lá phải &rarr; Cây vẫn bảo toàn tuyệt đối bất biến BST.
+- _Duyệt In-order:_ Thăm cây con trái của 50 (`20, 30, 40`) &rarr; Gốc `50` &rarr; Cây con phải (`60, 70, 80`) &rarr; Xuất chuỗi đã sắp xếp hoàn hảo `[20, 30, 40, 50, 60, 70, 80]`.
+- _Xóa gốc 50:_ 50 có 2 con &rarr; Tìm In-order Successor trong cây con phải (nút nhỏ nhất của `{70, 60, 80}` là `60`) &rarr; Gán `root->val = 60`, xóa nút 60 cũ ở lá phải &rarr; Cây vẫn bảo toàn tuyệt đối bất biến BST.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Tìm kiếm, Chèn, Xóa (Trường hợp Trung bình / Cây cân bằng):** `O(\log N)` tỷ lệ thuận với chiều cao của cây `h ~ \log₂ N`.
 - **Trường hợp Xấu nhất (Cây bị suy biến thành danh sách liên kết):** `O(N)` khi chèn dãy số đã có thứ tự sẵn (được giải quyết triệt để bởi Cây Tự cân bằng như AVL Tree và Red-Black Tree trong `std::map` / `std::set`).

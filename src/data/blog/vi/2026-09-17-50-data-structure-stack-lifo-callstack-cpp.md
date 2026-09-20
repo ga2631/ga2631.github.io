@@ -18,7 +18,7 @@ tags:
 
 ## Mô tả bài toán
 
-Trong kiến trúc phần mềm, rất nhiều tác vụ đòi hỏi khả năng **quay lui (Backtracking)**, **hoàn tác hành động (Undo/Redo)**, hoặc **ghi nhớ ngữ cảnh lồng nhau (Nested Context)** như quá trình phân tích cú pháp mã nguồn (Syntax Parsing) hay cơ chế gọi hàm trong CPU. Đặc điểm chung của các tác vụ này: *Thao tác nào diễn ra sau cùng sẽ là thao tác cần được xử lý và hoàn tất đầu tiên.*
+Trong kiến trúc phần mềm, rất nhiều tác vụ đòi hỏi khả năng **quay lui (Backtracking)**, **hoàn tác hành động (Undo/Redo)**, hoặc **ghi nhớ ngữ cảnh lồng nhau (Nested Context)** như quá trình phân tích cú pháp mã nguồn (Syntax Parsing) hay cơ chế gọi hàm trong CPU. Đặc điểm chung của các tác vụ này: _Thao tác nào diễn ra sau cùng sẽ là thao tác cần được xử lý và hoàn tất đầu tiên._
 
 **Ngăn xếp (Stack)** là cấu trúc dữ liệu tuyến tính trừu tượng hoạt động theo nguyên lý nghiêm ngặt **Vào sau - Ra trước (Last-In, First-Out - LIFO)**. Mọi thao tác thêm hoặc loại bỏ phần tử đều chỉ được phép diễn ra tại một đầu duy nhất gọi là **Đỉnh ngăn xếp (Top)**.
 
@@ -34,7 +34,7 @@ Stack có thể được hiện thực hóa dựa trên hai cấu trúc nền t�
 Ba thao tác bất biến cốt lõi của Ngăn xếp:
 
 - `push(x)`: Đẩy một phần tử mới lên trên đỉnh Stack trong `O(1)`.
-- `pop()`: Loại bỏ và trả về phần tử đang nằm trên đỉnh Stack trong `O(1)`. Gặp lỗi *Stack Underflow* nếu thao tác trên Stack rỗng.
+- `pop()`: Loại bỏ và trả về phần tử đang nằm trên đỉnh Stack trong `O(1)`. Gặp lỗi _Stack Underflow_ nếu thao tác trên Stack rỗng.
 - `top() / peek()`: Xem giá trị của phần tử trên đỉnh mà không loại bỏ nó trong `O(1)`.
 
 **Bài toán Ứng dụng Tiêu biểu: Kiểm tra Dấu ngoặc Hợp lệ (Valid Parentheses):**
@@ -150,18 +150,16 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Chuỗi kiểm thử:* `s1 = "{[()]}"`.
-- *Ký tự 1 (`'{'`):* Ngoặc mở &rarr; `push('{')`. Stack = `['{']`.
-- *Ký tự 2 (`'['`):* Ngoặc mở &rarr; `push('[')`. Stack = `['{', '[']`.
-- *Ký tự 3 (`'('`):* Ngoặc mở &rarr; `push('(')`. Stack = `['{', '[', '(']`.
-- *Ký tự 4 (`')'`):* Ngoặc đóng &rarr; `pop()` lấy được `'('` &rarr; Khớp hoàn hảo. Stack = `['{', '[']`.
-- *Ký tự 5 (`']'`):* Ngoặc đóng &rarr; `pop()` lấy được `'['` &rarr; Khớp hoàn hảo. Stack = `['{']`.
-- *Ký tự 6 (`'}'`):* Ngoặc đóng &rarr; `pop()` lấy được `'{'` &rarr; Khớp hoàn hảo. Stack = `[]`.
-- *Kết luận:* Chuỗi duyệt xong và Stack rỗng &rarr; Kết quả `true` (Hợp lệ).
+- _Chuỗi kiểm thử:_ `s1 = "{[()]}"`.
+- _Ký tự 1 (`'{'`):_ Ngoặc mở &rarr; `push('{')`. Stack = `['{']`.
+- _Ký tự 2 (`'['`):_ Ngoặc mở &rarr; `push('[')`. Stack = `['{', '[']`.
+- _Ký tự 3 (`'('`):_ Ngoặc mở &rarr; `push('(')`. Stack = `['{', '[', '(']`.
+- _Ký tự 4 (`')'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'('` &rarr; Khớp hoàn hảo. Stack = `['{', '[']`.
+- _Ký tự 5 (`']'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'['` &rarr; Khớp hoàn hảo. Stack = `['{']`.
+- _Ký tự 6 (`'}'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'{'` &rarr; Khớp hoàn hảo. Stack = `[]`.
+- _Kết luận:_ Chuỗi duyệt xong và Stack rỗng &rarr; Kết quả `true` (Hợp lệ).
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
   - `push()`: `O(1)` Amortized với Mảng động, `O(1)` Worst-case với Danh sách liên kết.

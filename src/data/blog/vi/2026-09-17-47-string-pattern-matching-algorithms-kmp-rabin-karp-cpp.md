@@ -209,7 +209,7 @@ int main() {
 - _Mẫu `Pattern = "ABABCABAB"`:_ Bảng `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
   - `LPS[3] = 2` vì chuỗi con `"ABAB"` có tiền tố `"AB"` trùng với hậu tố `"AB"`.
   - `LPS[8] = 4` vì chuỗi con `"ABABCABAB"` có tiền tố `"ABAB"` trùng hậu tố `"ABAB"`.
-- *Quá trình so khớp trên `Text = "ABABDABACDABABCABAB"`:*
+- _Quá trình so khớp trên `Text = "ABABDABACDABABCABAB"`:_
   - So khớp 4 ký tự đầu `"ABAB"` thành công (`j = 4`).
   - Tại ký tự thứ 5 (`Text[4] = 'D'`, `Pattern[4] = 'C'`) &rarr; Mismatch!
   - KMP không lùi `i` về 1, mà giữ nguyên `i = 4` và gán `j = LPS[3] = 2` (đại diện cho tiền tố `"AB"` đã khớp).
@@ -217,8 +217,6 @@ int main() {
   - Tại `i = 10`, toàn bộ mẫu khớp hoàn toàn &rarr; Ghi nhận vị trí xuất hiện tại `index = 10`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
-
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
   - **KMP:** `Θ(N + M)` trong mọi trường hợp. Pha tính LPS tốn `O(M)`, pha quét Text tốn `O(N)` không bao giờ quay lui.

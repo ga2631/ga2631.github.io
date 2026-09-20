@@ -162,8 +162,6 @@ int main() {
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
-
 - **Truy xuất phần tử theo chỉ số (Access by Index):** `O(1)` tuyệt đối nhờ phép tính dịch chuyển địa chỉ con trỏ trực tiếp.
 - **Thêm phần tử vào cuối (Append / push_back):** `O(1)` Khấu hao (Amortized Time), `O(N)` Worst-Case khi chạm ngưỡng nhân đôi dung lượng.
 - **Chèn / Xóa ở đầu hoặc giữa mảng (Insert / Delete at index):** `O(N)` vì phải dịch chuyển toàn bộ các phần tử phía sau sang một vị trí.
