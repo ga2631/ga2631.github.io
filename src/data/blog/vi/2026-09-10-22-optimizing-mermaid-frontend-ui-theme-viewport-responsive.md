@@ -41,7 +41,7 @@ Cách tiếp cận ngây thơ thường gặp trong các dự án ban đầu:
 Để giải quyết triệt để các vấn đề trên và mang lại trải nghiệm đọc đỉnh cao, tôi xây dựng một kiến trúc tích hợp toàn diện:
 
 1. **Tải động theo yêu cầu (Dynamic On-Demand Loading):** Chỉ import Mermaid khi trong bài viết thực sự có chứa khối mã `pre.mermaid`, kết hợp cơ chế import đa tầng bền bỉ (resilient fallback).
-2. **Đồng bộ hóa bộ biến Theme và CSS Tương phản cao:** Sử dụng chế độ `theme: 'base'` kết hợp bộ biến `themeVariables` chi tiết (đồng bộ mã màu Ruby / Crimson) và quy tắc CSS scoped (`> svg`) để toàn bộ nhãn văn bản luôn đạt độ sáng tương phản `#f8fafc` trong Dark Mode.
+2. **Đồng bộ hóa bộ biến Theme và Định dạng Mermaid Nội tại:** Sử dụng chế độ `theme: 'base'` kết hợp bộ biến `themeVariables` chi tiết (đồng bộ mã màu Ruby / Crimson) và hỗ trợ hoàn hảo cú pháp `style`/`classDef` nội tại trong Mermaid, loại bỏ các can thiệp CSS cưỡng chế để biểu đồ tự do tùy biến màu sắc.
 3. **Cơ chế Phóng to toàn Viewport (Fit View Modal):** Tích hợp nút micro-pill gọn gàng ở góc trên. Khi click, mở rộng sơ đồ lên toàn bộ viewport (95vw x 86vh), hỗ trợ thao tác kéo rê chuột (Pan) và cuộn chuột thu phóng (Zoom 40% - 350%).
 4. **Hòa nhập tự nhiên vào dòng văn bản:** Loại bỏ viền và nền box thô cứng, biến biểu đồ thành hình minh họa vector tự nhiên giữa các đoạn văn.
 

@@ -41,7 +41,7 @@ Common naive integration patterns in React applications:
 To deliver an uncompromised reader experience, I engineered an end-to-end integration architecture:
 
 1. **Dynamic On-Demand ESM Loading:** Load the Mermaid bundle only when an article actually contains `pre.mermaid` code blocks, backed by a resilient fallback mechanism.
-2. **Theme Synchronization & High-Contrast CSS:** Utilize `theme: 'base'` with complete Ruby/Crimson design variables and scoped CSS rules (`> svg`) to enforce crisp `#f8fafc` text labels in Dark Mode.
+2. **Theme Synchronization & Native Mermaid Styling:** Utilize `theme: 'base'` with complete Ruby/Crimson design variables while fully preserving native Mermaid `style`/`classDef` syntax, eliminating destructive external CSS overrides so diagrams have full aesthetic freedom.
 3. **Viewport Fit View Modal:** An interactive, compact micro-pill button triggers full-viewport expansion (95vw x 86vh) equipped with 60 FPS GPU-accelerated Pan and Zoom (40% - 350%).
 4. **Seamless Text-Flow Integration:** Eliminate heavy box borders and backgrounds, allowing vector diagrams to breathe naturally between paragraphs.
 
