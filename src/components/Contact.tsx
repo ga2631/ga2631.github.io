@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
-import { MailIcon, MapPinIcon, CopyIcon, CheckIcon, LinkedinIcon, ExternalLinkIcon, PhoneIcon, ZaloIcon } from './Icons.tsx';
+import { MailIcon, MapPinIcon, LinkedinIcon, ExternalLinkIcon, PhoneIcon, ZaloIcon } from './Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
-import { SecureEmail, SecurePhone, getSecureEmail, getSecureMailtoUrl, getSecureTelUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
+import { SecureEmail, SecurePhone, getSecureMailtoUrl, getSecureTelUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 import { Card, Button, Badge } from './common';
 import { Section } from './ui';
 
