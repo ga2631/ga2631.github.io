@@ -71,7 +71,7 @@ flowchart LR
 
 **Mã nguồn C++ triển khai đầy đủ Bảng băm hoàn chỉnh:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <list>

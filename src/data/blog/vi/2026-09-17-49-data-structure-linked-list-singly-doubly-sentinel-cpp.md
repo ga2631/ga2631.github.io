@@ -36,7 +36,7 @@ Khi thao tác trên con trỏ trong Danh sách liên kết, các lỗi kinh đi�
 2. **Loại bỏ hoàn toàn các nhánh `if (head == nullptr)`:** Thao tác chèn/xóa tại bất kỳ vị trí nào (đầu, giữa, cuối) đều tuân theo đúng một mẫu đổi trỏ duy nhất, loại bỏ 100% các điều kiện rẽ nhánh phức tạp.
 3. **Đổi trỏ 4 bước khi chèn vào giữa:**
 
-```
+```c++
 newNode->next = target;
 newNode->prev = target->prev;
 target->prev->next = newNode;
@@ -45,7 +45,7 @@ target->prev = newNode;
 
 4. **Đổi trỏ 2 bước khi xóa nút:**
 
-```
+```c++
 nodeToDelete->prev->next = nodeToDelete->next;
 nodeToDelete->next->prev = nodeToDelete->prev;
 delete nodeToDelete;
@@ -67,7 +67,7 @@ graph LR
 
 **Mã nguồn C++ hoàn chỉnh: Doubly Linked List với Nút lính canh an toàn bộ nhớ:**
 
-```
+```c++
 #include <iostream>
 
 template <typename T>
@@ -203,10 +203,6 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Truy xuất theo chỉ số (Access by Index):** `O(N)` (không hỗ trợ Random Access như Mảng).
 - **Độ phức tạp Không gian (Space Complexity):** `O(N)` với chi phí phụ trội bộ nhớ (Memory Overhead) từ 8 đến 16 bytes cho mỗi nút để lưu con trỏ `prev` và `next` trên kiến trúc 64-bit.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Thuật toán Bộ nhớ đệm LRU Cache (Least Recently Used):** Kết hợp Bảng băm với Danh sách liên kết đôi để đạt `O(1)` cho cả đọc và ghi.
-- **Hệ điều hành (OS Process Scheduler):** Quản lý danh sách các tiến trình sẵn sàng chạy (Ready Queue) và danh sách khối bộ nhớ trống (Free List Memory Allocator).
-- **Trình phát nhạc & Trình duyệt Web:** Nút chuyển bài kế tiếp/quay lại (Next / Prev Track) và lịch sử duyệt web (Back / Forward History).
-
-</li>
-</ul>
+  - **Thuật toán Bộ nhớ đệm LRU Cache (Least Recently Used):** Kết hợp Bảng băm với Danh sách liên kết đôi để đạt `O(1)` cho cả đọc và ghi.
+  - **Hệ điều hành (OS Process Scheduler):** Quản lý danh sách các tiến trình sẵn sàng chạy (Ready Queue) và danh sách khối bộ nhớ trống (Free List Memory Allocator).
+  - **Trình phát nhạc & Trình duyệt Web:** Nút chuyển bài kế tiếp/quay lại (Next / Prev Track) và lịch sử duyệt web (Back / Forward History).

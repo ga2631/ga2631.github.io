@@ -36,7 +36,7 @@ Managing raw pointer rearrangements frequently invites subtle bugs (e.g., null d
 2. **Eliminating Edge-Case Branches:** Insertions and deletions at head, tail, or middle follow an identical 4-pointer assignment pattern, eliminating all `if (head == nullptr)` special cases.
 3. **Insertion Routine:**
 
-```
+```c++
 newNode->next = target;
 newNode->prev = target->prev;
 target->prev->next = newNode;
@@ -45,7 +45,7 @@ target->prev = newNode;
 
 4. **Deletion Routine:**
 
-```
+```c++
 target->prev->next = target->next;
 target->next->prev = target->prev;
 delete target;
@@ -67,7 +67,7 @@ graph LR
 
 **Complete C++ Implementation (Doubly Linked List with Sentinel Nodes):**
 
-```
+```c++
 #include <iostream>
 
 template <typename T>
@@ -190,10 +190,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Access by Index:** `O(N)` (Random access unsupported).
 - **Space Complexity:** `O(N)` with 16-byte pointer overhead per node on 64-bit platforms.
 - **Real-World Applications:**
-  <ul>
-  **LRU Cache (Least Recently Used):** Pairing Doubly Linked List with Hash Maps for `O(1)` eviction and lookup.
-- **OS Process Scheduling:** Managing execution Ready Queues and Memory Free Lists.
-- **Media Players & Web Browsers:** Managing Next/Prev playlist tracks and browser history navigation.
-
-</li>
-</ul>
+  - **LRU Cache (Least Recently Used):** Pairing Doubly Linked List with Hash Maps for `O(1)` eviction and lookup.
+  - **OS Process Scheduling:** Managing execution Ready Queues and Memory Free Lists.
+  - **Media Players & Web Browsers:** Managing Next/Prev playlist tracks and browser history navigation.

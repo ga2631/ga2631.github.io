@@ -88,7 +88,7 @@ graph TD
 
 **Standard C++ Implementation (MergeSort with pre-allocated temporary buffer):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 
@@ -157,21 +157,13 @@ int main() {
 - _Input:_ `data = {38, 27, 43, 3, 9, 82, 10}` (`N = 7`).
 - _Division Level 1:_ `mid = 3` &rarr; Left `[0..3] = {38, 27, 43, 3}`, Right `[4..6] = {9, 82, 10}`.
 - _Left Branch:_
-  <ul>
-  Divides to `{38, 27}` and `{43, 3}`.
-- Merges `{38}` & `{27}` &rarr; `{27, 38}`.
-- Merges `{43}` & `{3}` &rarr; `{3, 43}`.
-- Merges `{27, 38}` & `{3, 43}` &rarr; `{3, 27, 38, 43}`.
-
-</li>
-<li>*Right Branch:*
-
-
-- Divides to `{9, 82}` and `{10}` &rarr; Merges to `{9, 10, 82}`.
-
-</li>
-<li>*Final Root Merge:* Combines `{3, 27, 38, 43}` and `{9, 10, 82}` into `{3, 9, 10, 27, 38, 43, 82}` in 7 pointer steps.</li>
-</ul>
+  - Divides to `{38, 27}` and `{43, 3}`.
+  - Merges `{38}` & `{27}` &rarr; `{27, 38}`.
+  - Merges `{43}` & `{3}` &rarr; `{3, 43}`.
+  - Merges `{27, 38}` & `{3, 43}` &rarr; `{3, 27, 38, 43}`.
+- *Right Branch:*
+  - Divides to `{9, 82}` and `{10}` &rarr; Merges to `{9, 10, 82}`.
+- *Final Root Merge:* Combines `{3, 27, 38, 43}` and `{9, 10, 82}` into `{3, 9, 10, 27, 38, 43, 82}` in 7 pointer steps.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
@@ -181,11 +173,7 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Space Complexity:** `O(N)` Auxiliary Space for the temporary buffer plus `O(log N)` Call Stack memory depth.
 - **Stability:** Fully preserved due to the `arr[i] <= arr[j]` comparator during merging.
 - **Real-World Applications:**
-  <ul>
-  **External Sorting:** Processing multi-terabyte log files exceeding physical RAM capacity (underpins MapReduce and Spark shuffle engines).
-- **Fast Fourier Transform (FFT):** Core signal processing for telecommunications and MP3 audio encoding.
-- **Strassen Matrix Multiplication:** Accelerated tensor multiplications in deep learning frameworks.
-- **Computational Geometry:** Closest Pair of Points in 2D/3D spaces in `O(N log N)` time.
-
-</li>
-</ul>
+  - **External Sorting:** Processing multi-terabyte log files exceeding physical RAM capacity (underpins MapReduce and Spark shuffle engines).
+  - **Fast Fourier Transform (FFT):** Core signal processing for telecommunications and MP3 audio encoding.
+  - **Strassen Matrix Multiplication:** Accelerated tensor multiplications in deep learning frameworks.
+  - **Computational Geometry:** Closest Pair of Points in 2D/3D spaces in `O(N log N)` time.

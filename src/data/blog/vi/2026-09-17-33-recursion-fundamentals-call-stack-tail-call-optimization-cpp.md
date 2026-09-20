@@ -65,7 +65,7 @@ sequenceDiagram
 
 **Mã nguồn C++ chuẩn hóa:**
 
-```
+```c++
 #include <iostream>
 
 // 1. Đệ quy Truyền thống: Tốn O(N) Call Stack Frames

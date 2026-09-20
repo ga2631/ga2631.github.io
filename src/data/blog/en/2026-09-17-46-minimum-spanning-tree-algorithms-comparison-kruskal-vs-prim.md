@@ -101,7 +101,7 @@ flowchart TD
 
 **C++ Side-by-Side Benchmark Test Suite:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>

@@ -84,7 +84,7 @@ flowchart TD
 
 **Complete C++ Implementation: Graph Class with Adjacency List, BFS and DFS:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -175,17 +175,9 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Time Complexity:** `Θ(V + E)` for BFS and DFS via Adjacency List (each vertex visited once, each edge inspected twice).
 - **Space Complexity:** `O(V + E)` for Adjacency List graph storage, plus `O(V)` for `visited` status and traversal queues/stacks.
 - **Adjacency Matrix vs Adjacency List:**
-  <ul>
-  Matrix: `O(V²)` space, `O(1)` edge lookup, `O(V)` neighbor search (Best for dense graphs `E ~ V²`).
-- List: `O(V + E)` space, `O(deg(u))` edge lookup (Optimal for sparse graphs).
-
-</li>
-<li>**Real-World Applications:**
-  
-
-- **Social Network Graphs:** Friend-of-a-friend recommendations via 2-hop BFS.
-- **Search Engine Web Crawlers:** Googlebot web graph indexing via distributed BFS.
-- **Package Dependency Resolvers:** npm / yarn circular dependency checks and build order topological sorting via DFS.
-
-</li>
-</ul>
+  - Matrix: `O(V²)` space, `O(1)` edge lookup, `O(V)` neighbor search (Best for dense graphs `E ~ V²`).
+  - List: `O(V + E)` space, `O(deg(u))` edge lookup (Optimal for sparse graphs).
+- **Real-World Applications:**
+  - **Social Network Graphs:** Friend-of-a-friend recommendations via 2-hop BFS.
+  - **Search Engine Web Crawlers:** Googlebot web graph indexing via distributed BFS.
+  - **Package Dependency Resolvers:** npm / yarn circular dependency checks and build order topological sorting via DFS.

@@ -72,7 +72,7 @@ stateDiagram-v2
 
 **Complete C++ Implementation (KMP and Rabin-Karp Pattern Matching Engines):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <string>
@@ -202,40 +202,24 @@ int main() {
 
 - _Pattern `"ABABCABAB"`:_ `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
 - _Matching on `"ABABDABACDABABCABAB"`:_
-  <ul>
-  Matches prefix `"ABAB"` (`j = 4`).
-- Mismatch at `Text[4] = 'D'` vs `Pattern[4] = 'C'`.
-- KMP preserves `i = 4` and sets `j = LPS[3] = 2` (prefix `"AB"`).
-- Compares `Text[4] = 'D'` with `Pattern[2] = 'A'` directly &rarr; zero backtracking.
-- Pattern match confirmed at `index = 10`.
-
-</li>
-</ul>
+  - Matches prefix `"ABAB"` (`j = 4`).
+  - Mismatch at `Text[4] = 'D'` vs `Pattern[4] = 'C'`.
+  - KMP preserves `i = 4` and sets `j = LPS[3] = 2` (prefix `"AB"`).
+  - Compares `Text[4] = 'D'` with `Pattern[2] = 'A'` directly &rarr; zero backtracking.
+  - Pattern match confirmed at `index = 10`.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:**
-  <ul>
-  **KMP:** `Θ(N + M)` deterministic across all cases. LPS computation takes `O(M)`; scanning takes `O(N)` with zero rewinds.
-- **Rabin-Karp:** `O(N + M)` average time. Degenerates to `O(N x M)` in pathological worst-case collision scenarios.
-
-</li>
-<li>**Space Complexity:**
-
-
-- KMP: `O(M)` for the LPS table.
-- Rabin-Karp: `O(1)` auxiliary space.
-
-</li>
-<li>**Real-World Applications:**
-
-
-- **Code Search & IDE Tools:** Substring matching engines in text editors and regex parsers.
-- **Genomic DNA Alignment:** Locating mutated gene subsequences in multi-gigabyte genomic sequences.
-- **Plagiarism Detection:** Multi-pattern rolling hash comparison across large document repositories.
-- **Intrusion Detection Systems (IDS):** Real-time packet payload signature filtering in network firewalls.
-
-</li>
-</ul>
+  - **KMP:** `Θ(N + M)` deterministic across all cases. LPS computation takes `O(M)`; scanning takes `O(N)` with zero rewinds.
+  - **Rabin-Karp:** `O(N + M)` average time. Degenerates to `O(N x M)` in pathological worst-case collision scenarios.
+- **Space Complexity:**
+  - KMP: `O(M)` for the LPS table.
+  - Rabin-Karp: `O(1)` auxiliary space.
+- **Real-World Applications:**
+  - **Code Search & IDE Tools:** Substring matching engines in text editors and regex parsers.
+    - **Genomic DNA Alignment:** Locating mutated gene subsequences in multi-gigabyte genomic sequences.
+  - **Plagiarism Detection:** Multi-pattern rolling hash comparison across large document repositories.
+  - **Intrusion Detection Systems (IDS):** Real-time packet payload signature filtering in network firewalls.

@@ -69,7 +69,7 @@ graph LR
 
 **Complete C++ Implementation (Floyd-Warshall with Next Node Matrix for Path Backtracking):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -173,10 +173,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Time Complexity:** `Θ(V³)` strictly across all cases due to deterministic `V x V x V` triply nested loops. Completely independent of edge count `E`.
 - **Space Complexity:** `O(V²)` for the 2D distance and predecessor matrices. Highly cache-friendly on modern CPUs due to contiguous memory stride access.
 - **Real-World Applications:**
-  <ul>
-  **Transitive Closure & Reachability:** Warshall's algorithm variant computing reachability in static code analysis and dependency graphs.
-- **Logistics & Airline Routing:** Fast lookup matrices for global hub-to-hub transit distances.
-- **Social Network Graph Metrics:** Computing network diameter, closeness centrality, and betweenness metrics.
-
-</li>
-</ul>
+  - **Transitive Closure & Reachability:** Warshall's algorithm variant computing reachability in static code analysis and dependency graphs.
+  - **Logistics & Airline Routing:** Fast lookup matrices for global hub-to-hub transit distances.
+  - **Social Network Graph Metrics:** Computing network diameter, closeness centrality, and betweenness metrics.

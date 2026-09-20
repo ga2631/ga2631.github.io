@@ -70,7 +70,7 @@ flowchart TD
 
 **Complete C++ Implementation (Kruskal's Algorithm with Path Compression & Union by Rank):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -187,10 +187,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Time Complexity:** `O(E \log E) = O(E \log V)`. Edge sorting dominates; DSU processing runs in near-linear `O(E alpha(V))`.
 - **Space Complexity:** `O(V + E)` for DSU parent/rank vectors and edge storage.
 - **Real-World Applications:**
-  <ul>
-  **Telecommunications & Power Grid Layout:** Interconnecting regional transformers at minimum total cable length.
-- **Machine Learning Clustering:** Single-linkage hierarchical clustering terminating at `K` connected components.
-- **VLSI Circuit Layout:** Minimizing interconnect delay and silicon wire area.
-
-</li>
-</ul>
+  - **Telecommunications & Power Grid Layout:** Interconnecting regional transformers at minimum total cable length.
+  - **Machine Learning Clustering:** Single-linkage hierarchical clustering terminating at `K` connected components.
+  - **VLSI Circuit Layout:** Minimizing interconnect delay and silicon wire area.

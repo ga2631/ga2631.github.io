@@ -71,7 +71,7 @@ flowchart LR
 
 **Production C++ Implementation:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <list>

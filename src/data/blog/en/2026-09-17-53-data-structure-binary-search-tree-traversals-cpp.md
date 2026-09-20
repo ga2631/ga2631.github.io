@@ -77,7 +77,7 @@ graph TD
 
 **Complete C++ Implementation: Binary Search Tree with Search, Insert, Delete & Traversals:**
 
-```
+```c++
 #include <iostream>
 #include <queue>
 
@@ -207,10 +207,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Worst Case (Degenerate Tree):** `O(N)` (resolved by self-balancing Red-Black trees in `std::map`).
 - **Traversals:** `Θ(N)` time with `O(h)` Call Stack memory.
 - **Real-World Applications:**
-  <ul>
-  **C++ STL std::map / std::set:** Backed by Red-Black Trees guaranteeing `O(\log N)` operations.
-- **Database Indexes (B-Tree / B+ Tree):** Multi-way tree extensions optimizing disk block lookups.
-- **Huffman Compression Coding:** Binary prefix trees generating minimal-length bit encodings.
-
-</li>
-</ul>
+  - **C++ STL std::map / std::set:** Backed by Red-Black Trees guaranteeing `O(\log N)` operations.
+  - **Database Indexes (B-Tree / B+ Tree):** Multi-way tree extensions optimizing disk block lookups.
+  - **Huffman Compression Coding:** Binary prefix trees generating minimal-length bit encodings.

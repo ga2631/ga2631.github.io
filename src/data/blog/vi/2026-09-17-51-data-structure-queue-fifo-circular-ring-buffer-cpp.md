@@ -61,7 +61,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh: Triển khai Circular Queue Ring Buffer:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <stdexcept>
@@ -143,17 +143,13 @@ int main() {
 
 - *Khởi tạo:* `capacity = 4, frontIdx = 0, rearIdx = 0, count = 0`.
 - *Enqueue 10, 20, 30, 40:* 
-  <ul>
-  Chèn 10 tại index 0 &rarr; `rearIdx = 1`.
-- Chèn 20 tại index 1 &rarr; `rearIdx = 2`.
-- Chèn 30 tại index 2 &rarr; `rearIdx = 3`.
-- Chèn 40 tại index 3 &rarr; `rearIdx = (3 + 1) % 4 = 0`. `count = 4` (Full!).
-
-</li>
-<li>*Dequeue 2 lần:* Lấy ra 10 (`frontIdx = 1`), lấy ra 20 (`frontIdx = 2`). `count = 2`.</li>
-<li>*Enqueue 50:* Ghi tại `buffer[0] = 50` &rarr; `rearIdx = 1` (Quay vòng thành công mà không tràn bộ nhớ!).</li>
-<li>*Enqueue 60:* Ghi tại `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` vẫn trỏ chính xác về `buffer[2] = 30`.</li>
-</ul>
+  - Chèn 10 tại index 0 &rarr; `rearIdx = 1`.
+  - Chèn 20 tại index 1 &rarr; `rearIdx = 2`.
+  - Chèn 30 tại index 2 &rarr; `rearIdx = 3`.
+  - Chèn 40 tại index 3 &rarr; `rearIdx = (3 + 1) % 4 = 0`. `count = 4` (Full!).
+- *Dequeue 2 lần:* Lấy ra 10 (`frontIdx = 1`), lấy ra 20 (`frontIdx = 2`). `count = 2`.
+- *Enqueue 50:* Ghi tại `buffer[0] = 50` &rarr; `rearIdx = 1` (Quay vòng thành công mà không tràn bộ nhớ!).
+- *Enqueue 60:* Ghi tại `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` vẫn trỏ chính xác về `buffer[2] = 30`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
@@ -164,11 +160,7 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Xem phần tử đầu (Front / Peek):** `O(1)` tuyệt đối.
 - **Độ phức tạp Không gian (Space Complexity):** `O(K)` với `K` là dung lượng cố định của Ring Buffer, không bao giờ phát sinh cấp phát động.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Thuật toán Tìm kiếm theo Chiều rộng (BFS):** Duyệt đồ thị và tìm đường đi ngắn nhất không trọng số theo từng lớp sóng lan truyền.
-- **Điều phối CPU trong Hệ điều hành (Round-Robin Scheduling):** Phân chia luân phiên các lát thời gian (Time Slices) cho các tiến trình.
-- **Mô hình Nhà sản xuất - Người tiêu dùng (Producer-Consumer Pattern):** Bộ đệm Ring Buffer không khóa (Lock-Free Ring Buffer) trong truyền thông điệp siêu tốc giữa các Thread.
-- **Xử lý Âm thanh Thời gian thực (Audio Streaming Buffers):** Truyền dữ liệu mẫu âm thanh liên tục đến card âm thanh mà không bị giật tiếng (Audio Dropouts).
-
-</li>
-</ul>
+  - **Thuật toán Tìm kiếm theo Chiều rộng (BFS):** Duyệt đồ thị và tìm đường đi ngắn nhất không trọng số theo từng lớp sóng lan truyền.
+  - **Điều phối CPU trong Hệ điều hành (Round-Robin Scheduling):** Phân chia luân phiên các lát thời gian (Time Slices) cho các tiến trình.
+  - **Mô hình Nhà sản xuất - Người tiêu dùng (Producer-Consumer Pattern):** Bộ đệm Ring Buffer không khóa (Lock-Free Ring Buffer) trong truyền thông điệp siêu tốc giữa các Thread.
+  - **Xử lý Âm thanh Thời gian thực (Audio Streaming Buffers):** Truyền dữ liệu mẫu âm thanh liên tục đến card âm thanh mà không bị giật tiếng (Audio Dropouts).

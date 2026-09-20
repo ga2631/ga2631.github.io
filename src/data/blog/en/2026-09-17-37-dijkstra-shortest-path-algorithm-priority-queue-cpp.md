@@ -37,7 +37,7 @@ Dijkstra's algorithm relies on the **Greedy Choice Property** and **Edge Relaxat
 1. **Distance Array & Settled Invariant:** Maintain `dist[v]` initialized to `&infin;`, with `dist[s] = 0`. Once vertex `u` with the minimal unvisited distance is extracted, its distance is finalized and immutable because all remaining path extensions through non-negative edges can only increase cost.
 2. **Edge Relaxation:** For each neighbor `v` of `u`, check if routing through `u` provides a shorter path:
 
-```
+```c++
 if (dist[u] + w(u, v) < dist[v]) {
     dist[v] = dist[u] + w(u, v);
     parent[v] = u; // Track parent for path reconstruction
@@ -71,7 +71,7 @@ flowchart TD
 
 **Complete C++ Implementation (Dijkstra with std::priority_queue and Path Reconstruction):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -177,11 +177,7 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Time Complexity:** `O((V + E) \log V)` utilizing Binary Heap priority queue. Every vertex is extracted once (`V \log V`) and every edge relaxed at most once (`E \log V`).
 - **Space Complexity:** `O(V + E)` to maintain Adjacency List graph representation, distance vectors, and priority queue elements.
 - **Real-World Applications:**
-  <ul>
-  **Digital Maps & Navigation:** Engine powering Google Maps, Apple Maps, and OSRM (coupled with Contraction Hierarchies and A* heuristics).
-- **Internet Protocol Routing:** Open Shortest Path First (OSPF) and IS-IS interior gateway protocols.
-- **Game Engine AI:** Real-time pathfinding on navigation meshes (NavMesh).
-- **Social Graphs:** Calculating degrees of separation and shortest connection chains.
-
-</li>
-</ul>
+  - **Digital Maps & Navigation:** Engine powering Google Maps, Apple Maps, and OSRM (coupled with Contraction Hierarchies and A* heuristics).
+  - **Internet Protocol Routing:** Open Shortest Path First (OSPF) and IS-IS interior gateway protocols.
+  - **Game Engine AI:** Real-time pathfinding on navigation meshes (NavMesh).
+  - **Social Graphs:** Calculating degrees of separation and shortest connection chains.

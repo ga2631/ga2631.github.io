@@ -59,7 +59,7 @@ flowchart TD
 
 **Mã nguồn C++ chuẩn hóa:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 

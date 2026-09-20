@@ -69,7 +69,7 @@ flowchart TD
 
 **Complete C++ Implementation: Generic Stack and Parentheses Validator:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <string>
@@ -154,11 +154,7 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Search:** `O(N)` (requires unloading the stack).
 - **Space Complexity:** `O(N)` linear auxiliary memory.
 - **Real-World Applications:**
-  <ul>
-  **Runtime Call Stack:** Managing function activation frames and recursion unwind addresses.
-- **Software Undo / Redo Buffers:** Action history rollbacks in IDEs and graphic editors.
-- **Expression Parsing:** Infix-to-Postfix conversion (Shunting-Yard algorithm) and RPN calculators.
-- **Iterative DFS:** Eliminating stack overflow risks during deep graph traversals.
-
-</li>
-</ul>
+  - **Runtime Call Stack:** Managing function activation frames and recursion unwind addresses.
+  - **Software Undo / Redo Buffers:** Action history rollbacks in IDEs and graphic editors.
+  - **Expression Parsing:** Infix-to-Postfix conversion (Shunting-Yard algorithm) and RPN calculators.
+  - **Iterative DFS:** Eliminating stack overflow risks during deep graph traversals.

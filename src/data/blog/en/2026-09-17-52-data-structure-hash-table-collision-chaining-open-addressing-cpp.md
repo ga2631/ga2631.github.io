@@ -82,7 +82,7 @@ flowchart LR
 
 **Complete C++ Implementation: Custom HashTable with Separate Chaining:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <list>
@@ -207,10 +207,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Worst Case Operations:** `O(N)` under pathological collisions (mitigated to `O(\log N)` with Red-Black tree buckets).
 - **Space Complexity:** `O(N + M)` where `N` is element count and `M` is bucket array size.
 - **Real-World Applications:**
-  <ul>
-  **Database Hash Indexes:** Exact match acceleration in PostgreSQL / MySQL Memory Engine.
-- **In-Memory Distributed Caches:** High-performance Key-Value storage in Redis and Memcached.
-- **Compilers & Interpreters:** Managing variable identifiers and scoping in Symbol Tables.
-
-</li>
-</ul>
+  - **Database Hash Indexes:** Exact match acceleration in PostgreSQL / MySQL Memory Engine.
+  - **In-Memory Distributed Caches:** High-performance Key-Value storage in Redis and Memcached.
+  - **Compilers & Interpreters:** Managing variable identifiers and scoping in Symbol Tables.

@@ -62,7 +62,7 @@ flowchart TD
 
 **Complete C++ Implementation: Custom Dynamic Vector:**
 
-```
+```c++
 #include <iostream>
 #include <stdexcept>
 #include <utility>
@@ -159,10 +159,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Arbitrary Insert / Delete:** `O(N)` due to shifting trailing elements.
 - **Space Complexity:** `O(N)` with 50%-100% memory utilization efficiency.
 - **Real-World Applications:**
-  <ul>
-  **Foundational Building Block:** Backing store for Hash Tables, Binary Heaps, and Ring Buffers.
-- **Computer Graphics & Gaming:** 3D transformation matrices and GPU vertex buffers.
-- **Database Storage Engines:** Storing page blocks in contiguous memory to optimize disk sequential I/O.
-
-</li>
-</ul>
+  - **Foundational Building Block:** Backing store for Hash Tables, Binary Heaps, and Ring Buffers.
+  - **Computer Graphics & Gaming:** 3D transformation matrices and GPU vertex buffers.
+  - **Database Storage Engines:** Storing page blocks in contiguous memory to optimize disk sequential I/O.

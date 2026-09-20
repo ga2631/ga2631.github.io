@@ -101,7 +101,7 @@ graph LR
 
 **Mã nguồn C++ thực tế: Giải bài toán Cặp ghép Cực đại bằng Dinic:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>

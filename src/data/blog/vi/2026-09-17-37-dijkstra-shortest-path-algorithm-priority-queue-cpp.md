@@ -38,7 +38,7 @@ Thuật toán Dijkstra vận hành dựa trên **Nguyên lý Tham lam (Greedy Pa
 2. **Chiến lược Tham lam:** Tại mỗi bước, chọn đỉnh `u` có `dist[u]` nhỏ nhất trong số các đỉnh chưa được chốt. Vì đồ thị có trọng số không âm, giá trị `dist[u]` lúc này chắc chắn là khoảng cách ngắn nhất tuyệt đối không thể tối ưu thêm (Invariance).
 3. **Cơ chế Relaxation (Nới lỏng cạnh):** Với mọi đỉnh kề `v` của `u`, nếu đi qua `u` giúp rút ngắn khoảng cách tới `v`, ta cập nhật lại:
 
-```
+```c++
 if (dist[u] + w(u, v) < dist[v]) {
     dist[v] = dist[u] + w(u, v);
     parent[v] = u; // Lưu vết đường đi
@@ -72,7 +72,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh (Dijkstra với std::priority_queue và Truy vết đường đi):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -170,34 +170,18 @@ int main() {
 
 - _Khởi tạo:_ `dist = [0, &infin;, &infin;, &infin;, &infin;]`, `pq = {(0, 0)}`.
 - _Bước 1:_ Pop `(0, 0)`. Xét kề đỉnh 0:
-  <ul>
-  Cạnh `(0->1, w=4)`: `dist[1] = 4, parent[1] = 0` &rarr; Push `(4, 1)`.
-- Cạnh `(0->2, w=2)`: `dist[2] = 2, parent[2] = 0` &rarr; Push `(2, 2)`.
-
-</li>
-<li>*Bước 2:* Pop `(2, 2)` (nhỏ nhất trong heap). Xét kề đỉnh 2:
-
-
-- Cạnh `(2->1, w=1)`: `dist[0] + 2 + 1 = 3 < dist[1]=4` &rarr; Relaxation thành công! `dist[1] = 3, parent[1] = 2` &rarr; Push `(3, 1)`.
-- Cạnh `(2->3, w=5)`: `dist[3] = 2 + 5 = 7, parent[3] = 2` &rarr; Push `(7, 3)`.
-
-</li>
-<li>*Bước 3:* Pop `(3, 1)`. Xét kề đỉnh 1:
-
-
-- Cạnh `(1->3, w=3)`: `3 + 3 = 6 < dist[3]=7` &rarr; Relaxation! `dist[3] = 6, parent[3] = 1` &rarr; Push `(6, 3)`.
-- Cạnh `(1->4, w=6)`: `3 + 6 = 9 < dist[4]=&infin;` &rarr; `dist[4] = 9, parent[4] = 1` &rarr; Push `(9, 4)`.
-
-</li>
-<li>*Bước 4:* Pop `(4, 1)` &rarr; Bị loại bỏ do `d = 4 > dist[1] = 3` (Lazy Deletion).</li>
-<li>*Bước 5:* Pop `(6, 3)`. Xét kề đỉnh 3:
-
-
-- Cạnh `(3->4, w=1)`: `6 + 1 = 7 < dist[4]=9` &rarr; Relaxation! `dist[4] = 7, parent[4] = 3` &rarr; Push `(7, 4)`.
-
-</li>
-<li>*Bước 6 & 7:* Pop `(7, 4)`, sau đó các trạng thái cũ bị bỏ qua &rarr; Đường đi đến đỉnh 4 chốt giá trị tối ưu là `7` với hành trình `0 -> 2 -> 1 -> 3 -> 4`.</li>
-</ul>
+  - Cạnh `(0->1, w=4)`: `dist[1] = 4, parent[1] = 0` &rarr; Push `(4, 1)`.
+  - Cạnh `(0->2, w=2)`: `dist[2] = 2, parent[2] = 0` &rarr; Push `(2, 2)`.
+- *Bước 2:* Pop `(2, 2)` (nhỏ nhất trong heap). Xét kề đỉnh 2:
+  - Cạnh `(2->1, w=1)`: `dist[0] + 2 + 1 = 3 < dist[1]=4` &rarr; Relaxation thành công! `dist[1] = 3, parent[1] = 2` &rarr; Push `(3, 1)`.
+  - Cạnh `(2->3, w=5)`: `dist[3] = 2 + 5 = 7, parent[3] = 2` &rarr; Push `(7, 3)`.
+- *Bước 3:* Pop `(3, 1)`. Xét kề đỉnh 1:
+  - Cạnh `(1->3, w=3)`: `3 + 3 = 6 < dist[3]=7` &rarr; Relaxation! `dist[3] = 6, parent[3] = 1` &rarr; Push `(6, 3)`.
+  - Cạnh `(1->4, w=6)`: `3 + 6 = 9 < dist[4]=&infin;` &rarr; `dist[4] = 9, parent[4] = 1` &rarr; Push `(9, 4)`.
+- *Bước 4:* Pop `(4, 1)` &rarr; Bị loại bỏ do `d = 4 > dist[1] = 3` (Lazy Deletion).
+- *Bước 5:* Pop `(6, 3)`. Xét kề đỉnh 3:
+  - Cạnh `(3->4, w=1)`: `6 + 1 = 7 < dist[4]=9` &rarr; Relaxation! `dist[4] = 7, parent[4] = 3` &rarr; Push `(7, 4)`.
+- *Bước 6 & 7:* Pop `(7, 4)`, sau đó các trạng thái cũ bị bỏ qua &rarr; Đường đi đến đỉnh 4 chốt giá trị tối ưu là `7` với hành trình `0 -> 2 -> 1 -> 3 -> 4`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
@@ -206,11 +190,7 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Độ phức tạp Thời gian (Time Complexity):** `O((V + E) \log V)` khi dùng Binary Heap (hoặc `O(E + V \log V)` nếu dùng Fibonacci Heap theo lý thuyết). Mỗi đỉnh được lấy ra khỏi heap 1 lần (`V \log V`) và mỗi cạnh được relax tối đa 1 lần (`E \log V`).
 - **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` để lưu danh sách kề (Adjacency List) cùng các mảng `dist`, `parent` và hàng đợi ưu tiên `pq`.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Hệ thống bản đồ số (GPS Navigation):** Trái tim của thuật toán tìm đường trên Google Maps, OSRM, Apple Maps (thường kết hợp thêm kỹ thuật Heuristic A* hoặc Contraction Hierarchies).
-- **Giao thức định tuyến mạng Internet:** Giao thức OSPF (Open Shortest Path First) và IS-IS trong kiến trúc mạng lõi viễn thông.
-- **Phát triển Game (Game AI Pathfinding):** Tìm đường di chuyển tối ưu cho nhân vật tránh chướng ngại vật trong thời gian thực.
-- **Mạng xã hội (Social Graphs):** Đo lường mức độ ảnh hưởng và khoảng cách kết nối (Six Degrees of Separation) giữa người dùng.
-
-</li>
-</ul>
+  - **Hệ thống bản đồ số (GPS Navigation):** Trái tim của thuật toán tìm đường trên Google Maps, OSRM, Apple Maps (thường kết hợp thêm kỹ thuật Heuristic A* hoặc Contraction Hierarchies).
+  - **Giao thức định tuyến mạng Internet:** Giao thức OSPF (Open Shortest Path First) và IS-IS trong kiến trúc mạng lõi viễn thông.
+  - **Phát triển Game (Game AI Pathfinding):** Tìm đường di chuyển tối ưu cho nhân vật tránh chướng ngại vật trong thời gian thực.
+  - **Mạng xã hội (Social Graphs):** Đo lường mức độ ảnh hưởng và khoảng cách kết nối (Six Degrees of Separation) giữa người dùng.

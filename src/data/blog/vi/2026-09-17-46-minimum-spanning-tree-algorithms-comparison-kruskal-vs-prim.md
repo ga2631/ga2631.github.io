@@ -101,7 +101,7 @@ flowchart TD
 
 **Mã nguồn C++ thực thi kiểm thử so sánh Kruskal vs Prim:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>

@@ -117,7 +117,7 @@ flowchart TD
 
 **Bộ kiểm thử Benchmark tích hợp C++ (Đo đạc và xác thực 3 thuật toán trên cùng đồ thị):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>

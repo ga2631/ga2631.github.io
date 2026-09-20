@@ -64,7 +64,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh (Dinic Thuật toán Luồng Cực đại Tối ưu hóa Con trỏ Work):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -189,34 +189,22 @@ int main() {
 
 - *Pha 1 (BFS 1):* Gán nhãn tầng `level = [0, 1, 1, 2, 2, 3]`. `level[T=5] = 3`.
 - *Pha 1 (DFS 1):* 
-  <ul>
-  Đường `0 -> 1 -> 3 -> 5`: `pushed = min(10, 4, 10) = 4` &rarr; Luồng = 4.
-- Đường `0 -> 1 -> 4 -> 5`: `pushed = min(6, 8, 10) = 6` &rarr; Luồng = 4 + 6 = 10 (Đỉnh 1 bão hòa).
-- Đường `0 -> 2 -> 4 -> 5`: `pushed = min(10, 9, 4) = 4` &rarr; Luồng = 10 + 4 = 14 (Đỉnh 5 bão hòa tầng 3).
-
-</li>
-<li>*Pha 2 (BFS 2):* Đồ thị dư cập nhật &rarr; BFS gán lại tầng &rarr; DFS đẩy tiếp luồng qua đường `0 -> 2 -> 4 -> 3 -> 5` thêm `5` đơn vị &rarr; Luồng = `19`.</li>
-<li>*Pha 3 (BFS 3):* `level[T] = -1` (không còn đường) &rarr; Dừng ngay lập tức với kết quả luồng cực đại bằng `19`.</li>
-</ul>
+  - Đường `0 -> 1 -> 3 -> 5`: `pushed = min(10, 4, 10) = 4` &rarr; Luồng = 4.
+  - Đường `0 -> 1 -> 4 -> 5`: `pushed = min(6, 8, 10) = 6` &rarr; Luồng = 4 + 6 = 10 (Đỉnh 1 bão hòa).
+  - Đường `0 -> 2 -> 4 -> 5`: `pushed = min(10, 9, 4) = 4` &rarr; Luồng = 10 + 4 = 14 (Đỉnh 5 bão hòa tầng 3).
+- *Pha 2 (BFS 2):* Đồ thị dư cập nhật &rarr; BFS gán lại tầng &rarr; DFS đẩy tiếp luồng qua đường `0 -> 2 -> 4 -> 3 -> 5` thêm `5` đơn vị &rarr; Luồng = `19`.
+- *Pha 3 (BFS 3):* `level[T] = -1` (không còn đường) &rarr; Dừng ngay lập tức với kết quả luồng cực đại bằng `19`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
-  <ul>
-  Đồ thị tổng quát: `O(V² x E)`. Có tối đa `V - 1` pha BFS, mỗi pha DFS đẩy luồng chặn tốn `O(V x E)` nhờ con trỏ `work[]` loại bỏ nhánh cụt.
-- Mạng đơn vị (Unit Network): `O(E sqrtV)` - Tốc độ xử lý hàng trăm nghìn đỉnh chỉ trong vài mili-giây.
-- Mạng có dung lượng đơn vị ở đỉnh (Bipartite Matching): `O(E sqrtV)` (Tương đương thuật toán Hopcroft-Karp).
-
-</li>
-<li>**Độ phức tạp Không gian (Space Complexity):** `O(V + E)` cho danh sách kề và mảng cấu trúc `FlowEdge` đối xứng.</li>
-<li>**Ứng dụng thực tế:**
-  
-
-- **Bài toán Cặp ghép Cực đại trên Đồ thị Hai phía (Max Bipartite Matching):** Xếp lịch phân công giảng viên - môn học, tuyển dụng ứng viên - công việc.
-- **Bài toán Đóng dự án (Project Selection Problem):** Tối ưu hóa danh mục dự án đầu tư có điều kiện phụ thuộc tiên quyết.
-- **Hệ thống Phân phối Băng thông CDN:** Định tuyến luồng video streaming từ hàng nghìn máy chủ Edge đến người dùng cuối.
-
-</li>
-</ul>
+  - Đồ thị tổng quát: `O(V² x E)`. Có tối đa `V - 1` pha BFS, mỗi pha DFS đẩy luồng chặn tốn `O(V x E)` nhờ con trỏ `work[]` loại bỏ nhánh cụt.
+  - Mạng đơn vị (Unit Network): `O(E sqrtV)` - Tốc độ xử lý hàng trăm nghìn đỉnh chỉ trong vài mili-giây.
+  - Mạng có dung lượng đơn vị ở đỉnh (Bipartite Matching): `O(E sqrtV)` (Tương đương thuật toán Hopcroft-Karp).
+- **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` cho danh sách kề và mảng cấu trúc `FlowEdge` đối xứng.
+- **Ứng dụng thực tế:**
+  - **Bài toán Cặp ghép Cực đại trên Đồ thị Hai phía (Max Bipartite Matching):** Xếp lịch phân công giảng viên - môn học, tuyển dụng ứng viên - công việc.
+  - **Bài toán Đóng dự án (Project Selection Problem):** Tối ưu hóa danh mục dự án đầu tư có điều kiện phụ thuộc tiên quyết.
+  - **Hệ thống Phân phối Băng thông CDN:** Định tuyến luồng video streaming từ hàng nghìn máy chủ Edge đến người dùng cuối.

@@ -56,7 +56,7 @@ flowchart LR
 
 **Standard C++ Implementation:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 

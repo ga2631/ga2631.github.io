@@ -82,7 +82,7 @@ flowchart LR
 
 **Mã nguồn C++ hoàn chỉnh: HashTable tùy biến với Separate Chaining:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <list>
@@ -209,10 +209,6 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Trường hợp Xấu nhất (Worst Case):** `O(N)` khi tất cả các khóa đều bị băm về cùng một bucket (được khắc phục bằng cách dùng Red-Black Tree nâng cấp lên `O(\log N)`).
 - **Độ phức tạp Không gian (Space Complexity):** `O(N + M)` với `N` là số phần tử và `M` là kích thước mảng bucket.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Hệ thống Database Indexing:** Hash Indexes trong PostgreSQL / MySQL Memory Engine cho các phép so sánh bằng (`=`).
-- **Bộ nhớ đệm trong Bộ nhớ (In-Memory Cache):** Redis và Memcached lưu trữ cặp Key-Value siêu tốc.
-- **Trình biên dịch & Thông dịch viên:** Bảng ký hiệu (Symbol Table) quản lý tên biến, hàm và phạm vi tầm vực (Scope).
-
-</li>
-</ul>
+  - **Hệ thống Database Indexing:** Hash Indexes trong PostgreSQL / MySQL Memory Engine cho các phép so sánh bằng (`=`).
+  - **Bộ nhớ đệm trong Bộ nhớ (In-Memory Cache):** Redis và Memcached lưu trữ cặp Key-Value siêu tốc.
+  - **Trình biên dịch & Thông dịch viên:** Bảng ký hiệu (Symbol Table) quản lý tên biến, hàm và phạm vi tầm vực (Scope).

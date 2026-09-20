@@ -65,7 +65,7 @@ flowchart TD
 
 **Complete C++ Implementation (Bellman-Ford with Early-Exit Flag & Negative Cycle Detection):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -161,10 +161,6 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Time Complexity:** `O(V x E)` for worst/average cases. On dense graphs (`E ~ V²`), approaches `O(V³)`. Best case with early-exit flag is `O(E)`.
 - **Space Complexity:** `O(V)` for distance and predecessor vectors, plus `O(E)` to store raw edge tuples.
 - **Real-World Applications:**
-  <ul>
-  **Routing Information Protocol (RIP):** Foundation of Distance-Vector routing in computer networking.
-- **Financial Currency Arbitrage:** Detecting risk-free profit loops by taking negative log weights of foreign exchange rates.
-- **Systems of Difference Constraints:** Solving linear inequalities of form `x[j] - x[i] <= c` in compiler optimization and project scheduling.
-
-</li>
-</ul>
+  - **Routing Information Protocol (RIP):** Foundation of Distance-Vector routing in computer networking.
+  - **Financial Currency Arbitrage:** Detecting risk-free profit loops by taking negative log weights of foreign exchange rates.
+  - **Systems of Difference Constraints:** Solving linear inequalities of form `x[j] - x[i] <= c` in compiler optimization and project scheduling.

@@ -310,10 +310,9 @@ ORDER BY category_name, year, month_number;
 **2. Rào chắn Kiểm thử Tự động Chất lượng Dữ liệu (Data Quality Testing):**
 
 - Áp dụng kiểm thử tự động hàng ngày bằng `dbt test` hoặc `Great Expectations`:
-  <ol>
-  **Tính Duy nhất & Không Rỗng (Uniqueness & Non-null):** Đảm bảo tất cả Surrogate Keys không bao giờ bị trùng lặp hoặc `NULL`.
-- **Toàn vẹn Tham chiếu (Referential Integrity):** Mọi `customer_key` hoặc `product_key` trong Fact Table bắt buộc phải tồn tại trong bảng Dimension tương ứng (xử lý bản ghi mồ côi bằng kỹ thuật Late-Arriving Dimensions / Default 'Unknown' Key `-1`).
-- **Kiểm tra Ràng buộc Nghiệp vụ (Business Rules):** `net_amount >= 0`, `valid_to >= valid_from`, `discount_amount <= unit_price * quantity`.
+  - **Tính Duy nhất & Không Rỗng (Uniqueness & Non-null):** Đảm bảo tất cả Surrogate Keys không bao giờ bị trùng lặp hoặc `NULL`.
+  - **Toàn vẹn Tham chiếu (Referential Integrity):** Mọi `customer_key` hoặc `product_key` trong Fact Table bắt buộc phải tồn tại trong bảng Dimension tương ứng (xử lý bản ghi mồ côi bằng kỹ thuật Late-Arriving Dimensions / Default 'Unknown' Key `-1`).
+  - **Kiểm tra Ràng buộc Nghiệp vụ (Business Rules):** `net_amount >= 0`, `valid_to >= valid_from`, `discount_amount <= unit_price * quantity`.
 
 **3. Bảng So sánh Hiệu năng Thực tế (Benchmark Query Performance trên 100M Rows):**
 

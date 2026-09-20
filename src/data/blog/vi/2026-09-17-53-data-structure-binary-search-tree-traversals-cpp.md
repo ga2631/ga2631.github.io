@@ -77,7 +77,7 @@ graph TD
 
 **Mã nguồn C++ hoàn chỉnh: Binary Search Tree đầy đủ Chèn, Xóa, Tìm kiếm & Duyệt:**
 
-```
+```c++
 #include <iostream>
 #include <queue>
 
@@ -203,14 +203,10 @@ int main() {
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
 - _Chèn các giá trị:_ `50, 30, 70, 20, 40, 60, 80`.
-  <ul>
-  `30 < 50` &rarr; Con trái của 50. `70 > 50` &rarr; Con phải của 50.
-- `40 > 30` &rarr; Con phải của 30. `60 < 70` &rarr; Con trái của 70.
-
-</li>
-<li>*Duyệt In-order:* Thăm cây con trái của 50 (`20, 30, 40`) &rarr; Gốc `50` &rarr; Cây con phải (`60, 70, 80`) &rarr; Xuất chuỗi đã sắp xếp hoàn hảo `[20, 30, 40, 50, 60, 70, 80]`.</li>
-<li>*Xóa gốc 50:* 50 có 2 con &rarr; Tìm In-order Successor trong cây con phải (nút nhỏ nhất của `{70, 60, 80}` là `60`) &rarr; Gán `root->val = 60`, xóa nút 60 cũ ở lá phải &rarr; Cây vẫn bảo toàn tuyệt đối bất biến BST.</li>
-</ul>
+  - `30 < 50` &rarr; Con trái của 50. `70 > 50` &rarr; Con phải của 50.
+  - `40 > 30` &rarr; Con phải của 30. `60 < 70` &rarr; Con trái của 70.
+- *Duyệt In-order:* Thăm cây con trái của 50 (`20, 30, 40`) &rarr; Gốc `50` &rarr; Cây con phải (`60, 70, 80`) &rarr; Xuất chuỗi đã sắp xếp hoàn hảo `[20, 30, 40, 50, 60, 70, 80]`.
+- *Xóa gốc 50:* 50 có 2 con &rarr; Tìm In-order Successor trong cây con phải (nút nhỏ nhất của `{70, 60, 80}` là `60`) &rarr; Gán `root->val = 60`, xóa nút 60 cũ ở lá phải &rarr; Cây vẫn bảo toàn tuyệt đối bất biến BST.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
@@ -220,10 +216,6 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Trường hợp Xấu nhất (Cây bị suy biến thành danh sách liên kết):** `O(N)` khi chèn dãy số đã có thứ tự sẵn (được giải quyết triệt để bởi Cây Tự cân bằng như AVL Tree và Red-Black Tree trong `std::map` / `std::set`).
 - **Duyệt toàn bộ cây (All Traversals):** `Θ(N)` thời gian và `O(h)` không gian Call Stack.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Cấu trúc dữ liệu std::map / std::set trong C++:** Được cài đặt bằng Cây Đỏ Đen (Red-Black BST) đảm bảo thời gian `O(\log N)` trong mọi trường hợp.
-- **Cơ sở dữ liệu B-Tree & B+ Tree:** Mở rộng của cây nhị phân sang cây đa phân nhiều nhánh để tối ưu hóa chỉ mục ổ cứng trong MySQL InnoDB và PostgreSQL.
-- **Thuật toán Nén Dữ liệu Huffman Coding:** Sử dụng Cây nhị phân để sinh mã tiền tố có độ dài biến thiên tối ưu dung lượng tệp.
-
-</li>
-</ul>
+  - **Cấu trúc dữ liệu std::map / std::set trong C++:** Được cài đặt bằng Cây Đỏ Đen (Red-Black BST) đảm bảo thời gian `O(\log N)` trong mọi trường hợp.
+  - **Cơ sở dữ liệu B-Tree & B+ Tree:** Mở rộng của cây nhị phân sang cây đa phân nhiều nhánh để tối ưu hóa chỉ mục ổ cứng trong MySQL InnoDB và PostgreSQL.
+  - **Thuật toán Nén Dữ liệu Huffman Coding:** Sử dụng Cây nhị phân để sinh mã tiền tố có độ dài biến thiên tối ưu dung lượng tệp.

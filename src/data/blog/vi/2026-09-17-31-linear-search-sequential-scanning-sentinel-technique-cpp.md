@@ -56,7 +56,7 @@ flowchart LR
 
 **Mã nguồn C++ hoàn chỉnh cả 2 phương pháp:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 

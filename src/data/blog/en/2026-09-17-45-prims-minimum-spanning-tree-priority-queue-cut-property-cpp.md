@@ -69,7 +69,7 @@ graph TD
 
 **Complete C++ Implementation (Prim's Algorithm with std::priority_queue):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -175,19 +175,11 @@ int main() {
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:**
-  <ul>
-  Binary Min-Heap: `O((V + E) \log V)`.
-- Adjacency Matrix on Dense Graphs (`E ~ V²`): `O(V²)`.
-- Fibonacci Heap (Theoretical): `O(E + V \log V)`.
-
-</li>
-<li>**Space Complexity:** `O(V + E)` for adjacency list and priority queue.</li>
-<li>**Real-World Applications:**
-  
-
-- **Spanning Tree Protocol (STP - IEEE 802.1D):** Preventing bridge loops in Ethernet switched networks.
-- **Approximation of Traveling Salesperson Problem (TSP):** MST-based 2-approximation metric tours.
-- **Multicast Routing Trees:** Distributing single-origin video streams to millions of subscribers.
-
-</li>
-</ul>
+  - Binary Min-Heap: `O((V + E) \log V)`.
+  - Adjacency Matrix on Dense Graphs (`E ~ V²`): `O(V²)`.
+  - Fibonacci Heap (Theoretical): `O(E + V \log V)`.
+- **Space Complexity:** `O(V + E)` for adjacency list and priority queue.
+- **Real-World Applications:**
+  - **Spanning Tree Protocol (STP - IEEE 802.1D):** Preventing bridge loops in Ethernet switched networks.
+  - **Approximation of Traveling Salesperson Problem (TSP):** MST-based 2-approximation metric tours.
+  - **Multicast Routing Trees:** Distributing single-origin video streams to millions of subscribers.

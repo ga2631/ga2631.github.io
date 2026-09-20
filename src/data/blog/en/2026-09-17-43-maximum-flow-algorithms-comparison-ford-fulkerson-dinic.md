@@ -101,7 +101,7 @@ graph LR
 
 **Production C++ Implementation: Solving Bipartite Matching via Dinic:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>

@@ -69,7 +69,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh: Stack Generic và Hàm Kiểm tra Dấu ngoặc:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <string>
@@ -164,21 +164,13 @@ int main() {
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
-  <ul>
-  `push()`: `O(1)` Amortized với Mảng động, `O(1)` Worst-case với Danh sách liên kết.
-- `pop()`: `O(1)` tuyệt đối.
-- `top() / peek()`: `O(1)` tuyệt đối.
-- Tìm kiếm phần tử bất kỳ: `O(N)` (phải dỡ toàn bộ Stack).
-
-</li>
-<li>**Độ phức tạp Không gian (Space Complexity):** `O(N)` bộ nhớ tuyến tính lưu trữ các phần tử.</li>
-<li>**Ứng dụng thực tế:**
-  
-
-- **Hệ thống thực thi Call Stack:** Quản lý các khung ngăn xếp (Stack Frames), lưu trữ biến cục bộ và địa chỉ trả về khi thực thi hàm đệ quy.
-- **Trình duyệt web và Ứng dụng văn phòng:** Tính năng Undo / Redo (Ctrl + Z) và nút lùi trang (Browser Back Button).
-- **Trình biên dịch (Compiler):** Đánh giá biểu thức toán học dạng Hậu tố (Reverse Polish Notation - RPN) và thuật toán Chuyển đổi Shunting-Yard.
-- **Thuật toán đồ thị:** Khử đệ quy cho thuật toán Tìm kiếm theo chiều sâu (Iterative DFS).
-
-</li>
-</ul>
+  - `push()`: `O(1)` Amortized với Mảng động, `O(1)` Worst-case với Danh sách liên kết.
+  - `pop()`: `O(1)` tuyệt đối.
+  - `top() / peek()`: `O(1)` tuyệt đối.
+  - Tìm kiếm phần tử bất kỳ: `O(N)` (phải dỡ toàn bộ Stack).
+- **Độ phức tạp Không gian (Space Complexity):** `O(N)` bộ nhớ tuyến tính lưu trữ các phần tử.
+- **Ứng dụng thực tế:**
+  - **Hệ thống thực thi Call Stack:** Quản lý các khung ngăn xếp (Stack Frames), lưu trữ biến cục bộ và địa chỉ trả về khi thực thi hàm đệ quy.
+  - **Trình duyệt web và Ứng dụng văn phòng:** Tính năng Undo / Redo (Ctrl + Z) và nút lùi trang (Browser Back Button).
+  - **Trình biên dịch (Compiler):** Đánh giá biểu thức toán học dạng Hậu tố (Reverse Polish Notation - RPN) và thuật toán Chuyển đổi Shunting-Yard.
+  - **Thuật toán đồ thị:** Khử đệ quy cho thuật toán Tìm kiếm theo chiều sâu (Iterative DFS).

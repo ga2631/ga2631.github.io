@@ -117,7 +117,7 @@ flowchart TD
 
 **Unified C++ Test Harness (Executing all 3 algorithms on the same graph instance):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>

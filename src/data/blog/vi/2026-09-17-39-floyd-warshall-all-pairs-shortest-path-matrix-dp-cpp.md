@@ -72,7 +72,7 @@ graph LR
 
 **Mã nguồn C++ hoàn chỉnh (Floyd-Warshall với Ma trận Next để tái tạo đường đi):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -181,10 +181,6 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Độ phức tạp Thời gian (Time Complexity):** `Θ(V³)` trong mọi trường hợp do 3 vòng lặp cố định `V x V x V`. Không phụ thuộc vào số lượng cạnh `E`.
 - **Độ phức tạp Không gian (Space Complexity):** `O(V²)` để lưu trữ 2 ma trận kích thước `V x V` (ma trận khoảng cách `dist` và ma trận truy vết `nextNode`). Cực kỳ thân thiện với bộ nhớ đệm CPU (Cache Locality) do truy cập mảng tuần tự liên tục.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Bao đóng bắc cầu (Transitive Closure):** Thuật toán Warshall kiểm tra tính liên thông và khả năng chạm tới giữa mọi cặp đỉnh trong đồ thị định hướng (ứng dụng phân tích phụ thuộc trong Compiler).
-- **Hệ thống Logistics và Định tuyến Đa phương thức:** Bảng tra cứu khoảng cách cố định giữa hàng nghìn bưu cục hoặc sân bay toàn cầu.
-- **Lý thuyết mạng xã hội:** Tính toán độ trung tâm tiệm cận (Closeness Centrality) và độ trung tâm trung gian (Betweenness Centrality) của các nút mạng.
-
-</li>
-</ul>
+  - **Bao đóng bắc cầu (Transitive Closure):** Thuật toán Warshall kiểm tra tính liên thông và khả năng chạm tới giữa mọi cặp đỉnh trong đồ thị định hướng (ứng dụng phân tích phụ thuộc trong Compiler).
+  - **Hệ thống Logistics và Định tuyến Đa phương thức:** Bảng tra cứu khoảng cách cố định giữa hàng nghìn bưu cục hoặc sân bay toàn cầu.
+  - **Lý thuyết mạng xã hội:** Tính toán độ trung tâm tiệm cận (Closeness Centrality) và độ trung tâm trung gian (Betweenness Centrality) của các nút mạng.

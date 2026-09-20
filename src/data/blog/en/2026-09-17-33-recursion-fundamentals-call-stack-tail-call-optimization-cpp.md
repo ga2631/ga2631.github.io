@@ -65,7 +65,7 @@ sequenceDiagram
 
 **Standard C++ Implementation:**
 
-```
+```c++
 #include <iostream>
 
 // 1. Traditional Recursion: O(N) Call Stack Depth

@@ -310,10 +310,9 @@ Operating a production Data Warehouse at scale requires disciplined physical tun
 **2. Automated Data Quality Guardrails (dbt Test & Great Expectations):**
 
 - Enforce continuous CI/CD data testing:
-  <ol>
-  **Uniqueness & Non-null Constraints:** Verify that surrogate keys maintain absolute uniqueness and never contain nulls.
-- **Referential Integrity Checks:** Ensure every dimension key in the Fact table resolves to a valid record in the corresponding dimension table (handling late-arriving facts via fallback `-1` 'Unknown' dimension keys).
-- **Business Domain Rules:** Assert that `net_amount >= 0`, `valid_to >= valid_from`, and `discount_amount <= unit_price * quantity`.
+  - **Uniqueness & Non-null Constraints:** Verify that surrogate keys maintain absolute uniqueness and never contain nulls.
+  - **Referential Integrity Checks:** Ensure every dimension key in the Fact table resolves to a valid record in the corresponding dimension table (handling late-arriving facts via fallback `-1` 'Unknown' dimension keys).
+  - **Business Domain Rules:** Assert that `net_amount >= 0`, `valid_to >= valid_from`, and `discount_amount <= unit_price * quantity`.
 
 **3. Empirical Performance Benchmark (100,000,000 Order Records):**
 

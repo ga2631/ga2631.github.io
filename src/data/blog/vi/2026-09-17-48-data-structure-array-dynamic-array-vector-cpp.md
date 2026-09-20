@@ -62,7 +62,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh: Xây dựng Dynamic Vector tùy biến:**
 
-```
+```c++
 #include <iostream>
 #include <stdexcept>
 #include <utility>
@@ -169,10 +169,6 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Chèn / Xóa ở đầu hoặc giữa mảng (Insert / Delete at index):** `O(N)` vì phải dịch chuyển toàn bộ các phần tử phía sau sang một vị trí.
 - **Độ phức tạp Không gian (Space Complexity):** `O(N)` với hệ số sử dụng bộ nhớ thường dao động từ `50%` đến `100%` (do sức chứa luôn &ge; số lượng phần tử thực tế).
 - **Ứng dụng thực tế:**
-  <ul>
-  **Cấu trúc nền tảng:** Làm khối xây dựng cơ sở để cài đặt Bảng băm (Hash Table), Hàng đợi ưu tiên (Binary Heap), Hàng chờ vòng (Ring Buffer).
-- **Xử lý đồ họa & Game:** Ma trận biến đổi 3D (Transformation Matrix), bộ đệm đỉnh (Vertex Buffers) trong OpenGL/DirectX.
-- **Hệ thống cơ sở dữ liệu:** Lưu trữ các trang dữ liệu (Database Pages) theo khối bộ nhớ liên tục để tăng tốc I/O ổ đĩa.
-
-</li>
-</ul>
+  - **Cấu trúc nền tảng:** Làm khối xây dựng cơ sở để cài đặt Bảng băm (Hash Table), Hàng đợi ưu tiên (Binary Heap), Hàng chờ vòng (Ring Buffer).
+  - **Xử lý đồ họa & Game:** Ma trận biến đổi 3D (Transformation Matrix), bộ đệm đỉnh (Vertex Buffers) trong OpenGL/DirectX.
+  - **Hệ thống cơ sở dữ liệu:** Lưu trữ các trang dữ liệu (Database Pages) theo khối bộ nhớ liên tục để tăng tốc I/O ổ đĩa.

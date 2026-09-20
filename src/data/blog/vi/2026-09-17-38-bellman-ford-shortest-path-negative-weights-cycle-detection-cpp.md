@@ -65,7 +65,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh (Bellman-Ford với Tối ưu Dừng sớm & Phát hiện Chu trình âm):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -152,44 +152,28 @@ int main() {
 
 - _Khởi tạo:_ `dist = [0, &infin;, &infin;, &infin;, &infin;]`.
 - _Lượt 1 (i = 1):_
-  <ul>
-  Cạnh `(0->1, w=-1)`: `dist[1] = 0 + (-1) = -1`.
-- Cạnh `(0->2, w=4)`: `dist[2] = 4`.
-- Cạnh `(1->3, w=2)`: `dist[3] = -1 + 2 = 1`.
-- Cạnh `(1->4, w=2)`: `dist[4] = -1 + 2 = 1`.
-- Cạnh `(1->2, w=3)`: `-1 + 3 = 2 < 4` &rarr; `dist[2] = 2`.
-- Kết thúc lượt 1: `dist = [0, -1, 2, 1, 1]`.
-
-</li>
-<li>*Lượt 2 (i = 2):*
-
-
-- Cạnh `(4->3, w=-3)`: `dist[4] + (-3) = 1 - 3 = -2 < dist[3]=1` &rarr; Nới lỏng! `dist[3] = -2`.
-- Cạnh `(3->1, w=1)`: `dist[3] + 1 = -2 + 1 = -1 == dist[1]` (không đổi).
-- Kết thúc lượt 2: `dist = [0, -1, 2, -2, 1]`.
-
-</li>
-<li>*Lượt 3 (i = 3):* Không còn cạnh nào cải thiện thêm &rarr; Cờ `updated = false` &rarr; Thoát sớm ở lượt 3 thay vì chờ hết 4 lượt.</li>
-<li>*Kiểm tra chu trình âm:* Duyệt toàn bộ 8 cạnh, không có cạnh nào giảm thêm khoảng cách &rarr; Đồ thị an toàn, kết quả chốt `[0, -1, 2, -2, 1]`.</li>
-</ul>
+  - Cạnh `(0->1, w=-1)`: `dist[1] = 0 + (-1) = -1`.
+  - Cạnh `(0->2, w=4)`: `dist[2] = 4`.
+  - Cạnh `(1->3, w=2)`: `dist[3] = -1 + 2 = 1`.
+  - Cạnh `(1->4, w=2)`: `dist[4] = -1 + 2 = 1`.
+  - Cạnh `(1->2, w=3)`: `-1 + 3 = 2 < 4` &rarr; `dist[2] = 2`.
+  - Kết thúc lượt 1: `dist = [0, -1, 2, 1, 1]`.
+- *Lượt 2 (i = 2):*
+  - Cạnh `(4->3, w=-3)`: `dist[4] + (-3) = 1 - 3 = -2 < dist[3]=1` &rarr; Nới lỏng! `dist[3] = -2`.
+  - Cạnh `(3->1, w=1)`: `dist[3] + 1 = -2 + 1 = -1 == dist[1]` (không đổi).
+  - Kết thúc lượt 2: `dist = [0, -1, 2, -2, 1]`.
+- *Lượt 3 (i = 3):* Không còn cạnh nào cải thiện thêm &rarr; Cờ `updated = false` &rarr; Thoát sớm ở lượt 3 thay vì chờ hết 4 lượt.
+- *Kiểm tra chu trình âm:* Duyệt toàn bộ 8 cạnh, không có cạnh nào giảm thêm khoảng cách &rarr; Đồ thị an toàn, kết quả chốt `[0, -1, 2, -2, 1]`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
-  <ul>
-  Worst & Average Case: `O(V x E)`. Với đồ thị dày (`E ~ V²`), độ phức tạp tiến đến `O(V³)`.
-- Best Case: `O(E)` khi mảng khoảng cách hội tụ ngay từ lượt đầu tiên nhờ cờ hiệu dừng sớm.
-
-</li>
-<li>**Độ phức tạp Không gian (Space Complexity):** `O(V)` cho mảng khoảng cách `dist` và mảng `parent`, cùng `O(E)` để lưu trữ danh sách cạnh rời rạc.</li>
-<li>**Ứng dụng thực tế:**
-
-
-- **Giao thức định tuyến RIP (Routing Information Protocol):** Nền tảng của thuật toán Distance-Vector Routing trong mạng viễn thông.
-- **Phát hiện Kinh doanh chênh lệch giá (Currency Arbitrage Detection):** Chuyển đổi ma trận tỷ giá hối đoái bằng phép logarit `-log(rate)` để biến bài toán nhân tỷ giá thành bài toán tìm chu trình âm trong đồ thị.
-- **Lập lịch ràng buộc thời gian (Difference Constraints System):** Giải hệ bất phương trình dạng `x[j] - x[i] <= c` trong biên dịch và quản lý dự án.
-
-</li>
-</ul>
+  - Worst & Average Case: `O(V x E)`. Với đồ thị dày (`E ~ V²`), độ phức tạp tiến đến `O(V³)`.
+  - Best Case: `O(E)` khi mảng khoảng cách hội tụ ngay từ lượt đầu tiên nhờ cờ hiệu dừng sớm.
+- **Độ phức tạp Không gian (Space Complexity):** `O(V)` cho mảng khoảng cách `dist` và mảng `parent`, cùng `O(E)` để lưu trữ danh sách cạnh rời rạc.
+- **Ứng dụng thực tế:**
+  - **Giao thức định tuyến RIP (Routing Information Protocol):** Nền tảng của thuật toán Distance-Vector Routing trong mạng viễn thông.
+  - **Phát hiện Kinh doanh chênh lệch giá (Currency Arbitrage Detection):** Chuyển đổi ma trận tỷ giá hối đoái bằng phép logarit `-log(rate)` để biến bài toán nhân tỷ giá thành bài toán tìm chu trình âm trong đồ thị.
+  - **Lập lịch ràng buộc thời gian (Difference Constraints System):** Giải hệ bất phương trình dạng `x[j] - x[i] <= c` trong biên dịch và quản lý dự án.

@@ -71,7 +71,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh (Kruskal với DSU Nén đường và Gộp theo hạng):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -196,10 +196,6 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Độ phức tạp Thời gian (Time Complexity):** `O(E \log E) = O(E \log V)`. Thao tác sắp xếp `E` cạnh chiếm `O(E \log E)`, thao tác duyệt và thao tác DSU mất `O(E alpha(V))`.
 - **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` gồm `O(V)` cho cấu trúc DSU (mảng `parent` và `rank`) và `O(E)` lưu trữ mảng cạnh.
 - **Ứng dụng thực tế:**
-  <ul>
-  **Thiết kế hạ tầng mạng cáp viễn thông và lưới điện:** Kết nối toàn bộ các trạm biến áp hoặc trung tâm dữ liệu với tổng chiều dài cáp nhỏ nhất.
-- **Phân cụm dữ liệu trong Học máy (Single-Linkage Hierarchical Clustering):** Dừng quá trình Kruskal khi số thành phần liên thông bằng `K` để phân tách dữ liệu thành `K` cụm tối ưu.
-- **Thiết kế mạch tích hợp VLSI:** Đi dây đồng trên vi mạch (Routing) giảm thiểu diện tích và độ trễ tín hiệu.
-
-</li>
-</ul>
+  - **Thiết kế hạ tầng mạng cáp viễn thông và lưới điện:** Kết nối toàn bộ các trạm biến áp hoặc trung tâm dữ liệu với tổng chiều dài cáp nhỏ nhất.
+  - **Phân cụm dữ liệu trong Học máy (Single-Linkage Hierarchical Clustering):** Dừng quá trình Kruskal khi số thành phần liên thông bằng `K` để phân tách dữ liệu thành `K` cụm tối ưu.
+  - **Thiết kế mạch tích hợp VLSI:** Đi dây đồng trên vi mạch (Routing) giảm thiểu diện tích và độ trễ tín hiệu.

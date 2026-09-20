@@ -82,7 +82,7 @@ graph TD
 
 **Complete C++ Implementation (Bottom-Up Tabulation with 1D Space Optimization):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -142,15 +142,11 @@ int main() {
 - _Init:_ `dp = [0, 0, 0, 0, 0, 0]` (size `W + 1 = 6`).
 - _Item 1 (w=2, v=3):_ Loop `w` from 5 down to 2 &rarr; `dp = [0, 0, 3, 3, 3, 3]`.
 - _Item 2 (w=3, v=4):_ Loop `w` from 5 down to 3:
-  <ul>
-  `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Combo item 1 & 2: weight 5).
-- `w = 4: dp[4] = max(3, 4 + dp[1]) = 4`.
-- `w = 3: dp[3] = max(3, 4 + dp[0]) = 4` &rarr; `dp = [0, 0, 3, 4, 4, 7]`.
-
-</li>
-<li>*Item 3 (w=4, v=5):* Loop `w` from 5 down to 4 &rarr; `dp = [0, 0, 3, 4, 5, 7]`.</li>
-<li>*Item 4 (w=5, v=8):* Loop `w = 5`: `dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Final optimal value is `8`.</li>
-</ul>
+  - `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Combo item 1 & 2: weight 5).
+  - `w = 4: dp[4] = max(3, 4 + dp[1]) = 4`.
+  - `w = 3: dp[3] = max(3, 4 + dp[0]) = 4` &rarr; `dp = [0, 0, 3, 4, 4, 7]`.
+- *Item 3 (w=4, v=5):* Loop `w` from 5 down to 4 &rarr; `dp = [0, 0, 3, 4, 5, 7]`.
+- *Item 4 (w=5, v=8):* Loop `w = 5`: `dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Final optimal value is `8`.
 
 ## 5. Complexity Evaluation & Real-world Applications
 
@@ -158,18 +154,10 @@ Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:** `Θ(N x W)` across all cases (Best, Average, Worst). Iterates through `N` items, each updating `W` capacity states in constant time.
 - **Space Complexity:**
-  <ul>
-  Standard 2D Matrix: `O(N x W)` Heap memory (required for solution path reconstruction).
-- 1D Rolling Array: `O(W)` Auxiliary Space, slashing memory consumption by &gt;95% when `N` is large.
-
-</li>
-<li>**Real-World Applications:**
-
-
-- **Cloud Resource Allocation:** Packing virtual machines (VMs) onto hypervisors to maximize throughput within memory/CPU constraints.
-- **Graph Routing:** Algorithmic foundation for Bellman-Ford and Floyd-Warshall shortest path algorithms.
-- **Bioinformatics:** DNA/RNA global and local sequence alignment via Needleman-Wunsch and Smith-Waterman algorithms.
-- **Natural Language Processing (NLP):** Viterbi decoding algorithm in Hidden Markov Models and beam-search decoders.
-
-</li>
-</ul>
+  - Standard 2D Matrix: `O(N x W)` Heap memory (required for solution path reconstruction).
+  - 1D Rolling Array: `O(W)` Auxiliary Space, slashing memory consumption by &gt;95% when `N` is large.
+- **Real-World Applications:**
+  - **Cloud Resource Allocation:** Packing virtual machines (VMs) onto hypervisors to maximize throughput within memory/CPU constraints.
+  - **Graph Routing:** Algorithmic foundation for Bellman-Ford and Floyd-Warshall shortest path algorithms.
+  - **Bioinformatics:** DNA/RNA global and local sequence alignment via Needleman-Wunsch and Smith-Waterman algorithms.
+  - **Natural Language Processing (NLP):** Viterbi decoding algorithm in Hidden Markov Models and beam-search decoders.

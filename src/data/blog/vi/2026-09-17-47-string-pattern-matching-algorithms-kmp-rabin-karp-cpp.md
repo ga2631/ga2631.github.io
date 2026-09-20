@@ -72,7 +72,7 @@ stateDiagram-v2
 
 **Mã nguồn C++ hoàn chỉnh (Triển khai đồng thời KMP và Rabin-Karp):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <string>
@@ -207,47 +207,27 @@ int main() {
 **Phân tích luồng thực thi chi tiết (Dry Run Trace KMP):**
 
 - _Mẫu `Pattern = "ABABCABAB"`:_ Bảng `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
-  <ul>
-  `LPS[3] = 2` vì chuỗi con `"ABAB"` có tiền tố `"AB"` trùng với hậu tố `"AB"`.
-- `LPS[8] = 4` vì chuỗi con `"ABABCABAB"` có tiền tố `"ABAB"` trùng hậu tố `"ABAB"`.
-
-</li>
-<li>*Quá trình so khớp trên `Text = "ABABDABACDABABCABAB"`:*
-
-
-- So khớp 4 ký tự đầu `"ABAB"` thành công (`j = 4`).
-- Tại ký tự thứ 5 (`Text[4] = 'D'`, `Pattern[4] = 'C'`) &rarr; Mismatch!
-- KMP không lùi `i` về 1, mà giữ nguyên `i = 4` và gán `j = LPS[3] = 2` (đại diện cho tiền tố `"AB"` đã khớp).
-- Tiếp tục so sánh `Text[4] = 'D'` với `Pattern[2] = 'A'` &rarr; Tiết kiệm 4 phép so sánh dư thừa!
-- Tại `i = 10`, toàn bộ mẫu khớp hoàn toàn &rarr; Ghi nhận vị trí xuất hiện tại `index = 10`.
-
-</li>
-</ul>
+  - `LPS[3] = 2` vì chuỗi con `"ABAB"` có tiền tố `"AB"` trùng với hậu tố `"AB"`.
+  - `LPS[8] = 4` vì chuỗi con `"ABABCABAB"` có tiền tố `"ABAB"` trùng hậu tố `"ABAB"`.
+- *Quá trình so khớp trên `Text = "ABABDABACDABABCABAB"`:*
+  - So khớp 4 ký tự đầu `"ABAB"` thành công (`j = 4`).
+  - Tại ký tự thứ 5 (`Text[4] = 'D'`, `Pattern[4] = 'C'`) &rarr; Mismatch!
+  - KMP không lùi `i` về 1, mà giữ nguyên `i = 4` và gán `j = LPS[3] = 2` (đại diện cho tiền tố `"AB"` đã khớp).
+  - Tiếp tục so sánh `Text[4] = 'D'` với `Pattern[2] = 'A'` &rarr; Tiết kiệm 4 phép so sánh dư thừa!
+  - Tại `i = 10`, toàn bộ mẫu khớp hoàn toàn &rarr; Ghi nhận vị trí xuất hiện tại `index = 10`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
-  <ul>
-  **KMP:** `Θ(N + M)` trong mọi trường hợp. Pha tính LPS tốn `O(M)`, pha quét Text tốn `O(N)` không bao giờ quay lui.
-- **Rabin-Karp:** Trung bình `O(N + M)`. Trường hợp xấu nhất (nhiều đụng độ băm) là `O(N x M)`.
-
-</li>
-<li>**Độ phức tạp Không gian (Space Complexity):**
-
-
-- KMP: `O(M)` cho mảng tiền tố `LPS`.
-- Rabin-Karp: `O(1)` bộ nhớ phụ trợ chỉ với vài biến tích lũy mã băm.
-
-</li>
-<li>**Ứng dụng thực tế:**
-
-
-- **Trình tìm kiếm mã nguồn và văn bản:** Lõi của các lệnh tìm kiếm Regex và đối sánh từ khóa trong IDE.
-- **Phân tích hệ Gen sinh học:** Tìm kiếm các đoạn mã gen gây bệnh hoặc mẫu DNA đột biến trong chuỗi hàng tỷ nucleotide.
-- **Phát hiện đạo văn (Plagiarism Detection):** Rabin-Karp với Rolling Hash nhiều mẫu cho phép so khớp đồng thời hàng trăm đoạn văn bản ngắn cùng lúc.
-- **Tường lửa & Phát hiện xâm nhập mạng (IDS/IPS):** Quét các chữ ký độc hại (Malware Signature) trong payload của gói tin mạng TCP/IP theo thời gian thực.
-
-</li>
-</ul>
+  - **KMP:** `Θ(N + M)` trong mọi trường hợp. Pha tính LPS tốn `O(M)`, pha quét Text tốn `O(N)` không bao giờ quay lui.
+  - **Rabin-Karp:** Trung bình `O(N + M)`. Trường hợp xấu nhất (nhiều đụng độ băm) là `O(N x M)`.
+- **Độ phức tạp Không gian (Space Complexity):**
+  - KMP: `O(M)` cho mảng tiền tố `LPS`.
+  - Rabin-Karp: `O(1)` bộ nhớ phụ trợ chỉ với vài biến tích lũy mã băm.
+- **Ứng dụng thực tế:**
+  - **Trình tìm kiếm mã nguồn và văn bản:** Lõi của các lệnh tìm kiếm Regex và đối sánh từ khóa trong IDE.
+  - **Phân tích hệ Gen sinh học:** Tìm kiếm các đoạn mã gen gây bệnh hoặc mẫu DNA đột biến trong chuỗi hàng tỷ nucleotide.
+  - **Phát hiện đạo văn (Plagiarism Detection):** Rabin-Karp với Rolling Hash nhiều mẫu cho phép so khớp đồng thời hàng trăm đoạn văn bản ngắn cùng lúc.
+  - **Tường lửa & Phát hiện xâm nhập mạng (IDS/IPS):** Quét các chữ ký độc hại (Malware Signature) trong payload của gói tin mạng TCP/IP theo thời gian thực.

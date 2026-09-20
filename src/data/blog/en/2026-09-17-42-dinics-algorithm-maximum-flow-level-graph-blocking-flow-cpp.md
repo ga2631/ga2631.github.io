@@ -64,7 +64,7 @@ flowchart TD
 
 **Complete C++ Implementation (Dinic's Algorithm with Work Pointer Optimization):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -191,19 +191,11 @@ int main() {
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:**
-  <ul>
-  General Networks: `O(V² x E)`. At most `V - 1` BFS phases, each DFS blocking flow takes `O(V x E)`.
-- Unit Networks: `O(E \sqrt{V})` - solves matching on 100,000 nodes in milliseconds.
-- Bipartite Matching: `O(E \sqrt{V})` (Hopcroft-Karp equivalent).
-
-</li>
-<li>**Space Complexity:** `O(V + E)` for adjacency lists and symmetric `FlowEdge` records.</li>
-<li>**Real-World Applications:**
-  
-
-- **Maximum Bipartite Matching:** University timetable scheduling, candidate-to-vacancy recruitment matching.
-- **Project Selection Problem:** Optimizing enterprise investment portfolios with dependency constraints.
-- **CDN Bandwidth Optimization:** Routing video streams from Edge nodes to client clusters.
-
-</li>
-</ul>
+  - General Networks: `O(V² x E)`. At most `V - 1` BFS phases, each DFS blocking flow takes `O(V x E)`.
+  - Unit Networks: `O(E \sqrt{V})` - solves matching on 100,000 nodes in milliseconds.
+  - Bipartite Matching: `O(E \sqrt{V})` (Hopcroft-Karp equivalent).
+- **Space Complexity:** `O(V + E)` for adjacency lists and symmetric `FlowEdge` records.
+- **Real-World Applications:**
+  - **Maximum Bipartite Matching:** University timetable scheduling, candidate-to-vacancy recruitment matching.
+  - **Project Selection Problem:** Optimizing enterprise investment portfolios with dependency constraints.
+  - **CDN Bandwidth Optimization:** Routing video streams from Edge nodes to client clusters.

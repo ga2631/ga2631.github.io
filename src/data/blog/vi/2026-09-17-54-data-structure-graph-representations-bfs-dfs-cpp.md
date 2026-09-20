@@ -82,7 +82,7 @@ flowchart TD
 
 **Mã nguồn C++ hoàn chỉnh: Graph Class với Adjacency List, BFS và DFS:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -167,21 +167,13 @@ int main() {
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
 - _BFS từ đỉnh 0:_
-  <ul>
-  Khởi tạo: `q = [0]`, `visited[0] = true`.
-- Pop 0 &rarr; In `0`. Đẩy các đỉnh kề chưa thăm `1, 2` vào hàng đợi &rarr; `q = [1, 2]`.
-- Pop 1 &rarr; In `1`. Đẩy các đỉnh kề chưa thăm `3, 4` &rarr; `q = [2, 3, 4]`.
-- Pop 2 &rarr; In `2`. Đỉnh kề 4 đã được đánh dấu thăm nên bỏ qua.
-- Pop 3, 4 &rarr; In `3, 4` &rarr; Kết quả BFS: `0 1 2 3 4`.
-
-</li>
-<li>*DFS từ đỉnh 0:*
-
-
-- Thăm 0 &rarr; Đi sâu vào nhánh 1 &rarr; Đi sâu vào nhánh 3 (hết đường, quay lui) &rarr; Đi sang nhánh 4 &rarr; Từ 4 đi sang 2 &rarr; Kết quả DFS: `0 1 3 4 2`.
-
-</li>
-</ul>
+  - Khởi tạo: `q = [0]`, `visited[0] = true`.
+  - Pop 0 &rarr; In `0`. Đẩy các đỉnh kề chưa thăm `1, 2` vào hàng đợi &rarr; `q = [1, 2]`.
+  - Pop 1 &rarr; In `1`. Đẩy các đỉnh kề chưa thăm `3, 4` &rarr; `q = [2, 3, 4]`.
+  - Pop 2 &rarr; In `2`. Đỉnh kề 4 đã được đánh dấu thăm nên bỏ qua.
+  - Pop 3, 4 &rarr; In `3, 4` &rarr; Kết quả BFS: `0 1 2 3 4`.
+- *DFS từ đỉnh 0:*
+  - Thăm 0 &rarr; Đi sâu vào nhánh 1 &rarr; Đi sâu vào nhánh 3 (hết đường, quay lui) &rarr; Đi sang nhánh 4 &rarr; Từ 4 đi sang 2 &rarr; Kết quả DFS: `0 1 3 4 2`.
 
 ## 5. Đánh giá độ phức tạp & Ứng dụng thực tế
 
@@ -190,17 +182,9 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Độ phức tạp Thời gian (Time Complexity):** `Θ(V + E)` cho cả BFS và DFS khi dùng Danh sách kề. Mỗi đỉnh được thăm 1 lần và mỗi cạnh được duyệt qua tối đa 2 lần.
 - **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` để lưu trữ Danh sách kề và `O(V)` bộ nhớ bổ trợ cho mảng `visited` và Hàng đợi/Call Stack.
 - **So sánh Ma trận kề vs Danh sách kề:**
-  <ul>
-  Ma trận kề: Bộ nhớ `O(V²)`, kiểm tra cạnh `O(1)`, duyệt kề `O(V)` (Thích hợp cho đồ thị dày `E ~ V²`).
-- Danh sách kề: Bộ nhớ `O(V + E)`, kiểm tra cạnh `O(deg(u))`, duyệt kề `O(deg(u))` (Tối ưu tuyệt đối cho đồ thị thưa).
-
-</li>
-<li>**Ứng dụng thực tế:**
-
-
-- **Đồ thị Tri thức & Mạng xã hội:** Friend Recommendation (Thuật toán gợi ý bạn bè chung qua khoảng cách 2 bước BFS).
-- **Hệ thống Web Crawling của Công cụ Tìm kiếm:** Googlebot duyệt toàn bộ mạng Internet bằng thuật toán BFS phân tán.
-- **Phân tích Phụ thuộc Gói phần mềm (Package Managers):** npm/yarn sử dụng DFS để kiểm tra chu trình phụ thuộc vòng (Circular Dependencies) và sinh thứ tự biên dịch (Topological Sort).
-
-</li>
-</ul>
+  - Ma trận kề: Bộ nhớ `O(V²)`, kiểm tra cạnh `O(1)`, duyệt kề `O(V)` (Thích hợp cho đồ thị dày `E ~ V²`).
+  - Danh sách kề: Bộ nhớ `O(V + E)`, kiểm tra cạnh `O(deg(u))`, duyệt kề `O(deg(u))` (Tối ưu tuyệt đối cho đồ thị thưa).
+- **Ứng dụng thực tế:**
+  - **Đồ thị Tri thức & Mạng xã hội:** Friend Recommendation (Thuật toán gợi ý bạn bè chung qua khoảng cách 2 bước BFS).
+  - **Hệ thống Web Crawling của Công cụ Tìm kiếm:** Googlebot duyệt toàn bộ mạng Internet bằng thuật toán BFS phân tán.
+  - **Phân tích Phụ thuộc Gói phần mềm (Package Managers):** npm/yarn sử dụng DFS để kiểm tra chu trình phụ thuộc vòng (Circular Dependencies) và sinh thứ tự biên dịch (Topological Sort).

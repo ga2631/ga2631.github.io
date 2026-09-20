@@ -71,7 +71,7 @@ flowchart LR
 
 **Mã nguồn C++ hoàn chỉnh (Thuật toán Edmonds-Karp với BFS):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -182,18 +182,10 @@ int main() {
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
-  <ul>
-  Ford-Fulkerson nguyên bản (DFS): `O(E x |f*|)` với `|f*|` là giá trị luồng cực đại.
-- Edmonds-Karp (BFS): `O(V x E²)`. Mỗi lần tìm đường mất `O(E)`, số lần tăng luồng bị chặn trên bởi `O(V x E)`.
-
-</li>
-<li>**Độ phức tạp Không gian (Space Complexity):** `O(V²)` ma trận dung lượng hoặc `O(V + E)` nếu sử dụng danh sách cạnh đối xứng.</li>
-<li>**Ứng dụng thực tế:**
-  
-
-- **Mạng ống dẫn dầu và truyền tải nước:** Tính toán lưu lượng cấp nước tối đa của hệ thống thủy lợi đô thị.
-- **Cắt ảnh trong Thị giác máy tính (Graph Cut Image Segmentation):** Phân tách tiền cảnh (Foreground) và hậu cảnh (Background) trong xử lý ảnh y tế.
-- **Lập lịch phi hành đoàn hàng không:** Ghép cặp phi công - tiếp viên - chuyến bay tối ưu theo ràng buộc an toàn hàng không.
-
-</li>
-</ul>
+  - Ford-Fulkerson nguyên bản (DFS): `O(E x |f*|)` với `|f*|` là giá trị luồng cực đại.
+  - Edmonds-Karp (BFS): `O(V x E²)`. Mỗi lần tìm đường mất `O(E)`, số lần tăng luồng bị chặn trên bởi `O(V x E)`.
+- **Độ phức tạp Không gian (Space Complexity):** `O(V²)` ma trận dung lượng hoặc `O(V + E)` nếu sử dụng danh sách cạnh đối xứng.
+- **Ứng dụng thực tế:**
+  - **Mạng ống dẫn dầu và truyền tải nước:** Tính toán lưu lượng cấp nước tối đa của hệ thống thủy lợi đô thị.
+  - **Cắt ảnh trong Thị giác máy tính (Graph Cut Image Segmentation):** Phân tách tiền cảnh (Foreground) và hậu cảnh (Background) trong xử lý ảnh y tế.
+  - **Lập lịch phi hành đoàn hàng không:** Ghép cặp phi công - tiếp viên - chuyến bay tối ưu theo ràng buộc an toàn hàng không.

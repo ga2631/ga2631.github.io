@@ -71,7 +71,7 @@ flowchart LR
 
 **Complete C++ Implementation (Edmonds-Karp BFS Algorithm):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -177,18 +177,10 @@ int main() {
 Performance Scorecard anchored to RAM Model metrics:
 
 - **Time Complexity:**
-  <ul>
-  Standard Ford-Fulkerson: `O(E x |f*|)` where `|f*|` is maximum flow value.
-- Edmonds-Karp (BFS): `O(V x E²)`. Each BFS takes `O(E)`, total augmentations capped at `O(V x E)`.
-
-</li>
-<li>**Space Complexity:** `O(V²)` for capacity matrix or `O(V + E)` using symmetric adjacency lists.</li>
-<li>**Real-World Applications:**
-  
-
-- **Urban Water Supply Systems:** Calculating maximum sustainable throughput in distribution pipelines.
-- **Computer Vision (Graph Cut Segmentation):** Pixel labeling separating foreground from background in medical imaging.
-- **Airline Crew Scheduling:** Bipartite task assignment matching flight attendants and pilots.
-
-</li>
-</ul>
+  - Standard Ford-Fulkerson: `O(E x |f*|)` where `|f*|` is maximum flow value.
+  - Edmonds-Karp (BFS): `O(V x E²)`. Each BFS takes `O(E)`, total augmentations capped at `O(V x E)`.
+- **Space Complexity:** `O(V²)` for capacity matrix or `O(V + E)` using symmetric adjacency lists.
+- **Real-World Applications:**
+  - **Urban Water Supply Systems:** Calculating maximum sustainable throughput in distribution pipelines.
+  - **Computer Vision (Graph Cut Segmentation):** Pixel labeling separating foreground from background in medical imaging.
+  - **Airline Crew Scheduling:** Bipartite task assignment matching flight attendants and pilots.

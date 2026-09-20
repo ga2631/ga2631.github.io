@@ -103,7 +103,7 @@ export function highlightCode(code: string, lang: string): string {
   let processed = code;
 
   // 1. Comments
-  if (['cpp', 'c', 'javascript', 'typescript', 'js', 'ts', 'jsx', 'tsx', 'css', 'scss', 'json'].includes(language)) {
+  if (['cpp', 'c++', 'c', 'javascript', 'typescript', 'js', 'ts', 'jsx', 'tsx', 'css', 'scss', 'json'].includes(language)) {
     processed = processed.replace(/\/\*[\s\S]*?\*\//g, (m) => addToken(`<span class="token-comment">${escapeHtml(m)}</span>`));
     processed = processed.replace(/\/\/.*$/gm, (m) => addToken(`<span class="token-comment">${escapeHtml(m)}</span>`));
   } else if (['python', 'py', 'sh', 'bash', 'yaml', 'yml'].includes(language)) {
@@ -184,7 +184,7 @@ export function markdownToHtml(markdown: string): string {
 
   // Extract and stash code blocks to protect them from inline formatting
   const codeBlocks: string[] = [];
-  let processed = markdown.replace(/```([a-zA-Z0-9_-]*)\r?\n([\s\S]*?)```/g, (_match, lang, code) => {
+  let processed = markdown.replace(/```([a-zA-Z0-9_+#-]*)\r?\n([\s\S]*?)```/g, (_match, lang, code) => {
     const trimmedCode = code.replace(/\r?\n$/, '');
     const cleanLang = (lang || '').trim().toLowerCase();
     let blockHtml = '';
@@ -250,21 +250,21 @@ export function markdownToHtml(markdown: string): string {
     }
 
     // Check Unordered List (- item or * item)
-    if (/^[-*]\s+/.test(trimmedBlock)) {
+    if (/^\s*[-*]\s+/.test(trimmedBlock)) {
       const items = trimmedBlock
         .split(/\r?\n/)
-        .filter((l) => /^[-*]\s+/.test(l))
-        .map((l) => `<li>${formatInlineMarkdown(l.replace(/^[-*]\s+/, '').trim())}</li>`);
+        .filter((l) => /^\s*[-*]\s+/.test(l))
+        .map((l) => `<li>${formatInlineMarkdown(l.replace(/^\s*[-*]\s+/, '').trim())}</li>`);
       htmlParagraphs.push(`<ul>\n${items.join('\n')}\n</ul>`);
       continue;
     }
 
     // Check Ordered List (1. item)
-    if (/^\d+\.\s+/.test(trimmedBlock)) {
+    if (/^\s*\d+\.\s+/.test(trimmedBlock)) {
       const items = trimmedBlock
         .split(/\r?\n/)
-        .filter((l) => /^\d+\.\s+/.test(l))
-        .map((l) => `<li>${formatInlineMarkdown(l.replace(/^\d+\.\s+/, '').trim())}</li>`);
+        .filter((l) => /^\s*\d+\.\s+/.test(l))
+        .map((l) => `<li>${formatInlineMarkdown(l.replace(/^\s*\d+\.\s+/, '').trim())}</li>`);
       htmlParagraphs.push(`<ol>\n${items.join('\n')}\n</ol>`);
       continue;
     }

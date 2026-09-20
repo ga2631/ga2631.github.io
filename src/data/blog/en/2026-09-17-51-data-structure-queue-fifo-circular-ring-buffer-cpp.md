@@ -57,7 +57,7 @@ flowchart TD
 
 **Complete C++ Implementation: Circular Queue Ring Buffer:**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <stdexcept>
@@ -138,11 +138,7 @@ Performance Scorecard anchored to RAM Model metrics:
 - **Enqueue / Dequeue / Front:** `O(1)` strict deterministic constant time.
 - **Space Complexity:** `O(K)` fixed pre-allocated buffer memory.
 - **Real-World Applications:**
-  <ul>
-  **Breadth-First Search (BFS):** Level-order graph traversal and shortest-path pathfinding.
-- **CPU Task Scheduling:** Round-Robin process time slicing in operating system kernels.
-- **Producer-Consumer Pipelines:** Lock-free ring buffers for high-frequency inter-thread communication.
-- **Real-time Audio Streaming:** Frame buffers preventing audio playback stuttering.
-
-</li>
-</ul>
+  - **Breadth-First Search (BFS):** Level-order graph traversal and shortest-path pathfinding.
+  - **CPU Task Scheduling:** Round-Robin process time slicing in operating system kernels.
+  - **Producer-Consumer Pipelines:** Lock-free ring buffers for high-frequency inter-thread communication.
+  - **Real-time Audio Streaming:** Frame buffers preventing audio playback stuttering.

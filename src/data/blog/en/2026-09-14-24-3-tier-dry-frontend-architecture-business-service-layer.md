@@ -91,17 +91,12 @@ graph TD
 **Architectural Trade-offs & Benefits:**
 
 - **Gained Benefits:**
-  <ul>
-    *High Reusability:* Global styling or behavior updates for buttons, cards, or modals only happen in a single place within `common/`.
-- _Maintainability & Extensibility:_ Adding new pages or blog tracks requires zero modifications to existing components.
-- _Testability:_ 100% isolated unit test coverage per layer.
-
-</li><li>**Trade-off Costs:**
-
-- _Increased File Count:_ Requires rigorous directory discipline and maintained barrel exports (`index.ts`).
-- _Team Discipline:_ Strict prohibition of upward imports (a lower tier component must never import from an upper tier).
-
-</li></ul>
+  - _High Reusability:_ Global styling or behavior updates for buttons, cards, or modals only happen in a single place within `common/`.
+  - _Maintainability & Extensibility:_ Adding new pages or blog tracks requires zero modifications to existing components.
+  - _Testability:_ 100% isolated unit test coverage per layer.
+- **Trade-off Costs:**
+  - _Increased File Count:_ Requires rigorous directory discipline and maintained barrel exports (`index.ts`).
+  - _Team Discipline:_ Strict prohibition of upward imports (a lower tier component must never import from an upper tier).
 
 ## 5. Real-World Lessons & Best Practices
 

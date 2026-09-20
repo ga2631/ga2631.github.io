@@ -69,7 +69,7 @@ graph TD
 
 **Mã nguồn C++ hoàn chỉnh (Prim với std::priority_queue):**
 
-```
+```c++
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -181,19 +181,11 @@ int main() {
 Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
 
 - **Độ phức tạp Thời gian (Time Complexity):**
-  <ul>
-  Với Binary Min-Heap (`std::priority_queue`): `O((V + E) \log V)`.
-- Với Ma trận kề trên Đồ thị dày (`E ~ V²`): `O(V²)` (nhanh hơn Kruskal vì không tốn chi phí sắp xếp `V²` cạnh).
-- Với Fibonacci Heap (Lý thuyết): `O(E + V \log V)`.
-
-</li>
-<li>**Độ phức tạp Không gian (Space Complexity):** `O(V + E)` cho danh sách kề và hàng đợi ưu tiên.</li>
-<li>**Ứng dụng thực tế:**
-  
-
-- **Giao thức Spanning Tree Protocol (STP - IEEE 802.1D):** Chống vòng lặp gói tin trong mạng chuyển mạch Ethernet cục bộ (Switching Loops).
-- **Thuật toán xấp xỉ bài toán Người du lịch (TSP 2-Approximation):** Dùng cây khung Prim để sinh hành trình xấp xỉ cho bài toán NP-Hard TSP.
-- **Cân bằng tải cây đa hướng (Multicast Routing Trees):** Thiết lập luồng phát sóng truyền hình số từ một máy chủ trung tâm tới hàng triệu thuê bao.
-
-</li>
-</ul>
+  - Với Binary Min-Heap (`std::priority_queue`): `O((V + E) \log V)`.
+  - Với Ma trận kề trên Đồ thị dày (`E ~ V²`): `O(V²)` (nhanh hơn Kruskal vì không tốn chi phí sắp xếp `V²` cạnh).
+  - Với Fibonacci Heap (Lý thuyết): `O(E + V \log V)`.
+- **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` cho danh sách kề và hàng đợi ưu tiên.
+- **Ứng dụng thực tế:**
+  - **Giao thức Spanning Tree Protocol (STP - IEEE 802.1D):** Chống vòng lặp gói tin trong mạng chuyển mạch Ethernet cục bộ (Switching Loops).
+  - **Thuật toán xấp xỉ bài toán Người du lịch (TSP 2-Approximation):** Dùng cây khung Prim để sinh hành trình xấp xỉ cho bài toán NP-Hard TSP.
+  - **Cân bằng tải cây đa hướng (Multicast Routing Trees):** Thiết lập luồng phát sóng truyền hình số từ một máy chủ trung tâm tới hàng triệu thuê bao.
