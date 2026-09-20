@@ -57,24 +57,24 @@ Nguyên tắc vàng của OLTP là chuẩn hóa tới **3NF (Third Normal Form) 
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">1NF (First Normal Form)</td>
-      <td style="padding: 8px;">Giá trị trong mỗi cột phải là nguyên tử (Atomic), không chứa mảng hay danh sách lặp</td>
-      <td style="padding: 8px;">Tách cột `phone_numbers` thành bảng riêng hoặc các dòng riêng</td>
+      <td style="padding: 8px"><b>1NF (First Normal Form)</b></td>
+      <td style="padding: 8px">Giá trị trong mỗi cột phải là nguyên tử (Atomic), không chứa mảng hay danh sách lặp</td>
+      <td style="padding: 8px">Tách cột `phone_numbers` thành bảng riêng hoặc các dòng riêng</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">2NF (Second Normal Form)</td>
-      <td style="padding: 8px;">Đạt 1NF và mọi thuộc tính không khóa phải phụ thuộc hoàn toàn vào toàn bộ Khóa chính</td>
-      <td style="padding: 8px;">Loại bỏ sự phụ thuộc một phần (Partial Dependency) trong khóa phức hợp</td>
+      <td style="padding: 8px"><b>2NF (Second Normal Form)</b></td>
+      <td style="padding: 8px">Đạt 1NF và mọi thuộc tính không khóa phải phụ thuộc hoàn toàn vào toàn bộ Khóa chính</td>
+      <td style="padding: 8px">Loại bỏ sự phụ thuộc một phần (Partial Dependency) trong khóa phức hợp</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">3NF (Third Normal Form)</td>
-      <td style="padding: 8px;">Đạt 2NF và không có thuộc tính không khóa nào phụ thuộc bắc cầu (Transitive) vào khóa chính</td>
-      <td style="padding: 8px;">Tách thông tin Tỉnh/Thành phố ra khỏi bảng Khách hàng (Tránh lưu trùng tên tỉnh nhiều lần)</td>
+      <td style="padding: 8px"><b>3NF (Third Normal Form)</b></td>
+      <td style="padding: 8px">Đạt 2NF và không có thuộc tính không khóa nào phụ thuộc bắc cầu (Transitive) vào khóa chính</td>
+      <td style="padding: 8px">Tách thông tin Tỉnh/Thành phố ra khỏi bảng Khách hàng (Tránh lưu trùng tên tỉnh nhiều lần)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Controlled Denormalization</td>
-      <td style="padding: 8px;">Lưu Snapshot bất biến có chủ đích (ví dụ: `unit_price_at_order` trong `order_items`)</td>
-      <td style="padding: 8px;">Bảo toàn giá tiền tại thời điểm mua khi bảng giá sản phẩm gốc thay đổi</td>
+      <td style="padding: 8px"><b>Controlled Denormalization</b></td>
+      <td style="padding: 8px">Lưu Snapshot bất biến có chủ đích (ví dụ: `unit_price_at_order` trong `order_items`)</td>
+      <td style="padding: 8px">Bảo toàn giá tiền tại thời điểm mua khi bảng giá sản phẩm gốc thay đổi</td>
     </tr>
   </tbody>
 </table>
@@ -255,35 +255,35 @@ def transfer_funds_optimistic(conn, wallet_id: int, deduct_amount: float, max_re
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Cơ Chế Khóa / Xử Lý</th>
-      <th style="padding: 8px;">Thông Lượng (Throughput TPS)</th>
-      <th style="padding: 8px;">Độ Trễ Phản Hồi p99</th>
-      <th style="padding: 8px;">Tỷ Lệ Lỗi Tranh Chấp (Abort Rate)</th>
+      <th style="padding: 8px">Thông Lượng (Throughput TPS)</th>
+      <th style="padding: 8px">Độ Trễ Phản Hồi p99</th>
+      <th style="padding: 8px">Tỷ Lệ Lỗi Tranh Chấp (Abort Rate)</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Serializable Isolation Cấp cao nhất</td>
-      <td style="padding: 8px;">850 TPS</td>
-      <td style="padding: 8px;">420ms</td>
-      <td style="padding: 8px;">Cao (35% giao dịch bị Serialization Failure)</td>
+      <td style="padding: 8px"><b>Serializable Isolation Cấp cao nhất</b></td>
+      <td style="padding: 8px">850 TPS</td>
+      <td style="padding: 8px">420ms</td>
+      <td style="padding: 8px">Cao (35% giao dịch bị Serialization Failure)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Pessimistic Locking (SELECT FOR UPDATE)</td>
-      <td style="padding: 8px;">4,200 TPS</td>
-      <td style="padding: 8px;">48ms</td>
-      <td style="padding: 8px;">0.00% (An toàn tuyệt đối, xếp hàng chờ khóa)</td>
+      <td style="padding: 8px"><b>Pessimistic Locking (SELECT FOR UPDATE)</b></td>
+      <td style="padding: 8px">4,200 TPS</td>
+      <td style="padding: 8px">48ms</td>
+      <td style="padding: 8px">0.00% (An toàn tuyệt đối, xếp hàng chờ khóa)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Optimistic Concurrency Control (Version CAS)</td>
-      <td style="padding: 8px;">6,800 TPS</td>
-      <td style="padding: 8px;">18ms</td>
-      <td style="padding: 8px;">Thấp (Retry tự động thành công 99.8%)</td>
+      <td style="padding: 8px"><b>Optimistic Concurrency Control (Version CAS)</b></td>
+      <td style="padding: 8px">6,800 TPS</td>
+      <td style="padding: 8px">18ms</td>
+      <td style="padding: 8px">Thấp (Retry tự động thành công 99.8%)</td>
     </tr>
     <tr>
-      <td style="padding: 8px; font-weight: bold;">Redis In-Memory Token + Asynchronous DB Write</td>
-      <td style="padding: 8px; font-weight: bold;">45,000 TPS</td>
-      <td style="padding: 8px; font-weight: bold;">2.1ms</td>
-      <td style="padding: 8px;">0.00% (Tách biệt hoàn toàn tầng trừ tồn kho)</td>
+      <td style="padding: 8px"><b>Redis In-Memory Token + Asynchronous DB Write</b></td>
+      <td style="padding: 8px"><b>45,000 TPS</b></td>
+      <td style="padding: 8px"><b>2.1ms</b></td>
+      <td style="padding: 8px">0.00% (Tách biệt hoàn toàn tầng trừ tồn kho)</td>
     </tr>
   </tbody>
 </table>

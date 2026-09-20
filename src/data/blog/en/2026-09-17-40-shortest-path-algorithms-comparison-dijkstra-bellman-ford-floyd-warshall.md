@@ -52,46 +52,46 @@ Common architectural anti-patterns in production:
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Problem Scope**</td>
-      <td style="padding: 8px;">Single-Source (SSSP)</td>
-      <td style="padding: 8px;">Single-Source (SSSP)</td>
-      <td style="padding: 8px;">All-Pairs (APSP)</td>
+      <td style="padding: 8px"><b>Problem Scope</b></td>
+      <td style="padding: 8px">Single-Source (SSSP)</td>
+      <td style="padding: 8px">Single-Source (SSSP)</td>
+      <td style="padding: 8px">All-Pairs (APSP)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Time Complexity**</td>
-      <td style="padding: 8px;">`O((V + E) \log V)`</td>
-      <td style="padding: 8px;">`O(V x E)` (Best: `O(E)`)</td>
-      <td style="padding: 8px;">`Θ(V³)`</td>
+      <td style="padding: 8px"><b>Time Complexity</b></td>
+      <td style="padding: 8px">`O((V + E) \log V)`</td>
+      <td style="padding: 8px">`O(V x E)` (Best: `O(E)`)</td>
+      <td style="padding: 8px">`Θ(V³)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Space Complexity**</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V²)`</td>
+      <td style="padding: 8px"><b>Space Complexity</b></td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V²)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Negative Weights**</td>
-      <td style="padding: 8px;">NO</td>
-      <td style="padding: 8px;">YES</td>
-      <td style="padding: 8px;">YES</td>
+      <td style="padding: 8px"><b>Negative Weights</b></td>
+      <td style="padding: 8px">NO</td>
+      <td style="padding: 8px">YES</td>
+      <td style="padding: 8px">YES</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Negative Cycles**</td>
-      <td style="padding: 8px;">Fails silently</td>
-      <td style="padding: 8px;">Detects at pass V</td>
-      <td style="padding: 8px;">Detects via diagonal `dist[i][i] < 0`</td>
+      <td style="padding: 8px"><b>Negative Cycles</b></td>
+      <td style="padding: 8px">Fails silently</td>
+      <td style="padding: 8px">Detects at pass V</td>
+      <td style="padding: 8px">Detects via diagonal `dist[i][i] < 0`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Core Data Structure**</td>
-      <td style="padding: 8px;">Min-Heap + Adjacency List</td>
-      <td style="padding: 8px;">Edge List Array</td>
-      <td style="padding: 8px;">2D Adjacency Matrix</td>
+      <td style="padding: 8px"><b>Core Data Structure</b></td>
+      <td style="padding: 8px">Min-Heap + Adjacency List</td>
+      <td style="padding: 8px">Edge List Array</td>
+      <td style="padding: 8px">2D Adjacency Matrix</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Production Protocols**</td>
-      <td style="padding: 8px;">OSPF, Google Maps GPS</td>
-      <td style="padding: 8px;">RIP, FX Arbitrage</td>
-      <td style="padding: 8px;">Transitive Closure, Route Tables</td>
+      <td style="padding: 8px"><b>Production Protocols</b></td>
+      <td style="padding: 8px">OSPF, Google Maps GPS</td>
+      <td style="padding: 8px">RIP, FX Arbitrage</td>
+      <td style="padding: 8px">Transitive Closure, Route Tables</td>
     </tr>
   </tbody>
 </table>
@@ -103,13 +103,13 @@ Architectural Decision Tree for shortest path algorithm selection:
 ```mermaid
 flowchart TD
     Start["Shortest Path Engineering Requirements"] --> ScopeCheck{"Problem Scope?"}
-    
+
     ScopeCheck -->|"Single-Source (SSSP)"| WeightCheck{"Contains Negative Edge Weights?"}
     ScopeCheck -->|"All-Pairs (APSP)"| GraphSize{"Number of Vertices V?"}
-    
+
     WeightCheck -->|"No (Non-negative weights >= 0)"| RunDijkstra["Choose DIJKSTRA (Min-Heap)<br/>Time: O((V + E) log V)"]
     WeightCheck -->|"Yes (Negative weights / Cycles)"| RunBellman["Choose BELLMAN-FORD<br/>Time: O(V * E)"]
-    
+
     GraphSize -->|"V <= 500 (Small to Medium)"| RunFloyd["Choose FLOYD-WARSHALL<br/>Time: O(V³), Space: O(V²)"]
     GraphSize -->|"V > 500 and Sparse Graph"| RunV_Dijkstra["Run DIJKSTRA V times<br/>Time: O(V(V+E) log V)"]
     GraphSize -->|"V > 500 and Negative weights"| RunJohnson["Johnson Algorithm<br/>Time: O(V² log V + VE)"]

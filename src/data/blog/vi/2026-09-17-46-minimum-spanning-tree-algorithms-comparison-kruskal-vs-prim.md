@@ -47,39 +47,39 @@ Các sai lầm thực chiến thường gặp:
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Triết lý thiết kế**</td>
-      <td style="padding: 8px;">Tham lam trên Cạnh (Edge-Centric)</td>
-      <td style="padding: 8px;">Tham lam trên Đỉnh (Vertex-Centric)</td>
+      <td style="padding: 8px"><b>Triết lý thiết kế</b></td>
+      <td style="padding: 8px">Tham lam trên Cạnh (Edge-Centric)</td>
+      <td style="padding: 8px">Tham lam trên Đỉnh (Vertex-Centric)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cấu trúc dữ liệu chính**</td>
-      <td style="padding: 8px;">Disjoint Set Union (DSU) + Sort</td>
-      <td style="padding: 8px;">Min-Heap Priority Queue / Ma trận</td>
+      <td style="padding: 8px"><b>Cấu trúc dữ liệu chính</b></td>
+      <td style="padding: 8px">Disjoint Set Union (DSU) + Sort</td>
+      <td style="padding: 8px">Min-Heap Priority Queue / Ma trận</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp (Đồ thị thưa)**</td>
-      <td style="padding: 8px;">`O(E \log V)` (Vượt trội)</td>
-      <td style="padding: 8px;">`O(E \log V)`</td>
+      <td style="padding: 8px"><b>Độ phức tạp (Đồ thị thưa)</b></td>
+      <td style="padding: 8px">`O(E \log V)` (Vượt trội)</td>
+      <td style="padding: 8px">`O(E \log V)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp (Đồ thị dày)**</td>
-      <td style="padding: 8px;">`O(V² \log V)` (Bị chậm do sort)</td>
-      <td style="padding: 8px;">`O(V²)` với ma trận (Tối ưu tuyệt đối)</td>
+      <td style="padding: 8px"><b>Độ phức tạp (Đồ thị dày)</b></td>
+      <td style="padding: 8px">`O(V² \log V)` (Bị chậm do sort)</td>
+      <td style="padding: 8px">`O(V²)` với ma trận (Tối ưu tuyệt đối)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Biểu diễn đồ thị**</td>
-      <td style="padding: 8px;">Danh sách cạnh rời rạc (Edge List)</td>
-      <td style="padding: 8px;">Danh sách kề hoặc Ma trận kề</td>
+      <td style="padding: 8px"><b>Biểu diễn đồ thị</b></td>
+      <td style="padding: 8px">Danh sách cạnh rời rạc (Edge List)</td>
+      <td style="padding: 8px">Danh sách kề hoặc Ma trận kề</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Đồ thị không liên thông**</td>
-      <td style="padding: 8px;">Tự động sinh Rừng khung (MSF)</td>
-      <td style="padding: 8px;">Cần vòng lặp ngoài duyệt từng thành phần</td>
+      <td style="padding: 8px"><b>Đồ thị không liên thông</b></td>
+      <td style="padding: 8px">Tự động sinh Rừng khung (MSF)</td>
+      <td style="padding: 8px">Cần vòng lặp ngoài duyệt từng thành phần</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Khả năng tính toán song song**</td>
-      <td style="padding: 8px;">Dễ song song hóa bước Sort</td>
-      <td style="padding: 8px;">Tuần tự theo từng đỉnh kết nạp</td>
+      <td style="padding: 8px"><b>Khả năng tính toán song song</b></td>
+      <td style="padding: 8px">Dễ song song hóa bước Sort</td>
+      <td style="padding: 8px">Tuần tự theo từng đỉnh kết nạp</td>
     </tr>
   </tbody>
 </table>
@@ -91,10 +91,10 @@ Cây quyết định lựa chọn thuật toán Cây khung nhỏ nhất:
 ```mermaid
 flowchart TD
     Start["Yêu Cầu Tìm Cây Khung Nhỏ Nhất (MST)"] --> DensityCheck{"Mật độ đồ thị (Graph Density)?"}
-    
+
     DensityCheck -->|"Đồ thị thưa (E << V²)"| RepCheck{"Dữ liệu đồ thị sẵn có ở dạng nào?"}
     DensityCheck -->|"Đồ thị dày (E ~ V²)"| RunPrimMatrix["Chọn PRIM (Ma trận kề)<br/>Độ phức tạp: O(V²)"]
-    
+
     RepCheck -->|"Danh sách cạnh rời rạc / Rừng khung"| RunKruskal["Chọn KRUSKAL (DSU)<br/>Độ phức tạp: O(E log V)"]
     RepCheck -->|"Danh sách kề sẵn có"| RunPrimPQ["Chọn PRIM (Min-Heap)<br/>Độ phức tạp: O((V + E) log V)"]
 ```

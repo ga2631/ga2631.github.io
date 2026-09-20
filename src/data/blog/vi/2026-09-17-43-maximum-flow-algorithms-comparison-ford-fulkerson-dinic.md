@@ -45,34 +45,34 @@ Tại sao Edmonds-Karp lại trở nên chậm chạp trên mạng lưới dày?
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cơ chế tăng luồng**</td>
-      <td style="padding: 8px;">Đơn luồng (1 đường đi mỗi lần BFS)</td>
-      <td style="padding: 8px;">Đa luồng đồng thời (Blocking Flow qua DFS)</td>
+      <td style="padding: 8px"><b>Cơ chế tăng luồng</b></td>
+      <td style="padding: 8px">Đơn luồng (1 đường đi mỗi lần BFS)</td>
+      <td style="padding: 8px">Đa luồng đồng thời (Blocking Flow qua DFS)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp (Tổng quát)**</td>
-      <td style="padding: 8px;">`O(V x E²)`</td>
-      <td style="padding: 8px;">`O(V² x E)` (Nhanh hơn từ 10x - 1000x)</td>
+      <td style="padding: 8px"><b>Độ phức tạp (Tổng quát)</b></td>
+      <td style="padding: 8px">`O(V x E²)`</td>
+      <td style="padding: 8px">`O(V² x E)` (Nhanh hơn từ 10x - 1000x)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Mạng Đơn vị (Unit Network)**</td>
-      <td style="padding: 8px;">`O(V x E)`</td>
-      <td style="padding: 8px;">`O(E sqrtV)` (Cực hạn tốc độ)</td>
+      <td style="padding: 8px"><b>Mạng Đơn vị (Unit Network)</b></td>
+      <td style="padding: 8px">`O(V x E)`</td>
+      <td style="padding: 8px">`O(E sqrtV)` (Cực hạn tốc độ)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Kỹ thuật Tối ưu cốt lõi**</td>
-      <td style="padding: 8px;">BFS tìm đường ngắn nhất (Shortest Path)</td>
-      <td style="padding: 8px;">Level Graph + Con trỏ `work[]` tỉa nhánh cụt</td>
+      <td style="padding: 8px"><b>Kỹ thuật Tối ưu cốt lõi</b></td>
+      <td style="padding: 8px">BFS tìm đường ngắn nhất (Shortest Path)</td>
+      <td style="padding: 8px">Level Graph + Con trỏ `work[]` tỉa nhánh cụt</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp Không gian**</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
+      <td style="padding: 8px"><b>Độ phức tạp Không gian</b></td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V + E)`</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Khuyến nghị Sử dụng**</td>
-      <td style="padding: 8px;">Mạng nhỏ, minh họa học thuật (`V <= 100`)</td>
-      <td style="padding: 8px;">Môi trường Production thực tế & Thi đấu lập trình</td>
+      <td style="padding: 8px"><b>Khuyến nghị Sử dụng</b></td>
+      <td style="padding: 8px">Mạng nhỏ, minh họa học thuật (`V <= 100`)</td>
+      <td style="padding: 8px">Môi trường Production thực tế & Thi đấu lập trình</td>
     </tr>
   </tbody>
 </table>

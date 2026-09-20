@@ -52,46 +52,46 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Phạm vi bài toán**</td>
-      <td style="padding: 8px;">Một nguồn (Single-Source)</td>
-      <td style="padding: 8px;">Một nguồn (Single-Source)</td>
-      <td style="padding: 8px;">Mọi cặp đỉnh (All-Pairs)</td>
+      <td style="padding: 8px"><b>Phạm vi bài toán</b></td>
+      <td style="padding: 8px">Một nguồn (Single-Source)</td>
+      <td style="padding: 8px">Một nguồn (Single-Source)</td>
+      <td style="padding: 8px">Mọi cặp đỉnh (All-Pairs)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp Thời gian**</td>
-      <td style="padding: 8px;">`O((V + E) \log V)`</td>
-      <td style="padding: 8px;">`O(V x E)` (Best: `O(E)`)</td>
-      <td style="padding: 8px;">`Θ(V³)`</td>
+      <td style="padding: 8px"><b>Độ phức tạp Thời gian</b></td>
+      <td style="padding: 8px">`O((V + E) \log V)`</td>
+      <td style="padding: 8px">`O(V x E)` (Best: `O(E)`)</td>
+      <td style="padding: 8px">`Θ(V³)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Độ phức tạp Không gian**</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V²)`</td>
+      <td style="padding: 8px"><b>Độ phức tạp Không gian</b></td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V²)`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Trọng số cạnh âm**</td>
-      <td style="padding: 8px;">KHÔNG hỗ trợ</td>
-      <td style="padding: 8px;">HỖ TRỢ an toàn</td>
-      <td style="padding: 8px;">HỖ TRỢ an toàn</td>
+      <td style="padding: 8px"><b>Trọng số cạnh âm</b></td>
+      <td style="padding: 8px">KHÔNG hỗ trợ</td>
+      <td style="padding: 8px">HỖ TRỢ an toàn</td>
+      <td style="padding: 8px">HỖ TRỢ an toàn</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Phát hiện Chu trình âm**</td>
-      <td style="padding: 8px;">KHÔNG hỗ trợ</td>
-      <td style="padding: 8px;">CÓ (ở lượt duyệt V)</td>
-      <td style="padding: 8px;">CÓ (`dist[i][i] < 0`)</td>
+      <td style="padding: 8px"><b>Phát hiện Chu trình âm</b></td>
+      <td style="padding: 8px">KHÔNG hỗ trợ</td>
+      <td style="padding: 8px">CÓ (ở lượt duyệt V)</td>
+      <td style="padding: 8px">CÓ (`dist[i][i] < 0`)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cấu trúc Dữ liệu**</td>
-      <td style="padding: 8px;">Min-Heap + Adjacency List</td>
-      <td style="padding: 8px;">Edge List (Mảng cạnh)</td>
-      <td style="padding: 8px;">2D Matrix (Ma trận kề)</td>
+      <td style="padding: 8px"><b>Cấu trúc Dữ liệu</b></td>
+      <td style="padding: 8px">Min-Heap + Adjacency List</td>
+      <td style="padding: 8px">Edge List (Mảng cạnh)</td>
+      <td style="padding: 8px">2D Matrix (Ma trận kề)</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Giao thức / Ứng dụng**</td>
-      <td style="padding: 8px;">OSPF, Google Maps, GPS</td>
-      <td style="padding: 8px;">RIP, Currency Arbitrage</td>
-      <td style="padding: 8px;">Transitive Closure, Logistics</td>
+      <td style="padding: 8px"><b>Giao thức / Ứng dụng</b></td>
+      <td style="padding: 8px">OSPF, Google Maps, GPS</td>
+      <td style="padding: 8px">RIP, Currency Arbitrage</td>
+      <td style="padding: 8px">Transitive Closure, Logistics</td>
     </tr>
   </tbody>
 </table>
@@ -103,13 +103,13 @@ Cây quyết định (Decision Tree) giúp kỹ sư lựa chọn thuật toán c
 ```mermaid
 flowchart TD
     Start["Yêu Cầu Bài Toán Đường Đi Ngắn Nhất"] --> ScopeCheck{"Phạm vi cần tìm?"}
-    
+
     ScopeCheck -->|"Một nguồn duy nhất (Single Source)"| WeightCheck{"Đồ thị có cạnh mang trọng số âm?"}
     ScopeCheck -->|"Mọi cặp đỉnh (All Pairs)"| GraphSize{"Số lượng đỉnh V?"}
-    
+
     WeightCheck -->|"Không (Trọng số >= 0)"| RunDijkstra["Chọn DIJKSTRA (Min-Heap)<br/>Độ phức tạp: O((V + E) log V)"]
     WeightCheck -->|"Có cạnh âm / Bắt chu trình âm"| RunBellman["Chọn BELLMAN-FORD<br/>Độ phức tạp: O(V * E)"]
-    
+
     GraphSize -->|"V <= 500 (Vừa và nhỏ)"| RunFloyd["Chọn FLOYD-WARSHALL<br/>Độ phức tạp: O(V³), Bộ nhớ: O(V²)"]
     GraphSize -->|"V > 500 và Đồ thị thưa"| RunV_Dijkstra["Chạy DIJKSTRA V lần<br/>Độ phức tạp: O(V(V+E) log V)"]
     GraphSize -->|"V > 500 và Có cạnh âm"| RunJohnson["Thuật toán Johnson<br/>Độ phức tạp: O(V² log V + VE)"]

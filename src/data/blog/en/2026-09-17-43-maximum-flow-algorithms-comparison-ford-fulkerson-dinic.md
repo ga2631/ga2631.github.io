@@ -45,34 +45,34 @@ Why Edmonds-Karp suffers on dense networks:
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Augmentation Mechanism**</td>
-      <td style="padding: 8px;">Single-path per BFS traversal</td>
-      <td style="padding: 8px;">Multi-path Blocking Flow via DFS</td>
+      <td style="padding: 8px"><b>Augmentation Mechanism</b></td>
+      <td style="padding: 8px">Single-path per BFS traversal</td>
+      <td style="padding: 8px">Multi-path Blocking Flow via DFS</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Time Complexity (General)**</td>
-      <td style="padding: 8px;">`O(V x E²)`</td>
-      <td style="padding: 8px;">`O(V² x E)` (10x - 1000x faster)</td>
+      <td style="padding: 8px"><b>Time Complexity (General)</b></td>
+      <td style="padding: 8px">`O(V x E²)`</td>
+      <td style="padding: 8px">`O(V² x E)` (10x - 1000x faster)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Unit Networks Complexity**</td>
-      <td style="padding: 8px;">`O(V x E)`</td>
-      <td style="padding: 8px;">`O(E \sqrt{V})`</td>
+      <td style="padding: 8px"><b>Unit Networks Complexity</b></td>
+      <td style="padding: 8px">`O(V x E)`</td>
+      <td style="padding: 8px">`O(E \sqrt{V})`</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Key Optimization Technique**</td>
-      <td style="padding: 8px;">Shortest-path BFS selection</td>
-      <td style="padding: 8px;">Level Graph + `work[]` dead-end pruning</td>
+      <td style="padding: 8px"><b>Key Optimization Technique</b></td>
+      <td style="padding: 8px">Shortest-path BFS selection</td>
+      <td style="padding: 8px">Level Graph + `work[]` dead-end pruning</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Space Complexity**</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
-      <td style="padding: 8px;">`O(V + E)`</td>
+      <td style="padding: 8px"><b>Space Complexity</b></td>
+      <td style="padding: 8px">`O(V + E)`</td>
+      <td style="padding: 8px">`O(V + E)`</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Recommended Usage**</td>
-      <td style="padding: 8px;">Small topologies (`V <= 100`)</td>
-      <td style="padding: 8px;">Production Systems & High-load Pipelines</td>
+      <td style="padding: 8px"><b>Recommended Usage</b></td>
+      <td style="padding: 8px">Small topologies (`V <= 100`)</td>
+      <td style="padding: 8px">Production Systems & High-load Pipelines</td>
     </tr>
   </tbody>
 </table>

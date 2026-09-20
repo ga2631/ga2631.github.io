@@ -42,28 +42,28 @@ Bài viết này sẽ mang đến một góc nhìn toàn cảnh về bức tranh
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Mục tiêu cốt lõi**</td>
-      <td style="padding: 8px;">Xây dựng nghiệp vụ ứng dụng OLTP, API, Microservices</td>
-      <td style="padding: 8px;">Xây dựng hạ tầng xử lý dữ liệu OLAP, Data Pipelines, Lakehouse</td>
-      <td style="padding: 8px;">Xây dựng mô hình thống kê, Machine Learning, trích xuất Insight</td>
+      <td style="padding: 8px"><b>Mục tiêu cốt lõi</b></td>
+      <td style="padding: 8px">Xây dựng nghiệp vụ ứng dụng OLTP, API, Microservices</td>
+      <td style="padding: 8px">Xây dựng hạ tầng xử lý dữ liệu OLAP, Data Pipelines, Lakehouse</td>
+      <td style="padding: 8px">Xây dựng mô hình thống kê, Machine Learning, trích xuất Insight</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Kiểu hệ thống**</td>
-      <td style="padding: 8px;">OLTP (Giao dịch ACID, CRUD từng bản ghi)</td>
-      <td style="padding: 8px;">OLAP / Streaming (Xử lý hàng tỷ bản ghi hàng loạt hoặc luồng)</td>
-      <td style="padding: 8px;">Thực nghiệm (Jupyter Notebook, Model Training, R&D)</td>
+      <td style="padding: 8px"><b>Kiểu hệ thống</b></td>
+      <td style="padding: 8px">OLTP (Giao dịch ACID, CRUD từng bản ghi)</td>
+      <td style="padding: 8px">OLAP / Streaming (Xử lý hàng tỷ bản ghi hàng loạt hoặc luồng)</td>
+      <td style="padding: 8px">Thực nghiệm (Jupyter Notebook, Model Training, R&D)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Hộp công cụ chính**</td>
-      <td style="padding: 8px;">Java/Go/Node.js, PostgreSQL, Redis, Docker, k8s</td>
-      <td style="padding: 8px;">Python/Scala, Spark, Kafka, Iceberg, dbt, Airflow, Snowflake</td>
-      <td style="padding: 8px;">Python/R, PyTorch, TensorFlow, Scikit-learn, Pandas</td>
+      <td style="padding: 8px"><b>Hộp công cụ chính</b></td>
+      <td style="padding: 8px">Java/Go/Node.js, PostgreSQL, Redis, Docker, k8s</td>
+      <td style="padding: 8px">Python/Scala, Spark, Kafka, Iceberg, dbt, Airflow, Snowflake</td>
+      <td style="padding: 8px">Python/R, PyTorch, TensorFlow, Scikit-learn, Pandas</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Thước đo thành công**</td>
-      <td style="padding: 8px;">API Latency (p99 &lt; 50ms), Uptime 99.99%, Throughput</td>
-      <td style="padding: 8px;">Data Freshness, SLA Pipeline, Data Quality, Compute Cost</td>
-      <td style="padding: 8px;">Model Accuracy, F1-Score, Business Lift, ROI dự báo</td>
+      <td style="padding: 8px"><b>Thước đo thành công</b></td>
+      <td style="padding: 8px">API Latency (p99 &lt; 50ms), Uptime 99.99%, Throughput</td>
+      <td style="padding: 8px">Data Freshness, SLA Pipeline, Data Quality, Compute Cost</td>
+      <td style="padding: 8px">Model Accuracy, F1-Score, Business Lift, ROI dự báo</td>
     </tr>
   </tbody>
 </table>

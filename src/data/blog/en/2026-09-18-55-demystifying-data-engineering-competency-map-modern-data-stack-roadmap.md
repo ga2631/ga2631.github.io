@@ -42,28 +42,28 @@ To understand the strategic footprint of Data Engineering across modern tech org
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Core Objective**</td>
-      <td style="padding: 8px;">Build OLTP business services, APIs, and microservices</td>
-      <td style="padding: 8px;">Build OLAP data platforms, pipelines, and Lakehouse stores</td>
-      <td style="padding: 8px;">Build statistical models, ML algorithms, and extract insights</td>
+      <td style="padding: 8px"><b>Core Objective</b></td>
+      <td style="padding: 8px">Build OLTP business services, APIs, and microservices</td>
+      <td style="padding: 8px">Build OLAP data platforms, pipelines, and Lakehouse stores</td>
+      <td style="padding: 8px">Build statistical models, ML algorithms, and extract insights</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Workload Type**</td>
-      <td style="padding: 8px;">OLTP (ACID transactions, single-record CRUD)</td>
-      <td style="padding: 8px;">OLAP / Streaming (Batch & streaming over billions of records)</td>
-      <td style="padding: 8px;">Experimental (Jupyter, Model Training, Feature Engineering)</td>
+      <td style="padding: 8px"><b>Workload Type</b></td>
+      <td style="padding: 8px">OLTP (ACID transactions, single-record CRUD)</td>
+      <td style="padding: 8px">OLAP / Streaming (Batch & streaming over billions of records)</td>
+      <td style="padding: 8px">Experimental (Jupyter, Model Training, Feature Engineering)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Primary Tooling**</td>
-      <td style="padding: 8px;">Java/Go/Node.js, PostgreSQL, Redis, Docker, k8s</td>
-      <td style="padding: 8px;">Python/Scala, Spark, Kafka, Iceberg, dbt, Airflow, Snowflake</td>
-      <td style="padding: 8px;">Python/R, PyTorch, TensorFlow, Scikit-learn, Pandas</td>
+      <td style="padding: 8px"><b>Primary Tooling</b></td>
+      <td style="padding: 8px">Java/Go/Node.js, PostgreSQL, Redis, Docker, k8s</td>
+      <td style="padding: 8px">Python/Scala, Spark, Kafka, Iceberg, dbt, Airflow, Snowflake</td>
+      <td style="padding: 8px">Python/R, PyTorch, TensorFlow, Scikit-learn, Pandas</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Success Metrics**</td>
-      <td style="padding: 8px;">API p99 Latency &lt; 50ms, 99.99% Uptime, High QPS</td>
-      <td style="padding: 8px;">Data Freshness SLA, Pipeline Reliability, Cost Efficiency</td>
-      <td style="padding: 8px;">Model Accuracy, F1-Score, Business Lift, Prediction ROI</td>
+      <td style="padding: 8px"><b>Success Metrics</b></td>
+      <td style="padding: 8px">API p99 Latency &lt; 50ms, 99.99% Uptime, High QPS</td>
+      <td style="padding: 8px">Data Freshness SLA, Pipeline Reliability, Cost Efficiency</td>
+      <td style="padding: 8px">Model Accuracy, F1-Score, Business Lift, Prediction ROI</td>
     </tr>
   </tbody>
 </table>

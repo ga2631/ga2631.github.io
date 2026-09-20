@@ -48,22 +48,22 @@ Khi doanh nghiệp phát triển vượt qua quy mô ban đầu, Kho dữ liệu
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Dependent Data Mart (Phụ thuộc)</td>
-      <td style="padding: 8px;">Trích xuất 100% từ Enterprise Data Warehouse (EDW) trung tâm</td>
-      <td style="padding: 8px;">Đảm bảo tính nhất quán tuyệt đối, một nguồn chân lý (Single Source of Truth), quản trị dữ liệu chặt chẽ</td>
-      <td style="padding: 8px;">Phụ thuộc vào tiến độ xây dựng kho EDW, chi phí vận hành cao hơn</td>
+      <td style="padding: 8px"><b>Dependent Data Mart (Phụ thuộc)</b></td>
+      <td style="padding: 8px">Trích xuất 100% từ Enterprise Data Warehouse (EDW) trung tâm</td>
+      <td style="padding: 8px">Đảm bảo tính nhất quán tuyệt đối, một nguồn chân lý (Single Source of Truth), quản trị dữ liệu chặt chẽ</td>
+      <td style="padding: 8px">Phụ thuộc vào tiến độ xây dựng kho EDW, chi phí vận hành cao hơn</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Independent Data Mart (Độc lập)</td>
-      <td style="padding: 8px;">Nạp trực tiếp từ các CSDL ứng dụng nguồn (OLTP, CRM, APIs)</td>
-      <td style="padding: 8px;">Triển khai siêu nhanh, độc lập hoàn toàn, giải quyết tức thì nhu cầu cấp bách của phòng ban</td>
-      <td style="padding: 8px;">Tạo ra các 'ốc đảo dữ liệu' (Data Silos), xung đột định nghĩa chỉ số, bảo trì pipeline phức tạp hình mạng nhện</td>
+      <td style="padding: 8px"><b>Independent Data Mart (Độc lập)</b></td>
+      <td style="padding: 8px">Nạp trực tiếp từ các CSDL ứng dụng nguồn (OLTP, CRM, APIs)</td>
+      <td style="padding: 8px">Triển khai siêu nhanh, độc lập hoàn toàn, giải quyết tức thì nhu cầu cấp bách của phòng ban</td>
+      <td style="padding: 8px">Tạo ra các 'ốc đảo dữ liệu' (Data Silos), xung đột định nghĩa chỉ số, bảo trì pipeline phức tạp hình mạng nhện</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Hybrid Data Mart (Lai)</td>
-      <td style="padding: 8px;">Kết hợp giữa kho EDW trung tâm và các nguồn dữ liệu bổ trợ ngoài (External Ad-hoc Data)</td>
-      <td style="padding: 8px;">Cân bằng hoàn hảo giữa tính nhất quán chuẩn mực và độ linh hoạt thích ứng nhanh với dữ liệu mới</td>
-      <td style="padding: 8px;">Đòi hỏi thiết lập quy trình kiểm thử và hòa giải dữ liệu (Data Reconciliation) tự động</td>
+      <td style="padding: 8px"><b>Hybrid Data Mart (Lai)</b></td>
+      <td style="padding: 8px">Kết hợp giữa kho EDW trung tâm và các nguồn dữ liệu bổ trợ ngoài (External Ad-hoc Data)</td>
+      <td style="padding: 8px">Cân bằng hoàn hảo giữa tính nhất quán chuẩn mực và độ linh hoạt thích ứng nhanh với dữ liệu mới</td>
+      <td style="padding: 8px">Đòi hỏi thiết lập quy trình kiểm thử và hòa giải dữ liệu (Data Reconciliation) tự động</td>
     </tr>
   </tbody>
 </table>
@@ -235,29 +235,29 @@ WHERE ABS(f.total_fin - s.total_sales) > 0.01; -- Báo động đỏ nếu lệc
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Phương Pháp Khai Thác</th>
-      <th style="padding: 8px;">Thời Gian Tải Dashboard (p95)</th>
-      <th style="padding: 8px;">Mức Độ Nhất Quán Dữ Liệu</th>
-      <th style="padding: 8px;">Mức Độ Tự Phục Vụ (Self-Service)</th>
+      <th style="padding: 8px">Thời Gian Tải Dashboard (p95)</th>
+      <th style="padding: 8px">Mức Độ Nhất Quán Dữ Liệu</th>
+      <th style="padding: 8px">Mức Độ Tự Phục Vụ (Self-Service)</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Truy vấn Trực tiếp vào Kho EDW Thô</td>
-      <td style="padding: 8px;">18,400ms (18.4s)</td>
-      <td style="padding: 8px;">Cao nhưng truy vấn rất phức tạp</td>
-      <td style="padding: 8px;">Rất thấp (Bắt buộc phải có Data Engineer hỗ trợ)</td>
+      <td style="padding: 8px"><b>Truy vấn Trực tiếp vào Kho EDW Thô</b></td>
+      <td style="padding: 8px">18,400ms (18.4s)</td>
+      <td style="padding: 8px">Cao nhưng truy vấn rất phức tạp</td>
+      <td style="padding: 8px">Rất thấp (Bắt buộc phải có Data Engineer hỗ trợ)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Independent Data Marts (Ốc đảo)</td>
-      <td style="padding: 8px;">650ms</td>
-      <td style="padding: 8px;">Rất thấp (Xung đột định nghĩa số liệu)</td>
-      <td style="padding: 8px;">Trung bình (Mỗi team tự làm theo cách riêng)</td>
+      <td style="padding: 8px"><b>Independent Data Marts (Ốc đảo)</b></td>
+      <td style="padding: 8px">650ms</td>
+      <td style="padding: 8px">Rất thấp (Xung đột định nghĩa số liệu)</td>
+      <td style="padding: 8px">Trung bình (Mỗi team tự làm theo cách riêng)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Dependent Star / OBT Data Marts</td>
-      <td style="padding: 8px; font-weight: bold">45ms</td>
-      <td style="padding: 8px;"><span style="font-weight: bold">Tuyệt đối 100%</span> (Single Source of Truth)</td>
-      <td style="padding: 8px;"><span style="font-weight: bold">Rất cao</span> (Data Analyst tự kéo thả báo cáo)</td>
+      <td style="padding: 8px"><b>Dependent Star / OBT Data Marts</b></td>
+      <td style="padding: 8px"><b>45ms</b></td>
+      <td style="padding: 8px"><b>Tuyệt đối 100%</b> (Single Source of Truth)</td>
+      <td style="padding: 8px"><b>Rất cao</b> (Data Analyst tự kéo thả báo cáo)</td>
     </tr>
   </tbody>
 </table>

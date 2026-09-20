@@ -53,28 +53,28 @@ Hành vi này nhanh chóng dẫn đến thảm họa kép:
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Triết lý Thiết kế</td>
-      <td style="padding: 8px;">Top-Down: Xây dựng kho trung tâm 3NF trước, sau đó tạo Data Marts</td>
-      <td style="padding: 8px;">Bottom-Up: Xây dựng trực tiếp các Data Marts dạng Thứ nguyên (Star Schema)</td>
-      <td style="padding: 8px;">Hybrid: Tách biệt Khóa (Hubs), Quan hệ (Links) và Thuộc tính (Satellites)</td>
+      <td style="padding: 8px"><b>Triết lý Thiết kế</b></td>
+      <td style="padding: 8px">Top-Down: Xây dựng kho trung tâm 3NF trước, sau đó tạo Data Marts</td>
+      <td style="padding: 8px">Bottom-Up: Xây dựng trực tiếp các Data Marts dạng Thứ nguyên (Star Schema)</td>
+      <td style="padding: 8px">Hybrid: Tách biệt Khóa (Hubs), Quan hệ (Links) và Thuộc tính (Satellites)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Cấu trúc Dữ liệu</td>
-      <td style="padding: 8px;">Chuẩn hóa cao (3NF - Third Normal Form)</td>
-      <td style="padding: 8px;">Phi chuẩn hóa (Denormalized - Fact & Dimension Tables)</td>
-      <td style="padding: 8px;">Cực chuẩn hóa & Phân rã (Hub, Link, Satellite)</td>
+      <td style="padding: 8px"><b>Cấu trúc Dữ liệu</b></td>
+      <td style="padding: 8px">Chuẩn hóa cao (3NF - Third Normal Form)</td>
+      <td style="padding: 8px">Phi chuẩn hóa (Denormalized - Fact & Dimension Tables)</td>
+      <td style="padding: 8px">Cực chuẩn hóa & Phân rã (Hub, Link, Satellite)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Khả năng Phục vụ BI/Analyst</td>
-      <td style="padding: 8px;">Gián tiếp (Phải qua tầng Data Mart trung gian)</td>
-      <td style="padding: 8px;">Trực tiếp (Cực kỳ trực quan, dễ viết SQL cho Analyst)</td>
-      <td style="padding: 8px;">Gián tiếp (Phải tạo tầng Information Marts / Views)</td>
+      <td style="padding: 8px"><b>Khả năng Phục vụ BI/Analyst</b></td>
+      <td style="padding: 8px">Gián tiếp (Phải qua tầng Data Mart trung gian)</td>
+      <td style="padding: 8px">Trực tiếp (Cực kỳ trực quan, dễ viết SQL cho Analyst)</td>
+      <td style="padding: 8px">Gián tiếp (Phải tạo tầng Information Marts / Views)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Khả năng Mở rộng & Tự động hóa</td>
-      <td style="padding: 8px;">Khó khăn khi schema nguồn thay đổi thường xuyên</td>
-      <td style="padding: 8px;">Tốt, quản lý qua Conformed Dimensions</td>
-      <td style="padding: 8px;">Tuyệt đối (Hỗ trợ nạp song song 100%, linh hoạt tuyệt đối)</td>
+      <td style="padding: 8px"><b>Khả năng Mở rộng & Tự động hóa</b></td>
+      <td style="padding: 8px">Khó khăn khi schema nguồn thay đổi thường xuyên</td>
+      <td style="padding: 8px">Tốt, quản lý qua Conformed Dimensions</td>
+      <td style="padding: 8px">Tuyệt đối (Hỗ trợ nạp song song 100%, linh hoạt tuyệt đối)</td>
     </tr>
   </tbody>
 </table>
@@ -320,29 +320,29 @@ ORDER BY category_name, year, month_number;
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Mô hình & Nền tảng Thực thi</th>
-      <th style="padding: 8px;">Thời gian Chạy Báo cáo Doanh thu</th>
-      <th style="padding: 8px;">Dung lượng Dữ liệu Quét</th>
-      <th style="padding: 8px;">Mức độ Ảnh hưởng Hệ thống</th>
+      <th style="padding: 8px">Thời gian Chạy Báo cáo Doanh thu</th>
+      <th style="padding: 8px">Dung lượng Dữ liệu Quét</th>
+      <th style="padding: 8px">Mức độ Ảnh hưởng Hệ thống</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Truy vấn trực tiếp 3NF OLTP (PostgreSQL)</td>
-      <td style="padding: 8px;">32,500ms (Hơn 32 giây)</td>
-      <td style="padding: 8px;">18.5 GB (Quét toàn bộ hàng)</td>
-      <td style="padding: 8px;">Gây nghẽn CPU 98%, rủi ro khóa bảng OLTP</td>
+      <td style="padding: 8px"><b>Truy vấn trực tiếp 3NF OLTP (PostgreSQL)</b></td>
+      <td style="padding: 8px">32,500ms (Hơn 32 giây)</td>
+      <td style="padding: 8px">18.5 GB (Quét toàn bộ hàng)</td>
+      <td style="padding: 8px">Gây nghẽn CPU 98%, rủi ro khóa bảng OLTP</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Snowflake Schema (3 tầng JOIN trên Cloud DW)</td>
-      <td style="padding: 8px;">1,240ms</td>
-      <td style="padding: 8px;">850 MB</td>
-      <td style="padding: 8px;">Không ảnh hưởng OLTP, tốn chi phí Shuffle JOIN</td>
+      <td style="padding: 8px"><b>Snowflake Schema (3 tầng JOIN trên Cloud DW)</b></td>
+      <td style="padding: 8px">1,240ms</td>
+      <td style="padding: 8px">850 MB</td>
+      <td style="padding: 8px">Không ảnh hưởng OLTP, tốn chi phí Shuffle JOIN</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold">Kimball Star Schema (Partitioned & Clustered)</td>
-      <td style="padding: 8px; font-weight: bold">38ms</td>
-      <td style="padding: 8px; font-weight: bold">12 MB** (Nhờ Partition Pruning)</td>
-      <td style="padding: 8px;">Hoàn hảo, chi phí điện toán gần như bằng 0</td>
+      <td style="padding: 8px"><b>Kimball Star Schema (Partitioned & Clustered)</b></td>
+      <td style="padding: 8px"><b>38ms</b></td>
+      <td style="padding: 8px"><b>12 MB (Nhờ Partition Pruning)</b></td>
+      <td style="padding: 8px">Hoàn hảo, chi phí điện toán gần như bằng 0</td>
     </tr>
   </tbody>
 </table>

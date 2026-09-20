@@ -49,28 +49,28 @@ To design and operate analytical platforms with peak computational efficiency, e
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**MOLAP (Multidimensional)**</td>
-      <td style="padding: 8px;">Pre-computes and materializes all multi-dimensional cube combinations (SSAS, Apache Kylin)</td>
-      <td style="padding: 8px;">Instantaneous lookup on predefined dimensions</td>
-      <td style="padding: 8px;">Storage 'Cube Explosion', rigid schema evolution, heavy pre-computation pipeline latency</td>
+      <td style="padding: 8px"><b>MOLAP (Multidimensional)</b></td>
+      <td style="padding: 8px">Pre-computes and materializes all multi-dimensional cube combinations (SSAS, Apache Kylin)</td>
+      <td style="padding: 8px">Instantaneous lookup on predefined dimensions</td>
+      <td style="padding: 8px">Storage 'Cube Explosion', rigid schema evolution, heavy pre-computation pipeline latency</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**ROLAP (Relational)**</td>
-      <td style="padding: 8px;">Stores data in relational tables (Star/Snowflake) and calculates aggregations dynamically via SQL</td>
-      <td style="padding: 8px;">Infinite schema flexibility and rich ad-hoc query capabilities</td>
-      <td style="padding: 8px;">High compute resource consumption without specialized columnar optimizations</td>
+      <td style="padding: 8px"><b>ROLAP (Relational)</b></td>
+      <td style="padding: 8px">Stores data in relational tables (Star/Snowflake) and calculates aggregations dynamically via SQL</td>
+      <td style="padding: 8px">Infinite schema flexibility and rich ad-hoc query capabilities</td>
+      <td style="padding: 8px">High compute resource consumption without specialized columnar optimizations</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**HOLAP (Hybrid)**</td>
-      <td style="padding: 8px;">Maintains summary aggregations in MOLAP cubes while storing atomic raw rows in ROLAP</td>
-      <td style="padding: 8px;">Balances high-level dashboard speed with detailed drill-down depth</td>
-      <td style="padding: 8px;">Complex dual-pipeline operational maintenance</td>
+      <td style="padding: 8px"><b>HOLAP (Hybrid)</b></td>
+      <td style="padding: 8px">Maintains summary aggregations in MOLAP cubes while storing atomic raw rows in ROLAP</td>
+      <td style="padding: 8px">Balances high-level dashboard speed with detailed drill-down depth</td>
+      <td style="padding: 8px">Complex dual-pipeline operational maintenance</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Modern Real-Time OLAP (ClickHouse, Snowflake, DuckDB)**</td>
-      <td style="padding: 8px;">Native columnar chunk storage with extreme compression and SIMD vectorized execution</td>
-      <td style="padding: 8px;">Scans billions of rows in milliseconds, 90% disk compression, real-time ingestion</td>
-      <td style="padding: 8px;">Inefficient for high-frequency point mutations (Single-row UPDATEs)</td>
+      <td style="padding: 8px"><b>Modern Real-Time OLAP (ClickHouse, Snowflake, DuckDB)</b></td>
+      <td style="padding: 8px">Native columnar chunk storage with extreme compression and SIMD vectorized execution</td>
+      <td style="padding: 8px">Scans billions of rows in milliseconds, 90% disk compression, real-time ingestion</td>
+      <td style="padding: 8px">Inefficient for high-frequency point mutations (Single-row UPDATEs)</td>
     </tr>
   </tbody>
 </table>
@@ -218,35 +218,35 @@ Sustaining sub-100ms query response SLAs over petabyte-scale data lakes requires
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Database Architecture</th>
-      <th style="padding: 8px;">Aggregate Query Execution Time</th>
-      <th style="padding: 8px;">Data Scanned from Disk</th>
-      <th style="padding: 8px;">Disk Compression Factor</th>
+      <th style="padding: 8px">Aggregate Query Execution Time</th>
+      <th style="padding: 8px">Data Scanned from Disk</th>
+      <th style="padding: 8px">Disk Compression Factor</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Row-Oriented Engine (PostgreSQL 16)**</td>
-      <td style="padding: 8px;">340,000ms (5.6 minutes)</td>
-      <td style="padding: 8px;">142 GB (Full row scan)</td>
-      <td style="padding: 8px;">1.2x (Standard row layout)</td>
+      <td style="padding: 8px"><b>Row-Oriented Engine (PostgreSQL 16)</b></td>
+      <td style="padding: 8px">340,000ms (5.6 minutes)</td>
+      <td style="padding: 8px">142 GB (Full row scan)</td>
+      <td style="padding: 8px">1.2x (Standard row layout)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Legacy Distributed ROLAP**</td>
-      <td style="padding: 8px;">12,500ms (12.5s)</td>
-      <td style="padding: 8px;">18.5 GB</td>
-      <td style="padding: 8px;">3.5x (Snappy compression)</td>
+      <td style="padding: 8px"><b>Legacy Distributed ROLAP</b></td>
+      <td style="padding: 8px">12,500ms (12.5s)</td>
+      <td style="padding: 8px">18.5 GB</td>
+      <td style="padding: 8px">3.5x (Snappy compression)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Cloud MPP DWH (Snowflake Standard)**</td>
-      <td style="padding: 8px;">420ms</td>
-      <td style="padding: 8px;">1.4 GB (Micro-partition pruning)</td>
-      <td style="padding: 8px;">6.0x (Proprietary Columnar)</td>
+      <td style="padding: 8px"><b>Cloud MPP DWH (Snowflake Standard)</b></td>
+      <td style="padding: 8px">420ms</td>
+      <td style="padding: 8px">1.4 GB (Micro-partition pruning)</td>
+      <td style="padding: 8px">6.0x (Proprietary Columnar)</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Real-Time Vectorized OLAP (ClickHouse Cluster)**</td>
-      <td style="padding: 8px;">**28ms**</td>
-      <td style="padding: 8px;">**180 MB** (MinMax Skip + SIMD)</td>
-      <td style="padding: 8px;">**10.5x** (ZSTD + LowCardinality Codec)</td>
+      <td style="padding: 8px"><b>Real-Time Vectorized OLAP (ClickHouse Cluster)</b></td>
+      <td style="padding: 8px"><b>28ms</b></td>
+      <td style="padding: 8px"><b>180 MB</b> (MinMax Skip + SIMD)</td>
+      <td style="padding: 8px"><b>10.5x</b> (ZSTD + LowCardinality Codec)</td>
     </tr>
   </tbody>
 </table>

@@ -85,24 +85,24 @@ Every architectural decision is a trade-off. While solving the "JSON bloat" issu
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Detail Page Load Speed</td>
-      <td style="padding: 8px;">Slow (Must parse huge data chunk)</td>
-      <td style="padding: 8px;">Blazing fast (Pre-rendered HTML)</td>
+      <td style="padding: 8px"><b>Detail Page Load Speed</b></td>
+      <td style="padding: 8px">Slow (Must parse huge data chunk)</td>
+      <td style="padding: 8px">Blazing fast (Pre-rendered HTML)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Content Maintenance Cost</td>
-      <td style="padding: 8px;">Very hard (Fixing JSON syntax errors)</td>
-      <td style="padding: 8px;">Very easy (Git Version Control, IDE support)</td>
+      <td style="padding: 8px"><b>Content Maintenance Cost</b></td>
+      <td style="padding: 8px">Very hard (Fixing JSON syntax errors)</td>
+      <td style="padding: 8px">Very easy (Git Version Control, IDE support)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Build Time (CI/CD)</td>
-      <td style="padding: 8px;">Fast (Just copying static files)</td>
-      <td style="padding: 8px;">Increases with post count (MD to HTML compilation)</td>
+      <td style="padding: 8px"><b>Build Time (CI/CD)</b></td>
+      <td style="padding: 8px">Fast (Just copying static files)</td>
+      <td style="padding: 8px">Increases with post count (MD to HTML compilation)</td>
     </tr>
     <tr>
-      <td style="padding: 8px; font-weight: bold;">Dynamic Features (Comments)</td>
-      <td style="padding: 8px;">Can build custom via API</td>
-      <td style="padding: 8px;">Relies on 3rd parties (Giscus, Utterances)</td>
+      <td style="padding: 8px"><b>Dynamic Features (Comments)</b></td>
+      <td style="padding: 8px">Can build custom via API</td>
+      <td style="padding: 8px">Relies on 3rd parties (Giscus, Utterances)</td>
     </tr>
   </tbody>
 </table>

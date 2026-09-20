@@ -49,28 +49,28 @@ Trong cơ sở dữ liệu dạng dòng (như PostgreSQL, MySQL), toàn bộ cá
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">MOLAP (Multidimensional)</td>
-      <td style="padding: 8px;">Tính toán trước và lưu trữ kết quả trong các khối đa chiều (Cubes - SSAS, Apache Kylin)</td>
-      <td style="padding: 8px;">Tốc độ truy vấn siêu nhanh trên các chiều cố định</td>
-      <td style="padding: 8px;">Bùng nổ dung lượng lưu trữ (Cube Explosion), không linh hoạt khi thêm chiều mới</td>
+      <td style="padding: 8px"><b>MOLAP (Multidimensional)</b></td>
+      <td style="padding: 8px">Tính toán trước và lưu trữ kết quả trong các khối đa chiều (Cubes - SSAS, Apache Kylin)</td>
+      <td style="padding: 8px">Tốc độ truy vấn siêu nhanh trên các chiều cố định</td>
+      <td style="padding: 8px">Bùng nổ dung lượng lưu trữ (Cube Explosion), không linh hoạt khi thêm chiều mới</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">ROLAP (Relational)</td>
-      <td style="padding: 8px;">Lưu trữ dữ liệu dạng bảng quan hệ (Star/Snowflake Schema) và tính toán động qua SQL</td>
-      <td style="padding: 8px;">Linh hoạt tuyệt đối, hỗ trợ truy vấn Ad-hoc phong phú</td>
-      <td style="padding: 8px;">Tốn tài nguyên tính toán nếu không có cơ chế tối ưu cột</td>
+      <td style="padding: 8px"><b>ROLAP (Relational)</b></td>
+      <td style="padding: 8px">Lưu trữ dữ liệu dạng bảng quan hệ (Star/Snowflake Schema) và tính toán động qua SQL</td>
+      <td style="padding: 8px">Linh hoạt tuyệt đối, hỗ trợ truy vấn Ad-hoc phong phú</td>
+      <td style="padding: 8px">Tốn tài nguyên tính toán nếu không có cơ chế tối ưu cột</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">HOLAP (Hybrid)</td>
-      <td style="padding: 8px;">Kết hợp lưu trữ tóm tắt trong MOLAP và dữ liệu chi tiết trong ROLAP</td>
-      <td style="padding: 8px;">Cân bằng giữa tốc độ báo cáo tổng quan và khả năng khoan sâu (Drill-down)</td>
-      <td style="padding: 8px;">Kiến trúc phức tạp, khó đồng bộ dữ liệu</td>
+      <td style="padding: 8px"><b>HOLAP (Hybrid)</b></td>
+      <td style="padding: 8px">Kết hợp lưu trữ tóm tắt trong MOLAP và dữ liệu chi tiết trong ROLAP</td>
+      <td style="padding: 8px">Cân bằng giữa tốc độ báo cáo tổng quan và khả năng khoan sâu (Drill-down)</td>
+      <td style="padding: 8px">Kiến trúc phức tạp, khó đồng bộ dữ liệu</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Modern Real-Time OLAP (ClickHouse, Snowflake, DuckDB)</td>
-      <td style="padding: 8px;">Lưu trữ dạng cột tự nhiên (Columnar), nén dữ liệu cực đại và xử lý Vector hóa (SIMD)</td>
-      <td style="padding: 8px;">Hiệu năng quét hàng tỷ dòng trong mili-giây, nén đĩa 90%, nạp dữ liệu Real-time</td>
-      <td style="padding: 8px;">Hạn chế trong các giao dịch ghi cập nhật từng dòng nhỏ lẻ (Single-row UPDATEs)</td>
+      <td style="padding: 8px"><b>Modern Real-Time OLAP (ClickHouse, Snowflake, DuckDB)</b></td>
+      <td style="padding: 8px">Lưu trữ dạng cột tự nhiên (Columnar), nén dữ liệu cực đại và xử lý Vector hóa (SIMD)</td>
+      <td style="padding: 8px">Hiệu năng quét hàng tỷ dòng trong mili-giây, nén đĩa 90%, nạp dữ liệu Real-time</td>
+      <td style="padding: 8px">Hạn chế trong các giao dịch ghi cập nhật từng dòng nhỏ lẻ (Single-row UPDATEs)</td>
     </tr>
   </tbody>
 </table>
@@ -219,35 +219,35 @@ ORDER BY event_date DESC, gross_merchandise_value DESC;
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Kiến Trúc Cơ Sở Dữ Liệu</th>
-      <th style="padding: 8px;">Thời Gian Truy Vấn Quét & Gom Nhóm</th>
-      <th style="padding: 8px;">Dung Lượng Quét Đĩa</th>
-      <th style="padding: 8px;">Tỷ Lệ Nén Dữ Liệu Đĩa Cứng</th>
+      <th style="padding: 8px">Thời Gian Truy Vấn Quét & Gom Nhóm</th>
+      <th style="padding: 8px">Dung Lượng Quét Đĩa</th>
+      <th style="padding: 8px">Tỷ Lệ Nén Dữ Liệu Đĩa Cứng</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Cơ sở Dữ liệu Dạng Dòng (PostgreSQL 16)</td>
-      <td style="padding: 8px;">340.000ms (Hơn 5.6 phút)</td>
-      <td style="padding: 8px;">142 GB (Quét toàn bộ hàng)</td>
-      <td style="padding: 8px;">1.2x (Nén dòng thông thường)</td>
+      <td style="padding: 8px"><b>Cơ sở Dữ liệu Dạng Dòng (PostgreSQL 16)</b></td>
+      <td style="padding: 8px">340.000ms (Hơn 5.6 phút)</td>
+      <td style="padding: 8px">142 GB (Quét toàn bộ hàng)</td>
+      <td style="padding: 8px">1.2x (Nén dòng thông thường)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Hệ Thống Phân Tán ROLAP Truyền Thống</td>
-      <td style="padding: 8px;">12.500ms (12.5 giây)</td>
-      <td style="padding: 8px;">18.5 GB</td>
-      <td style="padding: 8px;">3.5x (Nén Snappy cơ bản)</td>
+      <td style="padding: 8px"><b>Hệ Thống Phân Tán ROLAP Truyền Thống</b></td>
+      <td style="padding: 8px">12.500ms (12.5 giây)</td>
+      <td style="padding: 8px">18.5 GB</td>
+      <td style="padding: 8px">3.5x (Nén Snappy cơ bản)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px; font-weight: bold;">Cloud MPP DWH (Snowflake Standard)</td>
-      <td style="padding: 8px;">420ms</td>
-      <td style="padding: 8px;">1.4 GB (Micro-partition pruning)</td>
-      <td style="padding: 8px;">6.0x (Proprietary Columnar)</td>
+      <td style="padding: 8px"><b>Cloud MPP DWH (Snowflake Standard)</b></td>
+      <td style="padding: 8px">420ms</td>
+      <td style="padding: 8px">1.4 GB (Micro-partition pruning)</td>
+      <td style="padding: 8px">6.0x (Proprietary Columnar)</td>
     </tr>
     <tr>
-      <td style="padding: 8px; font-weight: bold;">Real-Time Vectorized OLAP (ClickHouse Cluster)</td>
-      <td style="padding: 8px; font-weight: bold;">28ms</td>
-      <td style="padding: 8px; font-weight: bold;">180 MB (MinMax Skip + SIMD)</td>
-      <td style="padding: 8px; font-weight: bold;">10.5x (ZSTD + LowCardinality Codec)</td>
+      <td style="padding: 8px"><b>Real-Time Vectorized OLAP (ClickHouse Cluster)</b></td>
+      <td style="padding: 8px"><b>28ms</b></td>
+      <td style="padding: 8px"><b>180 MB (MinMax Skip + SIMD)</b></td>
+      <td style="padding: 8px"><b>10.5x (ZSTD + LowCardinality Codec)</b></td>
     </tr>
   </tbody>
 </table>

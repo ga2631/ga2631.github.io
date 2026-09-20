@@ -88,39 +88,39 @@ flowchart TD
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Schema Flexibility**</td>
-      <td style="padding: 8px;">Poor (Requires DDL ALTER TABLE)</td>
-      <td style="padding: 8px;">Very High (Insert rows in Attribute table)</td>
-      <td style="padding: 8px;">Very High (Semi-structured binary JSON)</td>
-      <td style="padding: 8px;">Absolute (Dynamic JSON Documents)</td>
+      <td style="padding: 8px"><b>Schema Flexibility</b></td>
+      <td style="padding: 8px">Poor (Requires DDL ALTER TABLE)</td>
+      <td style="padding: 8px">Very High (Insert rows in Attribute table)</td>
+      <td style="padding: 8px">Very High (Semi-structured binary JSON)</td>
+      <td style="padding: 8px">Absolute (Dynamic JSON Documents)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Write Performance**</td>
-      <td style="padding: 8px;">Ultra-fast (Single atomic INSERT)</td>
-      <td style="padding: 8px;">Slow (1 Entity requires 10-30 INSERTs across tables)</td>
-      <td style="padding: 8px;">Fast (Single INSERT containing JSON payload)</td>
-      <td style="padding: 8px;">Ultra-fast (Atomic Document Write)</td>
+      <td style="padding: 8px"><b>Write Performance</b></td>
+      <td style="padding: 8px">Ultra-fast (Single atomic INSERT)</td>
+      <td style="padding: 8px">Slow (1 Entity requires 10-30 INSERTs across tables)</td>
+      <td style="padding: 8px">Fast (Single INSERT containing JSON payload)</td>
+      <td style="padding: 8px">Ultra-fast (Atomic Document Write)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Single-Entity Point Read**</td>
-      <td style="padding: 8px;">Instant (Direct primary key index scan)</td>
-      <td style="padding: 8px;">Slow (Requires 10-20 table JOINs)</td>
-      <td style="padding: 8px;">Very Fast (Single row read & JSON deserialization)</td>
-      <td style="padding: 8px;">Ultra-fast (Read complete document by _id)</td>
+      <td style="padding: 8px"><b>Single-Entity Point Read</b></td>
+      <td style="padding: 8px">Instant (Direct primary key index scan)</td>
+      <td style="padding: 8px">Slow (Requires 10-20 table JOINs)</td>
+      <td style="padding: 8px">Very Fast (Single row read & JSON deserialization)</td>
+      <td style="padding: 8px">Ultra-fast (Read complete document by _id)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**SQL Query Complexity**</td>
-      <td style="padding: 8px;">Simple & intuitive</td>
-      <td style="padding: 8px;">Extremely Complex (Multiple JOINs or PIVOTs)</td>
-      <td style="padding: 8px;">Moderate (Uses operators `->>`, `@>`)</td>
-      <td style="padding: 8px;">Clean via Native Mongo Query API</td>
+      <td style="padding: 8px"><b>SQL Query Complexity</b></td>
+      <td style="padding: 8px">Simple & intuitive</td>
+      <td style="padding: 8px">Extremely Complex (Multiple JOINs or PIVOTs)</td>
+      <td style="padding: 8px">Moderate (Uses operators `->>`, `@>`)</td>
+      <td style="padding: 8px">Clean via Native Mongo Query API</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Analytical (OLAP) Suitability**</td>
-      <td style="padding: 8px;">Optimal (Standard columnar layout)</td>
-      <td style="padding: 8px;">Catastrophic (Infeasible for high-volume BI)</td>
-      <td style="padding: 8px;">Good (Accelerated by GIN indexing)</td>
-      <td style="padding: 8px;">Moderate (Requires Aggregation Pipelines)</td>
+      <td style="padding: 8px"><b>Analytical (OLAP) Suitability</b></td>
+      <td style="padding: 8px">Optimal (Standard columnar layout)</td>
+      <td style="padding: 8px">Catastrophic (Infeasible for high-volume BI)</td>
+      <td style="padding: 8px">Good (Accelerated by GIN indexing)</td>
+      <td style="padding: 8px">Moderate (Requires Aggregation Pipelines)</td>
     </tr>
   </tbody>
 </table>
@@ -277,35 +277,35 @@ CREATE INDEX idx_attr_val ON catalog_product_entity_varchar (attribute_id, value
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Workload Scenario (5,000,000 Products)</th>
-      <th style="padding: 8px;">Raw EAV Schema (MySQL 8)</th>
-      <th style="padding: 8px;">PostgreSQL JSONB (GIN Index)</th>
-      <th style="padding: 8px;">Flat Parquet Lakehouse (ClickHouse/Spark)</th>
+      <th style="padding: 8px">Raw EAV Schema (MySQL 8)</th>
+      <th style="padding: 8px">PostgreSQL JSONB (GIN Index)</th>
+      <th style="padding: 8px">Flat Parquet Lakehouse (ClickHouse/Spark)</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Filter products by 3 dynamic attributes**</td>
-      <td style="padding: 8px;">340ms (3 JOINs + Index Scan)</td>
-      <td style="padding: 8px;">18ms (GIN JSONB index lookup)</td>
-      <td style="padding: 8px;">4ms (Columnar Scan & MinMax Pruning)</td>
+      <td style="padding: 8px"><b>Filter products by 3 dynamic attributes</b></td>
+      <td style="padding: 8px">340ms (3 JOINs + Index Scan)</td>
+      <td style="padding: 8px">18ms (GIN JSONB index lookup)</td>
+      <td style="padding: 8px">4ms (Columnar Scan & MinMax Pruning)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Aggregate Average Price (AVG) by Category**</td>
-      <td style="padding: 8px;">4,250ms (Full scan on Decimal value table)</td>
-      <td style="padding: 8px;">520ms (On-the-fly JSON parsing)</td>
-      <td style="padding: 8px;">8ms (Vectorized Columnar Aggregation)</td>
+      <td style="padding: 8px"><b>Aggregate Average Price (AVG) by Category</b></td>
+      <td style="padding: 8px">4,250ms (Full scan on Decimal value table)</td>
+      <td style="padding: 8px">520ms (On-the-fly JSON parsing)</td>
+      <td style="padding: 8px">8ms (Vectorized Columnar Aggregation)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Introduce a brand-new custom attribute**</td>
-      <td style="padding: 8px;">0.01ms (1 row INSERT into eav_attribute)</td>
-      <td style="padding: 8px;">0.00ms (Zero DDL required)</td>
-      <td style="padding: 8px;">0.05ms (Automated Schema Evolution)</td>
+      <td style="padding: 8px"><b>Introduce a brand-new custom attribute</b></td>
+      <td style="padding: 8px">0.01ms (1 row INSERT into eav_attribute)</td>
+      <td style="padding: 8px">0.00ms (Zero DDL required)</td>
+      <td style="padding: 8px">0.05ms (Automated Schema Evolution)</td>
     </tr>
     <tr>
-      <td style="padding: 8px;">**Disk Storage Footprint**</td>
-      <td style="padding: 8px;">High (Repeated entity_id, attribute_id, index overhead)</td>
-      <td style="padding: 8px;">Moderate (Compressed binary JSONB)</td>
-      <td style="padding: 8px;">Very Low (Snappy/ZSTD Columnar Compression)</td>
+      <td style="padding: 8px"><b>Disk Storage Footprint</b></td>
+      <td style="padding: 8px">High (Repeated entity_id, attribute_id, index overhead)</td>
+      <td style="padding: 8px">Moderate (Compressed binary JSONB)</td>
+      <td style="padding: 8px">Very Low (Snappy/ZSTD Columnar Compression)</td>
     </tr>
   </tbody>
 </table>

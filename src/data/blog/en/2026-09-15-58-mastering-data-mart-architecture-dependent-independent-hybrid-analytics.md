@@ -48,22 +48,22 @@ To design an enduring Data Mart architecture, engineers must master the trade-of
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Dependent Data Mart**</td>
-      <td style="padding: 8px;">Ingested directly from the Central Enterprise Data Warehouse (EDW)</td>
-      <td style="padding: 8px;">Guarantees a Single Source of Truth, absolute metric consistency, strict governance</td>
-      <td style="padding: 8px;">Requires central EDW readiness; higher initial deployment timeline</td>
+      <td style="padding: 8px"><b>Dependent Data Mart</b></td>
+      <td style="padding: 8px">Ingested directly from the Central Enterprise Data Warehouse (EDW)</td>
+      <td style="padding: 8px">Guarantees a Single Source of Truth, absolute metric consistency, strict governance</td>
+      <td style="padding: 8px">Requires central EDW readiness; higher initial deployment timeline</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Independent Data Mart**</td>
-      <td style="padding: 8px;">Fed directly from raw source applications (OLTP, CRM, APIs)</td>
-      <td style="padding: 8px;">Rapid autonomous deployment; solves immediate localized departmental pain points</td>
-      <td style="padding: 8px;">Creates isolated data silos, metric discrepancies, and unmaintainable spaghetti pipelines</td>
+      <td style="padding: 8px"><b>Independent Data Mart</b></td>
+      <td style="padding: 8px">Fed directly from raw source applications (OLTP, CRM, APIs)</td>
+      <td style="padding: 8px">Rapid autonomous deployment; solves immediate localized departmental pain points</td>
+      <td style="padding: 8px">Creates isolated data silos, metric discrepancies, and unmaintainable spaghetti pipelines</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Hybrid Data Mart**</td>
-      <td style="padding: 8px;">Combines central warehouse dimensions with departmental external ad-hoc sources</td>
-      <td style="padding: 8px;">Balances corporate standard governance with departmental speed and agility</td>
-      <td style="padding: 8px;">Requires automated cross-source data reconciliation workflows</td>
+      <td style="padding: 8px"><b>Hybrid Data Mart</b></td>
+      <td style="padding: 8px">Combines central warehouse dimensions with departmental external ad-hoc sources</td>
+      <td style="padding: 8px">Balances corporate standard governance with departmental speed and agility</td>
+      <td style="padding: 8px">Requires automated cross-source data reconciliation workflows</td>
     </tr>
   </tbody>
 </table>
@@ -235,29 +235,29 @@ WHERE ABS(f.total_fin - s.total_sales) > 0.01; -- Alarm if delta exceeds 1 cent
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
       <th style="padding: 8px;">Architecture Strategy</th>
-      <th style="padding: 8px;">Dashboard Latency (p95)</th>
-      <th style="padding: 8px;">Metric Consistency</th>
-      <th style="padding: 8px;">Self-Service Usability</th>
+      <th style="padding: 8px">Dashboard Latency (p95)</th>
+      <th style="padding: 8px">Metric Consistency</th>
+      <th style="padding: 8px">Self-Service Usability</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Direct Queries on Raw Enterprise Warehouse**</td>
-      <td style="padding: 8px;">18,400ms (18.4s)</td>
-      <td style="padding: 8px;">High, but SQL logic is overly complex</td>
-      <td style="padding: 8px;">Very Low (Requires dedicated Data Engineers)</td>
+      <td style="padding: 8px"><b>Direct Queries on Raw Enterprise Warehouse</b></td>
+      <td style="padding: 8px">18,400ms (18.4s)</td>
+      <td style="padding: 8px">High, but SQL logic is overly complex</td>
+      <td style="padding: 8px">Very Low (Requires dedicated Data Engineers)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Independent Siloed Data Marts**</td>
-      <td style="padding: 8px;">650ms</td>
-      <td style="padding: 8px;">Very Low (Conflicting metric definitions)</td>
-      <td style="padding: 8px;">Moderate (Siloed teams work in isolation)</td>
+      <td style="padding: 8px"><b>Independent Siloed Data Marts</b></td>
+      <td style="padding: 8px">650ms</td>
+      <td style="padding: 8px">Very Low (Conflicting metric definitions)</td>
+      <td style="padding: 8px">Moderate (Siloed teams work in isolation)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">**Dependent Star / OBT Data Marts**</td>
-      <td style="padding: 8px;">**45ms**</td>
-      <td style="padding: 8px;">**100% Absolute** (Single Source of Truth)</td>
-      <td style="padding: 8px;">**Very High** (Business analysts drag-and-drop easily)</td>
+      <td style="padding: 8px"><b>Dependent Star / OBT Data Marts</b></td>
+      <td style="padding: 8px"><b>45ms</b></td>
+      <td style="padding: 8px"><b>100% Absolute</b> (Single Source of Truth)</td>
+      <td style="padding: 8px"><b>Very High</b> (Business analysts drag-and-drop easily)</td>
     </tr>
   </tbody>
 </table>
