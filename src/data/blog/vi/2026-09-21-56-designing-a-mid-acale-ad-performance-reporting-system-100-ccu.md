@@ -1,7 +1,7 @@
 ---
 id: "56"
 slug: "designing-a-mid-acale-ad-performance-reporting-system-100-ccu"
-title: "Thiết kế Hệ thống Báo cáo hiệu quả quảng cáo với 100 CCU"
+title: "Từ 100 đến 1000 CCU #01: Thiết kế Hệ thống Báo cáo hiệu quả quảng cáo với 100 CCU"
 summary: "Bài viết này phác thảo kiến trúc nguyên khối (Monolithic) kết hợp cơ sở dữ liệu quan hệ truyền thống để giải quyết bài toán hiển thị báo cáo quảng cáo cho 100 user truy cập đồng thời. Trọng tâm của thiết kế này là tối ưu hóa thời gian ra mắt (time-to-market) và chi phí vận hành thấp nhất, chấp nhận những giới hạn về khả năng mở rộng trong tương lai để đổi lấy sự tinh gọn trong giai đoạn đầu của dự án."
 category: "architecture-system-design"
 publishedAt: "21/09/2026"

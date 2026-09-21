@@ -1,7 +1,7 @@
 ---
 id: "61"
-slug: "optimizing-the-reporting-system-for-1000-ccu"
-title: "Optimizing the Ad performance reporting system for 1000 CCU: The Shift to a Data Architecture"
+slug: "optimizing-the-ad-performance-reporting-system-for-1000-ccu"
+title: "From 100 to 1000 CCU #02: Optimizing the Ad performance reporting system for 1000 CCU: The Shift to a Data Architecture"
 summary: "When traffic increases tenfold (1000 CCU) and data volume balloons to tens of GBs/TBs, a monolithic architecture will completely collapse. This article presents the transition to a Modern Data Architecture. The core of this model is the complete decoupling of the operational database (PostgreSQL) and the Data Warehouse (BigQuery), deploying Cache (Redis) as a steel shield against query storms, and building a professional Data Pipeline."
 category: "architecture-system-design"
 publishedAt: "28/09/2026"
