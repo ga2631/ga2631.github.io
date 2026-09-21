@@ -7,6 +7,7 @@ import {
   getAvailableMonthArchives,
   isPostPublished,
   getLocalDateString,
+  getBlogStatistics,
 } from '../services/blogService.ts';
 
 export {
@@ -16,6 +17,7 @@ export {
   getAvailableMonthArchives,
   isPostPublished,
   getLocalDateString,
+  getBlogStatistics,
 };
 
 // Eagerly loaded posts for initial synchronous render, fast SSR, and test suites

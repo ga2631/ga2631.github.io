@@ -153,6 +153,13 @@ describe('TI-05: Integration - Blog Reader, Filtering & Article Modal', () => {
   it('should render load more button when there are more than 20 articles and load next batch on click', async () => {
     render(<Blog {...defaultProps} />);
 
+    // Initially exactly 20 cards rendered in DOM to keep HTML lightweight
+    const initialCards = document.querySelectorAll('.blog-card');
+    expect(initialCards.length).toBe(20);
+
+    // Sidebar should reflect the complete catalog statistics (41 total articles)
+    expect(screen.getAllByText('41').length).toBeGreaterThanOrEqual(1);
+
     // Load more button should be rendered
     const loadMoreBtn = screen.getByRole('button', { name: new RegExp(uiTranslations.en.blog.loadMoreArticles || 'Load More', 'i') });
     expect(loadMoreBtn).toBeInTheDocument();

@@ -8,6 +8,7 @@ import {
   isPostPublished,
   getLocalDateString,
   getEagerPosts,
+  getBlogStatistics,
 } from '../../../src/services/blogService';
 
 describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
@@ -61,6 +62,20 @@ describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
       // Future posts 61 and 62 should not be present
       expect(posts.some((p) => p.date === '2026-09-28')).toBe(false);
       expect(posts.some((p) => p.date === '2026-10-05')).toBe(false);
+    });
+
+    it('should compute exact total blog statistics across the entire published collection', () => {
+      const statsVi = getBlogStatistics('vi', fixedNow);
+      const statsEn = getBlogStatistics('en', fixedNow);
+
+      expect(statsVi.totalCount).toBe(41);
+      expect(statsVi.categoryCounts.all).toBe(41);
+      expect(statsVi.categoryCounts['architecture-system-design']).toBeGreaterThan(0);
+      expect(statsVi.categoryCounts['data-engineering-analytics']).toBeGreaterThan(0);
+      expect(statsVi.allTags.length).toBeGreaterThan(0);
+
+      expect(statsEn.totalCount).toBe(41);
+      expect(statsEn.categoryCounts.all).toBe(41);
     });
   });
 

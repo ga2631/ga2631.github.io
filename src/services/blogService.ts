@@ -1,5 +1,6 @@
 import { BlogPost } from '../types/index.ts';
 import { parseFrontmatter, markdownToHtml } from '../utils/markdownParser.ts';
+import { BLOG_CATEGORY_DEFINITIONS } from '../data/blog/blogCategories.ts';
 
 // Vite glob importers for all markdown articles
 const viMarkdownEager = import.meta.glob<string>('/src/data/blog/vi/*.md', {
@@ -139,6 +140,44 @@ export function getAvailableMonthArchives(lang: 'vi' | 'en', referenceDate: Date
     if (a.year !== b.year) return b.year - a.year;
     return b.month - a.month;
   });
+}
+
+export interface BlogStatistics {
+  totalCount: number;
+  categoryCounts: Record<string, number>;
+  tagCounts: Record<string, number>;
+  allTags: string[];
+}
+
+/**
+ * Computes aggregate statistics (total count, category counts, tag counts, unique tags)
+ * across all published articles in the library for the specified language.
+ */
+export function getBlogStatistics(lang: 'vi' | 'en', referenceDate: Date = new Date()): BlogStatistics {
+  const allPosts = getEagerPosts(lang, referenceDate);
+  const categoryCounts: Record<string, number> = { all: allPosts.length };
+
+  BLOG_CATEGORY_DEFINITIONS.forEach((cat) => {
+    if (cat.id !== 'all') {
+      categoryCounts[cat.id] = allPosts.filter((p) => p.category === cat.id).length;
+    }
+  });
+
+  const tagCounts: Record<string, number> = {};
+  const tagSet = new Set<string>();
+  allPosts.forEach((post) => {
+    post.tags.forEach((tag) => {
+      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      tagSet.add(tag);
+    });
+  });
+
+  return {
+    totalCount: allPosts.length,
+    categoryCounts,
+    tagCounts,
+    allTags: Array.from(tagSet),
+  };
 }
 
 
