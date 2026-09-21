@@ -212,7 +212,7 @@ function migrateLanguage(lang) {
       const [d, m, y] = post.publishedAt.split('/');
       yyyymmdd = `${y}-${m}-${d}`;
     }
-    const fileName = yyyymmdd ? `${yyyymmdd}-${post.slug}.md` : `${post.slug}.md`;
+    const fileName = yyyymmdd ? `${post.id}-${yyyymmdd}-${post.slug}.md` : `${post.id}-${post.slug}.md`;
     const targetFilePath = path.join(targetDir, fileName);
     fs.writeFileSync(targetFilePath, mdContent, 'utf8');
     count++;

@@ -1,7 +1,7 @@
 # Feature: architecture-system-design
 
 ## 1. End-to-End System Flow
-- **Markdown Data Source:** Articles are authored as Markdown files under `src/data/blog/vi/*.md` and `src/data/blog/en/*.md` with YAML frontmatter specifying `date` (ISO `YYYY-MM-DD`) and/or `publishedAt` (`DD/MM/YYYY`).
+- **Markdown Data Source:** Articles are authored as Markdown files under `src/data/blog/vi/*.md` and `src/data/blog/en/*.md` following the `<id>-<YYYY-MM-DD>-<slug>.md` naming structure with YAML frontmatter specifying `date` (ISO `YYYY-MM-DD`) and/or `publishedAt` (`DD/MM/YYYY`).
 - **Storage & Parsing Layer (`blogService.ts`):** 
   - Raw markdown files are gathered via Vite eager glob loaders (`import.meta.glob`).
   - `parseMarkdownToBlogPost` extracts frontmatter and generates HTML content.
