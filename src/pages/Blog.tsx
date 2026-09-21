@@ -12,6 +12,7 @@ import {
   loadInitialBlogPosts,
   loadNextMonthBatch,
   loadAllArchivePosts,
+  getEagerPosts,
 } from '../services/blogService.ts';
 import { Button, Badge } from '../components/common';
 import { SectionHeader } from '../components/ui';
@@ -32,9 +33,30 @@ export interface BlogProps {
 }
 
 export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
-  const [allPosts, setAllPosts] = useState<BlogPost[]>(posts);
-  const [loadedMonthKeys, setLoadedMonthKeys] = useState<string[]>([]);
-  const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(false);
+  // Detect language: VI or EN based on translation string
+  const langKey = useMemo<'vi' | 'en'>(() => {
+    return t.allTopics === 'Tất cả chủ đề' || !t.allTopics.toLowerCase().includes('all') ? 'vi' : 'en';
+  }, [t.allTopics]);
+
+  // Full catalog of all published articles for accurate global statistics and search filtering
+  const [fullCatalog, setFullCatalog] = useState<BlogPost[]>(() => {
+    if (posts && posts.length > 0) return posts;
+    return getEagerPosts(langKey);
+  });
+
+  // Paginated slice rendered into the HTML DOM (starts with initial 20 articles max)
+  const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>(() => {
+    if (posts && posts.length > 0) {
+      return posts.slice(0, 20);
+    }
+    return getEagerPosts(langKey).slice(0, 20);
+  });
+
+  const [, setLoadedMonthKeys] = useState<string[]>([]);
+  const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(() => {
+    const total = posts && posts.length > 0 ? posts.length : getEagerPosts(langKey).length;
+    return total > 20;
+  });
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -51,26 +73,29 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
   const [isFilterStuck, setIsFilterStuck] = useState(false);
 
-  // Detect language: VI or EN based on translation string
-  const langKey = useMemo<'vi' | 'en'>(() => {
-    return t.allTopics === 'Tất cả chủ đề' || !t.allTopics.toLowerCase().includes('all') ? 'vi' : 'en';
-  }, [t.allTopics]);
-
-  // Sync with incoming posts prop
+  // Sync with incoming posts prop (e.g. language toggle)
   useEffect(() => {
     if (posts && posts.length > 0) {
-      setAllPosts(posts);
+      setFullCatalog(posts);
+      setDisplayedPosts(posts.slice(0, 20));
+      setHasMoreMonths(posts.length > 20);
     }
   }, [posts]);
 
-  // Initial load: 20 latest articles by default
+  // Initial load: 20 latest articles by default + fetch full catalog for global stats
   useEffect(() => {
     let isMounted = true;
     loadInitialBlogPosts(langKey, 20).then((res) => {
       if (isMounted) {
-        setAllPosts(res.posts);
+        setDisplayedPosts(res.posts);
         setLoadedMonthKeys(res.loadedMonthKeys);
         setHasMoreMonths(res.hasMore);
+      }
+    });
+    loadAllArchivePosts(langKey).then((all) => {
+      if (isMounted) {
+        setFullCatalog(all);
+        setHasMoreMonths(all.length > 20);
       }
     });
     return () => {
@@ -78,34 +103,19 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     };
   }, [langKey]);
 
-  // Automatically load all archives if user applies filters/search to ensure complete query results
-  useEffect(() => {
-    if ((selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery.trim()) && hasMoreMonths) {
-      let isMounted = true;
-      loadAllArchivePosts(langKey).then((fullPosts) => {
-        if (isMounted) {
-          setAllPosts(fullPosts);
-          setHasMoreMonths(false);
-        }
-      });
-      return () => {
-        isMounted = false;
-      };
-    }
-  }, [selectedCategory, selectedTag, searchQuery, hasMoreMonths, langKey]);
-
   const handleLoadMore = async () => {
     if (isLoadingMore || !hasMoreMonths) return;
     setIsLoadingMore(true);
     try {
-      const res = await loadNextMonthBatch(langKey, loadedMonthKeys, 20);
-      setAllPosts((prev) => {
-        const existingIds = new Set(prev.map((p) => p.id));
-        const newUnique = res.posts.filter((p) => !existingIds.has(p.id));
-        return [...prev, ...newUnique];
+      const res = await loadNextMonthBatch(langKey, displayedPosts.length, 20);
+      setDisplayedPosts((prev) => {
+        const existingKeys = new Set(prev.map((p) => p.slug || p.id));
+        const newUnique = res.posts.filter((p) => !existingKeys.has(p.slug || p.id));
+        const updated = [...prev, ...newUnique];
+        setHasMoreMonths(updated.length < fullCatalog.length);
+        return updated;
       });
-      setLoadedMonthKeys(res.loadedMonthKeys);
-      setHasMoreMonths(res.hasMore);
+      setLoadedMonthKeys((prev) => Array.from(new Set([...prev, ...res.loadedMonthKeys])));
     } finally {
       setIsLoadingMore(false);
     }
@@ -178,36 +188,36 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     }
   };
 
-  // Extract all unique tags across posts
+  // Extract all unique tags across ALL published posts in the catalog
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
-    allPosts.forEach((post) => {
+    fullCatalog.forEach((post) => {
       post.tags.forEach((tag) => tagSet.add(tag));
     });
     return Array.from(tagSet);
-  }, [allPosts]);
+  }, [fullCatalog]);
 
-  // Count articles per category
+  // Count articles per category across ALL published posts in the catalog
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: allPosts.length };
+    const counts: Record<string, number> = { all: fullCatalog.length };
     BLOG_CATEGORY_DEFINITIONS.forEach((cat) => {
       if (cat.id !== 'all') {
-        counts[cat.id] = allPosts.filter((p) => p.category === cat.id).length;
+        counts[cat.id] = fullCatalog.filter((p) => p.category === cat.id).length;
       }
     });
     return counts;
-  }, [allPosts]);
+  }, [fullCatalog]);
 
-  // Count articles per tag
+  // Count articles per tag across ALL published posts in the catalog
   const tagCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    allPosts.forEach((post) => {
+    fullCatalog.forEach((post) => {
       post.tags.forEach((tag) => {
         counts[tag] = (counts[tag] || 0) + 1;
       });
     });
     return counts;
-  }, [allPosts]);
+  }, [fullCatalog]);
 
   // Sync with URL hash for deep linking (e.g. #/blog/post-slug)
   useEffect(() => {
@@ -215,7 +225,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
       const hash = window.location.hash;
       if (hash.startsWith('#/blog/') && hash.length > 7) {
         const slug = hash.replace('#/blog/', '');
-        const matchedPost = allPosts.find((p) => p.slug === slug || p.id === slug);
+        const matchedPost = fullCatalog.find((p) => p.slug === slug || p.id === slug);
         if (matchedPost) {
           setActivePost(matchedPost);
         }
@@ -225,7 +235,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     checkHashForPost();
     window.addEventListener('hashchange', checkHashForPost);
     return () => window.removeEventListener('hashchange', checkHashForPost);
-  }, [allPosts]);
+  }, [fullCatalog]);
 
   // Handle escape key to close mobile drawer when modal is not open
   useEffect(() => {
@@ -251,10 +261,16 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     window.location.hash = '#/blog';
   };
 
-  // Filter posts based on category, search query, and selected tag
+  const isFiltering = selectedCategory !== 'all' || selectedTag !== 'all' || !!searchQuery.trim();
+
+  // Filter posts based on category, search query, and selected tag:
+  // When active filters/search are set, query from fullCatalog.
+  // When on default unfiltered view, render ONLY displayedPosts (initial 20, paginated) to keep DOM lightweight!
   const filteredPosts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    return allPosts.filter((post) => {
+    const sourcePosts = isFiltering ? fullCatalog : displayedPosts;
+
+    return sourcePosts.filter((post) => {
       const matchesCategory =
         selectedCategory === 'all' || post.category === selectedCategory;
 
@@ -268,7 +284,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
 
       return matchesCategory && matchesTag && matchesQuery;
     });
-  }, [allPosts, searchQuery, selectedCategory, selectedTag]);
+  }, [isFiltering, fullCatalog, displayedPosts, searchQuery, selectedCategory, selectedTag]);
 
   const handleResetFilters = () => {
     setSearchQuery('');
@@ -327,7 +343,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
           tags={allTags}
           selectedTag={selectedTag}
           tagCounts={tagCounts}
-          totalPostsCount={allPosts.length}
+          totalPostsCount={fullCatalog.length}
           allTopicsLabel={t.allTopics}
           tagsTitle={t.tagsTitle}
           onSelectTag={(tag) => setSelectedTag(tag)}
@@ -375,7 +391,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
 
                   return (
                     <BlogItem
-                      key={post.id}
+                      key={post.slug || post.id}
                       post={post}
                       categoryDef={postCatDef}
                       langKey={langKey}
@@ -403,8 +419,8 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
               )}
             </div>
 
-            {/* Load More Button if more month archives exist */}
-            {hasMoreMonths && filteredPosts.length > 0 && (
+            {/* Load More Button if more articles exist in unfiltered paginated view */}
+            {!isFiltering && hasMoreMonths && filteredPosts.length > 0 && (
               <div className="blog-load-more-container">
                 <Button
                   variant="secondary"

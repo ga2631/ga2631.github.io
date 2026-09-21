@@ -1,5 +1,6 @@
 import { BlogPost } from '../types/index.ts';
 import { parseFrontmatter, markdownToHtml } from '../utils/markdownParser.ts';
+import { BLOG_CATEGORY_DEFINITIONS } from '../data/blog/blogCategories.ts';
 
 // Vite glob importers for all markdown articles
 const viMarkdownEager = import.meta.glob<string>('/src/data/blog/vi/*.md', {
@@ -46,15 +47,61 @@ export function parseMarkdownToBlogPost(rawMd: string, path: string): BlogPost {
 }
 
 /**
- * Retrieves all eager posts for a language sorted newest first.
+ * Formats a Date object into a local date string "YYYY-MM-DD".
  */
-export function getEagerPosts(lang: 'vi' | 'en'): BlogPost[] {
+export function getLocalDateString(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Checks whether a blog post is scheduled/published on or before the given reference date.
+ * Future posts (date > referenceDate) return false.
+ */
+export function isPostPublished(post: BlogPost, referenceDate: Date = new Date()): boolean {
+  const todayStr = getLocalDateString(referenceDate);
+
+  if (post.date) {
+    const trimmedDate = post.date.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmedDate)) {
+      return trimmedDate <= todayStr;
+    }
+    const timestamp = new Date(trimmedDate).getTime();
+    if (!isNaN(timestamp)) {
+      return timestamp <= referenceDate.getTime();
+    }
+  }
+
+  if (post.publishedAt) {
+    const parts = post.publishedAt.trim().split('/');
+    if (parts.length === 3) {
+      const day = parts[0].padStart(2, '0');
+      const month = parts[1].padStart(2, '0');
+      const year = parts[2];
+      const iso = `${year}-${month}-${day}`;
+      return iso <= todayStr;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Retrieves all eager posts for a language sorted newest first,
+ * filtering out any articles scheduled for future dates.
+ */
+export function getEagerPosts(lang: 'vi' | 'en', referenceDate: Date = new Date()): BlogPost[] {
   const modules = lang === 'vi' ? viMarkdownEager : enMarkdownEager;
   const posts: BlogPost[] = [];
 
   Object.entries(modules).forEach(([path, rawMd]) => {
     if (typeof rawMd === 'string') {
-      posts.push(parseMarkdownToBlogPost(rawMd, path));
+      const post = parseMarkdownToBlogPost(rawMd, path);
+      if (isPostPublished(post, referenceDate)) {
+        posts.push(post);
+      }
     }
   });
 
@@ -64,8 +111,8 @@ export function getEagerPosts(lang: 'vi' | 'en'): BlogPost[] {
 /**
  * Extracts and sorts all month archives represented in the blog collection.
  */
-export function getAvailableMonthArchives(lang: 'vi' | 'en'): MonthArchiveInfo[] {
-  const posts = getEagerPosts(lang);
+export function getAvailableMonthArchives(lang: 'vi' | 'en', referenceDate: Date = new Date()): MonthArchiveInfo[] {
+  const posts = getEagerPosts(lang, referenceDate);
   const monthMap = new Map<string, { year: number; month: number }>();
 
   posts.forEach((post) => {
@@ -93,6 +140,44 @@ export function getAvailableMonthArchives(lang: 'vi' | 'en'): MonthArchiveInfo[]
     if (a.year !== b.year) return b.year - a.year;
     return b.month - a.month;
   });
+}
+
+export interface BlogStatistics {
+  totalCount: number;
+  categoryCounts: Record<string, number>;
+  tagCounts: Record<string, number>;
+  allTags: string[];
+}
+
+/**
+ * Computes aggregate statistics (total count, category counts, tag counts, unique tags)
+ * across all published articles in the library for the specified language.
+ */
+export function getBlogStatistics(lang: 'vi' | 'en', referenceDate: Date = new Date()): BlogStatistics {
+  const allPosts = getEagerPosts(lang, referenceDate);
+  const categoryCounts: Record<string, number> = { all: allPosts.length };
+
+  BLOG_CATEGORY_DEFINITIONS.forEach((cat) => {
+    if (cat.id !== 'all') {
+      categoryCounts[cat.id] = allPosts.filter((p) => p.category === cat.id).length;
+    }
+  });
+
+  const tagCounts: Record<string, number> = {};
+  const tagSet = new Set<string>();
+  allPosts.forEach((post) => {
+    post.tags.forEach((tag) => {
+      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      tagSet.add(tag);
+    });
+  });
+
+  return {
+    totalCount: allPosts.length,
+    categoryCounts,
+    tagCounts,
+    allTags: Array.from(tagSet),
+  };
 }
 
 
@@ -153,38 +238,80 @@ export interface BlogLoadResult {
 
 /**
  * Initial load:
- * Returns initial batch of posts (or all posts).
+ * Returns initial batch of posts (up to initialBatchCount, e.g. 20) sorted descending by date.
  */
 export async function loadInitialBlogPosts(
   lang: 'vi' | 'en',
-  _initialBatchCount = 20
+  initialBatchCount = 20,
+  referenceDate: Date = new Date()
 ): Promise<BlogLoadResult> {
-  const allPosts = getEagerPosts(lang);
-  const archives = getAvailableMonthArchives(lang);
+  const allPosts = getEagerPosts(lang, referenceDate);
+  const archives = getAvailableMonthArchives(lang, referenceDate);
+  const initialPosts = allPosts.slice(0, initialBatchCount);
+  const hasMore = allPosts.length > initialBatchCount;
+
+  const loadedMonthKeys = Array.from(
+    new Set(
+      initialPosts
+        .map((p) => {
+          const match = p.date?.match(/^(\d{4})-(\d{2})/);
+          return match ? `${match[1]}-${match[2]}` : null;
+        })
+        .filter((k): k is string => k !== null)
+    )
+  );
 
   return {
-    posts: allPosts,
-    loadedMonthKeys: archives.map((a) => a.key),
-    hasMore: false,
+    posts: initialPosts,
+    loadedMonthKeys,
+    hasMore,
     totalArchivesCount: archives.length,
   };
 }
 
 /**
- * Loads the next batch of posts for pagination / infinite scroll.
+ * Loads the next batch of posts for pagination / load more.
+ * Accepts either the count of currently loaded posts (number) or loaded month keys (string[]).
  */
 export async function loadNextMonthBatch(
   lang: 'vi' | 'en',
-  _currentLoadedMonthKeys: string[],
-  _targetBatchCount = 20
+  currentLoaded: string[] | number,
+  targetBatchCount = 20,
+  referenceDate: Date = new Date()
 ): Promise<BlogLoadResult> {
-  const allPosts = getEagerPosts(lang);
-  const archives = getAvailableMonthArchives(lang);
+  const allPosts = getEagerPosts(lang, referenceDate);
+  const archives = getAvailableMonthArchives(lang, referenceDate);
+
+  let offset = 0;
+  if (typeof currentLoaded === 'number') {
+    offset = currentLoaded;
+  } else if (Array.isArray(currentLoaded)) {
+    const matchingCount = allPosts.filter((p) => {
+      const match = p.date?.match(/^(\d{4})-(\d{2})/);
+      const key = match ? `${match[1]}-${match[2]}` : '';
+      return currentLoaded.includes(key);
+    }).length;
+    offset = matchingCount > 0 ? matchingCount : currentLoaded.length * targetBatchCount;
+  }
+
+  const nextPosts = allPosts.slice(offset, offset + targetBatchCount);
+  const hasMore = offset + targetBatchCount < allPosts.length;
+
+  const nextMonthKeys = Array.from(
+    new Set(
+      nextPosts
+        .map((p) => {
+          const match = p.date?.match(/^(\d{4})-(\d{2})/);
+          return match ? `${match[1]}-${match[2]}` : null;
+        })
+        .filter((k): k is string => k !== null)
+    )
+  );
 
   return {
-    posts: allPosts,
-    loadedMonthKeys: archives.map((a) => a.key),
-    hasMore: false,
+    posts: nextPosts,
+    loadedMonthKeys: nextMonthKeys,
+    hasMore,
     totalArchivesCount: archives.length,
   };
 }
@@ -192,6 +319,6 @@ export async function loadNextMonthBatch(
 /**
  * Loads all archive posts (used for instant search and keyword filtering).
  */
-export async function loadAllArchivePosts(lang: 'vi' | 'en'): Promise<BlogPost[]> {
-  return getEagerPosts(lang);
+export async function loadAllArchivePosts(lang: 'vi' | 'en', referenceDate: Date = new Date()): Promise<BlogPost[]> {
+  return getEagerPosts(lang, referenceDate);
 }

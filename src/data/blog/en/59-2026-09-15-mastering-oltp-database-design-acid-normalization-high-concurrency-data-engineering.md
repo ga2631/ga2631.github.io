@@ -20,7 +20,7 @@ tags:
 
 ## Business Context & Data Requirements
 
-In modern mission-critical user applications—such as E-Commerce platforms, Digital Banking cores, Payment Gateways, and Ride-Hailing networks—the **Online Transaction Processing (OLTP) Database** represents the heartbeat of the enterprise.
+In modern mission-critical user applications-such as E-Commerce platforms, Digital Banking cores, Payment Gateways, and Ride-Hailing networks-the **Online Transaction Processing (OLTP) Database** represents the heartbeat of the enterprise.
 
 Consider the uncompromising engineering and business demands placed upon production OLTP systems:
 
@@ -299,4 +299,4 @@ OLTP databases form the immutable transactional cornerstone of modern software a
 3. **Route Queries via Read Replicas:** Offload non-critical point lookups and secondary reads to streaming read replicas, preserving master instance CPU/IOPS for transactional writes.
 4. **Bridge OLTP to Analytics Exclusively via Change Data Capture (CDC):** Never rely on application-level Dual-Writes to sync search engines or data warehouses. Deploy Debezium CDC to capture changes directly from the database Write-Ahead Log in an asynchronous, fault-tolerant, and zero-overhead manner.
 
-**Closing Takeaway:** _A resilient OLTP foundation is forged through unwavering adherence to ACID principles, disciplined normalization, and intelligent concurrency design—empowering your platform to scale to millions of concurrent users with zero data loss!_
+**Closing Takeaway:** _A resilient OLTP foundation is forged through unwavering adherence to ACID principles, disciplined normalization, and intelligent concurrency design-empowering your platform to scale to millions of concurrent users with zero data loss!_
