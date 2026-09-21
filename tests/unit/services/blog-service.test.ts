@@ -81,12 +81,14 @@ describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
     }
   });
 
-  it('should load recent blog posts by default on initial page load', async () => {
+  it('should load recent blog posts by default on initial page load (exactly 20 articles max with hasMore)', async () => {
     const initialResultVi = await loadInitialBlogPosts('vi', 20);
     const initialResultEn = await loadInitialBlogPosts('en', 20);
 
-    expect(initialResultVi.posts.length).toBeGreaterThanOrEqual(1);
-    expect(initialResultEn.posts.length).toBeGreaterThanOrEqual(1);
+    expect(initialResultVi.posts.length).toBe(20);
+    expect(initialResultVi.hasMore).toBe(true);
+    expect(initialResultEn.posts.length).toBe(20);
+    expect(initialResultEn.hasMore).toBe(true);
 
     // Verify posts are sorted descending by date
     for (let i = 0; i < initialResultVi.posts.length - 1; i++) {
@@ -101,14 +103,20 @@ describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
     expect(initialResultVi.loadedMonthKeys[0]).toBe(expectedFirstMonth);
   });
 
-  it('should load the next month batch when requested (pagination / load more)', async () => {
+  it('should load the next batch when requested (pagination / load more)', async () => {
     const initialResult = await loadInitialBlogPosts('vi', 20);
-    
-    if (initialResult.hasMore) {
-      const nextBatch = await loadNextMonthBatch('vi', initialResult.loadedMonthKeys, 20);
-      expect(nextBatch.posts.length).toBeGreaterThan(0);
-      expect(nextBatch.loadedMonthKeys.length).toBeGreaterThan(initialResult.loadedMonthKeys.length);
-    }
+    expect(initialResult.posts.length).toBe(20);
+    expect(initialResult.hasMore).toBe(true);
+
+    // Batch 2: next 20 articles (offset = 20)
+    const nextBatch = await loadNextMonthBatch('vi', 20, 20);
+    expect(nextBatch.posts.length).toBe(20);
+    expect(nextBatch.hasMore).toBe(true);
+
+    // Batch 3: remaining articles (offset = 40)
+    const finalBatch = await loadNextMonthBatch('vi', 40, 20);
+    expect(finalBatch.posts.length).toBe(1);
+    expect(finalBatch.hasMore).toBe(false);
   });
 
   it('should load all archives on demand and validate up to 40 articles', async () => {

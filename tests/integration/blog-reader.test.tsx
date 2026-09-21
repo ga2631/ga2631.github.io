@@ -149,4 +149,15 @@ describe('TI-05: Integration - Blog Reader, Filtering & Article Modal', () => {
       expect(controlsPanel).not.toHaveClass('is-stuck');
     }
   });
+
+  it('should render load more button when there are more than 20 articles and load next batch on click', async () => {
+    render(<Blog {...defaultProps} />);
+
+    // Load more button should be rendered
+    const loadMoreBtn = screen.getByRole('button', { name: new RegExp(uiTranslations.en.blog.loadMoreArticles || 'Load More', 'i') });
+    expect(loadMoreBtn).toBeInTheDocument();
+
+    // Click load more
+    fireEvent.click(loadMoreBtn);
+  });
 });

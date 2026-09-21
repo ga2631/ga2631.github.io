@@ -199,40 +199,80 @@ export interface BlogLoadResult {
 
 /**
  * Initial load:
- * Returns initial batch of posts (or all posts).
+ * Returns initial batch of posts (up to initialBatchCount, e.g. 20) sorted descending by date.
  */
 export async function loadInitialBlogPosts(
   lang: 'vi' | 'en',
-  _initialBatchCount = 20,
+  initialBatchCount = 20,
   referenceDate: Date = new Date()
 ): Promise<BlogLoadResult> {
   const allPosts = getEagerPosts(lang, referenceDate);
   const archives = getAvailableMonthArchives(lang, referenceDate);
+  const initialPosts = allPosts.slice(0, initialBatchCount);
+  const hasMore = allPosts.length > initialBatchCount;
+
+  const loadedMonthKeys = Array.from(
+    new Set(
+      initialPosts
+        .map((p) => {
+          const match = p.date?.match(/^(\d{4})-(\d{2})/);
+          return match ? `${match[1]}-${match[2]}` : null;
+        })
+        .filter((k): k is string => k !== null)
+    )
+  );
 
   return {
-    posts: allPosts,
-    loadedMonthKeys: archives.map((a) => a.key),
-    hasMore: false,
+    posts: initialPosts,
+    loadedMonthKeys,
+    hasMore,
     totalArchivesCount: archives.length,
   };
 }
 
 /**
- * Loads the next batch of posts for pagination / infinite scroll.
+ * Loads the next batch of posts for pagination / load more.
+ * Accepts either the count of currently loaded posts (number) or loaded month keys (string[]).
  */
 export async function loadNextMonthBatch(
   lang: 'vi' | 'en',
-  _currentLoadedMonthKeys: string[],
-  _targetBatchCount = 20,
+  currentLoaded: string[] | number,
+  targetBatchCount = 20,
   referenceDate: Date = new Date()
 ): Promise<BlogLoadResult> {
   const allPosts = getEagerPosts(lang, referenceDate);
   const archives = getAvailableMonthArchives(lang, referenceDate);
 
+  let offset = 0;
+  if (typeof currentLoaded === 'number') {
+    offset = currentLoaded;
+  } else if (Array.isArray(currentLoaded)) {
+    const matchingCount = allPosts.filter((p) => {
+      const match = p.date?.match(/^(\d{4})-(\d{2})/);
+      const key = match ? `${match[1]}-${match[2]}` : '';
+      return currentLoaded.includes(key);
+    }).length;
+    offset = matchingCount > 0 ? matchingCount : currentLoaded.length * targetBatchCount;
+  }
+
+  const nextPosts = allPosts.slice(offset, offset + targetBatchCount);
+  const hasMore = offset + targetBatchCount < allPosts.length;
+
+  const nextMonthKeys = Array.from(
+    new Set(
+      nextPosts
+        .map((p) => {
+          const match = p.date?.match(/^(\d{4})-(\d{2})/);
+          return match ? `${match[1]}-${match[2]}` : null;
+        })
+        .filter((k): k is string => k !== null)
+    )
+  );
+
   return {
-    posts: allPosts,
-    loadedMonthKeys: archives.map((a) => a.key),
-    hasMore: false,
+    posts: nextPosts,
+    loadedMonthKeys: nextMonthKeys,
+    hasMore,
     totalArchivesCount: archives.length,
   };
 }

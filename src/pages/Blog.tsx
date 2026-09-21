@@ -32,9 +32,16 @@ export interface BlogProps {
 }
 
 export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
-  const [allPosts, setAllPosts] = useState<BlogPost[]>(posts);
+  const [allPosts, setAllPosts] = useState<BlogPost[]>(() => {
+    if (posts && posts.length > 0) {
+      return posts.slice(0, 20);
+    }
+    return [];
+  });
   const [loadedMonthKeys, setLoadedMonthKeys] = useState<string[]>([]);
-  const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(false);
+  const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(() => {
+    return posts ? posts.length > 20 : false;
+  });
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -56,10 +63,11 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     return t.allTopics === 'Tất cả chủ đề' || !t.allTopics.toLowerCase().includes('all') ? 'vi' : 'en';
   }, [t.allTopics]);
 
-  // Sync with incoming posts prop
+  // Sync with incoming posts prop (initial 20 articles batch)
   useEffect(() => {
     if (posts && posts.length > 0) {
-      setAllPosts(posts);
+      setAllPosts(posts.slice(0, 20));
+      setHasMoreMonths(posts.length > 20);
     }
   }, [posts]);
 
@@ -98,13 +106,13 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     if (isLoadingMore || !hasMoreMonths) return;
     setIsLoadingMore(true);
     try {
-      const res = await loadNextMonthBatch(langKey, loadedMonthKeys, 20);
+      const res = await loadNextMonthBatch(langKey, allPosts.length, 20);
       setAllPosts((prev) => {
-        const existingIds = new Set(prev.map((p) => p.id));
-        const newUnique = res.posts.filter((p) => !existingIds.has(p.id));
+        const existingKeys = new Set(prev.map((p) => p.slug || p.id));
+        const newUnique = res.posts.filter((p) => !existingKeys.has(p.slug || p.id));
         return [...prev, ...newUnique];
       });
-      setLoadedMonthKeys(res.loadedMonthKeys);
+      setLoadedMonthKeys((prev) => Array.from(new Set([...prev, ...res.loadedMonthKeys])));
       setHasMoreMonths(res.hasMore);
     } finally {
       setIsLoadingMore(false);
