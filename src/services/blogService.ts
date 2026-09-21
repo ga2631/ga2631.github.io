@@ -46,15 +46,61 @@ export function parseMarkdownToBlogPost(rawMd: string, path: string): BlogPost {
 }
 
 /**
- * Retrieves all eager posts for a language sorted newest first.
+ * Formats a Date object into a local date string "YYYY-MM-DD".
  */
-export function getEagerPosts(lang: 'vi' | 'en'): BlogPost[] {
+export function getLocalDateString(d: Date = new Date()): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Checks whether a blog post is scheduled/published on or before the given reference date.
+ * Future posts (date > referenceDate) return false.
+ */
+export function isPostPublished(post: BlogPost, referenceDate: Date = new Date()): boolean {
+  const todayStr = getLocalDateString(referenceDate);
+
+  if (post.date) {
+    const trimmedDate = post.date.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmedDate)) {
+      return trimmedDate <= todayStr;
+    }
+    const timestamp = new Date(trimmedDate).getTime();
+    if (!isNaN(timestamp)) {
+      return timestamp <= referenceDate.getTime();
+    }
+  }
+
+  if (post.publishedAt) {
+    const parts = post.publishedAt.trim().split('/');
+    if (parts.length === 3) {
+      const day = parts[0].padStart(2, '0');
+      const month = parts[1].padStart(2, '0');
+      const year = parts[2];
+      const iso = `${year}-${month}-${day}`;
+      return iso <= todayStr;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Retrieves all eager posts for a language sorted newest first,
+ * filtering out any articles scheduled for future dates.
+ */
+export function getEagerPosts(lang: 'vi' | 'en', referenceDate: Date = new Date()): BlogPost[] {
   const modules = lang === 'vi' ? viMarkdownEager : enMarkdownEager;
   const posts: BlogPost[] = [];
 
   Object.entries(modules).forEach(([path, rawMd]) => {
     if (typeof rawMd === 'string') {
-      posts.push(parseMarkdownToBlogPost(rawMd, path));
+      const post = parseMarkdownToBlogPost(rawMd, path);
+      if (isPostPublished(post, referenceDate)) {
+        posts.push(post);
+      }
     }
   });
 
@@ -64,8 +110,8 @@ export function getEagerPosts(lang: 'vi' | 'en'): BlogPost[] {
 /**
  * Extracts and sorts all month archives represented in the blog collection.
  */
-export function getAvailableMonthArchives(lang: 'vi' | 'en'): MonthArchiveInfo[] {
-  const posts = getEagerPosts(lang);
+export function getAvailableMonthArchives(lang: 'vi' | 'en', referenceDate: Date = new Date()): MonthArchiveInfo[] {
+  const posts = getEagerPosts(lang, referenceDate);
   const monthMap = new Map<string, { year: number; month: number }>();
 
   posts.forEach((post) => {
@@ -157,10 +203,11 @@ export interface BlogLoadResult {
  */
 export async function loadInitialBlogPosts(
   lang: 'vi' | 'en',
-  _initialBatchCount = 20
+  _initialBatchCount = 20,
+  referenceDate: Date = new Date()
 ): Promise<BlogLoadResult> {
-  const allPosts = getEagerPosts(lang);
-  const archives = getAvailableMonthArchives(lang);
+  const allPosts = getEagerPosts(lang, referenceDate);
+  const archives = getAvailableMonthArchives(lang, referenceDate);
 
   return {
     posts: allPosts,
@@ -176,10 +223,11 @@ export async function loadInitialBlogPosts(
 export async function loadNextMonthBatch(
   lang: 'vi' | 'en',
   _currentLoadedMonthKeys: string[],
-  _targetBatchCount = 20
+  _targetBatchCount = 20,
+  referenceDate: Date = new Date()
 ): Promise<BlogLoadResult> {
-  const allPosts = getEagerPosts(lang);
-  const archives = getAvailableMonthArchives(lang);
+  const allPosts = getEagerPosts(lang, referenceDate);
+  const archives = getAvailableMonthArchives(lang, referenceDate);
 
   return {
     posts: allPosts,
@@ -192,6 +240,6 @@ export async function loadNextMonthBatch(
 /**
  * Loads all archive posts (used for instant search and keyword filtering).
  */
-export async function loadAllArchivePosts(lang: 'vi' | 'en'): Promise<BlogPost[]> {
-  return getEagerPosts(lang);
+export async function loadAllArchivePosts(lang: 'vi' | 'en', referenceDate: Date = new Date()): Promise<BlogPost[]> {
+  return getEagerPosts(lang, referenceDate);
 }

@@ -375,7 +375,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
 
                   return (
                     <BlogItem
-                      key={post.id}
+                      key={post.slug || post.id}
                       post={post}
                       categoryDef={postCatDef}
                       langKey={langKey}

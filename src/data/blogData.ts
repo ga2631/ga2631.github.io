@@ -5,6 +5,8 @@ import {
   loadNextMonthBatch,
   loadAllArchivePosts,
   getAvailableMonthArchives,
+  isPostPublished,
+  getLocalDateString,
 } from '../services/blogService.ts';
 
 export {
@@ -12,6 +14,8 @@ export {
   loadNextMonthBatch,
   loadAllArchivePosts,
   getAvailableMonthArchives,
+  isPostPublished,
+  getLocalDateString,
 };
 
 // Eagerly loaded posts for initial synchronous render, fast SSR, and test suites

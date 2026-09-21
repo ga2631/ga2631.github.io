@@ -5,9 +5,65 @@ import {
   loadNextMonthBatch,
   loadAllArchivePosts,
   sortPostsByDateDesc,
+  isPostPublished,
+  getLocalDateString,
+  getEagerPosts,
 } from '../../../src/services/blogService';
 
 describe('TU-SERVICES-01: Services - BlogService & Storage Loader', () => {
+  describe('isPostPublished logic', () => {
+    const fixedNow = new Date('2026-09-21T12:00:00Z');
+
+    it('should format date string correctly with getLocalDateString', () => {
+      const formatted = getLocalDateString(new Date('2026-09-21T10:00:00Z'));
+      expect(formatted).toMatch(/^2026-09-2[12]$/);
+    });
+
+    it('should return true for past dates', () => {
+      const post = { id: '1', date: '2026-09-15', title: 'Past' } as any;
+      expect(isPostPublished(post, fixedNow)).toBe(true);
+    });
+
+    it('should return true for articles published today', () => {
+      const todayPost = { id: '2', date: '2026-09-21', title: 'Today' } as any;
+      expect(isPostPublished(todayPost, fixedNow)).toBe(true);
+    });
+
+    it('should return false for future dates', () => {
+      const futurePost1 = { id: '61', date: '2026-09-28', title: 'Future 1' } as any;
+      const futurePost2 = { id: '62', date: '2026-10-05', title: 'Future 2' } as any;
+      expect(isPostPublished(futurePost1, fixedNow)).toBe(false);
+      expect(isPostPublished(futurePost2, fixedNow)).toBe(false);
+    });
+
+    it('should evaluate publishedAt when date is absent', () => {
+      const pastPost = { id: '3', publishedAt: '15/09/2026', title: 'Past' } as any;
+      const futurePost = { id: '4', publishedAt: '30/09/2026', title: 'Future' } as any;
+      expect(isPostPublished(pastPost, fixedNow)).toBe(true);
+      expect(isPostPublished(futurePost, fixedNow)).toBe(false);
+    });
+
+    it('should evaluate timestamp when date includes ISO time', () => {
+      const pastTime = { id: '5', date: '2026-09-21T10:00:00Z', title: 'Past Time' } as any;
+      const futureTime = { id: '6', date: '2026-09-21T18:00:00Z', title: 'Future Time' } as any;
+      expect(isPostPublished(pastTime, fixedNow)).toBe(true);
+      expect(isPostPublished(futureTime, fixedNow)).toBe(false);
+    });
+
+    it('should exclude future articles when loading eager posts with reference date', () => {
+      const posts = getEagerPosts('vi', fixedNow);
+      // All loaded articles must have date <= 2026-09-21
+      posts.forEach((post) => {
+        if (post.date) {
+          expect(post.date <= '2026-09-21').toBe(true);
+        }
+      });
+      // Future posts 61 and 62 should not be present
+      expect(posts.some((p) => p.date === '2026-09-28')).toBe(false);
+      expect(posts.some((p) => p.date === '2026-10-05')).toBe(false);
+    });
+  });
+
   it('should discover and sort month archives descending by year and month for Vietnamese and English', () => {
     const viArchives = getAvailableMonthArchives('vi');
     const enArchives = getAvailableMonthArchives('en');
