@@ -2,7 +2,7 @@
 id: "56"
 slug: "designing-a-mid-acale-ad-performance-reporting-system-100-ccu"
 title: "From 100 to 1000 CCU #01: Designing a Ad performance reporting system with 100 CCU"
-summary: "This article outlines a Monolithic architecture combined with a traditional relational database to solve the problem of displaying ad reports for 100 concurrent users. The core focus of this design is optimizing **time-to-market** and maintaining the **lowest operational costs**, accepting future scalability limits in exchange for leanness during the project's early stages."
+summary: "This article outlines a Monolithic architecture combined with a traditional relational database to solve the problem of displaying ad reports for 100 concurrent users. The core focus of this design is optimizing time-to-market and maintaining the lowest operational costs, accepting future scalability limits in exchange for leanness during the project's early stages."
 category: "architecture-system-design"
 publishedAt: "21/09/2026"
 date: "2026-09-21"
