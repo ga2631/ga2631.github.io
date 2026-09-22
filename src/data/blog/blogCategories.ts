@@ -54,7 +54,7 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Every Monday',
     },
     title: {
-      vi: 'Architecture & System Design',
+      vi: 'Kiến trúc Hệ thống',
       en: 'Architecture & System Design',
     },
     description: {
@@ -75,7 +75,7 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Every Tuesday',
     },
     title: {
-      vi: 'Data Engineering & Analytics',
+      vi: 'Kỹ thuật và Phân tích Dữ liệu',
       en: 'Data Engineering & Analytics',
     },
     description: {
@@ -96,7 +96,7 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Every Wednesday',
     },
     title: {
-      vi: 'DevOps, Cloud & Tooling',
+      vi: 'DevOps, Cloud & Công cụ',
       en: 'DevOps, Cloud & Tooling',
     },
     description: {
@@ -117,12 +117,12 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Every Thursday',
     },
     title: {
-      vi: 'Code Craftsmanship & Languages',
+      vi: 'Kỹ thuật lập trình',
       en: 'Code Craftsmanship & Languages',
     },
     description: {
-      vi: 'Các bài viết về thuật toán, ngôn ngữ lập trình (Go, Java, TS/Rust), framework và mẹo refactor code.',
-      en: 'Algorithms, programming languages (Go, Java, TS/Rust), frameworks, and clean code refactoring craftsmanship.',
+      vi: 'Các bài viết về thuật toán, ngôn ngữ lập trình (Go, Java, TS/Rust, ...), framework và mẹo refactor code.',
+      en: 'Algorithms, programming languages (Go, Java, TS/Rust, ...), frameworks, and clean code refactoring craftsmanship.',
     },
     iconName: 'CodeIcon',
   },
@@ -138,7 +138,7 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Every Friday',
     },
     title: {
-      vi: 'Tech Radar & Career Insights',
+      vi: 'Góc nhìn cá nhân',
       en: 'Tech Radar & Career Insights',
     },
     description: {
