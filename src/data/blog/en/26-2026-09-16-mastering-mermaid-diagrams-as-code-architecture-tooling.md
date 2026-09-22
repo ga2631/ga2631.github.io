@@ -89,8 +89,6 @@ When authoring complex Mermaid diagrams, watch out for these three common pitfal
 
 ## Evaluation & Future Scaling
 
-**Evaluation & Future Outlook:**
-
 - **Engineering Productivity ROI:** Reduces diagram maintenance time by over **80%**. Architectural updates are reviewed and tracked directly via standard Git commits and pull requests.
 - **Automated Diagram Generation (AST to Diagrams):** Pair OpenAPI/Swagger specs or TypeScript AST parsers to auto-generate class diagrams and API flow charts directly from code without manual drawing.
 - **Universal Cross-Platform Vector Fidelity:** SVG output guarantees crisp rendering on Retina/4K displays and enables custom styling via CSS theme variables.
