@@ -1,7 +1,7 @@
 ---
 id: 73
 slug: design-pattern-05-creational-patterns-use-case-analysis
-title: "Design Pattern #05: [Creational Patterns] Phân tích Use case và Chọn lựa Pattern Khởi tạo phù hợp"
+title: "Design Pattern #05: Phân tích Use case và Chọn lựa Creational Patterns phù hợp"
 summary: "Tổng kết phần pattern khởi tạo: Thông qua 4 bài viết trước, chúng ta đã xây dựng thành công bộ khung cho Hệ thống Xử lý Đơn hàng. Mỗi chốt chặn sinh ra object (Object Creation) đều được áp dụng một pattern cụ thể. Dưới đây là bức tranh toàn cảnh về luồng vận hành của hệ thống."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-09-22"
