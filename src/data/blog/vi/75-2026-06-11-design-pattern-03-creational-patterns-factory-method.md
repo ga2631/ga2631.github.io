@@ -4,8 +4,8 @@ slug: design-pattern-03-creational-patterns-factory-method
 title: "Design Pattern #03: [Creational Patterns] Factory Method - Mở rộng Cổng thanh toán linh hoạt"
 summary: "Sử dụng Factory Method Pattern để giải quyết bài toán tích hợp nhiều cổng thanh toán (VNPay, Momo, thẻ tín dụng) mà không làm phình to logic nghiệp vụ."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-06-11"
+date: "2026-06-11"
 readTime: "6 phút đọc"
 tags:
   - "Design Patterns"

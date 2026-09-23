@@ -4,8 +4,8 @@ slug: design-pattern-16-3-design-patterns-series-finale-evaluation
 title: "Design Pattern #16.3: Tổng hợp Series - Đánh giá Kiến trúc và Lời kết"
 summary: "Phân tích mặt trái của việc sử dụng Design Patterns (Over-engineering) và lời khuyên thực chiến khi áp dụng vào dự án thực tế."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-09-24"
+date: "2026-09-24"
 readTime: "5 phút đọc"
 tags:
   - "Design Patterns"

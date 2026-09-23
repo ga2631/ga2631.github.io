@@ -4,8 +4,8 @@ slug: design-pattern-07-behavioral-patterns-observer
 title: "Design Pattern #07: [Behavioral Patterns] Observer Pattern - Xây dựng hệ thống thông báo sự kiện"
 summary: "Ứng dụng Observer Pattern để thiết kế hệ thống Event-driven, cho phép tự động gửi Email, SMS, App Push khi trạng thái đơn hàng thay đổi mà không làm code bị kết dính."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-07-09"
+date: "2026-07-09"
 readTime: "6 phút đọc"
 tags:
   - "Design Patterns"

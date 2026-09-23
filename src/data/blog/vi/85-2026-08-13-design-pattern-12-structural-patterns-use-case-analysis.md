@@ -4,8 +4,8 @@ slug: design-pattern-12-structural-patterns-use-case-analysis
 title: "Design Pattern #12: Phân tích Use case và Chọn lựa Structural Patterns phù hợp"
 summary: "Nhìn lại bức tranh toàn cảnh cách Decorator, Adapter và Facade liên kết hệ thống E-commerce, cùng ma trận giúp bạn lựa chọn mẫu thiết kế cấu trúc chính xác."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-08-13"
+date: "2026-08-13"
 readTime: "5 phút đọc"
 tags:
   - "Design Patterns"

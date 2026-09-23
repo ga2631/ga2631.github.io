@@ -4,8 +4,8 @@ slug: design-pattern-14-data-access-patterns-unit-of-work
 title: "Design Pattern #14: [Data Access Patterns] Unit of Work - Đảm bảo toàn vẹn dữ liệu (Transaction)"
 summary: "Tìm hiểu cách Unit of Work điều phối nhiều Repository để xử lý transaction, đảm bảo tính ACID khi thực thi nhiều thao tác cơ sở dữ liệu cùng lúc."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-08-27"
+date: "2026-08-27"
 readTime: "7 phút đọc"
 tags:
   - "Design Patterns"

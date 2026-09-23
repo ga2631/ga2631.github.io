@@ -4,8 +4,8 @@ slug: design-pattern-13-data-access-patterns-repository
 title: "Design Pattern #13: [Data Access Patterns] Repository Pattern - Chuẩn hóa giao tiếp Cơ sở dữ liệu"
 summary: "Tách biệt hoàn toàn Business Logic khỏi các câu lệnh SQL/ORM phức tạp bằng Repository Pattern, giúp hệ thống dễ dàng thay đổi Database và dễ dàng viết Unit Test."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-08-20"
+date: "2026-08-20"
 readTime: "7 phút đọc"
 tags:
   - "Design Patterns"

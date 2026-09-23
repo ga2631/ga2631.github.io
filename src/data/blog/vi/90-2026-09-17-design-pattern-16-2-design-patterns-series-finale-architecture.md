@@ -4,8 +4,8 @@ slug: design-pattern-16-2-design-patterns-series-finale-workflow
 title: "Design Pattern #16.2: Tổng hợp Series - Luồng phối hợp thực thi Checkout"
 summary: "Phân tích chi tiết một request Checkout sẽ đi qua các Design Patterns như thế nào theo thời gian thực (Runtime)."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-09-17"
+date: "2026-09-17"
 readTime: "6 phút đọc"
 tags:
   - "Design Patterns"

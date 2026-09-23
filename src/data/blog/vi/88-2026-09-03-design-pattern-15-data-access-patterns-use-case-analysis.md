@@ -4,8 +4,8 @@ slug: design-pattern-15-data-access-patterns-use-case-analysis
 title: "Design Pattern #15: Phân tích Use case và Chọn lựa Data Access Patterns phù hợp"
 summary: "Tổng kết cách tầng dữ liệu giao tiếp với ứng dụng. Bảng ma trận so sánh Repository, Unit of Work, Active Record và DAO."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-09-03"
+date: "2026-09-03"
 readTime: "5 phút đọc"
 tags:
   - "Design Patterns"

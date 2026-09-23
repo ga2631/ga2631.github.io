@@ -4,8 +4,8 @@ slug: design-pattern-02-creational-patterns-object-pool
 title: "Design Pattern #02: [Creational Patterns] Object Pool Pattern - Tối ưu hóa Kết nối Cơ sở dữ liệu"
 summary: "Khắc phục nút thắt cổ chai hiệu suất khi lưu trữ đơn hàng bằng cách tái sử dụng kết nối Database thông qua Object Pool Pattern."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-06-04"
+date: "2026-06-04"
 readTime: "7 phút đọc"
 tags:
   - "Design Patterns"

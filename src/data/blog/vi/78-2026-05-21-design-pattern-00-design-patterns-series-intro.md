@@ -4,8 +4,8 @@ slug: design-pattern-00-design-patterns-series-intro
 title: "Design Pattern #00: Giới thiệu Series Design Patterns Thực Chiến: Xây dựng Hệ thống Xử lý Đơn hàng"
 summary: "Mở đầu chuỗi bài viết Design Patterns. Khám phá lộ trình học tập qua một Case Study thực tế: Hệ thống Xử lý Đơn hàng E-commerce, từ khởi tạo đối tượng đến tương tác cơ sở dữ liệu."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-05-21"
+date: "2026-05-21"
 readTime: "4 phút đọc"
 tags:
   - "Design Patterns"

@@ -4,8 +4,8 @@ slug: design-pattern-10-structural-patterns-adapter
 title: "Design Pattern #10: [Structural Patterns] Adapter Pattern - Tích hợp Hệ thống Tồn kho Legacy"
 summary: "Làm thế nào để kết nối backend hiện đại của chúng ta với một hệ thống quản lý tồn kho cũ kỹ (Legacy System) dùng định dạng XML? Adapter Pattern chính là câu trả lời."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-07-30"
+date: "2026-07-30"
 readTime: "6 phút đọc"
 tags:
   - "Design Patterns"

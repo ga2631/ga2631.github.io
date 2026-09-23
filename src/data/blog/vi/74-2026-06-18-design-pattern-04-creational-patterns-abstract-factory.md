@@ -4,8 +4,8 @@ slug: design-pattern-04-creational-patterns-abstract-factory
 title: "Design Pattern #04: [Creational Patterns] Abstract Factory - Đóng gói Quy trình Hoàn tất Đơn hàng"
 summary: "Quản lý các nhóm đối tượng liên quan với nhau thông qua Abstract Factory Pattern, áp dụng vào luồng hoàn tất đơn hàng Nội địa và Quốc tế."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-06-18"
+date: "2026-06-18"
 readTime: "5 phút đọc"
 tags:
   - "Design Patterns"

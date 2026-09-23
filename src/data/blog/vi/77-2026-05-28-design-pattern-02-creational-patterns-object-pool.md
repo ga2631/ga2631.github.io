@@ -4,8 +4,8 @@ slug: design-pattern-01-creational-patterns-singleton
 title: "Design Pattern #01: [Creational Patterns] Singleton Pattern - Quản trị Cấu hình Hệ thống"
 summary: "Tìm hiểu Singleton Pattern thông qua bài toán xây dựng trình quản lý cấu hình tập trung cho Hệ thống Xử lý Đơn hàng, đảm bảo tính nhất quán và tiết kiệm tài nguyên."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-05-28"
+date: "2026-05-28"
 readTime: "5 phút đọc"
 tags:
   - "Design Patterns"

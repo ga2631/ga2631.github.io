@@ -4,8 +4,8 @@ slug: design-pattern-09-structural-patterns-decorator
 title: "Design Pattern #09: [Structural Patterns] Decorator Pattern - Xếp chồng Voucher Giảm giá"
 summary: "Sử dụng Decorator Pattern để giải quyết bài toán áp dụng nhiều loại mã giảm giá xếp chồng lên nhau mà không làm bùng nổ số lượng class trong hệ thống."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-07-23"
+date: "2026-07-23"
 readTime: "7 phút đọc"
 tags:
   - "Design Patterns"

@@ -4,9 +4,9 @@ slug: design-pattern-11-structural-patterns-facade
 title: "Design Pattern #11: [Structural Patterns] Facade Pattern - Đơn giản hóa API Checkout"
 summary: "Tạo ra một mặt tiền (Facade) duy nhất để che giấu sự phức tạp của toàn bộ quy trình Checkout gồm Kiểm tra kho, Thanh toán, Lưu Database và Gửi email."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
-readTime: "6 min"
+publishedAt: "2026-08-06"
+date: "2026-08-06"
+readTime: "6 phút đọc"
 tags:
   - "Design Patterns"
   - "Structural Patterns"

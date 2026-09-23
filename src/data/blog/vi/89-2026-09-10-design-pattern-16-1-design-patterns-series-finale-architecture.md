@@ -4,8 +4,8 @@ slug: design-pattern-16-1-design-patterns-series-finale-architecture
 title: "Design Pattern #16.1: Tổng hợp Series - Bức tranh Kiến trúc Toàn diện Hệ thống"
 summary: "Nhìn lại toàn bộ kiến trúc của Hệ thống Xử lý Đơn hàng sau khi đã áp dụng các Creational, Structural, Behavioral và Data Access Patterns."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-09-10"
+date: "2026-09-10"
 readTime: "5 phút đọc"
 tags:
   - "Design Patterns"

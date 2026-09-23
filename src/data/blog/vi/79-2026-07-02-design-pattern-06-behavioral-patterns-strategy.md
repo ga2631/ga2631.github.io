@@ -4,8 +4,8 @@ slug: design-pattern-06-behavioral-patterns-strategy
 title: "Design Pattern #06: [Behavioral Patterns] Strategy Pattern - Linh hoạt thay đổi thuật toán tính phí vận chuyển"
 summary: "Khám phá Strategy Pattern qua bài toán tính phí vận chuyển đa dạng trong E-commerce, giúp loại bỏ các câu lệnh if-else chằng chịt và tuân thủ nguyên tắc Open/Closed."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-09-22"
-date: "2026-09-22"
+publishedAt: "2026-07-02"
+date: "2026-07-02"
 readTime: "6 phút đọc"
 tags:
   - "Design Patterns"
