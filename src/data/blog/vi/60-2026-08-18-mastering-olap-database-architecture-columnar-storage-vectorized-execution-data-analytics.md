@@ -4,8 +4,8 @@ slug: "mastering-olap-database-architecture-columnar-storage-vectorized-executio
 title: "Làm chủ Kiến trúc Cơ sở Dữ liệu OLAP: Lưu trữ Dạng Cột (Columnar Storage), Tính toán Vector Hóa (SIMD) & Bí quyết Tối ưu Hóa Truy vấn Hàng Tỷ Bản Ghi"
 summary: "Khám phá chuyên sâu về thế giới cơ sở dữ liệu xử lý phân tích trực tuyến (OLAP - Online Analytical Processing): So sánh toàn diện giữa MOLAP, ROLAP, HOLAP và các Real-time OLAP Engines hiện đại (ClickHouse, Snowflake, DuckDB); giải mã sức mạnh của định dạng lưu trữ dạng cột (Parquet/MergeTree) kết hợp nén Dictionary/RLE/Gorilla; cơ chế thực thi truy vấn Vector hóa tận dụng CPU SIMD (AVX-512); kèm mã nguồn ClickHouse DDL và câu lệnh SQL phân tích đa chiều xử lý 1 tỷ dòng trong vài chục mili-giây."
 category: "data-engineering-analytics"
-publishedAt: "15/09/2026"
-date: "2026-09-15"
+publishedAt: "2026-08-18"
+date: "2026-08-18"
 readTime: "15 phút đọc"
 tags:
   - "OLAP"

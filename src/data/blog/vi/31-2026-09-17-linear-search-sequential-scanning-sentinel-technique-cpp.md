@@ -4,7 +4,7 @@ slug: "linear-search-sequential-scanning-sentinel-technique-cpp"
 title: "Thuật toán Cơ bản #05: Thuật toán Tìm kiếm Tuyến tính (Linear Search) - Duyệt Tuần tự, Kỹ thuật Lính canh & C++ Implementation"
 summary: "Khám phá thuật toán Tìm kiếm Tuyến tính (Linear Search): Cơ chế quét tuần tự trên cấu trúc dữ liệu không có thứ tự, tối ưu hóa triệt để bằng kỹ thuật Phần tử Lính canh (Sentinel Search) giúp loại bỏ phép kiểm tra biên trong vòng lặp."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "7 phút đọc"
 tags:
@@ -18,7 +18,7 @@ tags:
 
 ## Mô tả bài toán
 
-Truy xuất dữ liệu là thao tác xuất hiện nhiều nhất trong mọi ứng dụng phần mềm. Đề bài đặt ra: Cho một danh sách `N` phần tử *chưa được sắp xếp* hoặc một luồng dữ liệu liên kết không hỗ trợ truy xuất ngẫu nhiên (như Single Linked List), hãy tìm vị trí xuất hiện đầu tiên của giá trị `target` hoặc trả về `-1` nếu không tìm thấy.
+Truy xuất dữ liệu là thao tác xuất hiện nhiều nhất trong mọi ứng dụng phần mềm. Đề bài đặt ra: Cho một danh sách `N` phần tử _chưa được sắp xếp_ hoặc một luồng dữ liệu liên kết không hỗ trợ truy xuất ngẫu nhiên (như Single Linked List), hãy tìm vị trí xuất hiện đầu tiên của giá trị `target` hoặc trả về `-1` nếu không tìm thấy.
 
 Tìm kiếm Tuyến tính (Linear Search) là giải pháp tổng quát duy nhất khả thi khi dữ liệu không có bất kỳ cấu trúc bổ trợ hay trật tự sắp xếp nào từ trước.
 
@@ -27,7 +27,7 @@ Tìm kiếm Tuyến tính (Linear Search) là giải pháp tổng quát duy nh�
 Cách tiếp cận tiêu chuẩn (Standard Loop):
 
 - Sử dụng vòng lặp `for (int i = 0; i < n; ++i)` duyệt tuần tự từ đầu đến cuối mảng.
-- *Điểm nghẽn CPU:* Tại mỗi bước lặp, CPU phải thực hiện **2 phép so sánh**: một phép kiểm tra điều kiện biên `i < n` và một phép kiểm tra giá trị `arr[i] == target`. Trên tập dữ liệu lớn, việc kiểm tra biên chiếm tới 50% thời gian thực thi của vòng lặp.
+- _Điểm nghẽn CPU:_ Tại mỗi bước lặp, CPU phải thực hiện **2 phép so sánh**: một phép kiểm tra điều kiện biên `i < n` và một phép kiểm tra giá trị `arr[i] == target`. Trên tập dữ liệu lớn, việc kiểm tra biên chiếm tới 50% thời gian thực thi của vòng lặp.
 
 ## Tư duy tối ưu & Cấu trúc thuật toán
 
@@ -103,10 +103,10 @@ int main() {
 
 **Phân tích luồng thực thi (Dry Run Trace):**
 
-- *Đầu vào:* `data = {20, 35, 10, 80, 45}`, `target = 10`.
-- *Lính canh:* Lưu `last = 45`, gán `data[4] = 10`. Mảng tạm thành `{20, 35, 10, 80, 10}`.
-- *Vòng lặp:* `i = 0` (20 != 10) `-> i = 1` (35 != 10) `-> i = 2` (`10 == 10` &rarr; Thoát vòng lặp).
-- *Kiểm tra:* Khôi phục `data[4] = 45`. `i = 2 < 4` `->` Kết luận phần tử nằm tại index `2`.
+- _Đầu vào:_ `data = {20, 35, 10, 80, 45}`, `target = 10`.
+- _Lính canh:_ Lưu `last = 45`, gán `data[4] = 10`. Mảng tạm thành `{20, 35, 10, 80, 10}`.
+- _Vòng lặp:_ `i = 0` (20 != 10) `-> i = 1` (35 != 10) `-> i = 2` (`10 == 10` &rarr; Thoát vòng lặp).
+- _Kiểm tra:_ Khôi phục `data[4] = 45`. `i = 2 < 4` `->` Kết luận phần tử nằm tại index `2`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

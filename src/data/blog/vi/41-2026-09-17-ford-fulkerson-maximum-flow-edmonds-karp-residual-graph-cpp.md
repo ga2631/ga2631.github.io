@@ -4,7 +4,7 @@ slug: "ford-fulkerson-maximum-flow-edmonds-karp-residual-graph-cpp"
 title: "Thuật toán Nâng cao #07: Thuật toán Tìm luồng cực đại Ford-Fulkerson - Đồ thị dư (Residual Graph), Cung ngược & Biến thể Edmonds-Karp C++"
 summary: "Mổ xẻ bản chất bài toán Luồng cực đại trên mạng (Max Flow): Định lý Lát cắt cực tiểu (Max-Flow Min-Cut Theorem), cơ chế hoàn luồng qua Cung ngược (Backward Edges) trên Đồ thị dư (Residual Graph), biến thể Edmonds-Karp BFS đạt O(V * E²) và cài đặt C++ hoàn chỉnh."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "13 phút đọc"
 tags:
@@ -19,7 +19,7 @@ tags:
 
 ## Mô tả bài toán
 
-Trong các hệ thống phân phối dầu khí, mạng truyền tải điện, hạ tầng băng thông mạng Internet hay điều phối chuyến bay, bài toán cốt lõi đặt ra là: *Làm thế nào để vận chuyển khối lượng vật chất hoặc thông tin lớn nhất từ điểm phát đến điểm thu mà không làm quá tải bất kỳ đường ống/đường truyền nào?*
+Trong các hệ thống phân phối dầu khí, mạng truyền tải điện, hạ tầng băng thông mạng Internet hay điều phối chuyến bay, bài toán cốt lõi đặt ra là: _Làm thế nào để vận chuyển khối lượng vật chất hoặc thông tin lớn nhất từ điểm phát đến điểm thu mà không làm quá tải bất kỳ đường ống/đường truyền nào?_
 
 Đề bài đặt ra: **Bài toán Luồng Cực đại trên Mạng (Maximum Flow Problem)**. Cho mạng luồng `G = (V, E)` là một đồ thị có hướng, trong đó mỗi cạnh `(u, v)` có một dung lượng tải tối đa (Capacity) `c(u, v) >= 0`. Cho trước hai đỉnh đặc biệt: **Đỉnh nguồn (Source `s`)** và **Đỉnh thu (Sink `t`)**.
 
@@ -43,8 +43,10 @@ Lester Ford Jr. và Delbert Fulkerson vào năm 1956 đã đưa ra giải pháp 
 Phương pháp Ford-Fulkerson vận hành dựa trên 3 trụ cột lý thuyết vững chắc:
 
 1. **Đồ thị dư (Residual Graph `G_f`):** Với mỗi cạnh `(u, v)` có dung lượng `c` và luồng hiện thời `f`:
-  - *Cung xuôi (Forward Edge):* Có dung lượng dư là `c(u, v) - f(u, v)` (thể hiện khả năng đẩy thêm luồng).
-  - *Cung ngược (Backward Edge):* Có dung lượng dư là `f(u, v)` (thể hiện khả năng hủy luồng đã gửi qua `(u, v)` để chuyển hướng luồng đi nơi khác).
+
+- _Cung xuôi (Forward Edge):_ Có dung lượng dư là `c(u, v) - f(u, v)` (thể hiện khả năng đẩy thêm luồng).
+- _Cung ngược (Backward Edge):_ Có dung lượng dư là `f(u, v)` (thể hiện khả năng hủy luồng đã gửi qua `(u, v)` để chuyển hướng luồng đi nơi khác).
+
 2. **Đường tăng luồng (Augmenting Path):** Một đường đi đơn từ nguồn `s` đến đích `t` trên đồ thị dư mà tất cả các cạnh trên đường đi đều có dung lượng dư `> 0`. Giá trị luồng tăng thêm (Bottleneck) chính là dung lượng dư nhỏ nhất trên đường đi đó.
 3. **Định lý Luồng cực đại - Lát cắt cực tiểu (Max-Flow Min-Cut Theorem):** Giá trị luồng cực đại từ `s` đến `t` chính xác bằng tổng dung lượng của lát cắt nhỏ nhất (Min-Cut) phân tách đồ thị thành 2 tập đỉnh chứa `s` và `t`.
 4. **Tối ưu hóa Edmonds-Karp (1972):** Thay vì dùng DFS có thể bị lặp vô hạn nếu dung lượng là số vô tỉ hoặc chạy rất chậm với `O(E x |f*|)`, Edmonds và Karp đề xuất luôn dùng **BFS** để tìm đường tăng luồng ngắn nhất (ít cạnh nhất). Điều này đảm bảo thuật toán đạt thời gian đa thức chặt chẽ `O(V x E²)`.
@@ -169,11 +171,11 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Mạng luồng:* `S = 0, T = 5`.
-- *Đường tăng luồng 1:* BFS tìm thấy `0 -> 1 -> 3 -> 5` với `bottleneck = min(16, 12, 20) = 12` &rarr; Luồng tăng lên `12`. Trừ dung lượng cung xuôi, tăng cung ngược.
-- *Đường tăng luồng 2:* BFS tìm thấy `0 -> 2 -> 4 -> 5` với `bottleneck = min(13, 14, 4) = 4` &rarr; Luồng tăng lên `12 + 4 = 16`.
-- *Đường tăng luồng 3:* BFS tìm thấy `0 -> 2 -> 4 -> 3 -> 5` với `bottleneck = min(9, 10, 7, 8) = 7` &rarr; Luồng tăng lên `16 + 7 = 23`.
-- *Kết thúc:* BFS không còn tìm thấy đường nào có dung lượng &gt; 0 từ 0 đến 5 &rarr; Luồng cực đại chốt giá trị `23`.
+- _Mạng luồng:_ `S = 0, T = 5`.
+- _Đường tăng luồng 1:_ BFS tìm thấy `0 -> 1 -> 3 -> 5` với `bottleneck = min(16, 12, 20) = 12` &rarr; Luồng tăng lên `12`. Trừ dung lượng cung xuôi, tăng cung ngược.
+- _Đường tăng luồng 2:_ BFS tìm thấy `0 -> 2 -> 4 -> 5` với `bottleneck = min(13, 14, 4) = 4` &rarr; Luồng tăng lên `12 + 4 = 16`.
+- _Đường tăng luồng 3:_ BFS tìm thấy `0 -> 2 -> 4 -> 3 -> 5` với `bottleneck = min(9, 10, 7, 8) = 7` &rarr; Luồng tăng lên `16 + 7 = 23`.
+- _Kết thúc:_ BFS không còn tìm thấy đường nào có dung lượng &gt; 0 từ 0 đến 5 &rarr; Luồng cực đại chốt giá trị `23`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

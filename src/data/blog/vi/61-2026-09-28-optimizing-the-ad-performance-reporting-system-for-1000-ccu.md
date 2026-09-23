@@ -4,7 +4,7 @@ slug: "optimizing-the-ad-performance-reporting-system-for-1000-ccu"
 title: "Từ 100 đến 1000 CCU #02: Tối ưu Hệ thống Báo cáo hiệu quả quảng cáo đạt 1000 CCU: Bước Chuyển Sang Data Architecture"
 summary: "Khi lượng truy cập tăng gấp 10 lần (1000 CCU) và khối lượng dữ liệu phình to thành hàng chục GB/TB, kiến trúc nguyên khối sẽ hoàn toàn sụp đổ. Bài viết này trình bày giải pháp chuyển dịch sang Kiến trúc Dữ liệu Hiện đại (Modern Data Architecture). Cốt lõi của mô hình này là việc phân tách hoàn toàn Database nghiệp vụ (PostgreSQL) và Data Warehouse (BigQuery), áp dụng Cache (Redis) làm khiên chắn bảo vệ hệ thống khỏi các cơn bão truy vấn, và xây dựng Data Pipeline chuyên nghiệp."
 category: "architecture-system-design"
-publishedAt: "28/09/2026"
+publishedAt: "2026-09-28"
 date: "2026-09-28"
 readTime: "5 phút đọc"
 tags:

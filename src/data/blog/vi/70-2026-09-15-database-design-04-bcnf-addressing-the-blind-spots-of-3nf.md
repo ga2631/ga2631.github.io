@@ -1,10 +1,10 @@
 ---
 id: "70"
-slug: "database-design-bcnf-addressing-the-blind-spots-of-3nf"
+slug: "database-design-4-bcnf-addressing-the-blind-spots-of-3nf"
 title: "Thiết kế CSDL #04: Chuẩn BCNF - Khắc phục điểm mù của 3NF"
 summary: 'Chuẩn BCNF được đề xuất vào năm 1974 bởi Raymond F. Boyce và Edgar F. Codd. Mặc dù 3NF đã giải quyết được hầu hết các vấn đề về dư thừa dữ liệu, Codd nhận ra rằng 3NF vẫn có một "điểm mù" kỹ thuật đối với các bảng có nhiều khóa ứng viên chồng chéo (overlapping candidate keys). Do đó, BCNF ra đời và thường được giới học thuật gọi vui là chuẩn "3.5NF". Đáng tiếc, Raymond F. Boyce đã qua đời chỉ vài tháng sau khi công bố bài báo này, ở tuổi 26.'
 category: "data-engineering-analytics"
-publishedAt: "15/09/2026"
+publishedAt: "2026-09-15"
 date: "2026-09-15"
 readTime: "5 phút đọc"
 tags:

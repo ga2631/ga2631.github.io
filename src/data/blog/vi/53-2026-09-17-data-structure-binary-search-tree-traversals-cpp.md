@@ -4,7 +4,7 @@ slug: "data-structure-binary-search-tree-traversals-cpp"
 title: "Cấu trúc Dữ liệu #06: Cây & Cây Tìm kiếm Nhị phân (BST) - Bất biến Thứ tự, 4 Phép Duyệt Cây & Triển khai C++"
 summary: "Mổ xẻ bản chất cấu trúc dữ liệu Cây (Tree) và Cây Tìm kiếm Nhị phân (Binary Search Tree - BST): Tính chất bất biến Khóa trái < Gốc < Khóa phải, phân tích 4 thuật toán duyệt cây kinh điển (Pre-order, In-order, Post-order, Level-order BFS), cơ chế Chèn/Xóa/Tìm kiếm O(log N) và mã nguồn C++ đệ quy chuẩn hóa."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "13 phút đọc"
 tags:

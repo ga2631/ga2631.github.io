@@ -4,8 +4,8 @@ slug: "mastering-oltp-database-design-acid-normalization-high-concurrency-data-e
 title: "Làm chủ Thiết kế Cơ sở Dữ liệu OLTP: Chuẩn hóa 3NF, Đảm bảo ACID, Kiểm soát Giao dịch Đồng thời (Concurrency) & Kỹ thuật CDC Chống Nghẽn"
 summary: "Cẩm nang chuyên sâu về kiến trúc cơ sở dữ liệu xử lý giao dịch trực tuyến (OLTP - Online Transaction Processing): Phân tích bản chất 4 thuộc tính ACID, chiến lược chuẩn hóa 3NF/BCNF đối đầu phi chuẩn hóa có kiểm soát, xử lý xung đột tranh chấp khóa (Pessimistic vs Optimistic Locking) trong kịch bản Flash Sale hàng triệu người dùng, tối ưu hóa chỉ số B-Tree, và xây dựng hạ tầng Change Data Capture (CDC) giải phóng tải cho Data Warehouse."
 category: "data-engineering-analytics"
-publishedAt: "15/09/2026"
-date: "2026-09-15"
+publishedAt: "2026-08-11"
+date: "2026-08-11"
 readTime: "15 phút đọc"
 tags:
   - "OLTP"

@@ -4,7 +4,7 @@ slug: "insertion-sort-adaptive-sorting-online-processing-cpp"
 title: "Thuật toán Cơ bản #04: Thuật toán Sắp xếp Chèn (Insertion Sort) - Cơ chế Dịch chuyển Mảng con, Tính thích ứng & C++ Implementation"
 summary: "Mổ xẻ thuật toán Sắp xếp Chèn (Insertion Sort): Kỹ thuật dịch chuyển (Shifting) thay vì hoán đổi, khả năng thích ứng siêu tốc O(N) với mảng gần như đã sắp xếp, thuật toán trực tuyến (Online Algorithm) và ứng dụng làm lõi của TimSort/Introsort."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "9 phút đọc"
 tags:
@@ -27,7 +27,7 @@ Sắp xếp Chèn (Insertion Sort) mô phỏng chính xác hành vi sắp xếp 
 Cách tiếp cận ngây thơ:
 
 - Mỗi khi lấy phần tử mới `arr[i]`, hoán đổi liên tục lùi dần về đầu mảng bằng hàm `std::swap`.
-- *Điểm nghẽn:* Mỗi phép `std::swap` tốn 3 phép gán bộ nhớ (sử dụng biến tạm), dẫn đến lãng phí tài nguyên CPU khi phải dời nhiều phần tử.
+- _Điểm nghẽn:_ Mỗi phép `std::swap` tốn 3 phép gán bộ nhớ (sử dụng biến tạm), dẫn đến lãng phí tài nguyên CPU khi phải dời nhiều phần tử.
 
 ## Tư duy tối ưu & Cấu trúc thuật toán
 
@@ -91,11 +91,11 @@ int main() {
 
 **Phân tích luồng thực thi (Dry Run Trace):**
 
-- *Khởi tạo:* `data = {12, 11, 13, 5, 6}` (`N = 5`). Mảng con đã sắp ban đầu là `{12}`.
-- *Pass `i = 1`:* `key = 11`. `j = 0`: `arr[0] = 12 > 11` `->` Gán `arr[1] = 12`, `j = -1` (dừng). Gán `arr[0] = 11` `->` Mảng: `{11, 12, 13, 5, 6}`.
-- *Pass `i = 2`:* `key = 13`. `j = 1`: `arr[1] = 12 < 13` (dừng ngay). Gán `arr[2] = 13` `->` Mảng: `{11, 12, 13, 5, 6}`.
-- *Pass `i = 3`:* `key = 5`. Dịch lần lượt 13, 12, 11 sang phải `->` Gán `arr[0] = 5` `->` Mảng: `{5, 11, 12, 13, 6}`.
-- *Pass `i = 4`:* `key = 6`. Dịch 13, 12, 11 sang phải `->` Gán `arr[1] = 6` `->` Mảng: `{5, 6, 11, 12, 13}`.
+- _Khởi tạo:_ `data = {12, 11, 13, 5, 6}` (`N = 5`). Mảng con đã sắp ban đầu là `{12}`.
+- _Pass `i = 1`:_ `key = 11`. `j = 0`: `arr[0] = 12 > 11` `->` Gán `arr[1] = 12`, `j = -1` (dừng). Gán `arr[0] = 11` `->` Mảng: `{11, 12, 13, 5, 6}`.
+- _Pass `i = 2`:_ `key = 13`. `j = 1`: `arr[1] = 12 < 13` (dừng ngay). Gán `arr[2] = 13` `->` Mảng: `{11, 12, 13, 5, 6}`.
+- _Pass `i = 3`:_ `key = 5`. Dịch lần lượt 13, 12, 11 sang phải `->` Gán `arr[0] = 5` `->` Mảng: `{5, 11, 12, 13, 6}`.
+- _Pass `i = 4`:_ `key = 6`. Dịch 13, 12, 11 sang phải `->` Gán `arr[1] = 6` `->` Mảng: `{5, 6, 11, 12, 13}`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

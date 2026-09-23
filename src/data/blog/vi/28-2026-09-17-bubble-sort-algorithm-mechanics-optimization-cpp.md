@@ -4,7 +4,7 @@ slug: "bubble-sort-algorithm-mechanics-optimization-cpp"
 title: "Thuật toán Cơ bản #02: Thuật toán Sắp xếp Nổi bọt (Bubble Sort) - Cơ chế Hoán đổi Lân cận, Tối ưu Cờ hiệu & C++ Implementation"
 summary: "Mổ xẻ thuật toán Sắp xếp Nổi bọt (Bubble Sort): Nguyên lý đẩy phần tử cực đại về cuối mảng, tối ưu hóa cờ hiệu swapped để đạt O(N) trong Best-case, minh họa trực quan Mermaid và triển khai C++ với phân tích từng bước thực thi."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "8 phút đọc"
 tags:

@@ -4,7 +4,7 @@ slug: "maximum-flow-algorithms-comparison-ford-fulkerson-dinic"
 title: "Thuật toán Nâng cao #09: So sánh Toàn diện 2 Thuật toán Luồng cực đại - Ford-Fulkerson / Edmonds-Karp vs Dinic & Ứng dụng Cặp ghép Cực đại"
 summary: "Bản so sánh đối chuẩn chuyên sâu giữa 2 thế hệ thuật toán Luồng cực đại: Đơn luồng đơn lẻ (Single-Path Augmentation) vs Đồ thị phân tầng đa luồng (Layered Blocking Flow), ma trận hiệu năng trên đồ thị thực tế và kỹ thuật quy đổi bài toán Cặp ghép cực đại."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "11 phút đọc"
 tags:

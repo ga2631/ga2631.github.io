@@ -4,7 +4,7 @@ slug: "blue-green-deployment-strategy"
 title: "Chiến Lược Triển Khai Blue-Green Deployment"
 summary: "Hướng dẫn chi tiết về chiến lược Blue-Green Deployment trong CI/CD. Trả lời câu hỏi khi nào nên áp dụng, nguyên lý hoạt động, từng bước thiết lập và cách khắc phục sự cố downtime."
 category: "devops-cloud-tooling"
-publishedAt: "23/09/2026"
+publishedAt: "2026-09-23"
 date: "2026-09-23"
 readTime: "4 phút đọc"
 tags:

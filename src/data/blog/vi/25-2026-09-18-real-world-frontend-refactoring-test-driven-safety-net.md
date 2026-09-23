@@ -4,7 +4,7 @@ slug: "real-world-frontend-refactoring-test-driven-safety-net"
 title: "Tư duy Refactoring Thực chiến: Xây dựng Lưới an toàn (Safety Net) & Chuẩn hóa Hệ thống Test Matrix Đa tầng"
 summary: "Kinh nghiệm tái cấu trúc mã nguồn quy mô lớn mà không làm gãy tính năng: Phương pháp xây dựng bộ test matrix phân tầng (TU/TI), giữ vững Invariance và tư duy kỹ thuật chuyên nghiệp."
 category: "tech-radar-career-insights"
-publishedAt: "18/09/2026"
+publishedAt: "2026-09-18"
 date: "2026-09-18"
 readTime: "7 phút đọc"
 tags:

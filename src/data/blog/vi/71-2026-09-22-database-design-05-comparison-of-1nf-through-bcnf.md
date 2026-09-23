@@ -1,10 +1,10 @@
 ---
 id: "71"
-slug: "database-design-comparison-of-1nf-through-bcnf"
+slug: "database-design-5-comparison-of-1nf-through-bcnf"
 title: "Thiết kế CSDL #05: So sánh 1NF đến BCNF và Bài toán Khử chuẩn hóa (Denormalization)"
 summary: 'Chặng đường từ 1NF (1970) đến BCNF (1974) đánh dấu thời kỳ hoàng kim của mô hình dữ liệu quan hệ. Về sau, Ronald Fagin bổ sung 4NF (1977) xử lý phụ thuộc đa trị và 5NF. Tuy nhiên, trong 99% các dự án phần mềm thực tế, 3NF/BCNF được xem là "điểm dừng ngọt ngào" (sweet spot). Việc theo đuổi 4NF hay 5NF thường khiến cấu trúc quá phân mảnh và làm giảm hiệu năng hệ thống một cách không cần thiết.'
 category: "data-engineering-analytics"
-publishedAt: "22/09/2026"
+publishedAt: "2026-09-22"
 date: "2026-09-22"
 readTime: "5 phút đọc"
 tags:

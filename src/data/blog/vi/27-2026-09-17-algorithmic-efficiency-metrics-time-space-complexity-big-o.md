@@ -4,7 +4,7 @@ slug: "algorithmic-efficiency-metrics-time-space-complexity-big-o"
 title: "Thuật toán Cơ bản #01: Thước đo Hiệu quả Thuật toán - Phân tích Độ phức tạp Thời gian (Time Complexity), Không gian (Space Complexity) & Ký hiệu Tiệm cận (Big-O, Big-Ω, Big-Θ)"
 summary: "Thiết lập bộ khung đo lường chuẩn hóa hiệu năng thuật toán: Phân biệt Thời gian thực thi (Wall-clock) vs Mô hình tính toán RAM, phân rã Time vs Space Complexity (Auxiliary vs Total) và làm chủ hệ thống ký hiệu tiệm cận làm nền tảng cho toàn bộ series."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "9 phút đọc"
 tags:

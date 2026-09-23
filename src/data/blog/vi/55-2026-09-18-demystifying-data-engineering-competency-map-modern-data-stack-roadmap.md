@@ -4,7 +4,7 @@ slug: "demystifying-data-engineering-competency-map-modern-data-stack-roadmap"
 title: "Toàn cảnh Nghề Data Engineer: Bản đồ Năng lực, Vòng đời Dữ liệu (Data Lifecycle) & Kiến trúc Nền tảng Dữ liệu Hiện đại (Modern Data Stack)"
 summary: "Hướng dẫn toàn diện về nghề Kỹ sư Dữ liệu (Data Engineer): Khám phá vai trò trụ cột trong kỷ nguyên AI, so sánh chi tiết Data Engineer vs Data Scientist vs Backend Engineer, phân tích vòng đời dữ liệu (Ingestion, Storage, Processing, Serving), kiến trúc Modern Data Stack (Lakehouse, Kafka, Spark, dbt, Airflow) và lộ trình phát triển kỹ năng thực chiến."
 category: "tech-radar-career-insights"
-publishedAt: "18/09/2026"
+publishedAt: "2026-09-18"
 date: "2026-09-18"
 readTime: "12 phút đọc"
 tags:
@@ -140,21 +140,30 @@ flowchart TD
 Bản đồ lộ trình kỹ năng (Skill Matrix) dành cho kỹ sư muốn chuyển hướng hoặc phát triển chuyên sâu trong ngành Data Engineering:
 
 1. **Kỹ năng Lập trình & Khoa học Máy tính Nền tảng:**
-  - Thành thạo **Python** (xử lý dữ liệu, scripting, tương tác API) và **SQL nâng cao** (Window functions, CTEs, tối ưu Explain Plan).
-  - Hiểu sâu về Thuật toán, Cấu trúc dữ liệu và Kiến trúc bộ nhớ (Memory/CPU cache, I/O bound vs CPU bound).
-  - Khuyến khích học thêm **Scala/Java** hoặc **Rust** để làm việc với các hệ thống phân tán lõi.
+
+- Thành thạo **Python** (xử lý dữ liệu, scripting, tương tác API) và **SQL nâng cao** (Window functions, CTEs, tối ưu Explain Plan).
+- Hiểu sâu về Thuật toán, Cấu trúc dữ liệu và Kiến trúc bộ nhớ (Memory/CPU cache, I/O bound vs CPU bound).
+- Khuyến khích học thêm **Scala/Java** hoặc **Rust** để làm việc với các hệ thống phân tán lõi.
+
 2. **Mô hình hóa Dữ liệu (Data Modeling):**
-  - Nắm vững phương pháp mô hình hóa chiều Kimball Dimensional Modeling (Fact Tables, Dimension Tables, Star Schema, Snowflake Schema).
-  - Hiểu rõ kiến trúc Data Vault và kỹ thuật Slow Changing Dimensions (SCD Type 1, 2, 3).
+
+- Nắm vững phương pháp mô hình hóa chiều Kimball Dimensional Modeling (Fact Tables, Dimension Tables, Star Schema, Snowflake Schema).
+- Hiểu rõ kiến trúc Data Vault và kỹ thuật Slow Changing Dimensions (SCD Type 1, 2, 3).
+
 3. **Tính toán Phân tán & Công cụ Xử lý Dữ liệu Lớn:**
-  - Làm chủ **Apache Spark**: Hiểu rõ cơ chế RDD, DataFrame, cơ chế tối ưu hóa Catalyst Optimizer, bộ quản lý bộ nhớ Tungsten và cách giải quyết hiện tượng Data Skew (lệch dữ liệu giữa các partition).
-  - Làm chủ công cụ chuyển đổi hiện đại: **dbt (data build tool)** kết hợp với kho dữ liệu Snowflake/BigQuery.
+
+- Làm chủ **Apache Spark**: Hiểu rõ cơ chế RDD, DataFrame, cơ chế tối ưu hóa Catalyst Optimizer, bộ quản lý bộ nhớ Tungsten và cách giải quyết hiện tượng Data Skew (lệch dữ liệu giữa các partition).
+- Làm chủ công cụ chuyển đổi hiện đại: **dbt (data build tool)** kết hợp với kho dữ liệu Snowflake/BigQuery.
+
 4. **Hệ thống Xử lý Luồng & Điều phối (Streaming & Orchestration):**
-  - Xây dựng đường ống sự kiện với **Apache Kafka** (Topics, Partitions, Consumer Groups, Exactly-Once Semantics).
-  - Lập lịch và quản lý DAG phụ thuộc phức tạp với **Apache Airflow** hoặc **Dagster**.
+
+- Xây dựng đường ống sự kiện với **Apache Kafka** (Topics, Partitions, Consumer Groups, Exactly-Once Semantics).
+- Lập lịch và quản lý DAG phụ thuộc phức tạp với **Apache Airflow** hoặc **Dagster**.
+
 5. **Văn hóa DataOps & Chất lượng Dữ liệu:**
-  - Tự động hóa kiểm thử dữ liệu với `dbt test`, `Great Expectations` hoặc `Soda`.
-  - Thiết lập hệ thống CI/CD cho mã nguồn data pipeline và theo dõi nguồn gốc dữ liệu (Data Lineage).
+
+- Tự động hóa kiểm thử dữ liệu với `dbt test`, `Great Expectations` hoặc `Soda`.
+- Thiết lập hệ thống CI/CD cho mã nguồn data pipeline và theo dõi nguồn gốc dữ liệu (Data Lineage).
 
 ## Câu hỏi mở, thảo luận
 

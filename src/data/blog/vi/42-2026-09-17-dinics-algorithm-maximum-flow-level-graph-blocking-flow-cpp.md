@@ -4,7 +4,7 @@ slug: "dinics-algorithm-maximum-flow-level-graph-blocking-flow-cpp"
 title: "Thuật toán Nâng cao #08: Thuật toán Tìm luồng cực đại Dinic - Đồ thị Phân tầng (Level Graph), Luồng chặn (Blocking Flow) & Triển khai C++ Siêu tốc"
 summary: "Mổ xẻ thuật toán tìm luồng cực đại Dinic: Đột phá hiệu năng O(V² * E) nhờ cấu trúc Đồ thị phân tầng (Level Graph), kỹ thuật đẩy Luồng chặn (Blocking Flow) qua DFS và con trỏ dead-end pruning work[], đạt O(E * sqrt(V)) trên mạng đơn vị."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "13 phút đọc"
 tags:
@@ -19,7 +19,7 @@ tags:
 
 ## Mô tả bài toán
 
-Mặc dù thuật toán Edmonds-Karp đảm bảo tính đa thức với độ phức tạp `O(V x E²)`, nhưng trên các đồ thị có quy mô lớn trong thực tế (hàng chục nghìn đỉnh và hàng trăm nghìn cạnh), việc chạy lại toàn bộ thuật toán BFS từ đầu chỉ để tăng luồng trên *một con đường duy nhất* là một nút thắt cổ chai hiệu năng nghiêm trọng.
+Mặc dù thuật toán Edmonds-Karp đảm bảo tính đa thức với độ phức tạp `O(V x E²)`, nhưng trên các đồ thị có quy mô lớn trong thực tế (hàng chục nghìn đỉnh và hàng trăm nghìn cạnh), việc chạy lại toàn bộ thuật toán BFS từ đầu chỉ để tăng luồng trên _một con đường duy nhất_ là một nút thắt cổ chai hiệu năng nghiêm trọng.
 
 Nhà toán học Yefim A. Dinitz vào năm 1970 đã phát minh ra **Thuật toán Dinic (Dinitz's Algorithm)**. Thuật toán giới thiệu một bước nhảy vọt về tư duy: Thay vì tăng luồng đơn lẻ, Dinic xây dựng **Đồ thị phân tầng (Level Graph)** và đẩy đồng thời nhiều đường tăng luồng cùng lúc trong một pha duy nhất thông qua khái niệm **Luồng chặn (Blocking Flow)**.
 
@@ -37,12 +37,15 @@ Sự khác biệt căn bản giữa Edmonds-Karp và Dinic nằm ở kiến trú
 Thuật toán Dinic vận hành theo cấu trúc 2 pha lặp đi lặp lại:
 
 1. **Pha 1: Xây dựng Đồ thị Phân tầng (Level Graph bằng BFS):**
-  - Gán cấp độ cho đỉnh nguồn: `level[s] = 0`.
-  - Dùng BFS lan truyền: Với mỗi cạnh `(u, v)` có dung lượng dư `capacity[u][v] > 0`, nếu `level[v] == -1` thì gán `level[v] = level[u] + 1`.
-  - Nếu đỉnh đích `t` không thể chạm tới (`level[t] == -1`), thuật toán dừng ngay lập tức &rarr; Đã đạt luồng cực đại.
+
+- Gán cấp độ cho đỉnh nguồn: `level[s] = 0`.
+- Dùng BFS lan truyền: Với mỗi cạnh `(u, v)` có dung lượng dư `capacity[u][v] > 0`, nếu `level[v] == -1` thì gán `level[v] = level[u] + 1`.
+- Nếu đỉnh đích `t` không thể chạm tới (`level[t] == -1`), thuật toán dừng ngay lập tức &rarr; Đã đạt luồng cực đại.
+
 2. **Pha 2: Đẩy Luồng chặn (Blocking Flow bằng DFS):**
-  - Chỉ cho phép đẩy luồng từ tầng `level[u]` sang tầng kế tiếp `level[u] + 1`: Tức là điều kiện duyệt cạnh hợp lệ là `level[v] == level[u] + 1` và `cap > 0`.
-  - **Tối ưu hóa con trỏ nhánh cụt (Work Pointer / Head Optimization):** Duy trì mảng `work[u]` lưu chỉ số của cạnh kề đang xét. Khi một nhánh DFS từ đỉnh `u` bị nghẽn (không đẩy được thêm luồng), con trỏ `work[u]` tự động tăng lên để loại bỏ vĩnh viễn nhánh cụt đó trong pha hiện tại, tránh duyệt lại các cạnh vô ích.
+
+- Chỉ cho phép đẩy luồng từ tầng `level[u]` sang tầng kế tiếp `level[u] + 1`: Tức là điều kiện duyệt cạnh hợp lệ là `level[v] == level[u] + 1` và `cap > 0`.
+- **Tối ưu hóa con trỏ nhánh cụt (Work Pointer / Head Optimization):** Duy trì mảng `work[u]` lưu chỉ số của cạnh kề đang xét. Khi một nhánh DFS từ đỉnh `u` bị nghẽn (không đẩy được thêm luồng), con trỏ `work[u]` tự động tăng lên để loại bỏ vĩnh viễn nhánh cụt đó trong pha hiện tại, tránh duyệt lại các cạnh vô ích.
 
 ## Triển khai mã nguồn & Dry Run
 
@@ -132,7 +135,7 @@ private:
     }
 
 public:
-    Dinic(int numVertices, int source, int sink) 
+    Dinic(int numVertices, int source, int sink)
         : n(numVertices), s(source), t(sink) {
         adj.resize(n);
         level.resize(n);
@@ -183,13 +186,13 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Pha 1 (BFS 1):* Gán nhãn tầng `level = [0, 1, 1, 2, 2, 3]`. `level[T=5] = 3`.
-- *Pha 1 (DFS 1):* 
+- _Pha 1 (BFS 1):_ Gán nhãn tầng `level = [0, 1, 1, 2, 2, 3]`. `level[T=5] = 3`.
+- _Pha 1 (DFS 1):_
   - Đường `0 -> 1 -> 3 -> 5`: `pushed = min(10, 4, 10) = 4` &rarr; Luồng = 4.
   - Đường `0 -> 1 -> 4 -> 5`: `pushed = min(6, 8, 10) = 6` &rarr; Luồng = 4 + 6 = 10 (Đỉnh 1 bão hòa).
   - Đường `0 -> 2 -> 4 -> 5`: `pushed = min(10, 9, 4) = 4` &rarr; Luồng = 10 + 4 = 14 (Đỉnh 5 bão hòa tầng 3).
-- *Pha 2 (BFS 2):* Đồ thị dư cập nhật &rarr; BFS gán lại tầng &rarr; DFS đẩy tiếp luồng qua đường `0 -> 2 -> 4 -> 3 -> 5` thêm `5` đơn vị &rarr; Luồng = `19`.
-- *Pha 3 (BFS 3):* `level[T] = -1` (không còn đường) &rarr; Dừng ngay lập tức với kết quả luồng cực đại bằng `19`.
+- _Pha 2 (BFS 2):_ Đồ thị dư cập nhật &rarr; BFS gán lại tầng &rarr; DFS đẩy tiếp luồng qua đường `0 -> 2 -> 4 -> 3 -> 5` thêm `5` đơn vị &rarr; Luồng = `19`.
+- _Pha 3 (BFS 3):_ `level[T] = -1` (không còn đường) &rarr; Dừng ngay lập tức với kết quả luồng cực đại bằng `19`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

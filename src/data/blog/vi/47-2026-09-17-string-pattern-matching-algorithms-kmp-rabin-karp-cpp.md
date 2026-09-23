@@ -4,7 +4,7 @@ slug: "string-pattern-matching-algorithms-kmp-rabin-karp-cpp"
 title: "Thuật toán Nâng cao #13: Thuật toán Chuỗi & Đối sánh Mẫu - Knuth-Morris-Pratt (KMP) O(N + M), Rabin-Karp Rolling Hash & Triển khai C++"
 summary: "Khám phá chuyên sâu bài toán Đối sánh Mẫu chuỗi (String Pattern Matching): Mổ xẻ thuật toán KMP với Bảng tiền tố LPS (Longest Proper Prefix which is also Suffix) loại bỏ hoàn toàn quay lui O(N + M), thuật toán Rabin-Karp với Mã băm cuộn đa thức (Polynomial Rolling Hash) và mã nguồn C++ hoàn chỉnh."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "13 phút đọc"
 tags:

@@ -4,7 +4,7 @@ slug: "bellman-ford-shortest-path-negative-weights-cycle-detection-cpp"
 title: "Thuật toán Nâng cao #04: Thuật toán Tìm đường đi ngắn nhất Bellman-Ford - Xử lý Trọng số Âm, Phát hiện Chu trình Âm & Triển khai C++"
 summary: "Mổ xẻ thuật toán Bellman-Ford: Tìm đường đi ngắn nhất từ một nguồn (SSSP) trên đồ thị tổng quát chứa trọng số âm, cơ chế duyệt V-1 vòng lặp nới lỏng cạnh O(V * E), phát hiện chu trình âm (Negative Cycle Detection) và cài đặt C++ tối ưu cờ hiệu dừng sớm."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "12 phút đọc"
 tags:
@@ -158,12 +158,12 @@ int main() {
   - Cạnh `(1->4, w=2)`: `dist[4] = -1 + 2 = 1`.
   - Cạnh `(1->2, w=3)`: `-1 + 3 = 2 < 4` &rarr; `dist[2] = 2`.
   - Kết thúc lượt 1: `dist = [0, -1, 2, 1, 1]`.
-- *Lượt 2 (i = 2):*
+- _Lượt 2 (i = 2):_
   - Cạnh `(4->3, w=-3)`: `dist[4] + (-3) = 1 - 3 = -2 < dist[3]=1` &rarr; Nới lỏng! `dist[3] = -2`.
   - Cạnh `(3->1, w=1)`: `dist[3] + 1 = -2 + 1 = -1 == dist[1]` (không đổi).
   - Kết thúc lượt 2: `dist = [0, -1, 2, -2, 1]`.
-- *Lượt 3 (i = 3):* Không còn cạnh nào cải thiện thêm &rarr; Cờ `updated = false` &rarr; Thoát sớm ở lượt 3 thay vì chờ hết 4 lượt.
-- *Kiểm tra chu trình âm:* Duyệt toàn bộ 8 cạnh, không có cạnh nào giảm thêm khoảng cách &rarr; Đồ thị an toàn, kết quả chốt `[0, -1, 2, -2, 1]`.
+- _Lượt 3 (i = 3):_ Không còn cạnh nào cải thiện thêm &rarr; Cờ `updated = false` &rarr; Thoát sớm ở lượt 3 thay vì chờ hết 4 lượt.
+- _Kiểm tra chu trình âm:_ Duyệt toàn bộ 8 cạnh, không có cạnh nào giảm thêm khoảng cách &rarr; Đồ thị an toàn, kết quả chốt `[0, -1, 2, -2, 1]`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

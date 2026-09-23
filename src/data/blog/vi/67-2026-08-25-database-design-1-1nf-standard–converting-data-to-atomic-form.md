@@ -1,10 +1,10 @@
 ---
 id: "67"
-slug: "database-design-1nf-standard–converting-data-to-atomic-form"
+slug: "database-design-1-1nf-standard–converting-data-to-atomic-form"
 title: "Thiết kế CSDL #01: Chuẩn 1NF - Đưa dữ liệu về dạng nguyên tử"
 summary: 'Chuẩn 1NF được định nghĩa bởi Edgar F. Codd vào năm 1970 trong bài báo nền tảng "A Relational Model of Data for Large Shared Data Banks". Ông nhấn mạnh rằng các domain (trường dữ liệu) trong mô hình quan hệ chỉ được chứa các giá trị đơn trị (atomic values), đặt nền móng cho hệ quản trị CSDL quan hệ (RDBMS) hiện đại.'
 category: "data-engineering-analytics"
-publishedAt: "25/08/2026"
+publishedAt: "2026-08-25"
 date: "2026-08-25"
 readTime: "5 phút đọc"
 tags:

@@ -4,7 +4,7 @@ slug: "optimizing-mermaid-frontend-ui-theme-viewport-responsive"
 title: "Tối ưu hóa Hiệu năng & Xử lý Mermaid.js Tương thích Giao diện Web: Đồng bộ Dark Theme, Phóng to Viewport & Trải nghiệm Responsive"
 summary: "Nghệ thuật tích hợp Mermaid.js vào ứng dụng Single Page Application (React/TypeScript): Tối ưu tải động ESM, đồng bộ tương phản Dark Mode, cơ chế Fit View tương tác với Pan/Zoom và loại bỏ cảm giác đóng hộp thô cứng."
 category: "code-craftsmanship-languages"
-publishedAt: "10/09/2026"
+publishedAt: "2026-09-10"
 date: "2026-09-10"
 readTime: "8 phút đọc"
 tags:

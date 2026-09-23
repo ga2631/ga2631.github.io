@@ -4,7 +4,7 @@ slug: "moving-away-from-json-to-markdown"
 title: "Rời bỏ JSON: Cấu trúc lại hệ thống lưu trữ Blog tĩnh với Markdown và SSG"
 summary: 'Hành trình chuyển đổi mô hình lưu trữ bài viết từ file JSON nguyên khối sang hệ thống file Markdown độc lập. Bài viết phân tích bài toán nút thắt hiệu năng (bottleneck) trên môi trường GitHub Pages, thiết kế lại kiến trúc, và những đánh đổi kỹ thuật khi áp dụng tư duy "Build-time" thay cho "Run-time".'
 category: "architecture-system-design"
-publishedAt: "14/09/2026"
+publishedAt: "2026-09-14"
 date: "2026-09-14"
 readTime: "9 phút đọc"
 tags:

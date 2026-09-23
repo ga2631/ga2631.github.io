@@ -4,7 +4,7 @@ slug: "data-structure-hash-table-collision-chaining-open-addressing-cpp"
 title: "Cấu trúc Dữ liệu #05: Bảng băm (Hash Table) - Hàm Băm Đồng đều, Xử lý Đụng độ & Cài đặt C++ Chaining"
 summary: "Mổ xẻ toàn diện cấu trúc dữ liệu Bảng băm (Hash Table / Hash Map): Nguyên lý ánh xạ khóa sang chỉ số ô nhớ O(1), thiết kế Hàm băm phân phối đều (Uniform Hash Function), so sánh Xử lý đụng độ bằng Danh sách liên kết (Separate Chaining) vs Dò tuyến tính (Open Addressing), kiểm soát Hệ số tải (Load Factor) và cài đặt C++ hoàn chỉnh."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "12 phút đọc"
 tags:

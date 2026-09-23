@@ -4,7 +4,7 @@ slug: "binary-search-divide-and-conquer-cpp-implementation"
 title: "Thuật toán Cơ bản #06: Thuật toán Tìm kiếm Nhị phân (Binary Search) - Cơ chế Cắt đôi Không gian, Xử lý Integer Overflow & C++ Implementation"
 summary: "Mổ xẻ toàn diện thuật toán Tìm kiếm Nhị phân (Binary Search): Nguyên lý Chia để Trị loại bỏ 50% không gian tìm kiếm, kỹ thuật chống tràn số nguyên 32-bit khi tính Mid, triển khai Iterative chuẩn O(1) space và mở rộng hàm lower_bound."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "9 phút đọc"
 tags:
@@ -27,17 +27,19 @@ Tìm kiếm Nhị phân (Binary Search) áp dụng mô hình Chia để Trị (D
 Cách tiếp cận ngây thơ:
 
 - Sử dụng vòng lặp duyệt tuần tự từ đầu mảng `for (int i = 0; i < n; ++i)`.
-- *Lãng phí:* Hoàn toàn bỏ qua thuộc tính vô giá rằng mảng *đã có thứ tự sẵn*, dẫn đến việc phải duyệt qua hàng triệu phần tử vô ích.
+- _Lãng phí:_ Hoàn toàn bỏ qua thuộc tính vô giá rằng mảng _đã có thứ tự sẵn_, dẫn đến việc phải duyệt qua hàng triệu phần tử vô ích.
 
 ## Tư duy tối ưu & Cấu trúc thuật toán
 
 Tư duy Chia để Trị và các kỹ thuật cốt lõi của Binary Search:
 
 1. **Loại trừ 50% Không gian sau mỗi bước:** So sánh `arr[mid]` với `target`:
-  - Nếu `arr[mid] == target`: Tìm thấy ngay lập tức.
-  - Nếu `arr[mid] < target`: Toàn bộ nửa trái chắc chắn nhỏ hơn target &rarr; Thu hẹp tìm kiếm về nửa phải `[mid + 1, right]`.
-  - Nếu `arr[mid] > target`: Toàn bộ nửa phải chắc chắn lớn hơn &rarr; Thu hẹp về nửa trái `[left, mid - 1]`.
-2. **Phòng chống Cạm bẫy Tràn số nguyên (Integer Overflow):** Công thức `mid = (left + right) / 2` có thể tràn số nguyên 32-bit có dấu khi `left + right > 2^31 - 1`. *Kỹ thuật chuẩn:* Luôn viết `mid = left + (right - left) / 2`.
+
+- Nếu `arr[mid] == target`: Tìm thấy ngay lập tức.
+- Nếu `arr[mid] < target`: Toàn bộ nửa trái chắc chắn nhỏ hơn target &rarr; Thu hẹp tìm kiếm về nửa phải `[mid + 1, right]`.
+- Nếu `arr[mid] > target`: Toàn bộ nửa phải chắc chắn lớn hơn &rarr; Thu hẹp về nửa trái `[left, mid - 1]`.
+
+2. **Phòng chống Cạm bẫy Tràn số nguyên (Integer Overflow):** Công thức `mid = (left + right) / 2` có thể tràn số nguyên 32-bit có dấu khi `left + right > 2^31 - 1`. _Kỹ thuật chuẩn:_ Luôn viết `mid = left + (right - left) / 2`.
 3. **Mở rộng Tìm kiếm Biên (Lower Bound):** Tìm phần tử đầu tiên `>= target`, nền tảng của các chỉ mục cơ sở dữ liệu B-Tree.
 
 ## Triển khai mã nguồn & Dry Run
@@ -109,10 +111,10 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Dữ liệu đầu vào:* `data = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91}`, `N = 10`, `target = 23`.
-- *Lần lặp 1:* `left = 0`, `right = 9` &rarr; `mid = 0 + (9 - 0) / 2 = 4`. Giá trị `data[4] = 16 < 23` &rarr; `left = mid + 1 = 5`. Loại bỏ 5 phần tử nửa trái.
-- *Lần lặp 2:* `left = 5`, `right = 9` &rarr; `mid = 5 + (9 - 5) / 2 = 7`. Giá trị `data[7] = 56 > 23` &rarr; `right = mid - 1 = 6`. Loại bỏ 2 phần tử nửa phải.
-- *Lần lặp 3:* `left = 5`, `right = 6` &rarr; `mid = 5 + (6 - 5) / 2 = 5`. Giá trị `data[5] = 23 == 23` &rarr; Khớp chính xác! Trả về chỉ số `5` chỉ sau đúng 3 phép so sánh.
+- _Dữ liệu đầu vào:_ `data = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91}`, `N = 10`, `target = 23`.
+- _Lần lặp 1:_ `left = 0`, `right = 9` &rarr; `mid = 0 + (9 - 0) / 2 = 4`. Giá trị `data[4] = 16 < 23` &rarr; `left = mid + 1 = 5`. Loại bỏ 5 phần tử nửa trái.
+- _Lần lặp 2:_ `left = 5`, `right = 9` &rarr; `mid = 5 + (9 - 5) / 2 = 7`. Giá trị `data[7] = 56 > 23` &rarr; `right = mid - 1 = 6`. Loại bỏ 2 phần tử nửa phải.
+- _Lần lặp 3:_ `left = 5`, `right = 6` &rarr; `mid = 5 + (6 - 5) / 2 = 5`. Giá trị `data[5] = 23 == 23` &rarr; Khớp chính xác! Trả về chỉ số `5` chỉ sau đúng 3 phép so sánh.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

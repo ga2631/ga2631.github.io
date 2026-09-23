@@ -4,7 +4,7 @@ slug: "kruskals-minimum-spanning-tree-dsu-disjoint-set-union-cpp"
 title: "Thuật toán Nâng cao #10: Thuật toán Cây khung nhỏ nhất Kruskal - Cấu trúc DSU (Disjoint Set Union), Nén đường & Triển khai C++"
 summary: "Mổ xẻ thuật toán Cây khung nhỏ nhất Kruskal (Kruskal's MST): Bản chất giải thuật Tham lam trên tập cạnh, cấu trúc dữ liệu Các tập hợp rời nhau (Disjoint Set Union - DSU) với Nén đường (Path Compression) và Hợp nhất theo Hạng (Union by Rank), đạt độ phức tạp O(E log E) với mã nguồn C++ hoàn chỉnh."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "12 phút đọc"
 tags:

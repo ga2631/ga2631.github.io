@@ -4,7 +4,7 @@ slug: "floyd-warshall-all-pairs-shortest-path-matrix-dp-cpp"
 title: "Thuật toán Nâng cao #05: Thuật toán Tìm đường đi ngắn nhất Floyd-Warshall - Quy hoạch động Ma trận O(V³), All-Pairs Shortest Path & Triển khai C++"
 summary: "Phân tích toàn diện thuật toán Floyd-Warshall: Giải bài toán Tìm đường đi ngắn nhất giữa mọi cặp đỉnh (All-Pairs Shortest Path) bằng Quy hoạch động ma trận O(V³), vai trò của đỉnh trung gian k, phát hiện chu trình âm qua đường chéo chính và mã nguồn C++ tái tạo đường đi."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "12 phút đọc"
 tags:
@@ -39,8 +39,9 @@ Tư duy Quy hoạch động của Floyd-Warshall định nghĩa trạng thái d�
 
 1. **Định nghĩa trạng thái DP:** Gọi `dp[k][i][j]` là độ dài đường đi ngắn nhất từ đỉnh `i` đến đỉnh `j`, với điều kiện mọi đỉnh trung gian trên hành trình chỉ được phép chọn từ tập hợp `{0, 1, 2, ..., k}`.
 2. **Hệ thức chuyển trạng thái:** Khi mở rộng tập đỉnh trung gian cho phép từ `k - 1` lên `k`, ta có hai lựa chọn:
-  - *Không đi qua đỉnh trung gian `k`:* Khoảng cách giữ nguyên là `dp[k - 1][i][j]`.
-  - *Đi qua đỉnh trung gian `k`:* Đường đi tách thành hai đoạn `i -> k` và `k -> j`, có tổng chi phí là `dp[k - 1][i][k] + dp[k - 1][k][j]`.
+
+- _Không đi qua đỉnh trung gian `k`:_ Khoảng cách giữ nguyên là `dp[k - 1][i][j]`.
+- _Đi qua đỉnh trung gian `k`:_ Đường đi tách thành hai đoạn `i -> k` và `k -> j`, có tổng chi phí là `dp[k - 1][i][k] + dp[k - 1][k][j]`.
 
 ```
 dp[k][i][j] = min(
@@ -48,7 +49,8 @@ dp[k][i][j] = min(
     dp[k - 1][i][k] + dp[k - 1][k][j]
 )
 ```
-3. **Tối ưu bộ nhớ tại chỗ (In-Place 2D Matrix):** Vì các giá trị ở hàng `k` và cột `k` không bị thay đổi khi dùng chính đỉnh `k` làm trung gian, ta có thể bỏ chiều `k` và cập nhật trực tiếp trên ma trận 2 chiều `dist[i][j]`. *Quy tắc vàng:* Vòng lặp biến `k` bắt buộc phải nằm ở **ngoài cùng**.
+
+3. **Tối ưu bộ nhớ tại chỗ (In-Place 2D Matrix):** Vì các giá trị ở hàng `k` và cột `k` không bị thay đổi khi dùng chính đỉnh `k` làm trung gian, ta có thể bỏ chiều `k` và cập nhật trực tiếp trên ma trận 2 chiều `dist[i][j]`. _Quy tắc vàng:_ Vòng lặp biến `k` bắt buộc phải nằm ở **ngoài cùng**.
 4. **Phát hiện Chu trình Âm:** Sau khi hoàn tất `V` bước, kiểm tra đường chéo chính: Nếu tồn tại bất kỳ đỉnh `i` nào có `dist[i][i] < 0`, chứng tỏ đỉnh `i` nằm trong một chu trình âm.
 
 ## Triển khai mã nguồn & Dry Run
@@ -62,7 +64,7 @@ graph LR
         I -->|"dist i-k"| K((Đỉnh k - Trung Gian))
         K -->|"dist k-j"| J
     end
-    
+
     subgraph MatrixUpdate [Quy Hoạch Động Tại Chỗ]
         Formula["dist[i, j] = MIN(dist[i, j], dist[i, k] + dist[k, j])"]
     end
@@ -166,11 +168,11 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Trạng thái ban đầu:* `dist[0][1]=5, dist[0][3]=10, dist[1][2]=3, dist[2][3]=1`.
-- *Khi `k = 0`:* Dùng đỉnh 0 làm trung gian, không có cặp nào được cải thiện thêm.
-- *Khi `k = 1`:* Dùng đỉnh 1 làm trung gian &rarr; Xét cặp `(0, 2)`: `dist[0][1] + dist[1][2] = 5 + 3 = 8 < INF` &rarr; Cập nhật `dist[0][2] = 8`.
-- *Khi `k = 2`:* Dùng đỉnh 2 làm trung gian &rarr; Xét cặp `(0, 3)`: `dist[0][2] + dist[2][3] = 8 + 1 = 9 < dist[0][3]=10` &rarr; Cập nhật `dist[0][3] = 9`! Hành trình chuyển từ đường trực tiếp `0->3 (w=10)` sang đi vòng `0 -> 1 -> 2 -> 3 (w=9)`.
-- *Khi `k = 3`:* Dùng đỉnh 3 làm trung gian, ma trận ổn định hoàn toàn.
+- _Trạng thái ban đầu:_ `dist[0][1]=5, dist[0][3]=10, dist[1][2]=3, dist[2][3]=1`.
+- _Khi `k = 0`:_ Dùng đỉnh 0 làm trung gian, không có cặp nào được cải thiện thêm.
+- _Khi `k = 1`:_ Dùng đỉnh 1 làm trung gian &rarr; Xét cặp `(0, 2)`: `dist[0][1] + dist[1][2] = 5 + 3 = 8 < INF` &rarr; Cập nhật `dist[0][2] = 8`.
+- _Khi `k = 2`:_ Dùng đỉnh 2 làm trung gian &rarr; Xét cặp `(0, 3)`: `dist[0][2] + dist[2][3] = 8 + 1 = 9 < dist[0][3]=10` &rarr; Cập nhật `dist[0][3] = 9`! Hành trình chuyển từ đường trực tiếp `0->3 (w=10)` sang đi vòng `0 -> 1 -> 2 -> 3 (w=9)`.
+- _Khi `k = 3`:_ Dùng đỉnh 3 làm trung gian, ma trận ổn định hoàn toàn.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

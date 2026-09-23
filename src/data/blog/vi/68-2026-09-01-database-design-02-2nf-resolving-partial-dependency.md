@@ -1,10 +1,10 @@
 ---
 id: "68"
-slug: "database-design-2nf-resolving-partial-dependency"
+slug: "database-design-2-2nf-resolving-partial-dependency"
 title: "Thiết kế CSDL #02: Chuẩn 2NF - Khắc phục phụ thuộc từng phần"
 summary: 'Chuẩn 2NF được Edgar F. Codd giới thiệu một năm sau đó (1971) trong tài liệu "Further Normalization of the Data Base Relational Model". Codd nhận ra rằng 1NF vẫn gây ra các bất thường khi cập nhật (Update Anomalies), do đó ông định nghĩa thêm khái niệm "Phụ thuộc hàm" (Functional Dependency) để tinh chỉnh cấu trúc.'
 category: "data-engineering-analytics"
-publishedAt: "01/09/2026"
+publishedAt: "2026-09-01"
 date: "2026-09-01"
 readTime: "5 phút đọc"
 tags:

@@ -1,10 +1,10 @@
 ---
 id: "69"
-slug: "database-design-3nf-completely-eliminate-transitive-dependencies"
+slug: "database-design-3-3nf-completely-eliminate-transitive-dependencies"
 title: "Thiết kế CSDL #03: Chuẩn 3NF - Loại bỏ hoàn toàn phụ thuộc bắc cầu"
 summary: 'Trong cùng công trình nghiên cứu năm 1971, Codd định nghĩa 3NF thông qua câu nói nổi tiếng được giới kỹ sư truyền tai nhau (dựa trên lời tuyên thệ trước tòa): "Mọi thuộc tính phải phụ thuộc vào khóa, toàn bộ khóa, và không gì khác ngoài khóa"'
 category: "data-engineering-analytics"
-publishedAt: "08/09/2026"
+publishedAt: "2026-09-08"
 date: "2026-09-08"
 readTime: "5 phút đọc"
 tags:

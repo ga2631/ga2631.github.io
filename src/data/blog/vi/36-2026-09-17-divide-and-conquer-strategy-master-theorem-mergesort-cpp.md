@@ -4,7 +4,7 @@ slug: "divide-and-conquer-strategy-master-theorem-mergesort-cpp"
 title: "Thuật toán Nâng cao #02: Thuật toán Chia để trị (Divide and Conquer) - Định lý Thợ (Master Theorem), MergeSort O(N log N) & Triển khai C++"
 summary: "Khám phá tư duy Chia để trị (Divide and Conquer): 3 giai đoạn Chia - Trị - Kết hợp, giải mã Định lý Thợ (Master Theorem) để đánh giá độ phức tạp đệ quy, phân tích thuật toán Sắp xếp Trộn (MergeSort) với độ ổn định tuyệt đối và mã nguồn C++ chuẩn hóa."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "11 phút đọc"
 tags:
@@ -167,11 +167,11 @@ int main() {
   - Hợp nhất `{38}` và `{27}` &rarr; `{27, 38}`.
   - Hợp nhất `{43}` và `{3}` &rarr; `{3, 43}`.
   - Hợp nhất `{27, 38}` và `{3, 43}`: So sánh 2 con trỏ &rarr; `{3, 27, 38, 43}`.
-- *Xử lý nửa phải:*
+- _Xử lý nửa phải:_
   - Chia `[4..6]` thành `[4..5]={9, 82}` và `[6..6]={10}`.
   - Hợp nhất `{9}` và `{82}` &rarr; `{9, 82}`.
   - Hợp nhất `{9, 82}` và `{10}` &rarr; `{9, 10, 82}`.
-- *Hợp nhất tầng gốc:* `merge({3, 27, 38, 43}, {9, 10, 82})`:
+- _Hợp nhất tầng gốc:_ `merge({3, 27, 38, 43}, {9, 10, 82})`:
   - 3 &lt; 9 &rarr; `[3]`; 27 &gt; 9 &rarr; `[3, 9]`; 27 &gt; 10 &rarr; `[3, 9, 10]`; 27 &lt; 82 &rarr; `[3, 9, 10, 27]`; 38 &lt; 82 &rarr; `[3, 9, 10, 27, 38]`; 43 &lt; 82 &rarr; `[3, 9, 10, 27, 38, 43]`; Chép phần tử còn lại 82 &rarr; Hoàn tất mảng sắp xếp trong đúng `O(N log N)`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế

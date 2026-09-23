@@ -4,7 +4,7 @@ slug: "dijkstra-shortest-path-algorithm-priority-queue-cpp"
 title: "Thuật toán Nâng cao #03: Thuật toán Tìm đường đi ngắn nhất Dijkstra - Cơ chế Relaxation, Tối ưu Min-Heap O((V + E) log V) & Triển khai C++"
 summary: "Mổ xẻ chuyên sâu thuật toán Tìm đường đi ngắn nhất Dijkstra: Bản chất giải thuật Tham lam (Greedy) trên đồ thị trọng số không âm, cơ chế Tối ưu hóa cạnh (Edge Relaxation), kỹ thuật cài đặt Min-Heap std::priority_queue đạt độ phức tạp O((V + E) log V) và mã nguồn C++ có truy vết đường đi."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "12 phút đọc"
 tags:
@@ -172,16 +172,16 @@ int main() {
 - _Bước 1:_ Pop `(0, 0)`. Xét kề đỉnh 0:
   - Cạnh `(0->1, w=4)`: `dist[1] = 4, parent[1] = 0` &rarr; Push `(4, 1)`.
   - Cạnh `(0->2, w=2)`: `dist[2] = 2, parent[2] = 0` &rarr; Push `(2, 2)`.
-- *Bước 2:* Pop `(2, 2)` (nhỏ nhất trong heap). Xét kề đỉnh 2:
+- _Bước 2:_ Pop `(2, 2)` (nhỏ nhất trong heap). Xét kề đỉnh 2:
   - Cạnh `(2->1, w=1)`: `dist[0] + 2 + 1 = 3 < dist[1]=4` &rarr; Relaxation thành công! `dist[1] = 3, parent[1] = 2` &rarr; Push `(3, 1)`.
   - Cạnh `(2->3, w=5)`: `dist[3] = 2 + 5 = 7, parent[3] = 2` &rarr; Push `(7, 3)`.
-- *Bước 3:* Pop `(3, 1)`. Xét kề đỉnh 1:
+- _Bước 3:_ Pop `(3, 1)`. Xét kề đỉnh 1:
   - Cạnh `(1->3, w=3)`: `3 + 3 = 6 < dist[3]=7` &rarr; Relaxation! `dist[3] = 6, parent[3] = 1` &rarr; Push `(6, 3)`.
   - Cạnh `(1->4, w=6)`: `3 + 6 = 9 < dist[4]=&infin;` &rarr; `dist[4] = 9, parent[4] = 1` &rarr; Push `(9, 4)`.
-- *Bước 4:* Pop `(4, 1)` &rarr; Bị loại bỏ do `d = 4 > dist[1] = 3` (Lazy Deletion).
-- *Bước 5:* Pop `(6, 3)`. Xét kề đỉnh 3:
+- _Bước 4:_ Pop `(4, 1)` &rarr; Bị loại bỏ do `d = 4 > dist[1] = 3` (Lazy Deletion).
+- _Bước 5:_ Pop `(6, 3)`. Xét kề đỉnh 3:
   - Cạnh `(3->4, w=1)`: `6 + 1 = 7 < dist[4]=9` &rarr; Relaxation! `dist[4] = 7, parent[4] = 3` &rarr; Push `(7, 4)`.
-- *Bước 6 & 7:* Pop `(7, 4)`, sau đó các trạng thái cũ bị bỏ qua &rarr; Đường đi đến đỉnh 4 chốt giá trị tối ưu là `7` với hành trình `0 -> 2 -> 1 -> 3 -> 4`.
+- _Bước 6 & 7:_ Pop `(7, 4)`, sau đó các trạng thái cũ bị bỏ qua &rarr; Đường đi đến đỉnh 4 chốt giá trị tối ưu là `7` với hành trình `0 -> 2 -> 1 -> 3 -> 4`.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 
@@ -190,7 +190,7 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
 - **Độ phức tạp Thời gian (Time Complexity):** `O((V + E) \log V)` khi dùng Binary Heap (hoặc `O(E + V \log V)` nếu dùng Fibonacci Heap theo lý thuyết). Mỗi đỉnh được lấy ra khỏi heap 1 lần (`V \log V`) và mỗi cạnh được relax tối đa 1 lần (`E \log V`).
 - **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` để lưu danh sách kề (Adjacency List) cùng các mảng `dist`, `parent` và hàng đợi ưu tiên `pq`.
 - **Ứng dụng thực tế:**
-  - **Hệ thống bản đồ số (GPS Navigation):** Trái tim của thuật toán tìm đường trên Google Maps, OSRM, Apple Maps (thường kết hợp thêm kỹ thuật Heuristic A* hoặc Contraction Hierarchies).
+  - **Hệ thống bản đồ số (GPS Navigation):** Trái tim của thuật toán tìm đường trên Google Maps, OSRM, Apple Maps (thường kết hợp thêm kỹ thuật Heuristic A\* hoặc Contraction Hierarchies).
   - **Giao thức định tuyến mạng Internet:** Giao thức OSPF (Open Shortest Path First) và IS-IS trong kiến trúc mạng lõi viễn thông.
   - **Phát triển Game (Game AI Pathfinding):** Tìm đường di chuyển tối ưu cho nhân vật tránh chướng ngại vật trong thời gian thực.
   - **Mạng xã hội (Social Graphs):** Đo lường mức độ ảnh hưởng và khoảng cách kết nối (Six Degrees of Separation) giữa người dùng.

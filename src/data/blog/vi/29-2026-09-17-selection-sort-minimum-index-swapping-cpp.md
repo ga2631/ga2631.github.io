@@ -4,7 +4,7 @@ slug: "selection-sort-minimum-index-swapping-cpp"
 title: "Thuật toán Cơ bản #03: Thuật toán Sắp xếp Chọn (Selection Sort) - Cơ chế Quét Cực tiểu, Số lần Ghi Bộ nhớ Cố định O(N) & C++ Implementation"
 summary: "Phân tích chuyên sâu thuật toán Sắp xếp Chọn (Selection Sort): Cơ chế quét tìm phần tử cực tiểu trong mảng chưa sắp xếp, ưu thế vượt trội chỉ tốn tối đa N-1 lần hoán đổi (Memory Writes), sơ đồ Mermaid và mã nguồn C++ hoàn chỉnh."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "8 phút đọc"
 tags:
@@ -27,14 +27,14 @@ Sắp xếp Chọn (Selection Sort) giải quyết bài toán này bằng cách 
 Ý tưởng tiếp cận ngây thơ:
 
 - Mỗi khi duyệt mảng và gặp một phần tử nhỏ hơn `arr[i]`, lập tức gọi hàm `std::swap`.
-- *Hạn chế:* Cách làm này gây ra số lần ghi bộ nhớ không kiểm soát được (lên tới `O(N²)` lần hoán đổi), làm giảm hiệu năng ghi đệm của CPU và gây hao mòn bộ nhớ.
+- _Hạn chế:_ Cách làm này gây ra số lần ghi bộ nhớ không kiểm soát được (lên tới `O(N²)` lần hoán đổi), làm giảm hiệu năng ghi đệm của CPU và gây hao mòn bộ nhớ.
 
 ## Tư duy tối ưu & Cấu trúc thuật toán
 
 Tư duy phân vùng và chọn lọc cực tiểu của Selection Sort:
 
 1. **Phân chia Mảng thành 2 Vùng ảo (Logical Subarrays):** Mảng được chia thành Vùng đã sắp xếp `[0..i-1]` và Vùng chưa sắp xếp `[i..N-1]`.
-2. **Quét Chỉ số Cực tiểu (Min-Index Scanning):** Tại mỗi bước `i`, chỉ ghi nhận chỉ số `minIndex = i`. Duyệt toàn bộ vùng chưa sắp xếp để tìm ra phần tử nhỏ nhất thực sự mà *không thực hiện bất kỳ phép hoán đổi nào trong quá trình quét*.
+2. **Quét Chỉ số Cực tiểu (Min-Index Scanning):** Tại mỗi bước `i`, chỉ ghi nhận chỉ số `minIndex = i`. Duyệt toàn bộ vùng chưa sắp xếp để tìm ra phần tử nhỏ nhất thực sự mà _không thực hiện bất kỳ phép hoán đổi nào trong quá trình quét_.
 3. **Đúng 1 phép Hoán đổi duy nhất mỗi Pass:** Sau khi tìm được `minIndex` toàn cục của vùng chưa sắp xếp, chỉ thực hiện duy nhất một lệnh `std::swap(arr[i], arr[minIndex])` nếu `minIndex != i`. Đảm bảo tổng số lần ghi bộ nhớ cố định ở mức `O(N)`.
 
 ## Triển khai mã nguồn & Dry Run
@@ -94,11 +94,11 @@ int main() {
 
 **Phân tích luồng thực thi (Dry Run Trace):**
 
-- *Khởi tạo:* `data = {64, 25, 12, 22, 11}` (`N = 5`).
-- *Pass `i = 0`:* Vùng chưa sắp xếp `[64, 25, 12, 22, 11]`. Quét tìm min `->` `minIndex = 4` (giá trị 11). Swap `arr[0]` và `arr[4]` `->` Mảng thành `{11, 25, 12, 22, 64}`.
-- *Pass `i = 1`:* Vùng chưa sắp xếp `[25, 12, 22, 64]`. Quét tìm min `->` `minIndex = 2` (giá trị 12). Swap `arr[1]` và `arr[2]` `->` Mảng thành `{11, 12, 25, 22, 64}`.
-- *Pass `i = 2`:* Vùng chưa sắp xếp `[25, 22, 64]`. Quét tìm min `->` `minIndex = 3` (giá trị 22). Swap `arr[2]` và `arr[3]` `->` Mảng thành `{11, 12, 22, 25, 64}`.
-- *Pass `i = 3`:* Vùng chưa sắp xếp `[25, 64]`. `minIndex = 3` trùng `i` `->` Không tốn phép swap. Mảng hoàn thành hoàn hảo!
+- _Khởi tạo:_ `data = {64, 25, 12, 22, 11}` (`N = 5`).
+- _Pass `i = 0`:_ Vùng chưa sắp xếp `[64, 25, 12, 22, 11]`. Quét tìm min `->` `minIndex = 4` (giá trị 11). Swap `arr[0]` và `arr[4]` `->` Mảng thành `{11, 25, 12, 22, 64}`.
+- _Pass `i = 1`:_ Vùng chưa sắp xếp `[25, 12, 22, 64]`. Quét tìm min `->` `minIndex = 2` (giá trị 12). Swap `arr[1]` và `arr[2]` `->` Mảng thành `{11, 12, 25, 22, 64}`.
+- _Pass `i = 2`:_ Vùng chưa sắp xếp `[25, 22, 64]`. Quét tìm min `->` `minIndex = 3` (giá trị 22). Swap `arr[2]` và `arr[3]` `->` Mảng thành `{11, 12, 22, 25, 64}`.
+- _Pass `i = 3`:_ Vùng chưa sắp xếp `[25, 64]`. `minIndex = 3` trùng `i` `->` Không tốn phép swap. Mảng hoàn thành hoàn hảo!
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

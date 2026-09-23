@@ -4,7 +4,7 @@ slug: "recursion-fundamentals-call-stack-tail-call-optimization-cpp"
 title: "Thuật toán Cơ bản #07: Thuật toán Đệ quy (Recursion) - Cơ chế Call Stack, Điều kiện Dừng, Đệ quy Đuôi & C++ Implementation"
 summary: "Mổ xẻ bản chất thuật toán Đệ quy (Recursion): Cơ chế phân bổ Stack Frame trong Call Stack, xây dựng điều kiện dừng (Base Case) bất biến, phòng chống Stack Overflow và kỹ thuật Tối ưu hóa Đệ quy Đuôi (Tail Call Optimization) trong C++."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "10 phút đọc"
 tags:
@@ -18,7 +18,7 @@ tags:
 
 ## Mô tả bài toán
 
-Nhiều bài toán phức tạp (duyệt cây nhị phân, phân tách tệp tin thư mục, quay lui Backtracking, giải thuật Chia để Trị) rất khó giải quyết bằng các vòng lặp tuần tự phẳng. Đề bài đặt ra: Làm thế nào để giải quyết một bài toán lớn bằng cách phân rã thành các bài toán con *cùng dạng nhưng có quy mô nhỏ hơn*?
+Nhiều bài toán phức tạp (duyệt cây nhị phân, phân tách tệp tin thư mục, quay lui Backtracking, giải thuật Chia để Trị) rất khó giải quyết bằng các vòng lặp tuần tự phẳng. Đề bài đặt ra: Làm thế nào để giải quyết một bài toán lớn bằng cách phân rã thành các bài toán con _cùng dạng nhưng có quy mô nhỏ hơn_?
 
 Đệ quy (Recursion) là kỹ thuật lập trình mà trong đó hàm tự gọi lại chính nó để giải quyết bài toán con cho tới khi chạm điểm dừng cơ sở.
 
@@ -34,10 +34,12 @@ Cạm bẫy đệ quy ngây thơ:
 Nguyên lý cốt lõi và Kỹ thuật tối ưu hóa Đệ quy:
 
 1. **Hai Thành phần Bất biến của Hàm Đệ quy:**
-  - *Điều kiện cơ sở (Base Case):* Điểm dừng không cần đệ quy, trả về kết quả trực tiếp ngay lập tức.
-  - *Bước đệ quy (Recursive Step):* Gọi lại hàm với tham số `N` đã được thu hẹp về phía Base Case.
+
+- _Điều kiện cơ sở (Base Case):_ Điểm dừng không cần đệ quy, trả về kết quả trực tiếp ngay lập tức.
+- _Bước đệ quy (Recursive Step):_ Gọi lại hàm với tham số `N` đã được thu hẹp về phía Base Case.
+
 2. **Cơ chế Phân bổ Call Stack:** Mỗi lần gọi hàm, hệ điều hành cấp phát một Stack Frame (chứa tham số, biến cục bộ, địa chỉ trả về). Khi đạt Base Case, các frame lần lượt được thu hồi (Unwind/Pop).
-3. **Tối ưu hóa Đệ quy Đuôi (Tail Call Optimization - TCO):** Nếu lời gọi đệ quy là *thao tác cuối cùng* của hàm (không còn phép tính tồn đọng nào), trình biên dịch C++ hiện đại có thể tái sử dụng ngay Stack Frame hiện tại &rarr; Giảm dung lượng Call Stack từ `O(N)` về `O(1)`.
+3. **Tối ưu hóa Đệ quy Đuôi (Tail Call Optimization - TCO):** Nếu lời gọi đệ quy là _thao tác cuối cùng_ của hàm (không còn phép tính tồn đọng nào), trình biên dịch C++ hiện đại có thể tái sử dụng ngay Stack Frame hiện tại &rarr; Giảm dung lượng Call Stack từ `O(N)` về `O(1)`.
 
 ## Triển khai mã nguồn & Dry Run
 
@@ -102,11 +104,11 @@ int main() {
 
 **Phân tích luồng thực thi (Dry Run Trace):**
 
-- *Tính `factorialTail(3, 1)`:*
+- _Tính `factorialTail(3, 1)`:_
 - `N = 3, 	ext{acc} = 1`: Gọi `factorialTail(2, 3 * 1 = 3)`.
 - `N = 2, 	ext{acc} = 3`: Gọi `factorialTail(1, 2 * 3 = 6)`.
 - `N = 1, 	ext{acc} = 6`: Chạm Base Case (`N <= 1`) &rarr; Trả về trực tiếp `6` mà không cần tích lũy phép nhân khi quay lui.
-- *Tính `fastPower(2, 10)`:* Chia bài toán thành `2^5 -> 2^2 -> 2^1 -> 2^0` &rarr; Chỉ mất đúng 4 bước đệ quy thay vì 10 vòng lặp.
+- _Tính `fastPower(2, 10)`:_ Chia bài toán thành `2^5 -> 2^2 -> 2^1 -> 2^0` &rarr; Chỉ mất đúng 4 bước đệ quy thay vì 10 vòng lặp.
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
 

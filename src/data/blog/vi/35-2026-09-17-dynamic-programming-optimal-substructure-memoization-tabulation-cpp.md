@@ -4,7 +4,7 @@ slug: "dynamic-programming-optimal-substructure-memoization-tabulation-cpp"
 title: "Thuật toán Nâng cao #01: Thuật toán Quy hoạch động (Dynamic Programming) - Cấu trúc Con Tối ưu, Memoization vs Tabulation & Triển khai C++ 0/1 Knapsack"
 summary: "Mổ xẻ bản chất thuật toán Quy hoạch động (Dynamic Programming): Nhận diện 2 tính chất cốt lõi Cấu trúc con tối ưu (Optimal Substructure) và Bài toán con gối nhau (Overlapping Subproblems), so sánh Top-Down Memoization với Bottom-Up Tabulation, kỹ thuật tối ưu không gian bộ nhớ O(W) và cài đặt C++ hoàn chỉnh cho bài toán Balo 0/1 (0/1 Knapsack)."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "12 phút đọc"
 tags:
@@ -40,7 +40,7 @@ knapsack(i, w) = max(
 )
 ```
 
-Cây đệ quy khi thực thi theo cách này gặp phải vấn đề nghiêm trọng: *Bài toán con gối nhau liên tục (Overlapping Subproblems)*. Cùng một trạng thái `(i, w)` bị tính toán lặp đi lặp lại hàng triệu lần trên các nhánh đệ quy độc lập, khiến Call Stack bị nghẽn và thời gian chạy tăng vọt theo cấp số nhân `O(2ᴺ)`.
+Cây đệ quy khi thực thi theo cách này gặp phải vấn đề nghiêm trọng: _Bài toán con gối nhau liên tục (Overlapping Subproblems)_. Cùng một trạng thái `(i, w)` bị tính toán lặp đi lặp lại hàng triệu lần trên các nhánh đệ quy độc lập, khiến Call Stack bị nghẽn và thời gian chạy tăng vọt theo cấp số nhân `O(2ᴺ)`.
 
 ## Tư duy tối ưu & Cấu trúc thuật toán
 
@@ -138,21 +138,21 @@ int main() {
 
 **Phân tích luồng thực thi chi tiết (Dry Run Trace):**
 
-- *Dữ liệu đầu vào:* `W = 5`, `weights = {2, 3, 4, 5}`, `values = {3, 4, 5, 8}`, `N = 4`.
-- *Khởi tạo:* Mảng `dp = [0, 0, 0, 0, 0, 0]` (kích thước `W + 1 = 6`).
-- *Vật 1 (w=2, v=3):* Duyệt `w` từ 5 về 2:
+- _Dữ liệu đầu vào:_ `W = 5`, `weights = {2, 3, 4, 5}`, `values = {3, 4, 5, 8}`, `N = 4`.
+- _Khởi tạo:_ Mảng `dp = [0, 0, 0, 0, 0, 0]` (kích thước `W + 1 = 6`).
+- _Vật 1 (w=2, v=3):_ Duyệt `w` từ 5 về 2:
   - `w = 5: dp[5] = max(0, 3 + dp[3]) = 3`
   - `w = 4: dp[4] = max(0, 3 + dp[2]) = 3`
   - `w = 3: dp[3] = max(0, 3 + dp[1]) = 3`
   - `w = 2: dp[2] = max(0, 3 + dp[0]) = 3` &rarr; `dp = [0, 0, 3, 3, 3, 3]`
-- *Vật 2 (w=3, v=4):* Duyệt `w` từ 5 về 3:
+- _Vật 2 (w=3, v=4):_ Duyệt `w` từ 5 về 3:
   - `w = 5: dp[5] = max(3, 4 + dp[2]) = max(3, 4 + 3) = 7` (Chọn vật 1 và vật 2: tổng trọng lượng 5)
   - `w = 4: dp[4] = max(3, 4 + dp[1]) = max(3, 4 + 0) = 4`
   - `w = 3: dp[3] = max(3, 4 + dp[0]) = max(3, 4 + 0) = 4` &rarr; `dp = [0, 0, 3, 4, 4, 7]`
-- *Vật 3 (w=4, v=5):* Duyệt `w` từ 5 về 4:
+- _Vật 3 (w=4, v=5):_ Duyệt `w` từ 5 về 4:
   - `w = 5: dp[5] = max(7, 5 + dp[1]) = 7`
   - `w = 4: dp[4] = max(4, 5 + dp[0]) = 5` &rarr; `dp = [0, 0, 3, 4, 5, 7]`
-- *Vật 4 (w=5, v=8):* Duyệt `w = 5`:
+- _Vật 4 (w=5, v=8):_ Duyệt `w = 5`:
   - `w = 5: dp[5] = max(7, 8 + dp[0]) = 8` &rarr; Kết quả tối ưu cuối cùng là `8` (Chọn vật 4 có `w=5, v=8`).
 
 ## Đánh giá độ phức tạp & Ứng dụng thực tế
@@ -168,4 +168,3 @@ Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Mo
   - **Thuật toán đồ thị:** Làm nền tảng cho thuật toán Bellman-Ford và Floyd-Warshall tìm đường đi ngắn nhất.
   - **Tin sinh học (Bioinformatics):** Căn chỉnh chuỗi DNA/Protein bằng thuật toán Needleman-Wunsch và Smith-Waterman.
   - **Xử lý ngôn ngữ tự nhiên (NLP):** Thuật toán Viterbi trong mô hình Hidden Markov Model (HMM) và giải mã mạng nơ-ron sinh từ.
-
