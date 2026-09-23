@@ -1,12 +1,12 @@
 ---
 id: "22"
 slug: "optimizing-mermaid-frontend-ui-theme-viewport-responsive"
-title: "Optimizing Performance & Integrating Mermaid.js in Modern Web UI: Dark Theme Synchronization, Viewport Fit View & Responsive Ergonomics"
-summary: "The craft of embedding dynamic Mermaid.js in React/TypeScript SPAs: On-demand ESM loading, high-contrast Dark Mode synchronization, interactive Pan/Zoom Fit View, and seamless text-flow integration."
+title: "Tối ưu hóa Hiệu năng & Xử lý Mermaid.js Tương thích Giao diện Web: Đồng bộ Dark Theme, Phóng to Viewport & Trải nghiệm Responsive"
+summary: "Nghệ thuật tích hợp Mermaid.js vào ứng dụng Single Page Application (React/TypeScript): Tối ưu tải động ESM, đồng bộ tương phản Dark Mode, cơ chế Fit View tương tác với Pan/Zoom và loại bỏ cảm giác đóng hộp thô cứng."
 category: "code-craftsmanship-languages"
-publishedAt: "10/09/2026"
+publishedAt: "2026-09-10"
 date: "2026-09-10"
-readTime: "8 min read"
+readTime: "8 phút đọc"
 tags:
   - "Mermaid.js"
   - "Frontend Engineering"
@@ -17,65 +17,63 @@ tags:
   - "CSS Architecture"
 ---
 
-## Problem Statement & Objectives
+## Mô tả bài toán
 
-Embedding dynamic architectural and sequence diagrams into technical blogs and documentation portals creates an engaging reading experience. However, integrating `mermaid` into a React/TypeScript Single Page Application (SPA) presents four significant engineering hurdles:
+Việc nhúng biểu đồ kỹ thuật động (Dynamic Diagramming) vào các trang blog công nghệ hoặc hệ thống quản lý tài liệu (Documentation Portals) mang lại trải nghiệm đọc rất trực quan. Tuy nhiên, khi đưa thư viện `mermaid` vào ứng dụng Single Page Application (SPA) viết bằng React và TypeScript, các kỹ sư frontend thường đối mặt với 4 thách thức kỹ thuật gai góc:
 
-1. **Bundle Size Bloat:** Mermaid bundles heavy layout and parsing engines (Dagre, Cytoscape, KaTeX, D3) totaling over 1.4MB. Static top-level imports severely degrade First Contentful Paint (FCP).
-2. **Dark Mode Contrast Invisibility:** In dark theme, default SVG text fills and line strokes blend into dark card backgrounds, rendering diagrams illegible.
-3. **Mobile Viewport Constraints:** Complex microservice topologies or multi-actor sequence diagrams either shrink into unreadable sizes or overflow horizontally.
-4. **Artificial Box Isolation:** Wrapping diagrams in heavy card borders and shadows makes illustrations feel disjointed from the surrounding narrative.
+1. **Dung lượng gói phình to (Bundle Size Bloat):** Thư viện Mermaid đóng gói đầy đủ các engine dựng hình (Dagre, Cytoscape, KaTeX, D3) với kích thước vượt trên 1.4MB. Nếu import tĩnh ở đầu trang, thời gian tải trang đầu tiên (First Contentful Paint - FCP) sẽ bị suy giảm nghiêm trọng.
+2. **Lỗi tương phản màu trong Dark Mode:** Khi người dùng chuyển sang giao diện tối, màu chữ và nét vẽ mặc định của SVG có thể bị chìm hoàn toàn vào màu nền tối, khiến nội dung không thể đọc được.
+3. **Trải nghiệm hạn chế trên màn hình di động:** Các sơ đồ kiến trúc phức tạp với nhiều cột hoặc chuỗi microservices dài thường bị co rút quá nhỏ hoặc tràn khung nhìn gây vỡ giao diện.
+4. **Cảm giác 'đóng hộp' thô cứng:** Nếu bọc biểu đồ trong các card có viền và đổ bóng nặng, sơ đồ sẽ tạo cảm giác bị cô lập, tách biệt khỏi mạch văn tự nhiên của bài viết.
 
-## Initial Naive Approach
+## Ý tưởng tiếp cận ban đầu
 
-Common naive integration patterns in React applications:
+Cách tiếp cận ngây thơ thường gặp trong các dự án ban đầu:
 
-- Static import `import mermaid from 'mermaid'` with synchronous execution on initial mount.
-- Wrapping rendered diagrams in bordered card containers with heavy box shadows.
-- Using default presets (`theme: 'default'`) without synchronizing with custom Design Tokens.
+- Import tĩnh `import mermaid from 'mermaid'` và gọi `mermaid.run()` trực tiếp sau khi component mount.
+- Bọc toàn bộ khối sơ đồ trong một thẻ `<div class="card">` có nền thẻ, viền cứng và đổ bóng.
+- Sử dụng theme mặc định `theme: 'default'` mà không đồng bộ với hệ thống Design Tokens của trang.
 
-**Why this fails in practice:** Diagrams cannot dynamically update when toggling themes during reading sessions. Mobile users cannot pan or zoom into high-density flows, and rigid card borders disrupt typography rhythm.
+**Tại sao cách này bộc lộ nhiều điểm nghẽn?** Sơ đồ không thể tự động cập nhật khi người dùng nhấn nút chuyển Dark/Light Mode. Trên mobile, người dùng không thể phóng to để xem chi tiết. Đồng thời, cấu trúc card cứng nhắc làm mất đi tính liền mạch của bài viết chuyên sâu.
 
-## Optimization Thinking & Algorithm Design
+## Tư duy tối ưu & Cấu trúc thuật toán
 
-To deliver an uncompromised reader experience, I engineered an end-to-end integration architecture:
+Để giải quyết triệt để các vấn đề trên và mang lại trải nghiệm đọc đỉnh cao, tôi xây dựng một kiến trúc tích hợp toàn diện:
 
-1. **Dynamic On-Demand ESM Loading:** Load the Mermaid bundle only when an article actually contains `pre.mermaid` code blocks, backed by a resilient fallback mechanism.
-2. **Theme Synchronization & Native Mermaid Styling:** Utilize `theme: 'base'` with complete Ruby/Crimson design variables while fully preserving native Mermaid `style`/`classDef` syntax, eliminating destructive external CSS overrides so diagrams have full aesthetic freedom.
-3. **Viewport Fit View Modal:** An interactive, compact micro-pill button triggers full-viewport expansion (95vw x 86vh) equipped with 60 FPS GPU-accelerated Pan and Zoom (40% - 350%).
-4. **Seamless Text-Flow Integration:** Eliminate heavy box borders and backgrounds, allowing vector diagrams to breathe naturally between paragraphs.
+1. **Tải động theo yêu cầu (Dynamic On-Demand Loading):** Chỉ import Mermaid khi trong bài viết thực sự có chứa khối mã `pre.mermaid`, kết hợp cơ chế import đa tầng bền bỉ (resilient fallback).
+2. **Đồng bộ hóa bộ biến Theme và Định dạng Mermaid Nội tại:** Sử dụng chế độ `theme: 'base'` kết hợp bộ biến `themeVariables` chi tiết (đồng bộ mã màu Ruby / Crimson) và hỗ trợ hoàn hảo cú pháp `style`/`classDef` nội tại trong Mermaid, loại bỏ các can thiệp CSS cưỡng chế để biểu đồ tự do tùy biến màu sắc.
+3. **Cơ chế Phóng to toàn Viewport (Fit View Modal):** Tích hợp nút micro-pill gọn gàng ở góc trên. Khi click, mở rộng sơ đồ lên toàn bộ viewport (95vw x 86vh), hỗ trợ thao tác kéo rê chuột (Pan) và cuộn chuột thu phóng (Zoom 40% - 350%).
+4. **Hòa nhập tự nhiên vào dòng văn bản:** Loại bỏ viền và nền box thô cứng, biến biểu đồ thành hình minh họa vector tự nhiên giữa các đoạn văn.
 
-## Code Implementation & Execution Trace
+## Triển khai mã nguồn & Dry Run
 
-Implementation workflow across React components and SCSS:
+Triển khai kiến trúc xử lý trong React component và SCSS:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Reader as Reader (User)
+    actor Reader as Người đọc (User)
     participant Article as ModalArticle.tsx
     participant MermaidEngine as Mermaid.js Dynamic ESM
     participant Viewer as ModalDiagramViewer.tsx
 
-    Reader->>Article: Opens article containing diagrams
-    Article->>MermaidEngine: On-demand import and render SVG with Light Theme
-    MermaidEngine-->>Article: Injects crisp SVG and Fit View micro-pill
-    opt User clicks diagram or presses Enter
-        Reader->>Article: Triggers click or keyboard focus
-        Article->>Viewer: Launches Fullscreen Fit View Overlay
-        Viewer-->>Reader: Interactive 60 FPS Pan and Zoom experience
+    Reader->>Article: Mở bài viết có chứa biểu đồ
+    Article->>MermaidEngine: Tải on-demand và render SVG với Light Theme
+    MermaidEngine-->>Article: Chèn SVG sắc nét và gắn nút Fit View
+    opt Người dùng click vào biểu đồ
+        Reader->>Article: Click chuột hoặc nhấn Enter hoặc Space
+        Article->>Viewer: Kích hoạt Fullscreen Fit View Overlay
+        Viewer-->>Reader: Trải nghiệm Pan và Zoom tương tác 60 FPS
     end
 ```
 
-**Key Engineering Takeaways:**
+**Điểm mấu chốt trong mã nguồn:**
 
-- **CSS Child Selector Scoping (`> svg`):** Prevents diagram container sizing rules from overriding micro-icons inside button pills.
-- **Unified Light Theme Theming:** Initializes Mermaid in Light Theme mode with tailored `themeVariables`, eliminating theme switching runtime overhead.
+- **Giới hạn selector CSS `> svg`:** Đảm bảo các thuộc tính kích thước lớn của sơ đồ không làm vỡ icon `11x11px` bên trong nút Fit View.
+- **Tối ưu hóa Theme đồng nhất:** Khởi tạo Mermaid trực tiếp ở chế độ Light Theme với bộ `themeVariables` chuẩn mực, loại bỏ hoàn toàn chi phí lắng nghe MutationObserver.
 
-## Complexity Evaluation & Real-world Applications
+## Đánh giá độ phức tạp & Ứng dụng thực tế
 
-**Performance & Production Impact:**
-
-- **GPU Hardware Acceleration:** Pan and Zoom operations in the diagram viewer utilize `transform: translate3d(...) scale(...)` on the browser's GPU compositing layer, maintaining a steady **60 FPS**.
-- **Bundle Optimization:** Dynamic code-splitting eliminates **1.4MB+ of JavaScript** on pages without diagrams.
-- **Versatile Applications:** This pattern sets the benchmark for enterprise documentation systems, API developer portals, and interactive technical blogs.
+- **Hiệu năng dựng hình GPU:** Thao tác Pan & Zoom trong modal viewer sử dụng thuộc tính `transform: translate3d(...) scale(...)` thuần túy, tận dụng tối đa GPU Compositing để đạt độ mượt **60 FPS** tuyệt đối.
+- **Giảm tải Bundle ban đầu:** Kỹ thuật lazy-load giúp tiết kiệm hơn **1.4 MB JavaScript** cho các bài viết không chứa sơ đồ.
+- **Khả năng ứng dụng rộng rãi:** Giải pháp này là kiến trúc mẫu mực cho các nền tảng kỹ thuật phức tạp như API Documentation, Enterprise Architecture Dashboards, và các Tech Blogs chuyên nghiệp.

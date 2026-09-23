@@ -1,12 +1,12 @@
 ---
 id: "56"
 slug: "designing-a-mid-acale-ad-performance-reporting-system-100-ccu"
-title: "From 100 to 1000 CCU #01: Designing a Ad performance reporting system with 100 CCU"
-summary: "This article outlines a Monolithic architecture combined with a traditional relational database to solve the problem of displaying ad reports for 100 concurrent users. The core focus of this design is optimizing time-to-market and maintaining the lowest operational costs, accepting future scalability limits in exchange for leanness during the project's early stages."
+title: "Từ 100 đến 1000 CCU #01: Thiết kế Hệ thống Báo cáo hiệu quả quảng cáo với 100 CCU"
+summary: "Bài viết này phác thảo kiến trúc nguyên khối (Monolithic) kết hợp cơ sở dữ liệu quan hệ truyền thống để giải quyết bài toán hiển thị báo cáo quảng cáo cho 100 user truy cập đồng thời. Trọng tâm của thiết kế này là tối ưu hóa thời gian ra mắt (time-to-market) và chi phí vận hành thấp nhất, chấp nhận những giới hạn về khả năng mở rộng trong tương lai để đổi lấy sự tinh gọn trong giai đoạn đầu của dự án."
 category: "architecture-system-design"
-publishedAt: "21/09/2026"
+publishedAt: "2026-09-21"
 date: "2026-09-21"
-readTime: "3 mins read"
+readTime: "3 phút đọc"
 tags:
   - "System design"
   - "Monolithic"
@@ -14,24 +14,24 @@ tags:
   - "Architecture"
 ---
 
-## Context & The Problem
+## Bối cảnh & Vấn đề
 
-A digital agency has just launched a client portal allowing users to log in and track the daily performance of their advertising campaigns (Google Ads, Facebook Ads). The initial demand is moderate, with the system expected to serve around 100 concurrent users (CCU) during peak hours (early morning or the beginning of the month). The core challenge is to build a system that is sufficiently fast, low-cost to operate, and has the shortest possible time-to-market.
+Một digital agency vừa ra mắt nền tảng portal cho phép khách hàng tự đăng nhập để theo dõi hiệu quả các chiến dịch quảng cáo (Google Ads, Facebook Ads) hàng ngày. Nhu cầu ban đầu không quá lớn, dự kiến hệ thống phục vụ khoảng 100 người dùng truy cập đồng thời (CCU) vào các khung giờ cao điểm (sáng sớm hoặc đầu tháng). Vấn đề cốt lõi là xây dựng một hệ thống đủ nhanh, chi phí vận hành thấp và thời gian ra mắt ngắn nhất có thể.
 
-## System Requirements
+## Yêu cầu hệ thống
 
-- **Performance:** Report dashboards must load in under 2 seconds.
-- **Scalability:** 100 CCU, with an average of 3-5 API requests per user to load various charts.
-- **Data:** Real-time data is not required. A data delay of 1 to 24 hours is acceptable (batch updates).
-- **Availability:** 99%, tolerating short downtime windows at night for maintenance or heavy batch jobs.
+- **Hiệu năng:** Thời gian tải dashboard báo cáo dưới 2 giây.
+- **Khả năng chịu tải:** 100 CCU, trung bình mỗi user gọi 3-5 API requests để load các biểu đồ khác nhau.
+- **Dữ liệu:** Không yêu cầu real-time. Dữ liệu được phép trễ (delay) từ 1 đến 24 giờ (cập nhật theo batch).
+- **Độ sẵn sàng (Availability):** 99%, có thể chấp nhận downtime ngắn vào ban đêm để bảo trì hoặc chạy batch job nặng.
 
-## Architecture Design
+## Thiết kế kiến trúc
 
-At a 100 CCU scale, a Monolithic architecture combined with a traditional relational database is the optimal choice.
+Với quy mô 100 CCU, kiến trúc Monolithic kết hợp với một cơ sở dữ liệu quan hệ truyền thống là lựa chọn tối ưu.
 
 ```mermaid
 graph TD
-    Client[Client] -->|HTTPS| Nginx[Nginx Web Server / Reverse Proxy]
+    Client[Khách hàng] -->|HTTPS| Nginx[Nginx Web Server / Reverse Proxy]
     Nginx --> App[Backend API Server]
 
     subgraph Data Layer
@@ -44,18 +44,18 @@ graph TD
     end
 ```
 
-- **Web Server / Proxy:** Nginx handles HTTPS termination and serves the frontend's static assets.
-- **Backend API:** A single instance running a familiar backend framework handles authentication, authorization, and report data queries.
-- **Database:** PostgreSQL is used as the sole database (both OLTP and lightweight OLAP). Advertising data is extracted and stored in normalized tables.
-- **Data Ingestion:** Scripts running via Cronjobs on a scheduled basis (e.g., every 4 hours) fetch data from ad network APIs, process it, and write it into PostgreSQL.
+- **Web Server / Proxy:** Nginx xử lý HTTPS termination và serve các static assets của frontend.
+- **Backend API:** Một instance chạy framework backend chịu trách nhiệm xác thực, phân quyền và query dữ liệu báo cáo.
+- **Database:** PostgreSQL được sử dụng làm cơ sở dữ liệu duy nhất (OLTP lẫn OLAP nhẹ). Dữ liệu quảng cáo được bóc tách và lưu vào các bảng đã được chuẩn hóa.
+- **Data Ingestion:** Các script chạy qua Cronjob theo lịch định kỳ (ví dụ: mỗi 4 tiếng) gọi API từ các nền tảng quảng cáo, xử lý và ghi vào PostgreSQL.
 
-## Trade-off Analysis
+## Phân tích đánh đổi
 
-- **Cost vs. Scalability:** This architecture is extremely cost-effective and can run entirely on 1 or 2 small VPS instances. However, as historical data swells to tens of millions of rows, querying directly using standard SQL will start to overwhelm the database's CPU.
-- **Simplicity vs. Single Point of Failure (SPOF):** The system bundles everything (API, Database, Workers) together, introducing risk. If a worker script crashes, causes a memory leak, or fills the disk, the entire API will go down with it.
+- **Chi phí vs. Khả năng mở rộng:** Kiến trúc này cực kỳ tiết kiệm, có thể chạy toàn bộ trên 1 hoặc 2 VPS nhỏ. Tuy nhiên, khi dữ liệu lịch sử phình to ra hàng chục triệu dòng, việc query trực tiếp bằng câu lệnh SQL thông thường sẽ bắt đầu gây quá tải CPU của database.
+- **Đơn giản vs. Điểm chết duy nhất (SPOF):** Hệ thống gom chung mọi thứ (API, Database, Worker) dẫn đến rủi ro. Nếu một worker chạy lỗi gây rò rỉ bộ nhớ hoặc full disk, toàn bộ API sẽ sập theo.
 
-## Practical Lessons & Best Practices
+## Bài học thực tế & Best Practices
 
-1.  **Use Materialized Views:** Do not directly run `SUM()` or `COUNT()` queries on the raw data tables when a user opens the dashboard. Create Materialized Views that pre-aggregate data by day/campaign and refresh them in the background.
-2.  **Proper Indexing:** Map the dashboard's query patterns to create Composite Indexes. For example, an index on `(client_id, campaign_id, date)` will save the system from devastating Full Table Scans.
-3.  **Isolate Workers:** Even in a small system, the process that calls ad APIs (Cronjob) should be resource-isolated so it doesn't compete for CPU with the process serving the end-user API.
+1.  **Dùng Materialized Views:** Không query trực tiếp các hàm `SUM()`, `COUNT()` trên bảng raw data (dữ liệu thô) khi user mở dashboard. Hãy tạo các Materialized Views tổng hợp sẵn dữ liệu theo từng ngày/từng chiến dịch và refresh chúng trong background.
+2.  **Đánh Index đúng chuẩn:** Ánh xạ các query pattern của dashboard để tạo Composite Index. Ví dụ: Index trên `(client_id, campaign_id, date)` sẽ cứu hệ thống khỏi cảnh Full Table Scan.
+3.  **Tách riêng Worker:** Dù hệ thống nhỏ, tiến trình gọi API quảng cáo (Cronjob) cần được cô lập tài nguyên để không tranh giành CPU với tiến trình phục vụ API cho end-user.
