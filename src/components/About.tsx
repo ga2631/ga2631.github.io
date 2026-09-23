@@ -27,7 +27,7 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
     if (lower.includes('type') || lower.includes('clean code') || lower.includes('kiểu dữ liệu') || index === 1) {
       return {
         icon: <CodeIcon size={18} />,
-        color: 'var(--accent-crimson)',
+        color: 'var(--accent-purple)',
         bg: 'rgba(225, 29, 72, 0.12)',
         border: 'rgba(225, 29, 72, 0.25)',
       };
@@ -36,7 +36,7 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
     if (lower.includes('devops') || lower.includes('automation') || lower.includes('tự động hóa') || index === 2) {
       return {
         icon: <RefreshCwIcon size={18} />,
-        color: 'var(--accent-rose)',
+        color: 'var(--accent-emerald)',
         bg: 'rgba(251, 113, 133, 0.12)',
         border: 'rgba(251, 113, 133, 0.25)',
       };

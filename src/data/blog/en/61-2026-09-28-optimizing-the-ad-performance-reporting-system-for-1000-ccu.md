@@ -1,12 +1,12 @@
 ---
 id: "61"
 slug: "optimizing-the-ad-performance-reporting-system-for-1000-ccu"
-title: "From 100 to 1000 CCU #02: Optimizing the Ad performance reporting system for 1000 CCU: The Shift to a Data Architecture"
-summary: "When traffic increases tenfold (1000 CCU) and data volume balloons to tens of GBs/TBs, a monolithic architecture will completely collapse. This article presents the transition to a Modern Data Architecture. The core of this model is the complete decoupling of the operational database (PostgreSQL) and the Data Warehouse (BigQuery), deploying Cache (Redis) as a steel shield against query storms, and building a professional Data Pipeline."
+title: "Từ 100 đến 1000 CCU #02: Tối ưu Hệ thống Báo cáo hiệu quả quảng cáo đạt 1000 CCU: Bước Chuyển Sang Data Architecture"
+summary: "Khi lượng truy cập tăng gấp 10 lần (1000 CCU) và khối lượng dữ liệu phình to thành hàng chục GB/TB, kiến trúc nguyên khối sẽ hoàn toàn sụp đổ. Bài viết này trình bày giải pháp chuyển dịch sang Kiến trúc Dữ liệu Hiện đại (Modern Data Architecture). Cốt lõi của mô hình này là việc phân tách hoàn toàn Database nghiệp vụ (PostgreSQL) và Data Warehouse (BigQuery), áp dụng Cache (Redis) làm khiên chắn bảo vệ hệ thống khỏi các cơn bão truy vấn, và xây dựng Data Pipeline chuyên nghiệp."
 category: "architecture-system-design"
-publishedAt: "28/09/2026"
+publishedAt: "2026-09-28"
 date: "2026-09-28"
-readTime: "5 mins read"
+readTime: "5 phút đọc"
 tags:
   - "System design"
   - "Data architecture"
@@ -15,24 +15,25 @@ tags:
   - "ETL"
 ---
 
-## Context & The Problem
+## Bối cảnh & Vấn đề
 
-The reporting platform has been highly successful, and the client base has skyrocketed. During month-end periods, up to 1000 CCU log in simultaneously to export reports and view custom dimensions across massive amounts of historical data. The old system is showing its fatal flaws: chart loads take over 10 seconds, the database CPU is constantly maxed out at 100%, and data update batch jobs are bleeding into working hours due to the sheer volume of data being processed.
+Nền tảng báo cáo thành công rực rỡ và lượng khách hàng tăng vọt. Vào các dịp cuối tháng, có tới 1000 CCU cùng truy cập để xuất báo cáo, xem các phân tích tùy chỉnh (Custom Dimensions) trên lượng dữ liệu lịch sử khổng lồ.
+Hệ thống cũ bắt đầu bộc lộ tử huyệt: Load biểu đồ mất hơn 10 giây, Database liên tục báo 100% CPU, các batch job cập nhật dữ liệu chạy lấn sang cả giờ làm việc do quá nhiều dữ liệu cần xử lý.
 
-## System Requirements
+## Yêu cầu hệ thống
 
-- **Performance:** Dashboards must load in under 1 second, even when querying months of data.
-- **Scalability:** 1000 CCU, with the ability to auto-scale during traffic spikes.
-- **Data:** Extremely large analytical datasets, supporting multi-dimensional queries (OLAP).
-- **Availability:** 99.9%, serving 24/7 with no single point of failure (SPOF).
+- **Hiệu năng:** Dashboard load dưới 1 giây, kể cả khi query dữ liệu của nhiều tháng.
+- **Khả năng chịu tải:** 1000 CCU, có khả năng auto-scale khi traffic đột biến.
+- **Dữ liệu:** Dữ liệu phân tích cực lớn, hỗ trợ query đa chiều (OLAP).
+- **Độ sẵn sàng (Availability):** 99.9%, hệ thống phục vụ 24/7, không có single point of failure (SPOF).
 
-## Architecture Design
+## Thiết kế kiến trúc
 
-The architecture must now completely separate the write flow (Data Pipeline) from the read flow (API / Dashboard).
+Kiến trúc lúc này bắt buộc phải tách biệt hoàn toàn giữa luồng ghi (Data Pipeline) và luồng đọc (API / Dashboard).
 
 ```mermaid
 graph TD
-    Client[Client] --> CDN[Cloudflare / CDN]
+    Client[Khách hàng] --> CDN[Cloudflare / CDN]
     CDN --> LB[Load Balancer]
 
     subgraph App Cluster [Backend Auto-Scaling Group]
@@ -62,18 +63,18 @@ graph TD
     end
 ```
 
-- **Load Balancing & Backend Cluster:** Requests pass through a Load Balancer and are distributed to Backend Nodes running in Docker containers for easy auto-scaling.
-- **Caching Layer (Redis):** All static report query results are hashed by parameters and stored in Redis. 80% of user requests will be served directly from Redis without ever touching the database.
-- **Data Warehouse (BigQuery):** Responsible for storing and processing analytical queries (OLAP). BigQuery is designed to scan terabytes of data in seconds.
-- **Data Pipeline (ETL):** High-performance languages (like Rust or Python) are used to extract data, dump it into a Data Lake, and then transform and load it into BigQuery following the Medallion architecture (Bronze -> Silver -> Gold).
+- **Load Balancing & Backend Cluster:** Request đi qua Load Balancer và được phân phối đến các Backend Node chạy trong các Docker container để dễ dàng auto-scale.
+- **Caching Layer (Redis):** Mọi kết quả query báo cáo tĩnh được hash theo tham số và lưu vào Redis. 80% request của user sẽ trả về trực tiếp từ Redis mà không cần chạm tới Database.
+- **Data Warehouse (BigQuery):** Chịu trách nhiệm lưu trữ và xử lý các câu truy vấn phân tích (OLAP). BigQuery được thiết kế để quét hàng TB dữ liệu trong vài giây.
+- **Data Pipeline (ETL):** Sử dụng các ngôn ngữ hiệu năng cao (như Rust hoặc Python) để trích xuất dữ liệu, đổ vào Data Lake trước khi transform và load vào BigQuery theo chuẩn kiến trúc Medallion.
 
-## Trade-off Analysis
+## Phân tích đánh đổi
 
-- **Performance vs. Data Staleness:** Using a Cache (Redis) allows the system to handle massive loads excellently, but users might see data that is a few minutes "old". A sensible Cache Invalidation strategy is required.
-- **Operational Costs:** Using a Data Warehouse like BigQuery incurs costs based on data scanned (Bytes Billed). If the backend does not tightly control queries and directly executes unoptimized queries without filters (WHERE clauses), infrastructure bills will skyrocket.
+- **Performance vs. Độ trễ dữ liệu (Data Stale):** Việc dùng Cache (Redis) giúp hệ thống chịu tải xuất sắc, nhưng user có thể nhìn thấy dữ liệu "cũ" vài phút. Cần thiết kế chiến lược Cache Invalidation hợp lý.
+- **Chi phí vận hành:** Việc sử dụng Data Warehouse như BigQuery tính phí theo lượng dữ liệu được quét. Nếu backend không kiểm soát tốt và query trực tiếp những truy vấn không có bộ lọc (WHERE), hóa đơn hạ tầng sẽ tăng phi mã.
 
-## Practical Lessons & Best Practices
+## Bài học thực tế & Best Practices
 
-1.  **Stop Query Storms (Query Throttling/Debouncing):** When 1000 users spam F5, the Data Warehouse will overload if there is no Cache. Redis must act as the primary defense. This should be combined with Rate Limiting on the API server.
-2.  **Optimize the OLAP Data Model:** Data in the Data Warehouse needs to be Denormalized and Partitioned/Clustered by date and `client_id`. This reduces the amount of data scanned during a query by up to 90%, speeding up responses and slashing costs.
-3.  **Service Segregation:** Use PostgreSQL strictly for CRUD operations (user creation, permissions, campaign configuration) and let BigQuery purely handle metric calculations. Absolutely never perform direct cross-database queries at the API layer.
+1.  **Chặn đứng bão Query (Query Throttling/Debouncing):** Khi 1000 user nhấn F5 liên tục, nếu không có Cache, Data Warehouse sẽ quá tải. Redis phải đóng vai trò khiên chắn thép. Cần kết hợp thêm cơ chế Rate Limiting trên API server.
+2.  **Tối ưu Data Model trên OLAP:** Dữ liệu trên Data Warehouse cần được làm phẳng (Denormalized) và phân vùng (Partitioning/Clustering) theo ngày và `client_id`. Điều này giúp giảm tới 90% lượng dữ liệu bị quét khi query, vừa tăng tốc độ vừa giảm chi phí.
+3.  **Tách bạch Service:** Sử dụng PostgreSQL chuyên biệt cho các nghiệp vụ CRUD (tạo user, phân quyền, cấu hình chiến dịch) và để BigQuery thuần túy lo việc tính toán metric. Tuyệt đối không thực hiện query trực tiếp chéo (cross-database query) ở tầng API.

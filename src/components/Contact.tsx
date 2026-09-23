@@ -39,7 +39,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
         {/* Email Card */}
         <Card className="contact-card">
           <Card.Header>
-            <div className="contact-card-icon" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
+            <div className="contact-card-icon" style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--accent-rose)' }}>
               <MailIcon size={26} />
             </div>
           </Card.Header>
@@ -72,7 +72,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
         {data.phone && (
           <Card className="contact-card">
             <Card.Header>
-              <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>
+              <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: 'var(--accent-purple)' }}>
                 <PhoneIcon size={26} />
               </div>
             </Card.Header>
@@ -117,7 +117,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
         {/* Location & Personal Card */}
         <Card className="contact-card">
           <Card.Header>
-            <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>
+            <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: 'var(--accent-emerald)' }}>
               <MapPinIcon size={26} />
             </div>
           </Card.Header>
@@ -145,7 +145,7 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
         {data.linkedinUrl && (
           <Card className="contact-card">
             <Card.Header>
-              <div className="contact-card-icon" style={{ background: 'rgba(14, 118, 168, 0.15)', color: '#0ea5e9' }}>
+              <div className="contact-card-icon" style={{ background: 'rgba(14, 118, 168, 0.15)', color: 'var(--accent-cyan)' }}>
                 <LinkedinIcon size={26} />
               </div>
             </Card.Header>

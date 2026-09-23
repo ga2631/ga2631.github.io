@@ -38,7 +38,7 @@ export const BlogItem: React.FC<BlogItemProps> = ({
     >
       <Card.Header>
         {/* Top Category Badge & Publishing Schedule Meta */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+        <div style={{ marginBottom: '12px' }}>
           {categoryDef && categoryDef.id !== 'all' ? (
             <BadgeSchedule
               dayCode={categoryDef.dayCode}
@@ -51,11 +51,11 @@ export const BlogItem: React.FC<BlogItemProps> = ({
               {langKey === 'vi' ? 'Bài viết' : 'Article'}
             </Badge>
           )}
-
-          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-            {post.publishedAt} • {post.readTime}
-          </span>
         </div>
+
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+          {post.publishedAt} • {post.readTime}
+        </p>
 
         <h2 className="blog-title" style={{ fontSize: '1.22rem', marginTop: '4px' }}>
           {post.title}

@@ -4,7 +4,7 @@ slug: "mastering-mermaid-diagrams-as-code-architecture-tooling"
 title: "Làm chủ Mermaid.js: Hướng dẫn Toàn diện từ Cú pháp tới Trực quan hóa Kiến trúc & Tài liệu Kỹ thuật (Diagrams as Code)"
 summary: "Cẩm nang thực chiến về triết lý Diagrams as Code (DaC) với Mermaid.js: Khai phá toàn bộ cú pháp Flowchart, Sequence, Git Graph, Class, State và quy trình tự động hóa tài liệu kiến trúc trong CI/CD."
 category: "devops-cloud-tooling"
-publishedAt: "16/09/2026"
+publishedAt: "2026-09-16"
 date: "2026-09-16"
 readTime: "8 phút đọc"
 tags:

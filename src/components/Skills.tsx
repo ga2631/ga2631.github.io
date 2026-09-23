@@ -32,10 +32,10 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
       };
     }
     // 2. Data Engineering & Analytics / Dữ liệu
-    if (lower.includes('data') || lower.includes('dữ liệu') || lower.includes('analytics') || index === 1) {
+    if (lower.includes('data') || lower.includes('dữ liệu') || index === 1) {
       return {
         icon: <DatabaseIcon size={18} />,
-        color: 'var(--accent-crimson)',
+        color: 'var(--accent-purple)',
         bg: 'rgba(225, 29, 72, 0.12)',
         border: 'rgba(225, 29, 72, 0.25)',
       };
@@ -44,7 +44,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     if (lower.includes('devops') || lower.includes('cloud') || lower.includes('infra') || index === 2) {
       return {
         icon: <ShieldIcon size={18} />,
-        color: 'var(--accent-rose)',
+        color: 'var(--accent-emerald)',
         bg: 'rgba(251, 113, 133, 0.12)',
         border: 'rgba(251, 113, 133, 0.25)',
       };
@@ -52,7 +52,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     // 4. Frontend & Architecture / Architecture & Leadership
     return {
       icon: <LayersIcon size={18} />,
-      color: 'var(--accent-red)',
+      color: 'var(--accent-cyan)',
       bg: 'rgba(255, 77, 109, 0.12)',
       border: 'rgba(255, 77, 109, 0.25)',
     };

@@ -4,7 +4,7 @@ slug: "upgrading-the-ad-performance-reporting-from-100-to-1000-ccu-with-zero-dow
 title: "Từ 100 đến 1000 CCU #03: Hành trình nâng cấp hệ thống báo cáo từ 100 lên 1000 CCU không gây downtime"
 summary: 'Bạn không thể tắt hệ thống 1 tuần để "đập đi xây lại" từ kiến trúc của Bài 1 sang Bài 2. Bài viết này trình bày chiến lược nâng cấp tiệm tiến (Phase-by-Phase Migration). Hành trình đi qua 3 giai đoạn: "Cấp cứu" bằng Caching, "Dịch chuyển" bằng cơ chế ghi song song (Dual-write), và "Hoàn thiện" Data Pipeline chuyên dụng.'
 category: "architecture-system-design"
-publishedAt: "05/10/2026"
+publishedAt: "2026-10-05"
 date: "2026-10-05"
 readTime: "4 phút đọc"
 tags:

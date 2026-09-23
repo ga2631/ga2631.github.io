@@ -4,7 +4,7 @@ slug: "mastering-css-sticky-grid-filter-drift-containment"
 title: "Làm chủ CSS Sticky trong CSS Grid: Khắc phục Lỗi Trôi Filter Bar & Giới hạn Chiều cao Container khi Cuộn Danh sách Sâu"
 summary: "Phân tích cơ chế Containing Block của CSS Sticky, giải quyết triệt để hiện tượng trôi thanh công cụ lọc khi cuộn qua hàng chục bài viết và tối ưu hóa hiệu năng render 60fps trong React."
 category: "code-craftsmanship-languages"
-publishedAt: "17/09/2026"
+publishedAt: "2026-09-17"
 date: "2026-09-17"
 readTime: "6 phút đọc"
 tags:
