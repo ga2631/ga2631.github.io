@@ -138,7 +138,7 @@ export const BLOG_CATEGORY_DEFINITIONS: BlogCategoryDef[] = [
       en: 'Every Friday',
     },
     title: {
-      vi: 'Tech Radar',
+      vi: 'Tech Radar và Góc nhìn',
       en: 'Tech Radar & Career Insights',
     },
     description: {
