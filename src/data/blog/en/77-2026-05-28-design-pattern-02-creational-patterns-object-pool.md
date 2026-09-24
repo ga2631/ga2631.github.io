@@ -1,12 +1,12 @@
 ---
 id: 77
 slug: design-pattern-01-creational-patterns-singleton
-title: "Design Pattern #01: [Creational Patterns] Singleton Pattern - Quản trị Cấu hình Hệ thống"
-summary: "Tìm hiểu Singleton Pattern thông qua bài toán xây dựng trình quản lý cấu hình tập trung cho Hệ thống Xử lý Đơn hàng, đảm bảo tính nhất quán và tiết kiệm tài nguyên."
+title: "Design Pattern #01: [Creational Patterns] Singleton Pattern - System Configuration Management"
+summary: "Explore the Singleton Pattern through the problem of building a centralized configuration manager for the Order Processing System, ensuring consistency and saving resources."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-05-28"
 date: "2026-05-28"
-readTime: "5 phút đọc"
+readTime: "5 min read"
 tags:
   - "Design Patterns"
   - "Creational Patterns"
@@ -14,19 +14,19 @@ tags:
   - "Singleton"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong series này, chúng ta sẽ cùng xây dựng backend cho một **Hệ thống Xử lý Đơn hàng (Order Processing System)**. Bài toán đầu tiên khi khởi động hệ thống là quản lý các thông số cấu hình (Database credentials, API Keys của đối tác thanh toán, môi trường dev/prod).
+In this series, we will build the backend for an **Order Processing System**. The very first challenge upon booting the system is managing configuration parameters (Database credentials, Payment partner API Keys, dev/prod environments).
 
-Nếu mỗi module tự động đọc file `.env` hoặc query DB để lấy cấu hình, hệ thống sẽ lãng phí I/O và dễ dẫn đến trạng thái không đồng nhất. Đây là lúc **Singleton Pattern** phát huy tác dụng.
+If every module automatically reads the `.env` file or queries the DB to fetch configurations, the system will waste I/O and easily end up in an inconsistent state. This is where the **Singleton Pattern** shines.
 
-## Singleton Pattern là gì?
+## What is the Singleton Pattern?
 
-Singleton đảm bảo một class chỉ có **duy nhất một instance** được tạo ra trong suốt vòng đời của ứng dụng, đồng thời cung cấp một điểm truy cập toàn cục (global access point) tới instance đó.
+Singleton ensures a class has **only one instance** created throughout the application's lifecycle, while providing a global access point to that instance.
 
-## Áp dụng vào Hệ thống Xử lý Đơn hàng
+## Applying to the Order Processing System
 
-Chúng ta sẽ tạo class `AppConfig` để nạp cấu hình hệ thống một lần duy nhất lúc khởi động. Bất kỳ service nào (Payment, Shipping, Database) cần cấu hình đều sẽ gọi đến instance này.
+We will create an `AppConfig` class to load system configurations only once during startup. Any service (Payment, Shipping, Database) requiring configuration will call this instance.
 
 ```mermaid
 classDiagram
@@ -50,17 +50,17 @@ classDiagram
     PaymentGateway --> AppConfig : calls getInstance()
 ```
 
-## Cài đặt (Mã giả - TypeScript)
+## Implementation (Pseudocode - TypeScript)
 
 ```typescript
 class AppConfig {
   private static instance: AppConfig;
   private settings: Map<string, string>;
 
-  // Constructor luôn là private để ngăn tạo instance bằng từ khóa 'new'
+  // Constructor is always private to prevent instance creation via the 'new' keyword
   private constructor() {
     this.settings = new Map();
-    this.loadConfiguration(); // Đọc từ file hoặc Secrets Manager
+    this.loadConfiguration(); // Read from file or Secrets Manager
   }
 
   private loadConfiguration() {
@@ -81,14 +81,14 @@ class AppConfig {
   }
 }
 
-// Cách sử dụng
+// Usage
 const config1 = AppConfig.getInstance();
 const config2 = AppConfig.getInstance();
 
-console.log(config1 === config2); // Output: true - Cùng trỏ về một vùng nhớ
+console.log(config1 === config2); // Output: true - Both point to the same memory space
 ```
 
-## Điểm lưu ý
+## Key Notes
 
-- **Thread-safe**: Trong môi trường đa luồng (Multi-threading), cần cơ chế lock (ví dụ: Mutex) ở hàm `getInstance()` để tránh hiện tượng Race Condition sinh ra nhiều instance cùng lúc.
-- Ở bài viết tiếp theo, chúng ta sẽ dùng cấu hình từ `AppConfig` để khởi tạo kết nối cơ sở dữ liệu với **Object Pool Pattern**.
+- **Thread-safe**: In a Multi-threading environment, a locking mechanism (e.g., Mutex) is needed in the `getInstance()` function to avoid Race Conditions that spawn multiple instances simultaneously.
+- In the next article, we will use configurations from `AppConfig` to initialize the database connection with the **Object Pool Pattern**.

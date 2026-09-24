@@ -1,12 +1,12 @@
 ---
 id: 89
 slug: design-pattern-16-1-design-patterns-series-finale-architecture
-title: "Design Pattern #16.1: Tổng hợp Series - Bức tranh Kiến trúc Toàn diện Hệ thống"
-summary: "Nhìn lại toàn bộ kiến trúc của Hệ thống Xử lý Đơn hàng sau khi đã áp dụng các Creational, Structural, Behavioral và Data Access Patterns."
+title: "Design Pattern #16.1: Series Finale - Comprehensive System Architecture Picture"
+summary: "Looking back at the entire architecture of the Order Processing System after applying Creational, Structural, Behavioral, and Data Access Patterns."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-09-10"
 date: "2026-09-10"
-readTime: "5 phút đọc"
+readTime: "5 min read"
 tags:
   - "Design Patterns"
   - "System Architecture"
@@ -14,13 +14,13 @@ tags:
   - "Best Practices"
 ---
 
-Chúng ta đã đi qua một chặng đường dài, từ việc khởi tạo những object đầu tiên cho đến khi kết nối thành công với Database. Ở bài viết này, chúng ta sẽ nhìn lại **Hệ thống Xử lý Đơn hàng (Order Processing System)** dưới góc độ toàn cảnh.
+We've come a long way, from initializing the first objects to successfully connecting to the Database. In this article, we will look back at the **Order Processing System** from a panoramic perspective.
 
-Thay vì các class rời rạc, giờ đây hệ thống của chúng ta là một tập hợp các module được chuẩn hóa thông qua Design Patterns.
+Instead of disconnected classes, our system is now a collection of modules standardized through Design Patterns.
 
-## Sơ đồ Kiến trúc phân lớp (Layered Architecture)
+## Layered Architecture Diagram
 
-Mỗi nhóm Pattern đã giải quyết xuất sắc nhiệm vụ ở đúng tầng (Layer) của nó:
+Each Pattern group has excellently solved tasks in its exact Layer:
 
 ```mermaid
 flowchart TD
@@ -60,11 +60,11 @@ flowchart TD
     Repo --> Pool
 ```
 
-## Ý nghĩa của sự phân chia
+## Meaning behind the separation
 
-- **Creational (Sinh ra):** `Singleton`, `Object Pool`, `Factory` giúp việc tạo ra các công cụ (như kết nối DB, cổng thanh toán) trở nên an toàn, tiết kiệm RAM và tái sử dụng tốt.
-- **Structural (Lắp ráp):** `Facade`, `Decorator`, `Adapter` bọc các object lại với nhau, giúp logic tính giá không bị phình to, và hệ thống mới nói chuyện được với hệ thống cũ.
-- **Behavioral (Hành vi):** `Strategy` và `Observer` phân chia rõ ràng trách nhiệm ai làm việc nấy, ai tính phí thì tính, ai gửi email thì chờ lệnh (Event-driven).
-- **Data Access (Lưu trữ):** `Repository` và `Unit of Work` tạo thành lá chắn bảo vệ Business Logic khỏi các câu lệnh SQL thô kệch.
+- **Creational (Creation):** `Singleton`, `Object Pool`, and `Factory` help make creating tools (like DB connections, payment gateways) safe, RAM-efficient, and highly reusable.
+- **Structural (Assembly):** `Facade`, `Decorator`, and `Adapter` wrap objects together, preventing pricing logic from bloating and allowing the new system to talk to the old one.
+- **Behavioral (Behavior):** `Strategy` and `Observer` clearly divide responsibilities—letting those who calculate fees do the math, and those who send emails wait for commands (Event-driven).
+- **Data Access (Storage):** `Repository` and `Unit of Work` form a protective shield, guarding Business Logic against crude SQL commands.
 
-Ở phần 2, chúng ta sẽ xem một Request từ người dùng sẽ đi xuyên qua các Pattern này như thế nào.
+In part 2, we will see how a Request from a user travels through these Patterns.

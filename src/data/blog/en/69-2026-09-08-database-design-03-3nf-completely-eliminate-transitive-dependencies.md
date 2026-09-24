@@ -1,12 +1,12 @@
 ---
 id: "69"
 slug: "database-design-3-3nf-completely-eliminate-transitive-dependencies"
-title: "Thiết kế CSDL #03: Chuẩn 3NF - Loại bỏ hoàn toàn phụ thuộc bắc cầu"
-summary: 'Trong cùng công trình nghiên cứu năm 1971, Codd định nghĩa 3NF thông qua câu nói nổi tiếng được giới kỹ sư truyền tai nhau (dựa trên lời tuyên thệ trước tòa): "Mọi thuộc tính phải phụ thuộc vào khóa, toàn bộ khóa, và không gì khác ngoài khóa"'
+title: "Database Design #03: 3NF - Completely Eliminate Transitive Dependencies"
+summary: 'In the same 1971 research paper, Codd defined 3NF through a famous phrase echoed among engineers (based on the oath taken in court): "Every non-key attribute must provide a fact about the key, the whole key, and nothing but the key."'
 category: "data-engineering-analytics"
 publishedAt: "2026-09-08"
 date: "2026-09-08"
-readTime: "5 phút đọc"
+readTime: "5 minutes read"
 tags:
   - "Database"
   - "Data Engineering"
@@ -15,16 +15,16 @@ tags:
   - "PostgreSQL"
 ---
 
-## Đề bài kinh doanh / Yêu cầu dữ liệu
+## Business Context / Data Requirements
 
-Hệ thống ERP tiếp tục thêm **Module Quản trị Sơ đồ tổ chức**. Chúng ta cập nhật bảng `Employees` (từ bài 1) bằng cách thêm thông tin phòng ban: `department_id`, `department_name`, và `office_location`.
+The ERP system continues to add an **Organizational Chart Management Module**. We update the `Employees` table (from article 1) by adding department information: `department_id`, `department_name`, and `office_location`.
 
-Khóa chính của bảng `Employees` là `emp_id` (đơn khóa). Do đó bảng này tự động thỏa mãn 2NF (vì không có khóa ghép nên không thể có phụ thuộc từng phần).
-Thế nhưng, một bất thường (Anomaly) lại xuất hiện: Khi công ty dời văn phòng của "Phòng Kỹ thuật" từ Tầng 2 lên Tầng 5 (`office_location`), ta phải update cho hàng trăm nhân viên. Lý do là `office_location` phụ thuộc vào `department_id`, rồi `department_id` mới phụ thuộc vào khóa chính `emp_id`. Đây gọi là **Phụ thuộc bắc cầu (Transitive Dependency)**.
+The primary key of the `Employees` table is `emp_id` (single key). Therefore, this table automatically satisfies 2NF (since there's no composite key, partial dependencies are impossible).
+However, an Anomaly appears: When the company relocates the "Engineering Dept" from Floor 2 to Floor 5 (`office_location`), we have to update hundreds of employees. The reason is that `office_location` depends on `department_id`, and `department_id` depends on the primary key `emp_id`. This is called **Transitive Dependency**.
 
-## Mô hình hóa dữ liệu
+## Data Modeling
 
-Chuẩn 3NF yêu cầu: **Đạt 2NF và KHÔNG tồn tại thuộc tính không-khóa nào phụ thuộc vào một thuộc tính không-khóa khác.**
+The 3NF standard requires: **Meets 2NF and there are NO non-key attributes that depend on another non-key attribute.**
 
 ```mermaid
 erDiagram
@@ -32,8 +32,8 @@ erDiagram
         int emp_id PK
         string name
         int department_id
-        string department_name "Phụ thuộc bắc cầu qua department_id"
-        string office_location "Phụ thuộc bắc cầu qua department_id"
+        string department_name "Transitive Dependency via department_id"
+        string office_location "Transitive Dependency via department_id"
     }
 
     "3NF_Departments" {
@@ -48,21 +48,21 @@ erDiagram
         int department_id FK "FK to Departments"
     }
 
-    "2NF_Employees" ||--o{ "3NF_Employees" : "Nâng cấp lên 3NF"
-    "3NF_Departments" ||--o{ "3NF_Employees" : "Lưu trữ độc lập"
+    "2NF_Employees" ||--o{ "3NF_Employees" : "Upgrade to 3NF"
+    "3NF_Departments" ||--o{ "3NF_Employees" : "Store Independently"
 ```
 
-## Xây dựng Pipeline / Script xử lý
+## Building the Pipeline / Processing Script
 
 ```sql
--- 1. Tạo bảng Departments độc lập
+-- 1. Create an independent Departments table
 CREATE TABLE departments_3nf AS
 SELECT DISTINCT department_id, department_name, office_location
 FROM employees_2nf;
 
 ALTER TABLE departments_3nf ADD PRIMARY KEY (department_id);
 
--- 2. Refactor bảng Employees cho đạt 3NF
+-- 2. Refactor the Employees table to meet 3NF
 CREATE TABLE employees_3nf AS
 SELECT emp_id, name, department_id
 FROM employees_2nf;
@@ -72,11 +72,11 @@ ALTER TABLE employees_3nf
 ADD FOREIGN KEY (department_id) REFERENCES departments_3nf(department_id);
 ```
 
-## Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Data Testing & Performance Optimization
 
-- **Kiểm thử Data Integrity:** Mọi thay đổi về phòng ban (đổi tên, chuyển văn phòng) giờ được cô lập (isolate) tại bảng `departments_3nf`.
-- **Đạt chuẩn OLTP:** 3NF giúp loại bỏ tối đa Redundancy (dữ liệu dư thừa). Đây là thiết kế lý tưởng cho các core system của ERP (OLTP), giúp tối ưu tốc độ Write và cam kết chuẩn ACID.
+- **Data Integrity Testing:** Any changes to departments (renaming, moving offices) are now isolated within the `departments_3nf` table.
+- **Meeting OLTP Standards:** 3NF eliminates maximum Redundancy. This is the ideal design for ERP core systems (OLTP), optimizing Write speed and guaranteeing ACID properties.
 
-## Tổng kết & Khuyến nghị
+## Conclusion & Recommendations
 
-Đạt đến 3NF là mục tiêu bắt buộc cho mọi bảng dữ liệu chính trong kiến trúc ERP. Việc tuân thủ "không gì khác ngoài khóa" giúp hệ thống tránh được nợ kỹ thuật (Technical Debt) nghiêm trọng khi quy mô nhân sự và sơ đồ tổ chức của công ty ngày càng phức tạp.
+Reaching 3NF is a mandatory goal for all primary data tables in an ERP architecture. Adhering to "nothing but the key" prevents the system from accumulating severe Technical Debt as the company's personnel scale and organizational chart become increasingly complex.

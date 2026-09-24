@@ -1,12 +1,12 @@
 ---
 id: "51"
 slug: "data-structure-queue-fifo-circular-ring-buffer-cpp"
-title: "Cấu trúc Dữ liệu #04: Hàng chờ (Queue & Circular Queue) - Nguyên lý FIFO, Bộ đệm Vòng (Ring Buffer) & Triển khai C++"
-summary: "Mổ xẻ toàn diện cấu trúc dữ liệu Hàng chờ (Queue): Nguyên lý Vào trước Ra trước (First-In-First-Out - FIFO), kỹ thuật Hàng chờ Vòng (Circular Ring Buffer) dùng phép toán Modulo loại bỏ hiện tượng trôi chỉ số, so sánh Hàng chờ hai đầu (Deque) và cài đặt C++ thread-safe buffer."
+title: "Data Structures #04: Queue & Circular Queue - FIFO Principle, Ring Buffer & C++ Implementation"
+summary: "A comprehensive dissection of the Queue data structure: The First-In-First-Out (FIFO) principle, Circular Ring Buffer technique using Modulo arithmetic to eliminate index drift, comparison with Double-ended Queues (Deque), and implementing a C++ thread-safe buffer."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-18"
 date: "2026-06-18"
-readTime: "12 phút đọc"
+readTime: "12 min read"
 tags:
   - "Data Structures"
   - "Queue"
@@ -16,51 +16,51 @@ tags:
   - "C++"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong các hệ thống xử lý bất đồng bộ (Asynchronous Processing), máy chủ web đón nhận hàng nghìn kết nối đồng thời, hàng đợi in ấn (Print Spooler) hay hệ thống truyền thông điệp phân tán (Kafka, RabbitMQ), các yêu cầu cần được xử lý theo **đúng thứ tự thời gian chúng được gửi tới**: _Yêu cầu nào đến trước phải được phục vụ trước._
+In Asynchronous Processing systems, web servers handling thousands of concurrent connections, Print Spoolers, or distributed message broker systems (Kafka, RabbitMQ), requests must be processed in the **exact chronological order they were received**: _The request that arrives first must be served first._
 
-**Hàng chờ (Queue)** là cấu trúc dữ liệu tuyến tính hoạt động theo nguyên tắc **Vào trước - Ra trước (First-In, First-Out - FIFO)**. Dữ liệu được thêm vào ở một đầu gọi là **Đuôi (Rear / Tail)** và được lấy ra ở đầu đối diện gọi là **Đầu (Front / Head)**.
+A **Queue** is a linear data structure operating under the **First-In, First-Out (FIFO)** principle. Data is added at one end called the **Rear / Tail** and removed from the opposite end called the **Front / Head**.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Nếu cài đặt Queue bằng một Mảng tĩnh thông thường: Mỗi khi thêm phần tử, ta tăng con trỏ `rear`; mỗi khi lấy phần tử (`dequeue`), ta tăng con trỏ `front`.
+If implementing a Queue using a standard static Array: Every time we add an element, we increment the `rear` pointer; every time we retrieve an element (`dequeue`), we increment the `front` pointer.
 
-Sau một số thao tác chèn và xóa, con trỏ `rear` sẽ chạm tới cuối mảng trong khi các ô nhớ phía trước `front` đã bị bỏ trống hoàn toàn. Mặc dù mảng còn rất nhiều chỗ trống, ta vẫn không thể chèn thêm phần tử mới. Hiện tượng này gọi là **Trôi chỉ số / Giả đầy hàng đợi (False Overflow)**.
+After several insertion and deletion operations, the `rear` pointer will reach the end of the array while the memory slots before `front` have been completely emptied. Even though the array has plenty of empty space left, we cannot insert new elements. This phenomenon is called **Index Drift / False Overflow**.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Để giải quyết triệt để vấn đề lãng phí bộ nhớ, giải pháp chuẩn mực là **Hàng chờ Vòng (Circular Queue / Ring Buffer)**:
+To completely solve the memory waste problem, the standard solution is a **Circular Queue / Ring Buffer**:
 
-1. **Không gian Vòng kín (Circular Indexing):** Xem mảng như một vòng tròn khép kín nối liền từ chỉ số cuối `capacity - 1` quay trở lại chỉ số đầu `0` bằng phép toán chia lấy dư (Modulo Arithmetic):
+1. **Circular Indexing Space:** Treat the array as a closed circle connecting the last index `capacity - 1` back to the first index `0` using Modulo Arithmetic:
 
 ```
 next_index = (current_index + 1) % capacity
 ```
 
-2. **Phân biệt Trạng thái Rỗng và Đầy:** Có 2 kỹ thuật phổ biến:
+2. **Distinguishing Empty and Full States:** There are 2 popular techniques:
 
-- _Kỹ thuật Biến đếm:_ Duy trì biến `count` lưu số lượng phần tử thực tế. Rỗng khi `count == 0`, Đầy khi `count == capacity`.
-- _Kỹ thuật Bỏ trống 1 ô:_ Rỗng khi `front == rear`, Đầy khi `(rear + 1) % capacity == front`.
+- _Counter Technique:_ Maintain a `count` variable storing the actual number of elements. Empty when `count == 0`, Full when `count == capacity`.
+- _One Slot Open Technique:_ Empty when `front == rear`, Full when `(rear + 1) % capacity == front`.
 
-3. **Hiệu năng Hằng số:** Cả thao tác thêm vào đuôi (`enqueue`) và lấy ra từ đầu (`dequeue`) đều chỉ tốn 1 vài phép toán số học đơn giản trong thời gian tuyệt đối **`O(1)`** mà không cần cấp phát lại hay sao chép bộ nhớ.
+3. **Constant Performance:** Both adding to the rear (`enqueue`) and removing from the front (`dequeue`) take only a few simple arithmetic operations in absolute **`O(1)`** time without any memory reallocation or copying.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ cơ chế hoạt động của Hàng chờ Vòng (Circular Ring Buffer):
+Diagram of the Circular Ring Buffer's operational mechanism:
 
 ```mermaid
 flowchart TD
-    subgraph RingBuffer ["Mô Hình Hàng Chờ Vòng (Circular Queue / Ring Buffer)"]
+    subgraph RingBuffer ["Circular Queue / Ring Buffer Model"]
         Slot0["Slot 0: [Data A] <- FRONT"] --- Slot1["Slot 1: [Data B]"]
         Slot1 --- Slot2["Slot 2: [Data C] <- REAR"]
-        Slot2 --- Slot3["Slot 3: (Trống)"]
-        Slot3 --- Slot4["Slot 4: (Trống)"]
-        Slot4 -.->|"Vòng quay lại (4 + 1) % 5 = 0"| Slot0
+        Slot2 --- Slot3["Slot 3: (Empty)"]
+        Slot3 --- Slot4["Slot 4: (Empty)"]
+        Slot4 -.->|"Wrap around (4 + 1) % 5 = 0"| Slot0
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh: Triển khai Circular Queue Ring Buffer:**
+**Complete C++ Source Code: Implementing a Circular Queue Ring Buffer:**
 
 ```c++
 #include <iostream>
@@ -80,31 +80,31 @@ public:
     CircularQueue(size_t cap)
         : buffer(cap), frontIdx(0), rearIdx(0), count(0), capacity(cap) {}
 
-    // Thêm phần tử vào đuôi hàng đợi (Enqueue): O(1)
+    // Add an element to the rear of the queue (Enqueue): O(1)
     bool enqueue(const T& value) {
         if (isFull()) {
-            return false; // Hàng đợi đã đầy
+            return false; // Queue is full
         }
         buffer[rearIdx] = value;
-        rearIdx = (rearIdx + 1) % capacity; // Quay vòng chỉ số
+        rearIdx = (rearIdx + 1) % capacity; // Wrap around index
         ++count;
         return true;
     }
 
-    // Lấy phần tử ra khỏi đầu hàng đợi (Dequeue): O(1)
+    // Remove an element from the front of the queue (Dequeue): O(1)
     bool dequeue(T& outValue) {
         if (isEmpty()) {
-            return false; // Hàng đợi rỗng
+            return false; // Queue is empty
         }
         outValue = buffer[frontIdx];
-        frontIdx = (frontIdx + 1) % capacity; // Quay vòng chỉ số
+        frontIdx = (frontIdx + 1) % capacity; // Wrap around index
         --count;
         return true;
     }
 
-    // Xem phần tử ở đầu hàng đợi mà không xóa: O(1)
+    // View the element at the front without removing it: O(1)
     T front() const {
-        if (isEmpty()) throw std::underflow_error("Queue rong!");
+        if (isEmpty()) throw std::underflow_error("Queue is empty!");
         return buffer[frontIdx];
     }
 
@@ -114,52 +114,52 @@ public:
 };
 
 int main() {
-    CircularQueue<int> q(4); // Hàng đợi vòng sức chứa 4 phần tử
+    CircularQueue<int> q(4); // Circular queue with capacity 4
 
-    std::cout << "--- DEMO HANG CHO VONG (CIRCULAR QUEUE) ---" << std::endl;
+    std::cout << "--- CIRCULAR QUEUE DEMO ---" << std::endl;
     q.enqueue(10);
     q.enqueue(20);
     q.enqueue(30);
     q.enqueue(40);
 
-    std::cout << "Hang doi day? " << (q.isFull() ? "DUNG" : "SAI") << std::endl;
+    std::cout << "Is queue full? " << (q.isFull() ? "YES" : "NO") << std::endl;
 
     int val;
     q.dequeue(val);
-    std::cout << "Da dequeue: " << val << std::endl; // Lấy 10 ra
+    std::cout << "Dequeued: " << val << std::endl; // Removes 10
     q.dequeue(val);
-    std::cout << "Da dequeue: " << val << std::endl; // Lấy 20 ra
+    std::cout << "Dequeued: " << val << std::endl; // Removes 20
 
-    // Thêm tiếp phần tử mới để kiểm tra tính năng quay vòng
+    // Add new elements to test the wrap-around functionality
     q.enqueue(50);
     q.enqueue(60);
 
-    std::cout << "Phan tu dau hang doi hien tai: " << q.front() << std::endl; // Phải là 30
+    std::cout << "Current front element: " << q.front() << std::endl; // Should be 30
 
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Khởi tạo:_ `capacity = 4, frontIdx = 0, rearIdx = 0, count = 0`.
+- _Initialization:_ `capacity = 4, frontIdx = 0, rearIdx = 0, count = 0`.
 - _Enqueue 10, 20, 30, 40:_
-  - Chèn 10 tại index 0 &rarr; `rearIdx = 1`.
-  - Chèn 20 tại index 1 &rarr; `rearIdx = 2`.
-  - Chèn 30 tại index 2 &rarr; `rearIdx = 3`.
-  - Chèn 40 tại index 3 &rarr; `rearIdx = (3 + 1) % 4 = 0`. `count = 4` (Full!).
-- _Dequeue 2 lần:_ Lấy ra 10 (`frontIdx = 1`), lấy ra 20 (`frontIdx = 2`). `count = 2`.
-- _Enqueue 50:_ Ghi tại `buffer[0] = 50` &rarr; `rearIdx = 1` (Quay vòng thành công mà không tràn bộ nhớ!).
-- _Enqueue 60:_ Ghi tại `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` vẫn trỏ chính xác về `buffer[2] = 30`.
+  - Insert 10 at index 0 &rarr; `rearIdx = 1`.
+  - Insert 20 at index 1 &rarr; `rearIdx = 2`.
+  - Insert 30 at index 2 &rarr; `rearIdx = 3`.
+  - Insert 40 at index 3 &rarr; `rearIdx = (3 + 1) % 4 = 0`. `count = 4` (Full!).
+- _Dequeue 2 times:_ Extract 10 (`frontIdx = 1`), extract 20 (`frontIdx = 2`). `count = 2`.
+- _Enqueue 50:_ Write at `buffer[0] = 50` &rarr; `rearIdx = 1` (Successfully wrapped around without memory overflow!).
+- _Enqueue 60:_ Write at `buffer[1] = 60` &rarr; `rearIdx = 2`. `front()` still correctly points to `buffer[2] = 30`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-- **Thêm phần tử vào đuôi (Enqueue):** `O(1)` tuyệt đối.
-- **Lấy phần tử ở đầu (Dequeue):** `O(1)` tuyệt đối.
-- **Xem phần tử đầu (Front / Peek):** `O(1)` tuyệt đối.
-- **Độ phức tạp Không gian (Space Complexity):** `O(K)` với `K` là dung lượng cố định của Ring Buffer, không bao giờ phát sinh cấp phát động.
-- **Ứng dụng thực tế:**
-  - **Thuật toán Tìm kiếm theo Chiều rộng (BFS):** Duyệt đồ thị và tìm đường đi ngắn nhất không trọng số theo từng lớp sóng lan truyền.
-  - **Điều phối CPU trong Hệ điều hành (Round-Robin Scheduling):** Phân chia luân phiên các lát thời gian (Time Slices) cho các tiến trình.
-  - **Mô hình Nhà sản xuất - Người tiêu dùng (Producer-Consumer Pattern):** Bộ đệm Ring Buffer không khóa (Lock-Free Ring Buffer) trong truyền thông điệp siêu tốc giữa các Thread.
-  - **Xử lý Âm thanh Thời gian thực (Audio Streaming Buffers):** Truyền dữ liệu mẫu âm thanh liên tục đến card âm thanh mà không bị giật tiếng (Audio Dropouts).
+- **Enqueue (Add to rear):** Absolute `O(1)`.
+- **Dequeue (Remove from front):** Absolute `O(1)`.
+- **Front / Peek:** Absolute `O(1)`.
+- **Space Complexity:** `O(K)` where `K` is the fixed capacity of the Ring Buffer. It never requires dynamic allocation.
+- **Practical Applications:**
+  - **Breadth-First Search (BFS):** Graph traversal to find the unweighted shortest path by expanding layers wave by wave.
+  - **CPU Scheduling in Operating Systems (Round-Robin):** Alternating Time Slices among running processes.
+  - **Producer-Consumer Pattern:** Lock-Free Ring Buffers for ultra-fast message passing between Threads.
+  - **Real-Time Audio Processing (Audio Streaming Buffers):** Continuously feeding audio sample data to the sound card without Audio Dropouts.

@@ -1,12 +1,12 @@
 ---
 id: "34"
 slug: "hash-table-hashing-collision-resolution-chaining-open-addressing-cpp"
-title: "Thuật toán Cơ bản #08: Thuật toán Băm & Bảng băm (Hashing & Hash Table) - Hàm băm, Xử lý Đụng độ & C++ Implementation"
-summary: "Khám phá bản chất thuật toán Băm (Hashing) và Bảng băm (Hash Table): Thiết kế hàm băm phân tán đều, kỹ thuật giải quyết đụng độ (Separate Chaining vs Open Addressing), hệ số tải (Load Factor), tái băm (Rehashing) và triển khai C++ hoàn chỉnh."
+title: "Fundamental Algorithms #08: Hashing & Hash Table Algorithm - Hash Functions, Collision Resolution & C++ Implementation"
+summary: "Exploring the nature of Hashing and Hash Tables: Designing uniformly distributed hash functions, collision resolution techniques (Separate Chaining vs Open Addressing), Load Factor, Rehashing, and full C++ implementation."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-04"
 date: "2026-06-04"
-readTime: "11 phút đọc"
+readTime: "11 min read"
 tags:
   - "Algorithms"
   - "Hashing"
@@ -17,46 +17,46 @@ tags:
   - "Performance"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong các hệ thống phân tán, cơ sở dữ liệu và máy chủ web chịu tải cao, việc tìm kiếm dữ liệu theo khóa (Key-Value Lookup) phải diễn ra tức thì với độ trễ cực thấp. Đề bài đặt ra: Thiết kế một cấu trúc dữ liệu lưu trữ cho phép thực hiện các thao tác **Thêm (Insert), Tìm kiếm (Get) và Xóa (Delete) với thời gian trung bình kỳ vọng đạt `O(1)`**.
+In distributed systems, databases, and high-load web servers, looking up data by key (Key-Value Lookup) must happen instantaneously with ultra-low latency. The prompt is: Design a storage data structure that allows **Insert, Get, and Delete operations with an expected average time of `O(1)`**.
 
-Bảng băm (Hash Table) kết hợp cùng Thuật toán Băm (Hashing) là giải pháp tiêu chuẩn toàn cầu để đạt được tốc độ truy xuất `O(1)` hằng số độc lập với kích thước dữ liệu.
+The Hash Table, combined with Hashing algorithms, is the global standard solution to achieve a constant `O(1)` access speed independent of data size.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach Idea
 
-So sánh với các cấu trúc dữ liệu truyền thống:
+Comparing with traditional data structures:
 
-- _Mảng phẳng (Array):_ Tìm kiếm tốn `O(N)` phép so sánh tuần tự.
-- _Cây tìm kiếm nhị phân cân bằng (AVL / Red-Black Tree):_ Duy trì thời gian `O(log N)`, nhưng vẫn phát sinh chi phí so sánh khóa và mất chi phí xoay cây (Tree Rebalancing).
+- _Flat Array:_ Searching costs `O(N)` sequential comparisons.
+- _Balanced Binary Search Tree (AVL / Red-Black Tree):_ Maintains `O(log N)` time, but still incurs key comparison costs and Tree Rebalancing overhead.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithmic Structure
 
-Kiến trúc Bảng băm và Chiến lược giải quyết Đụng độ (Collision Resolution):
+Hash Table Architecture and Collision Resolution strategies:
 
-1. **Hàm băm (Hash Function):** Ánh xạ một khóa có kích thước bất kỳ (chuỗi ký tự, object) thành một số nguyên `index = hash(key) % Capacity` phân bố đều khắp các ô nhớ (Buckets). Thuật toán băm chuỗi nổi tiếng: `djb2` (nhân 33 kết hợp XOR).
-2. **Xử lý Đụng độ (Collision Resolution):** Khi hai khóa khác nhau tạo ra cùng một chỉ số băm:
+1. **Hash Function:** Maps a key of any size (string, object) to an integer `index = hash(key) % Capacity` distributed uniformly across memory slots (Buckets). A famous string hashing algorithm: `djb2` (multiply by 33 combined with XOR).
+2. **Collision Resolution:** When two distinct keys produce the same hash index:
 
-- _Separate Chaining (Chuỗi liên kết riêng biệt):_ Mỗi bucket là một danh sách liên kết (Linked List). Khi đụng độ, chèn phần tử mới vào danh sách tại bucket đó.
-- _Open Addressing (Địa chỉ mở):_ Dò tìm ô trống tiếp theo trong bảng (Linear Probing, Quadratic Probing, Double Hashing).
+- _Separate Chaining:_ Each bucket is a Linked List. Upon collision, insert the new element into the list at that bucket.
+- _Open Addressing:_ Probe for the next empty slot in the table (Linear Probing, Quadratic Probing, Double Hashing).
 
-3. **Hệ số Tải (Load Factor `α`) & Tái băm (Rehashing):** Khi tỷ lệ `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, bảng băm tự động nhân đôi kích thước và phân bổ lại toàn bộ phần tử để ngăn ngừa danh sách liên kết bị kéo dài, giữ vững hiệu năng `O(1)`.
+3. **Load Factor (`α`) & Rehashing:** When the ratio `α = (numElements / Capacity) >= 0.75`, the hash table automatically doubles its size and redistributes all elements to prevent linked lists from growing too long, maintaining `O(1)` performance.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Minh họa kiến trúc Bảng băm Separate Chaining xử lý đụng độ:
+Illustrating Separate Chaining Hash Table architecture handling collisions:
 
 ```mermaid
 flowchart LR
-    subgraph Keys [Khóa đầu vào]
+    subgraph Keys [Input Keys]
         K1["Key: 'apple'"]
         K2["Key: 'banana'"]
-        K3["Key: 'cherry' (Đụng độ index 1)"]
+        K3["Key: 'cherry' (Collision at index 1)"]
     end
-    subgraph HashFunc [Hàm băm djb2]
+    subgraph HashFunc [djb2 Hash Function]
         HF["hash(key) % 5"]
     end
-    subgraph Buckets [Buckets Array - Kích thước 5]
+    subgraph Buckets [Buckets Array - Size 5]
         B0["Bucket 0: Empty"]
         B1["Bucket 1: ('banana', 40) -> ('cherry', 80)"]
         B2["Bucket 2: Empty"]
@@ -69,7 +69,7 @@ flowchart LR
     K3 --> HF --> B1
 ```
 
-**Mã nguồn C++ triển khai đầy đủ Bảng băm hoàn chỉnh:**
+**Full C++ Implementation of a Complete Hash Table:**
 
 ```c++
 #include <iostream>
@@ -78,7 +78,7 @@ flowchart LR
 #include <string>
 #include <utility>
 
-// Bảng băm hoàn chỉnh xử lý đụng độ bằng Separate Chaining
+// Complete Hash Table handling collisions with Separate Chaining
 class HashTable {
 private:
     struct Entry {
@@ -90,7 +90,7 @@ private:
     int numElements;
     int capacity;
 
-    // Hàm băm chuỗi kinh điển djb2
+    // Classic djb2 string hash function
     int hashFunction(const std::string& key) const {
         unsigned long hash = 5381;
         for (char c : key) {
@@ -99,7 +99,7 @@ private:
         return static_cast<int>(hash % capacity);
     }
 
-    // Cơ chế Tái băm mở rộng kích thước khi Load Factor vượt ngưỡng
+    // Rehashing mechanism to expand size when Load Factor exceeds threshold
     void rehash() {
         int oldCapacity = capacity;
         capacity *= 2;
@@ -120,7 +120,7 @@ public:
     }
 
     void insert(const std::string& key, int value) {
-        // Ngưỡng Load Factor >= 0.75 kích hoạt Rehashing
+        // Load Factor threshold >= 0.75 triggers Rehashing
         if (static_cast<double>(numElements) / capacity >= 0.75) {
             rehash();
         }
@@ -128,7 +128,7 @@ public:
         int bucket = hashFunction(key);
         for (auto& entry : table[bucket]) {
             if (entry.key == key) {
-                entry.value = value; // Cập nhật nếu khóa đã tồn tại
+                entry.value = value; // Update if key already exists
                 return;
             }
         }
@@ -168,27 +168,27 @@ int main() {
 
     int val;
     if (ht.get("banana", val)) {
-        std::cout << "Giá trị của banana: " << val << std::endl;
+        std::cout << "Value of banana: " << val << std::endl;
     }
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi (Dry Run Trace):**
+**Execution Flow Analysis (Dry Run Trace):**
 
-- _Khởi tạo:_ `capacity = 7`, `numElements = 0`.
-- _Chèn "apple" (giá trị 100):_ `hashFunction("apple")` cho ra bucket `3` &rarr; Thêm `{"apple", 100}` vào `table[3]`. `numElements = 1` (`α = 1/7 pprox 0.14`).
-- _Chèn "banana" (giá trị 40):_ `hashFunction("banana")` cho ra bucket `1` &rarr; Thêm `{"banana", 40}` vào `table[1]`. `numElements = 2`.
-- _Chèn "cherry" (giá trị 80):_ Giả sử băm ra cùng bucket `1` &rarr; Đụng độ băm! Separate Chaining gắn tiếp `{"cherry", 80}` vào cuối danh sách liên kết tại `table[1]`.
-- _Truy xuất `get("banana")`:_ Tính băm ra bucket `1` &rarr; Duyệt node đầu tiên của danh sách tìm thấy ngay khóa "banana" &rarr; Trả về `40` trong thời gian `O(1)`.
+- _Initialization:_ `capacity = 7`, `numElements = 0`.
+- _Insert "apple" (value 100):_ `hashFunction("apple")` yields bucket `3` &rarr; Add `{"apple", 100}` to `table[3]`. `numElements = 1` (`α = 1/7  pprox 0.14`).
+- _Insert "banana" (value 40):_ `hashFunction("banana")` yields bucket `1` &rarr; Add `{"banana", 40}` to `table[1]`. `numElements = 2`.
+- _Insert "cherry" (value 80):_ Assume it hashes to the same bucket `1` &rarr; Hash collision! Separate Chaining appends `{"cherry", 80}` to the end of the linked list at `table[1]`.
+- _Retrieve `get("banana")`:_ Computes hash to bucket `1` &rarr; Traverses the first node of the list and finds the "banana" key immediately &rarr; Returns `40` in `O(1)` time.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-**Đánh giá Hiệu năng theo Framework Chuẩn:**
+**Performance Evaluation per Standard Framework:**
 
-1. **Average-Case Time Complexity (`Θ`):** `Θ(1)` tuyệt đối cho cả ba thao tác Insert, Search và Delete khi hàm băm phân tán tốt và `α < 0.75`.
-2. **Worst-Case Time Complexity (`O`):** `O(N)` trong kịch bản suy biến cực đoan khi toàn bộ `N` phần tử đều bị đụng độ dồn vào đúng một bucket duy nhất.
-3. **Auxiliary Space Complexity:** `O(N)` lưu trữ mảng bucket và các node liên kết.
-4. **Bảo mật Hàm băm:** Trong môi trường Production đối mặt với tấn công từ chối dịch vụ (HashDoS Attacks), cần sử dụng các hàm băm chống xung đột như **SipHash** thay vì hàm băm đơn giản.
+1. **Average-Case Time Complexity (`Θ`):** Absolute `Θ(1)` for all three Insert, Search, and Delete operations when the hash function distributes well and `α < 0.75`.
+2. **Worst-Case Time Complexity (`O`):** `O(N)` in extreme degenerate scenarios where all `N` elements collide into a single bucket.
+3. **Auxiliary Space Complexity:** `O(N)` to store the bucket array and linked nodes.
+4. **Hash Function Security:** In Production environments facing Denial-of-Service attacks (HashDoS Attacks), collision-resistant hash functions like **SipHash** should be used instead of simple ones.
 
-**Ứng dụng thực tế:** `std::unordered_map` / `std::unordered_set` trong C++ STL, HashMap trong Java, Objects/Maps trong JavaScript V8, Redis In-Memory Cache, Database Query Hash-Join và Bộ định tuyến Routing Table trong mạng máy tính.
+**Practical Applications:** `std::unordered_map` / `std::unordered_set` in C++ STL, HashMap in Java, Objects/Maps in JavaScript V8, Redis In-Memory Cache, Database Query Hash-Join, and Routing Tables in computer networks.

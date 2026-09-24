@@ -1,12 +1,12 @@
 ---
 id: "46"
 slug: "minimum-spanning-tree-algorithms-comparison-kruskal-vs-prim"
-title: "Thuật toán Nâng cao #12: So sánh Toàn diện 2 Thuật toán Cây khung nhỏ nhất - Kruskal vs Prim & Chiến lược Lựa chọn theo Mật độ Đồ thị"
-summary: "Phân tích đối chiếu chuyên sâu giữa Kruskal và Prim: So sánh tư duy Tham lam trên Cạnh (Edge-Centric) vs Tham lam trên Đỉnh (Vertex-Centric), quy luật lựa chọn thuật toán theo Mật độ Đồ thị (Sparse vs Dense), khả năng xử lý đồ thị không liên thông và mã nguồn C++ benchmark đối chuẩn."
+title: "Advanced Algorithms #12: Comprehensive Comparison of 2 Minimum Spanning Tree Algorithms - Kruskal vs Prim & Selection Strategy by Graph Density"
+summary: "An in-depth benchmarking analysis of Kruskal and Prim: Comparing Edge-Centric vs Vertex-Centric greedy paradigms, the algorithm selection rules based on Graph Density (Sparse vs Dense), handling disconnected graphs, and C++ benchmark source code."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "11 phút đọc"
+readTime: "11 min read"
 tags:
   - "Algorithms"
   - "Minimum Spanning Tree"
@@ -17,89 +17,89 @@ tags:
   - "Architecture"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong bài toán xây dựng Cây khung nhỏ nhất (MST), hai giải thuật kinh điển **Kruskal** và **Prim** cùng mang lại kết quả tối ưu toàn cục như nhau nhưng vận hành dựa trên hai mô hình kiến trúc hoàn toàn đối lập:
+In the problem of constructing a Minimum Spanning Tree (MST), the two classic algorithms, **Kruskal** and **Prim**, yield the exact same globally optimal result but operate on entirely opposite architectural models:
 
-- **Kruskal:** Tiếp cận toàn cục trên tập cạnh (Edge-Centric), sắp xếp cạnh và hợp nhất rừng phân mảnh bằng DSU.
-- **Prim:** Tiếp cận cục bộ trên tập đỉnh (Vertex-Centric), phát triển một cây liên tục từ một hạt nhân ban đầu bằng Min-Heap.
+- **Kruskal:** A global approach on the edge set (Edge-Centric), sorting edges and merging fragmented forests using DSU.
+- **Prim:** A local approach on the vertex set (Vertex-Centric), growing a continuous tree from an initial nucleus using a Min-Heap.
 
-Việc hiểu rõ ranh giới hiệu năng giữa hai thuật toán dựa trên mật độ đồ thị (Graph Density) là kiến thức cốt tử của kỹ sư hệ thống.
+Understanding the performance boundary between the two algorithms based on Graph Density is crucial knowledge for any systems engineer.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Các sai lầm thực chiến thường gặp:
+Common practical mistakes:
 
-1. **Dùng Kruskal trên Đồ thị Dày (Dense Graph `E ~ V²`):** Sắp xếp `10⁶` cạnh tốn kém chi phí thời gian và bộ nhớ gấp nhiều lần so với việc chạy Prim bằng ma trận `O(V²)`.
-2. **Dùng Prim trên Đồ thị Không Liên thông:** Prim chỉ tìm được cây khung của thành phần liên thông chứa đỉnh xuất phát, trong khi Kruskal tự động tìm ra **Rừng khung nhỏ nhất (Minimum Spanning Forest)** cho toàn bộ đồ thị mà không cần sửa đổi mã nguồn.
+1. **Using Kruskal on Dense Graphs (`E \approx V^2`):** Sorting `10^6` edges costs multiple times more time and memory compared to simply running Prim with an `O(V²)` matrix.
+2. **Using Prim on Disconnected Graphs:** Prim will only find the spanning tree for the connected component containing the starting vertex, whereas Kruskal automatically finds the **Minimum Spanning Forest (MSF)** for the entire graph without requiring source code modifications.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-**Bảng Ma trận So sánh Toàn diện giữa Kruskal và Prim:**
+**Comprehensive Comparison Matrix between Kruskal and Prim:**
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Tiêu chí So sánh</th>
-      <th style="padding: 8px;">Thuật toán Kruskal</th>
-      <th style="padding: 8px;">Thuật toán Prim</th>
+      <th style="padding: 8px;">Comparison Criteria</th>
+      <th style="padding: 8px;">Kruskal's Algorithm</th>
+      <th style="padding: 8px;">Prim's Algorithm</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Triết lý thiết kế</b></td>
-      <td style="padding: 8px">Tham lam trên Cạnh (Edge-Centric)</td>
-      <td style="padding: 8px">Tham lam trên Đỉnh (Vertex-Centric)</td>
+      <td style="padding: 8px"><b>Design Philosophy</b></td>
+      <td style="padding: 8px">Edge-Centric Greedy</td>
+      <td style="padding: 8px">Vertex-Centric Greedy</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Cấu trúc dữ liệu chính</b></td>
+      <td style="padding: 8px"><b>Core Data Structure</b></td>
       <td style="padding: 8px">Disjoint Set Union (DSU) + Sort</td>
-      <td style="padding: 8px">Min-Heap Priority Queue / Ma trận</td>
+      <td style="padding: 8px">Min-Heap Priority Queue / Matrix</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Độ phức tạp (Đồ thị thưa)</b></td>
-      <td style="padding: 8px">`O(E \log V)` (Vượt trội)</td>
-      <td style="padding: 8px">`O(E \log V)`</td>
+      <td style="padding: 8px"><b>Complexity (Sparse Graph)</b></td>
+      <td style="padding: 8px"><code>O(E \log V)</code> (Superior)</td>
+      <td style="padding: 8px"><code>O(E \log V)</code></td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Độ phức tạp (Đồ thị dày)</b></td>
-      <td style="padding: 8px">`O(V² \log V)` (Bị chậm do sort)</td>
-      <td style="padding: 8px">`O(V²)` với ma trận (Tối ưu tuyệt đối)</td>
+      <td style="padding: 8px"><b>Complexity (Dense Graph)</b></td>
+      <td style="padding: 8px"><code>O(V² \log V)</code> (Slowed by sorting)</td>
+      <td style="padding: 8px"><code>O(V²)</code> with matrix (Absolute optimal)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Biểu diễn đồ thị</b></td>
-      <td style="padding: 8px">Danh sách cạnh rời rạc (Edge List)</td>
-      <td style="padding: 8px">Danh sách kề hoặc Ma trận kề</td>
+      <td style="padding: 8px"><b>Graph Representation</b></td>
+      <td style="padding: 8px">Discrete Edge List</td>
+      <td style="padding: 8px">Adjacency List or Adjacency Matrix</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Đồ thị không liên thông</b></td>
-      <td style="padding: 8px">Tự động sinh Rừng khung (MSF)</td>
-      <td style="padding: 8px">Cần vòng lặp ngoài duyệt từng thành phần</td>
+      <td style="padding: 8px"><b>Disconnected Graphs</b></td>
+      <td style="padding: 8px">Automatically generates MSF</td>
+      <td style="padding: 8px">Requires outer loop over components</td>
     </tr>
     <tr>
-      <td style="padding: 8px"><b>Khả năng tính toán song song</b></td>
-      <td style="padding: 8px">Dễ song song hóa bước Sort</td>
-      <td style="padding: 8px">Tuần tự theo từng đỉnh kết nạp</td>
+      <td style="padding: 8px"><b>Parallelization Capability</b></td>
+      <td style="padding: 8px">Sorting step is easy to parallelize</td>
+      <td style="padding: 8px">Strictly sequential by vertex addition</td>
     </tr>
   </tbody>
 </table>
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Cây quyết định lựa chọn thuật toán Cây khung nhỏ nhất:
+Decision tree for selecting the Minimum Spanning Tree algorithm:
 
 ```mermaid
 flowchart TD
-    Start["Yêu Cầu Tìm Cây Khung Nhỏ Nhất (MST)"] --> DensityCheck{"Mật độ đồ thị (Graph Density)?"}
+    Start["Minimum Spanning Tree (MST) Requirement"] --> DensityCheck{"Graph Density?"}
 
-    DensityCheck -->|"Đồ thị thưa (E << V²)"| RepCheck{"Dữ liệu đồ thị sẵn có ở dạng nào?"}
-    DensityCheck -->|"Đồ thị dày (E ~ V²)"| RunPrimMatrix["Chọn PRIM (Ma trận kề)<br/>Độ phức tạp: O(V²)"]
+    DensityCheck -->|"Sparse Graph (E << V²)"| RepCheck{"In what format is the graph data available?"}
+    DensityCheck -->|"Dense Graph (E ~ V²)"| RunPrimMatrix["Choose PRIM (Adjacency Matrix)<br/>Complexity: O(V²)"]
 
-    RepCheck -->|"Danh sách cạnh rời rạc / Rừng khung"| RunKruskal["Chọn KRUSKAL (DSU)<br/>Độ phức tạp: O(E log V)"]
-    RepCheck -->|"Danh sách kề sẵn có"| RunPrimPQ["Chọn PRIM (Min-Heap)<br/>Độ phức tạp: O((V + E) log V)"]
+    RepCheck -->|"Discrete Edge List / Spanning Forest"| RunKruskal["Choose KRUSKAL (DSU)<br/>Complexity: O(E log V)"]
+    RepCheck -->|"Adjacency List ready"| RunPrimPQ["Choose PRIM (Min-Heap)<br/>Complexity: O((V + E) log V)"]
 ```
 
-**Mã nguồn C++ thực thi kiểm thử so sánh Kruskal vs Prim:**
+**C++ Benchmark Source Code comparing Kruskal vs Prim:**
 
 ```c++
 #include <iostream>
@@ -113,7 +113,7 @@ struct Edge {
     bool operator<(const Edge& o) const { return weight < o.weight; }
 };
 
-// DSU cho Kruskal
+// DSU for Kruskal
 struct DSU {
     std::vector<int> p;
     DSU(int n) : p(n) { for (int i = 0; i < n; ++i) p[i] = i; }
@@ -174,16 +174,16 @@ int main() {
         adj[e.v].push_back({e.u, e.weight});
     }
 
-    std::cout << "Tong trong so MST (Kruskal): " << runKruskal(V, edges) << std::endl;
-    std::cout << "Tong trong so MST (Prim):    " << runPrim(V, adj) << std::endl;
+    std::cout << "Total MST weight (Kruskal): " << runKruskal(V, edges) << std::endl;
+    std::cout << "Total MST weight (Prim):    " << runPrim(V, adj) << std::endl;
 
     return 0;
 }
 ```
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-Quy tắc ghi nhớ nhanh cho kỹ sư phần mềm:
+Quick memorization rules for software engineers:
 
-1. **Chọn Kruskal:** Khi đồ thị là đồ thị thưa (như mạng lưới giao thông đường bộ, bản đồ topo), hoặc khi dữ liệu đầu vào đã ở dạng danh sách cạnh, hoặc cần tìm rừng khung cho đồ thị có thể bị phân mảnh thành nhiều cụm độc lập.
-2. **Chọn Prim:** Khi đồ thị là đồ thị dày (như ma trận khoảng cách đầy đủ giữa tất cả các điểm, mạng lưới kết nối toàn phần), nơi giải thuật Prim với ma trận kề đạt `O(V²)` bỏ xa chi phí sắp xếp `O(V² \log V)` của Kruskal.
+1. **Choose Kruskal:** When the graph is sparse (like a road network or topographical map), when the input data is already in an edge list format, or when you need to find a spanning forest for a graph that might be fragmented into multiple independent clusters.
+2. **Choose Prim:** When the graph is dense (such as a full distance matrix between all points, or a fully connected network), where Prim's algorithm using an adjacency matrix achieves `O(V²)`, far outperforming the `O(V² \log V)` sorting cost of Kruskal.

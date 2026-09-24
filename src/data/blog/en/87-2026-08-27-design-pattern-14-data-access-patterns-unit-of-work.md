@@ -1,12 +1,12 @@
 ---
 id: 87
 slug: design-pattern-14-data-access-patterns-unit-of-work
-title: "Design Pattern #14: [Data Access Patterns] Unit of Work - Đảm bảo toàn vẹn dữ liệu (Transaction)"
-summary: "Tìm hiểu cách Unit of Work điều phối nhiều Repository để xử lý transaction, đảm bảo tính ACID khi thực thi nhiều thao tác cơ sở dữ liệu cùng lúc."
+title: "Design Pattern #14: [Data Access Patterns] Unit of Work - Ensuring Data Integrity (Transaction)"
+summary: "Learn how Unit of Work coordinates multiple Repositories to handle transactions, ensuring ACID compliance when executing multiple database operations simultaneously."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-08-27"
 date: "2026-08-27"
-readTime: "7 phút đọc"
+readTime: "7 min read"
 tags:
   - "Design Patterns"
   - "Data Access Patterns"
@@ -14,24 +14,24 @@ tags:
   - "Unit of Work"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong quy trình thanh toán (Checkout) thực tế, hệ thống không chỉ lưu vào bảng `Orders`. Nó phải làm chuỗi tác vụ sau:
+In a real-world Checkout process, the system doesn't just save to the `Orders` table. It must perform the following chain of tasks:
 
-1. Lưu đơn hàng vào bảng `Orders`.
-2. Trừ số lượng tồn kho trong bảng `Inventory`.
-3. Lưu lịch sử thanh toán vào bảng `Payments`.
+1. Save the order to the `Orders` table.
+2. Deduct inventory quantities in the `Inventory` table.
+3. Save the payment history to the `Payments` table.
 
-Nếu bước (1) và (2) thành công, nhưng bước (3) thất bại (do lỗi mạng), đơn hàng đã được tạo nhưng tiền không được ghi nhận, và kho thì bị trừ sai.
-Chúng ta cần một khái niệm **Transaction**: "All or Nothing" (Thành công tất cả hoặc quay lại từ đầu). **Unit of Work (UoW) Pattern** kết hợp với các Repositories sẽ giải quyết bài toán này.
+If steps (1) and (2) succeed, but step (3) fails (due to a network error), the order is created, but the money isn't recorded, and inventory is incorrectly deducted.
+We need a **Transaction** concept: "All or Nothing" (Succeed all together or rollback to the beginning). The **Unit of Work (UoW) Pattern** combined with Repositories will solve this problem.
 
-## Unit of Work Pattern là gì?
+## What is the Unit of Work Pattern?
 
-Unit of Work (Đơn vị Công việc) duy trì một danh sách các đối tượng bị ảnh hưởng bởi một giao dịch thương mại/nghiệp vụ. Nó điều phối việc ghi toàn bộ những thay đổi đó vào Database trong cùng một Database Transaction. Cung cấp các thao tác `commit()` (lưu) và `rollback()` (hủy bỏ).
+The Unit of Work maintains a list of objects affected by a business transaction. It coordinates the writing of all those changes to the Database within the same Database Transaction. It provides `commit()` (save) and `rollback()` (abort) operations.
 
-## Áp dụng vào Hệ thống Xử lý Đơn hàng
+## Applying to the Order Processing System
 
-Chúng ta tạo một `IUnitOfWork`. Class này không chỉ nắm giữ tham chiếu đến `OrderRepository`, `InventoryRepository` mà còn quản lý kết nối DB (Connection/Session) chung cho tất cả các Repo đó.
+We create an `IUnitOfWork`. This class not only holds references to the `OrderRepository` and `InventoryRepository` but also manages the common DB connection (Connection/Session) for all those Repos.
 
 ```mermaid
 sequenceDiagram
@@ -44,23 +44,23 @@ sequenceDiagram
     Service->>UoW: startTransaction()
     UoW->>DB: BEGIN TRAN
     Service->>O_Repo: save(Order)
-    O_Repo->>DB: (Ghi tạm vào Session)
+    O_Repo->>DB: (Write temporarily to Session)
     Service->>I_Repo: deductStock(Item)
-    I_Repo->>DB: (Ghi tạm vào Session)
+    I_Repo->>DB: (Write temporarily to Session)
 
-    alt Xảy ra lỗi
+    alt Error occurs
         Service->>UoW: rollback()
         UoW->>DB: ROLLBACK
-    else Mọi thứ suôn sẻ
+    else Everything goes smoothly
         Service->>UoW: commit()
-        UoW->>DB: COMMIT (Ghi thật sự)
+        UoW->>DB: COMMIT (Actual write)
     end
 ```
 
-## Cài đặt (Mã giả - TypeScript)
+## Implementation (Pseudocode - TypeScript)
 
 ```typescript
-// 1. Interface cho Unit of Work
+// 1. Interface for Unit of Work
 interface IUnitOfWork {
   orders: IOrderRepository;
   inventory: IInventoryRepository;
@@ -70,15 +70,15 @@ interface IUnitOfWork {
   rollback(): void;
 }
 
-// 2. Triển khai UoW cụ thể
+// 2. Concrete UoW Implementation
 class PostgresUnitOfWork implements IUnitOfWork {
-  private dbConnection: any; // Giả lập DB Session
+  private dbConnection: any; // Simulate DB Session
   public orders: IOrderRepository;
   public inventory: IInventoryRepository;
 
   constructor() {
-    this.dbConnection = {}; // Lấy connection từ Connection Pool
-    // Pass chung connection cho các repo để chúng share chung 1 Transaction
+    this.dbConnection = {}; // Get connection from Connection Pool
+    // Pass the common connection to the repos so they share 1 Transaction
     this.orders = new PostgresOrderRepository(this.dbConnection);
     this.inventory = new PostgresInventoryRepository(this.dbConnection);
   }
@@ -88,15 +88,15 @@ class PostgresUnitOfWork implements IUnitOfWork {
   }
 
   commit() {
-    console.log("--- COMMIT (Lưu vào DB) ---");
+    console.log("--- COMMIT (Save to DB) ---");
   }
 
   rollback() {
-    console.log("--- ROLLBACK (Khôi phục dữ liệu) ---");
+    console.log("--- ROLLBACK (Restore data) ---");
   }
 }
 
-// 3. Service xử lý nghiệp vụ
+// 3. Business Logic Service
 class CheckoutService {
   private uow: IUnitOfWork;
 
@@ -107,30 +107,30 @@ class CheckoutService {
   public processCheckout(order: Order, productId: string) {
     this.uow.startTransaction();
     try {
-      // Thực hiện nhiều thao tác
+      // Execute multiple operations
       this.uow.orders.save(order);
       this.uow.inventory.deductStock(productId, 1);
 
-      // Nếu không có lỗi -> Commit
+      // If no errors -> Commit
       this.uow.commit();
-      console.log("Checkout thành công!");
+      console.log("Checkout successful!");
     } catch (error) {
-      // Có lỗi -> Hủy bỏ toàn bộ
+      // If error occurs -> Abort everything
       this.uow.rollback();
-      console.log("Checkout thất bại, đã Rollback!");
+      console.log("Checkout failed, Rollback executed!");
     }
   }
 }
 ```
 
-## Đánh giá Ưu / Nhược điểm
+## Pros / Cons Evaluation
 
-**Ưu điểm:**
+**Pros:**
 
-- **Đảm bảo tính toàn vẹn (Data Integrity):** Ngăn chặn tình trạng dữ liệu rác hoặc sai lệch khi luồng xử lý đứt gánh giữa chừng.
-- Quản lý Connection tập trung: Tránh việc mỗi Repository tự mở một kết nối mới tới Database gây lãng phí tài nguyên.
+- **Ensures Data Integrity:** Prevents garbage or skewed data when processing threads break mid-way.
+- Centralized Connection Management: Avoids each Repository opening a new connection to the Database and wasting resources.
 
-**Nhược điểm:**
+**Cons:**
 
-- Triển khai thủ công khá phức tạp, đặc biệt trong các môi trường đa luồng (Multi-threading) hoặc bất đồng bộ (Node.js/Async-await), dễ gây ra deadlock nếu không quản lý kỹ context của Transaction.
-- **Lưu ý:** Hiện nay, hầu hết các framework ORM (như Entity Framework, TypeORM, Prisma, Hibernate) đều đã implement sẵn Unit of Work bên dưới (thường là qua các hàm `.transaction()`). Lập trình viên thường hiếm khi phải tự code UoW từ đầu, nhưng việc hiểu rõ kiến trúc này là bắt buộc để gọi hàm cho đúng.
+- Manual implementation is quite complex, especially in Multi-threading or Asynchronous environments (Node.js/Async-await), easily causing deadlocks if Transaction contexts are not carefully managed.
+- **Note:** Nowadays, most ORM frameworks (like Entity Framework, TypeORM, Prisma, Hibernate) have already implemented Unit of Work under the hood (usually via `.transaction()` functions). Developers rarely have to code UoW from scratch, but understanding this architecture is mandatory to call the functions correctly.

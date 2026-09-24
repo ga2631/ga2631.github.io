@@ -1,12 +1,12 @@
 ---
 id: 83
 slug: design-pattern-10-structural-patterns-adapter
-title: "Design Pattern #10: [Structural Patterns] Adapter Pattern - Tích hợp Hệ thống Tồn kho Legacy"
-summary: "Làm thế nào để kết nối backend hiện đại của chúng ta với một hệ thống quản lý tồn kho cũ kỹ (Legacy System) dùng định dạng XML? Adapter Pattern chính là câu trả lời."
+title: "Design Pattern #10: [Structural Patterns] Adapter Pattern - Integrating Legacy Inventory Systems"
+summary: "How to connect our modern backend with an old legacy Inventory System using XML format? The Adapter Pattern is the answer."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-07-30"
 date: "2026-07-30"
-readTime: "6 phút đọc"
+readTime: "6 min read"
 tags:
   - "Design Patterns"
   - "Structural Patterns"
@@ -14,21 +14,21 @@ tags:
   - "Use Case Analysis"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong thực tế, không phải lúc nào hệ thống của chúng ta cũng được viết mới từ đầu. Giả sử công ty vừa sáp nhập với một đối tác vận tải cũ. Hệ thống Order của chúng ta giao tiếp hoàn toàn bằng **JSON**, nhưng hệ thống Kho bãi (Inventory System) của đối tác lại là một **Legacy System** chỉ nhận dữ liệu **XML** qua giao thức SOAP.
+In reality, our system isn't always written from scratch. Suppose the company just merged with an old logistics partner. Our Order system communicates entirely in **JSON**, but the partner's Inventory System is a **Legacy System** that only accepts **XML** data via the SOAP protocol.
 
-Chúng ta không thể bắt đối tác đập đi viết lại hệ thống của họ, nhưng cũng không thể làm bẩn logic Order của mình bằng các đoạn code parse XML lộn xộn. Ta cần một "bộ chuyển đổi" - **Adapter Pattern**.
+We cannot force the partner to tear down and rewrite their system, but we also cannot dirty our Order logic with messy XML parsing code. We need an "adapter" - the **Adapter Pattern**.
 
-## Adapter Pattern là gì?
+## What is the Adapter Pattern?
 
-Adapter (Người chuyển đổi / Phích cắm chuyển đổi) là một pattern thuộc nhóm Cấu trúc. Nó cho phép các interface (giao diện) không tương thích có thể làm việc được với nhau. Nó hoạt động giống như một bộ chuyển đổi ổ cắm điện 3 chấu sang 2 chấu.
+The Adapter is a pattern belonging to the Structural group. It allows incompatible interfaces to work together. It acts like a 3-prong to 2-prong electrical plug adapter.
 
-## Áp dụng vào Hệ thống
+## Applying to the System
 
-Hệ thống lõi cần interface `IInventoryService` với hàm `checkStock(productId: string) : boolean`.
-Hệ thống cũ có class `LegacyInventorySystem` với hàm `checkItemInXML(xmlPayload: string) : number`.
-Chúng ta tạo ra `LegacyInventoryAdapter` để implement `IInventoryService`, bên trong nó sẽ gọi đến `LegacyInventorySystem` và làm nhiệm vụ convert dữ liệu.
+The core system needs an `IInventoryService` interface with the function `checkStock(productId: string) : boolean`.
+The old system has the `LegacyInventorySystem` class with the function `checkItemInXML(xmlPayload: string) : number`.
+We create `LegacyInventoryAdapter` to implement `IInventoryService`, inside which it will call `LegacyInventorySystem` and perform the data conversion task.
 
 ```mermaid
 classDiagram
@@ -57,24 +57,24 @@ classDiagram
     LegacyInventoryAdapter --> LegacyInventorySystem : calls
 ```
 
-## Cài đặt (Mã giả - TypeScript)
+## Implementation (Pseudocode - TypeScript)
 
 ```typescript
-// 1. Interface chuẩn của hệ thống chúng ta (Target)
+// 1. Standard Interface of our system (Target)
 interface IInventoryService {
   checkStock(productId: string): boolean;
 }
 
-// 2. Hệ thống cũ không tương thích (Adaptee)
+// 2. Incompatible old system (Adaptee)
 class LegacyInventorySystem {
   public checkItemInXML(xmlPayload: string): number {
-    console.log(`[Legacy] Nhận XML: ${xmlPayload}`);
-    // Giả lập xử lý, trả về số lượng tồn kho (ví dụ: 10)
+    console.log(`[Legacy] Received XML: ${xmlPayload}`);
+    // Simulate processing, return inventory quantity (e.g., 10)
     return 10;
   }
 }
 
-// 3. Lớp chuyển đổi (Adapter)
+// 3. Adapter Class
 class LegacyInventoryAdapter implements IInventoryService {
   private legacySystem: LegacyInventorySystem;
 
@@ -83,34 +83,34 @@ class LegacyInventoryAdapter implements IInventoryService {
   }
 
   checkStock(productId: string): boolean {
-    // Chuyển đổi JSON / Data chuẩn sang định dạng XML mà Adaptee hiểu
+    // Convert standard JSON / Data into XML format that Adaptee understands
     const xmlPayload = `<request><itemId>${productId}</itemId></request>`;
 
-    // Gọi hệ thống cũ
+    // Call legacy system
     const quantity = this.legacySystem.checkItemInXML(xmlPayload);
 
-    // Chuyển đổi kết quả (Int) về định dạng hệ thống chúng ta cần (Boolean)
+    // Convert result (Int) back to the format our system needs (Boolean)
     return quantity > 0;
   }
 }
 
-// 4. Cách Client sử dụng
+// 4. Client Usage
 const legacyAPI = new LegacyInventorySystem();
 const inventoryAdapter = new LegacyInventoryAdapter(legacyAPI);
 
-// Client hoàn toàn không biết gì về XML hay Legacy System
+// The Client knows absolutely nothing about XML or the Legacy System
 const isAvailable = inventoryAdapter.checkStock("PROD-999");
-console.log(`Sản phẩm có sẵn: ${isAvailable}`);
+console.log(`Product available: ${isAvailable}`);
 ```
 
-## Đánh giá Ưu / Nhược điểm
+## Pros / Cons Evaluation
 
-**Ưu điểm:**
+**Pros:**
 
-- **Tái sử dụng (Reusability):** Tái sử dụng lại được các class cũ, thư viện bên thứ 3 (3rd-party libs) mà không cần can thiệp sửa đổi mã nguồn của chúng.
-- **Tách biệt logic (Decoupling):** Code thao tác chuyển đổi dữ liệu (XML <-> JSON) được giấu kín trong Adapter, không làm bẩn Business Logic.
+- **Reusability:** Reuses old classes and 3rd-party libraries without needing to modify their source code.
+- **Decoupling:** Code for data conversion (XML <-> JSON) is hidden within the Adapter, keeping Business Logic clean.
 
-**Nhược điểm:**
+**Cons:**
 
-- Có thể làm tăng độ phức tạp của code base vì sinh ra thêm các class/interface trung gian.
-- Nếu Adaptee (hệ thống cũ) có quá nhiều hàm phức tạp, việc viết Adapter hoàn chỉnh sẽ tốn rất nhiều công sức (trong trường hợp đó, cân nhắc dùng _Facade_ thay thế).
+- Can increase the complexity of the codebase due to the creation of additional intermediate classes/interfaces.
+- If the Adaptee (legacy system) has too many complex functions, writing a complete Adapter will take a lot of effort (in that case, consider using a _Facade_ instead).

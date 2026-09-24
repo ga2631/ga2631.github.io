@@ -1,12 +1,12 @@
 ---
 id: "48"
 slug: "data-structure-array-dynamic-array-vector-cpp"
-title: "Cấu trúc Dữ liệu #01: Mảng & Mảng động (Array & Dynamic Array) - Bố cục Bộ nhớ Liền kề, Phân bổ Hình học & Triển khai C++ Vector"
-summary: "Mổ xẻ bản chất cấu trúc dữ liệu Mảng (Array) và Mảng động (Dynamic Array / Vector): Nguyên lý bố cục bộ nhớ liền kề (Contiguous Memory Layout), cơ chế đánh địa chỉ O(1), chiến lược cấp phát mở rộng hình học (Geometric Resizing), phân tích chi phí khấu hao (Amortized Analysis) và cài đặt C++ Vector tùy biến từ đầu."
+title: "Data Structures #01: Array & Dynamic Array (Vector) - Contiguous Memory Layout, Geometric Resizing & C++ Vector Implementation"
+summary: "Dissecting the essence of the Array and Dynamic Array (Vector) data structures: The principle of Contiguous Memory Layout, O(1) addressing mechanism, Geometric Resizing strategy, Amortized Analysis, and building a custom C++ Vector from scratch."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-18"
 date: "2026-06-18"
-readTime: "11 phút đọc"
+readTime: "11 min read"
 tags:
   - "Data Structures"
   - "Array"
@@ -16,51 +16,51 @@ tags:
   - "Computer Science"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong kiến trúc phần cứng máy tính hiện đại (kiến trúc Von Neumann), bộ nhớ RAM được tổ chức như một mảng tuyến tính khổng lồ của các ô nhớ (Byte). **Mảng (Array)** là cấu trúc dữ liệu nguyên thủy và nền tảng nhất trong khoa học máy tính, đại diện cho một khối các phần tử có cùng kiểu dữ liệu được cấp phát tại một **vùng nhớ liên tục (Contiguous Memory Block)**.
+In modern computer hardware architecture (Von Neumann architecture), RAM memory is organized as a massive linear array of memory cells (Bytes). An **Array** is the most primitive and foundational data structure in computer science, representing a block of elements of the same data type allocated in a **Contiguous Memory Block**.
 
-Tuy nhiên, mảng tĩnh truyền thống (Static Array) có kích thước cố định tại thời điểm biên dịch. Trong thực tế phát triển phần mềm, số lượng phần tử cần lưu trữ thường biến động liên tục trong thời gian chạy (Runtime). Thách thức đặt ra: _Làm thế nào để thiết kế một **Mảng động (Dynamic Array - tương đương `std::vector` trong C++ hay `ArrayList` trong Java)** có khả năng tự động co giãn kích thước linh hoạt mà vẫn duy trì tốc độ truy xuất tức thời `O(1)` và tối ưu hóa hiệu năng bộ nhớ đệm CPU (CPU Cache Locality)?_
+However, traditional Static Arrays have a fixed size determined at compile time. In actual software development, the number of elements needed often fluctuates continuously at Runtime. The challenge: _How to design a **Dynamic Array** (equivalent to `std::vector` in C++ or `ArrayList` in Java) capable of elastic auto-resizing while maintaining instantaneous `O(1)` access speed and optimizing CPU Cache Locality?_
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Cách tiếp cận ngây thơ ban đầu khi mảng bị đầy: Mỗi khi thêm 1 phần tử mới (`push_back`), ta cấp phát một mảng mới có kích thước `N + 1`, sao chép toàn bộ `N` phần tử cũ sang và giải phóng mảng cũ.
+The naive initial approach when an array gets full: Every time a new element is added (`push_back`), allocate a new array of size `N + 1`, copy all `N` old elements over, and deallocate the old array.
 
-Chiến lược tăng trưởng tuyến tính này (Linear Resizing) dẫn đến một thảm họa hiệu năng: Để thêm `N` phần tử, tổng số phép sao chép bộ nhớ sẽ là `1 + 2 + 3 + ... + N = (N x (N + 1)) / 2 = O(N²)`. Chi phí trung bình cho mỗi thao tác thêm phần tử vọt lên `O(N)` - hoàn toàn bất khả thi cho các hệ thống xử lý dữ liệu lớn.
+This Linear Resizing strategy leads to a performance catastrophe: To add `N` elements, the total number of memory copy operations would be `1 + 2 + 3 + ... + N = (N \times (N + 1)) / 2 = O(N^2)`. The average cost for each insertion shoots up to `O(N)` - completely unfeasible for large data processing systems.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Để giải quyết triệt để vấn đề này, các ngôn ngữ lập trình hiện đại áp dụng chiến lược **Phân bổ Mở rộng Hình học (Geometric / Exponential Resizing)**:
+To fully resolve this issue, modern programming languages adopt a **Geometric / Exponential Resizing** allocation strategy:
 
-1. **Nhân đôi Dung lượng (Capacity Doubling):** Khi số lượng phần tử thực tế (`size`) chạm ngưỡng sức chứa tối đa (`capacity`), mảng sẽ cấp phát một vùng nhớ mới có kích thước gấp đôi (`capacity x 2`), sao chép các phần tử cũ sang và giải phóng vùng nhớ cũ.
-2. **Phân tích Chi phí Khấu hao (Amortized Analysis):** Mặc dù thao tác mở rộng tại thời điểm đầy mảng tốn chi phí `O(N)`, nhưng sự kiện này chỉ xảy ra rất thưa thớt (sau mỗi `1, 2, 4, 8, 16, ...` phần tử). Tổng chi phí sao chép khi chèn `N` phần tử là `1 + 2 + 4 + ... + N <= 2N = O(N)`. Chia đều cho `N` thao tác, chi phí trung bình khấu hao (Amortized Cost) cho mỗi lần `push_back` là **hằng số `O(1)`**.
-3. **Định vị Địa chỉ Trực tiếp (Direct Address Calculation):** Nhờ bố cục bộ nhớ liền kề, vị trí ô nhớ của phần tử thứ `i` được tính toán tức thời bằng công thức toán học số học con trỏ:
+1. **Capacity Doubling:** When the actual number of elements (`size`) hits the maximum limit (`capacity`), the array allocates a new memory region twice the size (`capacity \times 2`), copies the old elements over, and frees the old memory space.
+2. **Amortized Analysis:** Although the expansion operation at the moment the array fills up costs `O(N)`, this event occurs very sparsely (after every `1, 2, 4, 8, 16, ...` elements). The total copy cost when inserting `N` elements is `1 + 2 + 4 + ... + N \le 2N = O(N)`. Divided evenly across `N` operations, the Amortized Cost for each `push_back` is a **constant `O(1)`**.
+3. **Direct Address Calculation:** Thanks to the contiguous memory layout, the memory address of the `i`-th element is instantly calculated using mathematical pointer arithmetic:
 
 ```
-Address(arr[i]) = Base_Address + i x sizeof(ElementType)
+Address(arr[i]) = Base_Address + i * sizeof(ElementType)
 ```
 
-Thao tác đọc/ghi ngẫu nhiên (Random Access) chỉ tốn đúng 1 chu kỳ xung nhịp CPU `O(1)`. 4. **Tối ưu hóa Bộ nhớ đệm (Cache Locality):** Khi CPU đọc một phần tử từ RAM, toàn bộ dòng đệm Cache Line (thường là 64 bytes) chứa các phần tử lân cận sẽ được tải đồng thời vào L1/L2 Cache, giúp tốc độ duyệt mảng nhanh gấp hàng chục lần so với danh sách liên kết.
+Random Access reading/writing takes exactly 1 CPU clock cycle `O(1)`. 4. **Cache Locality Optimization:** When the CPU reads an element from RAM, an entire Cache Line (typically 64 bytes) containing neighboring elements is fetched simultaneously into the L1/L2 Cache, making array traversal dozens of times faster compared to linked lists.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ bố cục bộ nhớ liền kề và cơ chế nhân đôi dung lượng của Mảng động:
+Diagram of contiguous memory layout and the Dynamic Array's capacity doubling mechanism:
 
 ```mermaid
 flowchart TD
-    subgraph MemoryLayout ["Bố Cục Bộ Nhớ Liền Kề - Contiguous Memory"]
+    subgraph MemoryLayout ["Contiguous Memory Layout"]
         B0["Index 0: 0x1000"] --- B1["Index 1: 0x1004"]
         B1 --- B2["Index 2: 0x1008"]
         B2 --- B3["Index 3: 0x100C"]
     end
 
-    subgraph ResizingFlow ["Tiến Trình Nhân Đôi Dung Lượng (Geometric Growth)"]
-        Cap2["Capacity = 2 (ĐẦY) -> [10, 20]"] -->|"Cấp phát x2 vùng nhớ mới"| Cap4["Capacity = 4 -> [10, 20, 30, (trống)]"]
-        Cap4 -->|"Đầy 4 phần tử -> Cấp phát x2"| Cap8["Capacity = 8 -> Sao chép 4 phần tử cũ + Thêm mới"]
+    subgraph ResizingFlow ["Geometric Growth Resizing Process"]
+        Cap2["Capacity = 2 (FULL) -> [10, 20]"] -->|"Allocate x2 new memory"| Cap4["Capacity = 4 -> [10, 20, 30, (empty)]"]
+        Cap4 -->|"Full 4 elements -> Allocate x2"| Cap8["Capacity = 8 -> Copy 4 old elements + Add new"]
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh: Xây dựng Dynamic Vector tùy biến:**
+**Complete C++ Source Code: Building a Custom Dynamic Vector:**
 
 ```c++
 #include <iostream>
@@ -70,54 +70,54 @@ flowchart TD
 template <typename T>
 class MyVector {
 private:
-    T* data;           // Con trỏ trỏ tới vùng nhớ động trên Heap
-    size_t length;     // Số lượng phần tử hiện có (Size)
-    size_t cap;        // Sức chứa tối đa hiện tại (Capacity)
+    T* data;           // Pointer referencing the dynamic memory area on the Heap
+    size_t length;     // Current number of elements (Size)
+    size_t cap;        // Current maximum capacity (Capacity)
 
-    // Tái cấp phát bộ nhớ khi dung lượng đầy
+    // Reallocate memory when capacity is full
     void reallocate(size_t newCapacity) {
         T* newBlock = new T[newCapacity];
         for (size_t i = 0; i < length; ++i) {
-            newBlock[i] = std::move(data[i]); // Di chuyển dữ liệu sang vùng nhớ mới
+            newBlock[i] = std::move(data[i]); // Move data to the new memory block
         }
-        delete[] data; // Giải phóng vùng nhớ cũ
+        delete[] data; // Free old memory
         data = newBlock;
         cap = newCapacity;
     }
 
 public:
     MyVector() : data(nullptr), length(0), cap(0) {
-        reallocate(2); // Dung lượng khởi tạo ban đầu = 2
+        reallocate(2); // Initial starting capacity = 2
     }
 
     ~MyVector() {
         delete[] data;
     }
 
-    // Thao tác chèn phần tử vào cuối mảng: Amortized O(1)
+    // Insert element at the end of the array: Amortized O(1)
     void pushBack(const T& value) {
         if (length >= cap) {
-            reallocate(cap * 2); // Nhân đôi dung lượng
+            reallocate(cap * 2); // Double the capacity
         }
         data[length++] = value;
     }
 
-    // Thao tác xóa phần tử cuối cùng: O(1)
+    // Remove the last element: O(1)
     void popBack() {
         if (length > 0) {
             --length;
         }
     }
 
-    // Truy xuất phần tử có kiểm tra biên (Bounds Checking): O(1)
+    // Element access with Bounds Checking: O(1)
     T& at(size_t index) {
         if (index >= length) {
-            throw std::out_of_range("Chi so vuot qua gioi han mang!");
+            throw std::out_of_range("Index out of bounds!");
         }
         return data[index];
     }
 
-    // Toán tử truy xuất ngẫu nhiên qua index: O(1)
+    // Random access operator via index: O(1)
     T& operator[](size_t index) {
         return data[index];
     }
@@ -134,14 +134,14 @@ public:
 int main() {
     MyVector<int> vec;
 
-    std::cout << "--- DEMO MANG DONG (DYNAMIC ARRAY) ---" << std::endl;
+    std::cout << "--- DYNAMIC ARRAY DEMO ---" << std::endl;
     for (int i = 1; i <= 5; ++i) {
         vec.pushBack(i * 10);
-        std::cout << "Them " << (i * 10) << " | Size: " << vec.size()
+        std::cout << "Added " << (i * 10) << " | Size: " << vec.size()
                   << " | Capacity: " << vec.capacity() << std::endl;
     }
 
-    std::cout << "\nCac phan tu trong mang: ";
+    std::cout << "\nElements in array: ";
     for (size_t i = 0; i < vec.size(); ++i) {
         std::cout << vec[i] << " ";
     }
@@ -151,22 +151,22 @@ int main() {
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Khởi tạo:_ `size = 0, capacity = 2`. Cấp phát mảng 2 phần tử trên Heap.
-- _Thêm 10 (i=1):_ `size = 1 < 2` &rarr; `data[0] = 10`. `size = 1, capacity = 2`.
-- _Thêm 20 (i=2):_ `size = 2 <= 2` &rarr; `data[1] = 20`. `size = 2, capacity = 2` (Đầy!).
-- _Thêm 30 (i=3):_ `size = 2 == capacity = 2` &rarr; Kích hoạt `reallocate(4)`: Cấp phát mảng mới size 4, chép `[10, 20]` sang, gán `data[2] = 30` &rarr; `size = 3, capacity = 4`.
-- _Thêm 40 (i=4):_ `size = 4, capacity = 4` (Đầy!).
-- _Thêm 50 (i=5):_ Kích hoạt `reallocate(8)`: Cấp phát mảng mới size 8, chép 4 phần tử sang, gán `data[4] = 50` &rarr; `size = 5, capacity = 8`.
+- _Initialization:_ `size = 0, capacity = 2`. Allocate a 2-element array on the Heap.
+- _Add 10 (i=1):_ `size = 1 < 2` &rarr; `data[0] = 10`. `size = 1, capacity = 2`.
+- _Add 20 (i=2):_ `size = 2 <= 2` &rarr; `data[1] = 20`. `size = 2, capacity = 2` (Full!).
+- _Add 30 (i=3):_ `size = 2 == capacity = 2` &rarr; Triggers `reallocate(4)`: Allocates new array size 4, copies `[10, 20]`, assigns `data[2] = 30` &rarr; `size = 3, capacity = 4`.
+- _Add 40 (i=4):_ `size = 4, capacity = 4` (Full!).
+- _Add 50 (i=5):_ Triggers `reallocate(8)`: Allocates new array size 8, copies 4 elements over, assigns `data[4] = 50` &rarr; `size = 5, capacity = 8`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-- **Truy xuất phần tử theo chỉ số (Access by Index):** `O(1)` tuyệt đối nhờ phép tính dịch chuyển địa chỉ con trỏ trực tiếp.
-- **Thêm phần tử vào cuối (Append / push_back):** `O(1)` Khấu hao (Amortized Time), `O(N)` Worst-Case khi chạm ngưỡng nhân đôi dung lượng.
-- **Chèn / Xóa ở đầu hoặc giữa mảng (Insert / Delete at index):** `O(N)` vì phải dịch chuyển toàn bộ các phần tử phía sau sang một vị trí.
-- **Độ phức tạp Không gian (Space Complexity):** `O(N)` với hệ số sử dụng bộ nhớ thường dao động từ `50%` đến `100%` (do sức chứa luôn &ge; số lượng phần tử thực tế).
-- **Ứng dụng thực tế:**
-  - **Cấu trúc nền tảng:** Làm khối xây dựng cơ sở để cài đặt Bảng băm (Hash Table), Hàng đợi ưu tiên (Binary Heap), Hàng chờ vòng (Ring Buffer).
-  - **Xử lý đồ họa & Game:** Ma trận biến đổi 3D (Transformation Matrix), bộ đệm đỉnh (Vertex Buffers) trong OpenGL/DirectX.
-  - **Hệ thống cơ sở dữ liệu:** Lưu trữ các trang dữ liệu (Database Pages) theo khối bộ nhớ liên tục để tăng tốc I/O ổ đĩa.
+- **Access by Index:** Absolute `O(1)` thanks to direct pointer arithmetic.
+- **Append (push_back):** Amortized `O(1)`, Worst-Case `O(N)` when hitting the doubling capacity threshold.
+- **Insert / Delete at index (front or middle):** `O(N)` because all subsequent elements must be shifted by one position.
+- **Space Complexity:** `O(N)` with a memory utilization factor typically fluctuating between `50%` and `100%` (since capacity is always `\ge` actual size).
+- **Practical Applications:**
+  - **Foundational Structures:** Used as the base building block to implement Hash Tables, Binary Heaps (Priority Queues), and Ring Buffers.
+  - **Graphics & Gaming:** Transformation Matrices (3D math), Vertex Buffers in OpenGL/DirectX.
+  - **Database Systems:** Storing Database Pages inside contiguous memory blocks to accelerate disk I/O.

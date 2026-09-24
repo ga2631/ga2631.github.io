@@ -40,7 +40,7 @@ Kiến trúc Bảng băm và Chiến lược giải quyết Đụng độ (Colli
 - _Separate Chaining (Chuỗi liên kết riêng biệt):_ Mỗi bucket là một danh sách liên kết (Linked List). Khi đụng độ, chèn phần tử mới vào danh sách tại bucket đó.
 - _Open Addressing (Địa chỉ mở):_ Dò tìm ô trống tiếp theo trong bảng (Linear Probing, Quadratic Probing, Double Hashing).
 
-3. **Hệ số Tải (Load Factor `α`) & Tái băm (Rehashing):** Khi tỷ lệ `α = frac{	ext{numElements}}{	ext{Capacity}} >= 0.75`, bảng băm tự động nhân đôi kích thước và phân bổ lại toàn bộ phần tử để ngăn ngừa danh sách liên kết bị kéo dài, giữ vững hiệu năng `O(1)`.
+3. **Hệ số Tải (Load Factor `α`) & Tái băm (Rehashing):** Khi tỷ lệ `α = (numElements / Capacity) >= 0.75`, bảng băm tự động nhân đôi kích thước và phân bổ lại toàn bộ phần tử để ngăn ngừa danh sách liên kết bị kéo dài, giữ vững hiệu năng `O(1)`.
 
 ## Triển khai mã nguồn & Dry Run
 

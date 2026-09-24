@@ -59,15 +59,15 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Độ phức tạp Thời gian</b></td>
-      <td style="padding: 8px">`O((V + E) \log V)`</td>
-      <td style="padding: 8px">`O(V x E)` (Best: `O(E)`)</td>
-      <td style="padding: 8px">`Θ(V³)`</td>
+      <td style="padding: 8px"><code>O((V + E) \log V)</code></td>
+      <td style="padding: 8px"><code>O(V*E)</code> (Best: <code>O(E)</code>)</td>
+      <td style="padding: 8px"><code>Θ(V³)</code></td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Độ phức tạp Không gian</b></td>
-      <td style="padding: 8px">`O(V + E)`</td>
-      <td style="padding: 8px">`O(V + E)`</td>
-      <td style="padding: 8px">`O(V²)`</td>
+      <td style="padding: 8px"><code>O(V + E)</code></td>
+      <td style="padding: 8px"><code>O(V + E)</code></td>
+      <td style="padding: 8px"><code>O(V²)</code></td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Trọng số cạnh âm</b></td>
@@ -79,7 +79,7 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
       <td style="padding: 8px"><b>Phát hiện Chu trình âm</b></td>
       <td style="padding: 8px">KHÔNG hỗ trợ</td>
       <td style="padding: 8px">CÓ (ở lượt duyệt V)</td>
-      <td style="padding: 8px">CÓ (`dist[i][i] < 0`)</td>
+      <td style="padding: 8px">CÓ (<code>dist[i][i] < 0</code>)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Cấu trúc Dữ liệu</b></td>

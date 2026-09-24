@@ -1,12 +1,12 @@
 ---
 id: 76
 slug: design-pattern-02-creational-patterns-object-pool
-title: "Design Pattern #02: [Creational Patterns] Object Pool Pattern - Tối ưu hóa Kết nối Cơ sở dữ liệu"
-summary: "Khắc phục nút thắt cổ chai hiệu suất khi lưu trữ đơn hàng bằng cách tái sử dụng kết nối Database thông qua Object Pool Pattern."
+title: "Design Pattern #02: [Creational Patterns] Object Pool Pattern - Database Connection Optimization"
+summary: "Overcome performance bottlenecks when saving orders by reusing Database connections through the Object Pool Pattern."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-04"
 date: "2026-06-04"
-readTime: "7 phút đọc"
+readTime: "7 min read"
 tags:
   - "Design Patterns"
   - "Creational Patterns"
@@ -14,19 +14,19 @@ tags:
   - "Use Case Analysis"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Sau khi thiết lập cấu hình với Singleton, Hệ thống Xử lý Đơn hàng cần lưu dữ liệu vào Database. Vào các dịp Sale lớn, hàng nghìn đơn hàng được tạo mỗi giây. Việc mở và đóng kết nối TCP tới Database (như PostgreSQL hay MySQL) cho từng đơn hàng là một tác vụ cực kỳ tốn chi phí (Expensive Operation) và sẽ nhanh chóng làm sập hệ thống.
+After configuring with Singleton, the Order Processing System needs to save data into the Database. During major Sales events, thousands of orders are generated per second. Opening and closing TCP connections to the Database (like PostgreSQL or MySQL) for every single order is an extremely expensive operation and will quickly crash the system.
 
-**Object Pool Pattern** là giải pháp tối ưu cho tình huống này.
+The **Object Pool Pattern** is the optimal solution for this scenario.
 
-## Object Pool Pattern là gì?
+## What is the Object Pool Pattern?
 
-Thay vì tạo mới và hủy object liên tục, Object Pool duy trì một "hồ chứa" (pool) các object đã được khởi tạo sẵn. Khi cần, client mượn (borrow) một object từ pool, sử dụng xong thì trả lại (return) để client khác dùng tiếp.
+Instead of continuously creating and destroying objects, an Object Pool maintains a "pool" of pre-initialized objects. When needed, the client borrows an object from the pool, uses it, and then returns it for other clients to use.
 
-## Áp dụng vào Hệ thống Xử lý Đơn hàng
+## Applying to the Order Processing System
 
-Chúng ta sẽ xây dựng `DatabaseConnectionPool`. Pool này sẽ duy trì sẵn 10 kết nối DB. Khi `OrderRepository` cần lưu đơn hàng, nó lấy kết nối từ Pool, thực thi Query và trả lại.
+We will build a `DatabaseConnectionPool`. This pool will maintain 10 ready DB connections. When `OrderRepository` needs to save an order, it takes a connection from the Pool, executes the Query, and returns it.
 
 ```mermaid
 sequenceDiagram
@@ -35,18 +35,18 @@ sequenceDiagram
     participant Connection
 
     OrderService->>DBPool: acquireConnection()
-    alt Pool có kết nối rảnh
-        DBPool-->>OrderService: Trả về Connection #1
-    else Pool hết kết nối rảnh
-        DBPool-->>OrderService: Block hoặc throw Error
+    alt Pool has free connections
+        DBPool-->>OrderService: Returns Connection #1
+    else Pool is out of free connections
+        DBPool-->>OrderService: Block or throw Error
     end
 
     OrderService->>Connection: executeQuery("INSERT INTO orders...")
     OrderService->>DBPool: releaseConnection(Connection #1)
-    Note right of DBPool: Đánh dấu Connection #1 là Available
+    Note right of DBPool: Marks Connection #1 as Available
 ```
 
-## Cài đặt (Mã giả)
+## Implementation (Pseudocode)
 
 ```typescript
 class DatabaseConnection {
@@ -84,13 +84,13 @@ class DatabaseConnectionPool {
   }
 }
 
-// Cách sử dụng
-const pool = new DatabaseConnectionPool(5); // Khởi tạo pool 5 kết nối
-const conn = pool.acquire(); // Mượn
+// Usage
+const pool = new DatabaseConnectionPool(5); // Initialize pool with 5 connections
+const conn = pool.acquire(); // Borrow
 conn.query("INSERT INTO orders (total) VALUES (500)");
-pool.release(conn); // Trả lại
+pool.release(conn); // Return
 ```
 
-## Tổng kết
+## Summary
 
-Object Pool giảm thiểu độ trễ đáng kể trong hệ thống backend. Ở bước tiếp theo, sau khi lưu trữ đơn hàng, khách hàng cần tiến hành thanh toán. Chúng ta sẽ dùng **Factory Method Pattern** để linh hoạt xử lý nhiều cổng thanh toán khác nhau (VNPay, Momo, Stripe).
+The Object Pool significantly reduces latency in backend systems. In the next step, after saving the order, the customer needs to proceed with payment. We will use the **Factory Method Pattern** to flexibly handle various payment gateways (VNPay, Momo, Stripe).

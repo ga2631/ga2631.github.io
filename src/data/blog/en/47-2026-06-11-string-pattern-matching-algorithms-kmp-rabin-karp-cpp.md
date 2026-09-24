@@ -1,12 +1,12 @@
 ---
 id: "47"
 slug: "string-pattern-matching-algorithms-kmp-rabin-karp-cpp"
-title: "Thuật toán Nâng cao #13: Thuật toán Chuỗi & Đối sánh Mẫu - Knuth-Morris-Pratt (KMP) O(N + M), Rabin-Karp Rolling Hash & Triển khai C++"
-summary: "Khám phá chuyên sâu bài toán Đối sánh Mẫu chuỗi (String Pattern Matching): Mổ xẻ thuật toán KMP với Bảng tiền tố LPS (Longest Proper Prefix which is also Suffix) loại bỏ hoàn toàn quay lui O(N + M), thuật toán Rabin-Karp với Mã băm cuộn đa thức (Polynomial Rolling Hash) và mã nguồn C++ hoàn chỉnh."
+title: "Advanced Algorithms #13: String & Pattern Matching Algorithms - Knuth-Morris-Pratt (KMP) O(N + M), Rabin-Karp Rolling Hash & C++ Implementation"
+summary: "An in-depth exploration of the Exact String Pattern Matching problem: Dissecting the KMP algorithm with its LPS (Longest Proper Prefix which is also Suffix) array eliminating O(N + M) backtracking entirely, the Rabin-Karp algorithm with Polynomial Rolling Hash, and a complete C++ implementation."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "13 phút đọc"
+readTime: "13 min read"
 tags:
   - "Algorithms"
   - "String Processing"
@@ -17,73 +17,73 @@ tags:
   - "C++"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong các công cụ soạn thảo mã nguồn (VS Code, Vim), công cụ tìm kiếm văn bản (grep, ripgrep), hệ thống phát hiện xâm nhập mạng (Snort) hay các phần mềm phân tích hệ gen sinh học (BLAST), thao tác phổ biến nhất là: _Tìm kiếm sự xuất hiện của một chuỗi mẫu con `Pattern` (độ dài `M`) bên trong một văn bản lớn `Text` (độ dài `N`)._
+In source code editors (VS Code, Vim), text search tools (grep, ripgrep), network intrusion detection systems (Snort), or bioinformatics genome analysis software (BLAST), the most common operation is: _Finding occurrences of a `Pattern` string (length `M`) inside a large `Text` string (length `N`)._
 
-Bài toán đặt ra: **Đối sánh mẫu chính xác (Exact String Matching)**. Cho chuỗi văn bản `Text[0..N-1]` và chuỗi mẫu `Pattern[0..M-1]` (với `M <= N`). Hãy tìm tất cả các vị trí chỉ số `i` trong `Text` sao cho `Text[i .. i + M - 1] == Pattern[0 .. M - 1]`.
+The problem statement: **Exact String Matching**. Given a text string `Text[0..N-1]` and a pattern string `Pattern[0..M-1]` (where `M <= N`). Find all index positions `i` in `Text` such that `Text[i .. i + M - 1] == Pattern[0 .. M - 1]`.
 
-Hai giải thuật đỉnh cao thống trị lĩnh vực này là **Thuật toán Knuth-Morris-Pratt (KMP)** và **Thuật toán Rabin-Karp**.
+Two pinnacle algorithms dominating this field are the **Knuth-Morris-Pratt (KMP) Algorithm** and the **Rabin-Karp Algorithm**.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Thuật toán ngây thơ (Naive String Matching) trượt mẫu `Pattern` qua từng vị trí `i` của `Text` và so khớp từng ký tự từ trái sang phải. Nếu gặp ký tự không khớp (Mismatch) ở vị trí `j`, thuật toán lùi con trỏ `Text` về `i + 1` và bắt đầu so khớp lại từ `Pattern[0]`.
+The Naive String Matching algorithm slides the `Pattern` across each position `i` of the `Text` and matches characters from left to right. If a mismatch occurs at position `j`, the algorithm moves the `Text` pointer back to `i + 1` and restarts matching from `Pattern[0]`.
 
-Trường hợp xấu nhất xảy ra khi văn bản và mẫu chứa các ký tự lặp lại (ví dụ: `Text = "AAAAAAAAB"`, `Pattern = "AAAB"`). Mỗi lần mismatch, thuật toán phải so sánh `M` ký tự vô ích, đẩy độ phức tạp lên bậc hai `O(N x M)`. Khi `N = 10⁷` và `M = 10⁴`, thuật toán ngây thơ mất hàng trăm tỷ phép tính!
+The worst-case scenario happens when both text and pattern contain repeating characters (e.g., `Text = "AAAAAAAAB"`, `Pattern = "AAAB"`). On every mismatch, the algorithm has to uselessly compare `M` characters, pushing the complexity to quadratic `O(N * M)`. When `N = 10^7` and `M = 10^4`, the naive algorithm consumes hundreds of billions of operations!
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-**1. Thuật toán Knuth-Morris-Pratt (KMP - 1977):**
+**1. Knuth-Morris-Pratt Algorithm (KMP - 1977):**
 
-KMP đạt được bước đột phá `O(N + M)` bằng cách **không bao giờ lùi con trỏ trên chuỗi Text**. Khi xảy ra mismatch, KMP tận dụng thông tin tiền tố đã khớp trước đó để trượt mẫu `Pattern` sang phải nhiều bước nhất có thể thông qua mảng **LPS (Longest Proper Prefix which is also Suffix)**:
+KMP achieved the `O(N + M)` breakthrough by **never moving the pointer backward on the Text string**. When a mismatch occurs, KMP leverages the prefix information already matched to shift the `Pattern` to the right as far as possible using the **LPS (Longest Proper Prefix which is also Suffix)** array:
 
-- `LPS[i]` lưu độ dài của tiền tố thực sự dài nhất của `Pattern[0..i]` mà đồng thời cũng là hậu tố của `Pattern[0..i]`.
-- Khi mismatch tại `Pattern[j]`, thay vì quay về `Pattern[0]`, ta nhảy thẳng về `j = LPS[j - 1]` và tiếp tục so sánh với ký tự hiện tại của `Text`.
+- `LPS[i]` stores the length of the longest proper prefix of `Pattern[0..i]` that is simultaneously a suffix of `Pattern[0..i]`.
+- Upon mismatch at `Pattern[j]`, instead of falling back to `Pattern[0]`, we jump straight to `j = LPS[j - 1]` and continue comparing with the current character of the `Text`.
 
-**2. Thuật toán Rabin-Karp (1987):**
+**2. Rabin-Karp Algorithm (1987):**
 
-Rabin-Karp biến đổi bài toán so khớp chuỗi thành bài toán so khớp số nguyên nhờ **Hàm băm cuộn đa thức (Polynomial Rolling Hash)**:
+Rabin-Karp transforms the string matching problem into an integer matching problem via the **Polynomial Rolling Hash**:
 
-- Tính mã băm của `Pattern` trong `O(M)`: `H(P) = sum P[i] x B^{M - 1 - i} \pmod P`.
-- Khi trượt cửa sổ kích thước `M` trên `Text` từ `i` sang `i + 1`, mã băm của cửa sổ mới được cập nhật trong `O(1)` bằng cách loại bỏ ký tự đầu `Text[i]` và thêm ký tự mới `Text[i + M]`:
+- Calculate the hash of the `Pattern` in `O(M)`: `H(P) = \sum P[i] \times B^{M - 1 - i} \pmod P`.
+- When sliding the window of size `M` on `Text` from `i` to `i + 1`, the new window's hash is updated in `O(1)` by removing the leading character `Text[i]` and adding the new character `Text[i + M]`:
 
 ```
-H_{new} = (H_{old} - Text[i] x B^{M-1}) x B + Text[i + M] \pmod P
+H_{new} = (H_{old} - Text[i] * B^{M-1}) * B + Text[i + M] \pmod P
 ```
 
-- Chỉ khi mã băm của cửa sổ trùng với mã băm của `Pattern`, ta mới thực hiện so sánh từng ký tự để loại trừ đụng độ băm (Hash Collision).
+- Only when the hash of the window matches the hash of the `Pattern` do we perform a character-by-character comparison to filter out Hash Collisions.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ chuyển trạng thái tự động và bước nhảy LPS trong KMP:
+State transition automaton and LPS jump steps in KMP:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> State0: j=0 (Khởi đầu)
-    State0 --> State1: Khớp ký tự 'A'
-    State1 --> State2: Khớp ký tự 'B'
-    State2 --> State3: Khớp ký tự 'A'
-    State3 --> State4: Khớp ký tự 'B'
-    State4 --> State5: Khớp ký tự 'C' (MATCH!)
+    [*] --> State0: j=0 (Start)
+    State0 --> State1: Match char 'A'
+    State1 --> State2: Match char 'B'
+    State2 --> State3: Match char 'A'
+    State3 --> State4: Match char 'B'
+    State4 --> State5: Match char 'C' (MATCH!)
 
-    State4 --> State2: Mismatch! Nhảy về LPS[3] = 2 (Không lùi Text pointer)
-    State2 --> State0: Mismatch! Nhảy về LPS[1] = 0
+    State4 --> State2: Mismatch! Jump to LPS[3] = 2 (Do not backtrack Text pointer)
+    State2 --> State0: Mismatch! Jump to LPS[1] = 0
 ```
 
-**Mã nguồn C++ hoàn chỉnh (Triển khai đồng thời KMP và Rabin-Karp):**
+**Complete C++ Source Code (Simultaneous implementation of KMP and Rabin-Karp):**
 
 ```c++
 #include <iostream>
 #include <vector>
 #include <string>
 
-// --- 1. THUẬT TOÁN KNUTH-MORRIS-PRATT (KMP) ---
+// --- 1. KNUTH-MORRIS-PRATT ALGORITHM (KMP) ---
 
-// Tiền tính toán bảng LPS (Longest Proper Prefix which is also Suffix)
+// Precompute the LPS (Longest Proper Prefix which is also Suffix) array
 std::vector<int> computeLPS(const std::string& pattern) {
     int m = static_cast<int>(pattern.size());
     std::vector<int> lps(m, 0);
-    int len = 0; // Độ dài tiền tố dài nhất trước đó
+    int len = 0; // Length of the previous longest prefix
     int i = 1;
 
     while (i < m) {
@@ -93,7 +93,7 @@ std::vector<int> computeLPS(const std::string& pattern) {
             ++i;
         } else {
             if (len != 0) {
-                len = lps[len - 1]; // Nhảy về tiền tố ngắn hơn trước đó
+                len = lps[len - 1]; // Jump back to a shorter prefix
             } else {
                 lps[i] = 0;
                 ++i;
@@ -110,8 +110,8 @@ std::vector<int> KMPSearch(const std::string& text, const std::string& pattern) 
     if (m == 0 || n < m) return matches;
 
     std::vector<int> lps = computeLPS(pattern);
-    int i = 0; // Con trỏ trên text (KHÔNG BAO GIỜ LÙI)
-    int j = 0; // Con trỏ trên pattern
+    int i = 0; // Pointer on text (NEVER BACKTRACKS)
+    int j = 0; // Pointer on pattern
 
     while (i < n) {
         if (text[i] == pattern[j]) {
@@ -120,11 +120,11 @@ std::vector<int> KMPSearch(const std::string& text, const std::string& pattern) 
         }
 
         if (j == m) {
-            matches.push_back(i - j); // Tìm thấy vị trí khớp mẫu!
-            j = lps[j - 1];           // Chuẩn bị tìm vị trí kế tiếp
+            matches.push_back(i - j); // Pattern match found!
+            j = lps[j - 1];           // Prepare to find the next match
         } else if (i < n && text[i] != pattern[j]) {
             if (j != 0) {
-                j = lps[j - 1]; // Nhảy con trỏ pattern dựa trên bảng LPS
+                j = lps[j - 1]; // Shift pattern pointer based on LPS array
             } else {
                 ++i;
             }
@@ -133,7 +133,7 @@ std::vector<int> KMPSearch(const std::string& text, const std::string& pattern) 
     return matches;
 }
 
-// --- 2. THUẬT TOÁN RABIN-KARP ROLLING HASH ---
+// --- 2. RABIN-KARP ROLLING HASH ALGORITHM ---
 
 std::vector<int> rabinKarpSearch(const std::string& text, const std::string& pattern) {
     std::vector<int> matches;
@@ -152,14 +152,14 @@ std::vector<int> rabinKarpSearch(const std::string& text, const std::string& pat
         h = (h * BASE) % MOD;
     }
 
-    // Tính mã băm ban đầu cho pattern và cửa sổ đầu tiên của text
+    // Calculate the initial hash for pattern and the first window of text
     for (int i = 0; i < m; ++i) {
         patternHash = (BASE * patternHash + pattern[i]) % MOD;
         currentHash = (BASE * currentHash + text[i]) % MOD;
     }
 
     for (int i = 0; i <= n - m; ++i) {
-        // Nếu mã băm khớp, kiểm tra lại từng ký tự để tránh đụng độ
+        // If hashes match, verify character by character to avoid collisions
         if (patternHash == currentHash) {
             bool match = true;
             for (int j = 0; j < m; ++j) {
@@ -173,7 +173,7 @@ std::vector<int> rabinKarpSearch(const std::string& text, const std::string& pat
             }
         }
 
-        // Tính mã băm cuộn (Rolling Hash) cho cửa sổ kế tiếp trong O(1)
+        // Calculate rolling hash for the next window in O(1)
         if (i < n - m) {
             currentHash = (BASE * (currentHash - text[i] * h) + text[i + m]) % MOD;
             if (currentHash < 0) {
@@ -191,12 +191,12 @@ int main() {
     auto kmpMatches = KMPSearch(text, pattern);
     auto rkMatches = rabinKarpSearch(text, pattern);
 
-    std::cout << "--- KET QUA TIM KIEM CHUOI CON ---" << std::endl;
-    std::cout << "KMP tim thay tai index:        ";
+    std::cout << "--- SUBSTRING SEARCH RESULTS ---" << std::endl;
+    std::cout << "KMP found at indices:        ";
     for (int idx : kmpMatches) std::cout << idx << " ";
     std::cout << std::endl;
 
-    std::cout << "Rabin-Karp tim thay tai index: ";
+    std::cout << "Rabin-Karp found at indices: ";
     for (int idx : rkMatches) std::cout << idx << " ";
     std::cout << std::endl;
 
@@ -204,28 +204,28 @@ int main() {
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace KMP):**
+**Detailed Execution Trace (Dry Run KMP):**
 
-- _Mẫu `Pattern = "ABABCABAB"`:_ Bảng `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
-  - `LPS[3] = 2` vì chuỗi con `"ABAB"` có tiền tố `"AB"` trùng với hậu tố `"AB"`.
-  - `LPS[8] = 4` vì chuỗi con `"ABABCABAB"` có tiền tố `"ABAB"` trùng hậu tố `"ABAB"`.
-- _Quá trình so khớp trên `Text = "ABABDABACDABABCABAB"`:_
-  - So khớp 4 ký tự đầu `"ABAB"` thành công (`j = 4`).
-  - Tại ký tự thứ 5 (`Text[4] = 'D'`, `Pattern[4] = 'C'`) &rarr; Mismatch!
-  - KMP không lùi `i` về 1, mà giữ nguyên `i = 4` và gán `j = LPS[3] = 2` (đại diện cho tiền tố `"AB"` đã khớp).
-  - Tiếp tục so sánh `Text[4] = 'D'` với `Pattern[2] = 'A'` &rarr; Tiết kiệm 4 phép so sánh dư thừa!
-  - Tại `i = 10`, toàn bộ mẫu khớp hoàn toàn &rarr; Ghi nhận vị trí xuất hiện tại `index = 10`.
+- _Pattern `Pattern = "ABABCABAB"`:_ Array `LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]`.
+  - `LPS[3] = 2` because substring `"ABAB"` has prefix `"AB"` matching suffix `"AB"`.
+  - `LPS[8] = 4` because substring `"ABABCABAB"` has prefix `"ABAB"` matching suffix `"ABAB"`.
+- _Matching process on `Text = "ABABDABACDABABCABAB"`:_
+  - First 4 characters `"ABAB"` match successfully (`j = 4`).
+  - At the 5th character (`Text[4] = 'D'`, `Pattern[4] = 'C'`) &rarr; Mismatch!
+  - KMP does not regress `i` back to 1. It keeps `i = 4` and assigns `j = LPS[3] = 2` (representing the `"AB"` prefix that already matched).
+  - Continues comparing `Text[4] = 'D'` with `Pattern[2] = 'A'` &rarr; Saving 4 redundant comparisons!
+  - At `i = 10`, the entire pattern perfectly matches &rarr; Records occurrence at `index = 10`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-- **Độ phức tạp Thời gian (Time Complexity):**
-  - **KMP:** `Θ(N + M)` trong mọi trường hợp. Pha tính LPS tốn `O(M)`, pha quét Text tốn `O(N)` không bao giờ quay lui.
-  - **Rabin-Karp:** Trung bình `O(N + M)`. Trường hợp xấu nhất (nhiều đụng độ băm) là `O(N x M)`.
-- **Độ phức tạp Không gian (Space Complexity):**
-  - KMP: `O(M)` cho mảng tiền tố `LPS`.
-  - Rabin-Karp: `O(1)` bộ nhớ phụ trợ chỉ với vài biến tích lũy mã băm.
-- **Ứng dụng thực tế:**
-  - **Trình tìm kiếm mã nguồn và văn bản:** Lõi của các lệnh tìm kiếm Regex và đối sánh từ khóa trong IDE.
-  - **Phân tích hệ Gen sinh học:** Tìm kiếm các đoạn mã gen gây bệnh hoặc mẫu DNA đột biến trong chuỗi hàng tỷ nucleotide.
-  - **Phát hiện đạo văn (Plagiarism Detection):** Rabin-Karp với Rolling Hash nhiều mẫu cho phép so khớp đồng thời hàng trăm đoạn văn bản ngắn cùng lúc.
-  - **Tường lửa & Phát hiện xâm nhập mạng (IDS/IPS):** Quét các chữ ký độc hại (Malware Signature) trong payload của gói tin mạng TCP/IP theo thời gian thực.
+- **Time Complexity:**
+  - **KMP:** `\Theta(N + M)` in all cases. Computing LPS takes `O(M)`, and scanning Text takes `O(N)` with no backtracking.
+  - **Rabin-Karp:** Average `O(N + M)`. Worst-case (many hash collisions) is `O(N * M)`.
+- **Space Complexity:**
+  - KMP: `O(M)` for the `LPS` prefix array.
+  - Rabin-Karp: `O(1)` auxiliary space using just a few hash accumulation variables.
+- **Practical Applications:**
+  - **Source Code and Text Searchers:** The core of Regex matching and keyword lookup in IDEs.
+  - **Genomic Bioinformatics:** Searching for disease-causing genes or mutant DNA patterns within sequences containing billions of nucleotides.
+  - **Plagiarism Detection:** Rabin-Karp with multiple-pattern Rolling Hash enables simultaneous text overlap matching against hundreds of snippets.
+  - **Firewalls & IDS/IPS:** Scanning malicious malware signatures inside TCP/IP network packets in real-time.

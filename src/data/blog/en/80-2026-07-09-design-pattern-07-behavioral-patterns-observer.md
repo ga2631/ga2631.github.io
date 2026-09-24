@@ -1,12 +1,12 @@
 ---
 id: 80
 slug: design-pattern-07-behavioral-patterns-observer
-title: "Design Pattern #07: [Behavioral Patterns] Observer Pattern - Xây dựng hệ thống thông báo sự kiện"
-summary: "Ứng dụng Observer Pattern để thiết kế hệ thống Event-driven, cho phép tự động gửi Email, SMS, App Push khi trạng thái đơn hàng thay đổi mà không làm code bị kết dính."
+title: "Design Pattern #07: [Behavioral Patterns] Observer Pattern - Building an Event Notification System"
+summary: "Apply the Observer Pattern to design an Event-driven system, allowing automatic sending of Emails, SMS, and App Pushes when an order's status changes without coupling the code."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-07-09"
 date: "2026-07-09"
-readTime: "6 phút đọc"
+readTime: "6 min read"
 tags:
   - "Design Patterns"
   - "Behavioral Patterns"
@@ -14,19 +14,19 @@ tags:
   - "Observer"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Đơn hàng vừa được cập nhật trạng thái từ _Pending (Chờ xử lý)_ sang _Shipped (Đang giao)_. Ngay lúc này, bộ phận Marketing muốn gửi Email chúc mừng, bộ phận Chăm sóc khách hàng muốn nhắn tin SMS, và team Mobile App muốn đẩy một thông báo (Push Notification) lên điện thoại người dùng.
+An order has just been updated from _Pending_ to _Shipped_. Right now, the Marketing department wants to send a congratulatory Email, the Customer Care department wants to send an SMS, and the Mobile App team wants to send a Push Notification to the user's phone.
 
-Nếu trong hàm `updateOrderStatus()` chúng ta viết cứng (hardcode) các dòng gọi API gửi Email, gửi SMS, gửi Push... thì `OrderService` đang ôm đồm quá nhiều việc, vi phạm nguyên tắc Single Responsibility (SRP). **Observer Pattern** là cứu cánh cho kịch bản này.
+If we hardcode the API calls to send Emails, SMS, and Pushes inside the `updateOrderStatus()` function, `OrderService` handles too much, violating the Single Responsibility Principle (SRP). The **Observer Pattern** is the lifesaver for this scenario.
 
-## 1. Observer Pattern là gì?
+## 1. What is the Observer Pattern?
 
-Observer là mẫu thiết kế Hành vi định nghĩa mối quan hệ một-nhiều giữa các đối tượng. Khi một đối tượng thay đổi trạng thái (Subject), tất cả các đối tượng phụ thuộc vào nó (Observers) đều được thông báo và cập nhật tự động. Đây là nền tảng của kiến trúc **Event-driven** (Lập trình hướng sự kiện).
+Observer is a Behavioral design pattern that defines a one-to-many relationship between objects. When one object changes its state (Subject), all its dependents (Observers) are automatically notified and updated. This is the foundation of the **Event-driven** architecture.
 
-## 2. Áp dụng vào Hệ thống Xử lý Đơn hàng
+## 2. Applying to the Order Processing System
 
-Chúng ta sẽ biến `Order` thành một _Subject_. Các dịch vụ như `EmailNotifier`, `SMSNotifier` sẽ đóng vai trò là các _Observer_. Các Observer này sẽ "đăng ký" (subscribe) theo dõi Subject. Khi Order đổi trạng thái, nó chỉ việc hô lên `notifyObservers()`, các dịch vụ tự biết cách xử lý phần việc của mình.
+We will turn `Order` into a _Subject_. Services like `EmailNotifier`, `SMSNotifier` will act as _Observers_. These Observers will "subscribe" to track the Subject. When the Order changes its status, it simply calls `notifyObservers()`, and the services know how to handle their own work.
 
 ```mermaid
 sequenceDiagram
@@ -37,27 +37,27 @@ sequenceDiagram
     EmailService->>Order (Subject): subscribe()
     SMSService->>Order (Subject): subscribe()
 
-    Note over Order (Subject): Trạng thái đổi thành "Shipped"
+    Note over Order (Subject): Status changes to "Shipped"
     Order (Subject)->>Order (Subject): notifyObservers()
 
-    par Thông báo song song
+    par Parallel notifications
         Order (Subject)->>EmailService (Observer): update("Shipped")
         Order (Subject)->>SMSService (Observer): update("Shipped")
     end
 
-    EmailService-->>User: Gửi Email
-    SMSService-->>User: Gửi SMS
+    EmailService-->>User: Sends Email
+    SMSService-->>User: Sends SMS
 ```
 
-## 3. Cài đặt (Mã giả - TypeScript)
+## 3. Implementation (Pseudocode - TypeScript)
 
 ```typescript
-// 1. Giao diện Observer
+// 1. Observer Interface
 interface IObserver {
   update(orderId: string, status: string): void;
 }
 
-// 2. Subject (Đối tượng bị quan sát)
+// 2. Subject (Observed Object)
 class OrderSubject {
   private observers: IObserver[] = [];
   private orderId: string;
@@ -76,7 +76,7 @@ class OrderSubject {
   }
 
   public changeStatus(newStatus: string): void {
-    console.log(`\n[Order ${this.orderId}] Trạng thái thay đổi: ${newStatus}`);
+    console.log(`\n[Order ${this.orderId}] Status changed: ${newStatus}`);
     this.status = newStatus;
     this.notify();
   }
@@ -92,7 +92,7 @@ class OrderSubject {
 class EmailNotifier implements IObserver {
   update(orderId: string, status: string): void {
     console.log(
-      `[Email] Đang gửi email cho đơn ${orderId} - Trạng thái: ${status}`,
+      `[Email] Sending email for order ${orderId} - Status: ${status}`,
     );
   }
 }
@@ -100,40 +100,40 @@ class EmailNotifier implements IObserver {
 class SMSNotifier implements IObserver {
   update(orderId: string, status: string): void {
     console.log(
-      `[SMS] Đang gửi tin nhắn cho đơn ${orderId} - Trạng thái: ${status}`,
+      `[SMS] Sending message for order ${orderId} - Status: ${status}`,
     );
   }
 }
 
-// 4. Cách sử dụng
+// 4. Usage
 const order = new OrderSubject("ORD-12345");
 const emailService = new EmailNotifier();
 const smsService = new SMSNotifier();
 
-// Đăng ký nhận thông báo
+// Subscribe for notifications
 order.attach(emailService);
 order.attach(smsService);
 
-// Thay đổi trạng thái
+// Status changes
 order.changeStatus("Processing");
-// Output: [Email] Đang gửi..., [SMS] Đang gửi...
+// Output: [Email] Sending..., [SMS] Sending...
 
-// Hủy đăng ký SMS, chỉ nhận Email
+// Unsubscribe SMS, only receive Email
 order.detach(smsService);
 order.changeStatus("Shipped");
-// Output: [Email] Đang gửi... (Không có SMS)
+// Output: [Email] Sending... (No SMS)
 ```
 
-## 4. Đánh giá Ưu / Nhược điểm
+## 4. Pros / Cons Evaluation
 
-**Ưu điểm:**
+**Pros:**
 
-- **Lỏng lẻo (Loose Coupling):** Subject không hề biết các Observers thực hiện việc gì, nó chỉ gọi hàm `update()`.
-- Dễ dàng thêm, bớt các Observer (VD: Gắn thêm Slack/Telegram Notification) ngay trong lúc hệ thống đang chạy.
-- Hỗ trợ broadcast communication hoàn hảo (1 Subject gửi cho N Observers).
+- **Loose Coupling:** The Subject doesn't know what the Observers are doing; it just calls `update()`.
+- Easily add or remove Observers (e.g., Attaching Slack/Telegram Notifications) while the system is running.
+- Perfect support for broadcast communication (1 Subject sends to N Observers).
 
-**Nhược điểm:**
+**Cons:**
 
-- Nếu Observers thực hiện tác vụ nặng một cách đồng bộ (synchronous), chúng có thể chặn luồng (block) thực thi của Subject, làm chậm hệ thống. (Khắc phục bằng cách đẩy vào Message Queue như RabbitMQ/Kafka để xử lý bất đồng bộ).
-- Thứ tự thông báo đến các Observers không được đảm bảo, có thể gây lỗi nếu chúng ta thiết kế các Observers bị phụ thuộc lẫn nhau.
-- Nguy cơ "Memory Leak" (rò rỉ bộ nhớ) cực kỳ cao nếu bạn quên gọi hàm `detach()` (unsubscribe) khi đối tượng Observer bị hủy (Lỗi Lapsed Listener).
+- If Observers perform heavy tasks synchronously, they can block the Subject's execution flow, slowing down the system. (Fix by pushing to Message Queues like RabbitMQ/Kafka for asynchronous processing).
+- The order of notifications to Observers is not guaranteed, which can cause bugs if Observers are mutually dependent.
+- Very high risk of "Memory Leaks" if you forget to call `detach()` (unsubscribe) when the Observer object is destroyed (Lapsed Listener problem).

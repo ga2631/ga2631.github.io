@@ -1,12 +1,12 @@
 ---
 id: "52"
 slug: "data-structure-hash-table-collision-chaining-open-addressing-cpp"
-title: "Cấu trúc Dữ liệu #05: Bảng băm (Hash Table) - Hàm Băm Đồng đều, Xử lý Đụng độ & Cài đặt C++ Chaining"
-summary: "Mổ xẻ toàn diện cấu trúc dữ liệu Bảng băm (Hash Table / Hash Map): Nguyên lý ánh xạ khóa sang chỉ số ô nhớ O(1), thiết kế Hàm băm phân phối đều (Uniform Hash Function), so sánh Xử lý đụng độ bằng Danh sách liên kết (Separate Chaining) vs Dò tuyến tính (Open Addressing), kiểm soát Hệ số tải (Load Factor) và cài đặt C++ hoàn chỉnh."
+title: "Data Structures #05: Hash Table - Uniform Hash Function, Collision Handling & C++ Chaining Implementation"
+summary: "A comprehensive dissection of the Hash Table / Hash Map data structure: The principle of mapping keys to memory indices in O(1), designing Uniform Hash Functions, comparing Separate Chaining vs. Open Addressing for collision resolution, controlling the Load Factor, and a complete C++ implementation."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-18"
 date: "2026-06-18"
-readTime: "12 phút đọc"
+readTime: "12 min read"
 tags:
   - "Data Structures"
   - "Hash Table"
@@ -16,63 +16,63 @@ tags:
   - "Performance"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong các ứng dụng hiệu năng cao (như hệ thống quản lý phiên người dùng User Session Store, chỉ mục cơ sở dữ liệu Database Indexing, hay bộ nhớ đệm phân tán Redis), thao tác tra cứu dữ liệu theo Khóa (Key-Value Lookup) diễn ra hàng triệu lần mỗi giây. Nếu sử dụng Mảng hoặc Danh sách liên kết, chi phí tìm kiếm tuyến tính `O(N)` sẽ làm sập toàn bộ hệ thống khi quy mô dữ liệu vượt quá hàng triệu bản ghi.
+In high-performance applications (such as User Session Stores, Database Indexing, or distributed caches like Redis), Key-Value Lookups occur millions of times per second. If we used an Array or Linked List, the `O(N)` linear search cost would crash the entire system when the dataset exceeds millions of records.
 
-**Bảng băm (Hash Table / Hash Map)** là cấu trúc dữ liệu mang tính cách mạng, cho phép thực hiện cả 3 thao tác **Thêm (Insert)**, **Xóa (Delete)** và **Tra cứu (Lookup)** trong **thời gian trung bình hằng số `O(1)`**, bất kể kích thước tập dữ liệu lớn đến mức nào.
+A **Hash Table (or Hash Map)** is a revolutionary data structure that enables all 3 operations—**Insert**, **Delete**, and **Lookup**—in **average constant time `O(1)`**, regardless of how large the dataset grows.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Bản chất của Bảng băm là sử dụng một **Hàm băm (Hash Function)** để chuyển đổi khóa đầu vào (chuỗi ký tự, đối tượng phức tạp) thành một chỉ số số nguyên đại diện cho vị trí ô nhớ (Bucket) trong mảng:
+The essence of a Hash Table is using a **Hash Function** to convert an input key (string, complex object) into an integer index representing a memory slot (Bucket) in an array:
 
 ```
 bucket_index = hash(key) % capacity
 ```
 
-Thách thức toán học cốt tử: Theo _Nguyên lý chuồng bồ câu (Pigeonhole Principle)_, vì không gian các khóa có thể có là vô hạn trong khi kích thước mảng băm là hữu hạn, luôn luôn tồn tại trường hợp **hai khóa khác nhau cùng sinh ra một chỉ số ô nhớ (`hash(k₁) % M == hash(k₂) % M`)**. Hiện tượng này gọi là **Đụng độ băm (Hash Collision)**.
+The core mathematical challenge: According to the _Pigeonhole Principle_, because the space of possible keys is infinite while the hash array size is finite, there will always be cases where **two different keys generate the same memory index (`hash(k₁) % M == hash(k₂) % M`)**. This phenomenon is called a **Hash Collision**.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Để giải quyết đụng độ và duy trì hiệu năng `O(1)`, hai chiến lược kiến trúc kinh điển được áp dụng:
+To resolve collisions and maintain `O(1)` performance, two classic architectural strategies are applied:
 
-1. **Phương pháp Dây chuyền Tách biệt (Separate Chaining):**
+1. **Separate Chaining:**
 
-- Mỗi ô nhớ (Bucket) của bảng băm là một Danh sách liên kết (Linked List) hoặc Cây đỏ đen (Red-Black Tree khi chuỗi dài &gt; 8).
-- Khi xảy ra đụng độ, cặp `{key, value}` mới chỉ việc được thêm vào danh sách tại bucket đó trong `O(1)`.
-- Đây là cơ chế mặc định trong `std::unordered_map` của C++ và `HashMap` của Java.
+- Each memory slot (Bucket) of the hash table is a Linked List (or a Red-Black Tree when the chain gets long, e.g., > 8 elements).
+- When a collision occurs, the new `{key, value}` pair is simply appended to the list at that bucket in `O(1)`.
+- This is the default mechanism in C++'s `std::unordered_map` and Java's `HashMap`.
 
-2. **Phương pháp Địa chỉ Mở (Open Addressing / Linear Probing):**
+2. **Open Addressing / Linear Probing:**
 
-- Mọi phần tử đều nằm trực tiếp trong mảng. Khi ô `bucket` bị chiếm dụng, thuật toán dò tiếp các ô lân cận `(bucket + 1) % capacity` cho đến khi tìm thấy ô trống.
+- All elements reside directly within the array. When a `bucket` is occupied, the algorithm probes adjacent slots `(bucket + 1) % capacity` until an empty slot is found.
 
-3. **Kiểm soát Hệ số tải & Tái băm (Load Factor & Dynamic Rehashing):**
+3. **Load Factor Control & Dynamic Rehashing:**
 
-- Hệ số tải `alpha = N / capacity` biểu thị mức độ đầy của bảng.
-- Khi `alpha >= 0.75`, bảng băm tự động cấp phát mảng mới có kích thước gấp đôi (`capacity x 2`) và băm lại toàn bộ các phần tử (Rehashing) để bảo toàn độ phức tạp trung bình `O(1)`.
+- The Load Factor `alpha = N / capacity` indicates how full the table is.
+- When `alpha >= 0.75`, the hash table automatically allocates a new array twice the size (`capacity x 2`) and rehashes all elements (Rehashing) to preserve the average `O(1)` complexity.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ ánh xạ hàm băm và giải quyết đụng độ bằng Separate Chaining:
+Diagram of hash function mapping and collision resolution using Separate Chaining:
 
 ```mermaid
 flowchart LR
-    subgraph Keys ["Khóa Đầu Vào (Keys)"]
+    subgraph Keys ["Input Keys"]
         K1["'apple'"]
         K2["'banana'"]
         K3["'cherry'"]
     end
 
-    subgraph HashFunc ["Hàm Băm djb2 % 5"]
+    subgraph HashFunc ["Hash Function djb2 % 5"]
         HF["hash(key) % 5"]
     end
 
-    subgraph Buckets ["Bảng Ô Nhớ (Buckets Array)"]
-        B0["Bucket 0: (Trống)"]
+    subgraph Buckets ["Buckets Array"]
+        B0["Bucket 0: (Empty)"]
         B1["Bucket 1: ('banana', 40) <-> ('cherry', 80)"]
-        B2["Bucket 2: (Trống)"]
+        B2["Bucket 2: (Empty)"]
         B3["Bucket 3: ('apple', 100)"]
-        B4["Bucket 4: (Trống)"]
+        B4["Bucket 4: (Empty)"]
     end
 
     K1 --> HF --> B3
@@ -80,7 +80,7 @@ flowchart LR
     K3 --> HF --> B1
 ```
 
-**Mã nguồn C++ hoàn chỉnh: HashTable tùy biến với Separate Chaining:**
+**Complete C++ Source Code: Custom HashTable with Separate Chaining:**
 
 ```c++
 #include <iostream>
@@ -101,7 +101,7 @@ private:
     size_t numElements;
     size_t capacity;
 
-    // Hàm băm polynomial djb2 cho kiểu std::string
+    // Polynomial hash function djb2 for std::string type
     size_t hashFunction(const std::string& key) const {
         unsigned long hash = 5381;
         for (char c : key) {
@@ -138,7 +138,7 @@ public:
         size_t bucket = hashFunction(key);
         for (auto& entry : table[bucket]) {
             if (entry.key == key) {
-                entry.value = value; // Cập nhật nếu khóa đã tồn tại
+                entry.value = value; // Update if key already exists
                 return;
             }
         }
@@ -175,38 +175,38 @@ public:
 int main() {
     HashTable<std::string, int> ht;
 
-    std::cout << "--- DEMO BANG BAM (HASH TABLE SEPARATE CHAINING) ---" << std::endl;
+    std::cout << "--- HASH TABLE DEMO (SEPARATE CHAINING) ---" << std::endl;
     ht.insert("apple", 100);
     ht.insert("banana", 40);
     ht.insert("cherry", 80);
 
     int val;
     if (ht.get("banana", val)) {
-        std::cout << "Gia tri cua 'banana': " << val << std::endl;
+        std::cout << "Value of 'banana': " << val << std::endl;
     }
 
     ht.remove("banana");
-    std::cout << "Tim lai 'banana' sau khi xoa: "
-              << (ht.get("banana", val) ? "TIM THAY" : "KHONG TIM THAY") << std::endl;
+    std::cout << "Search for 'banana' after deletion: "
+              << (ht.get("banana", val) ? "FOUND" : "NOT FOUND") << std::endl;
 
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Khởi tạo:_ `capacity = 7, numElements = 0`.
-- _Thêm "apple" (val 100):_ `hash("apple") % 7 = 3` &rarr; Đưa vào `table[3]`. `numElements = 1`.
-- _Thêm "banana" (val 40):_ `hash("banana") % 7 = 1` &rarr; Đưa vào `table[1]`. `numElements = 2`.
-- _Thêm "cherry" (val 80):_ `hash("cherry") % 7 = 1` (Đụng độ với banana!) &rarr; Thêm vào danh sách liên kết tại `table[1]`. `table[1] = [banana, cherry]`.
-- _Tra cứu "banana":_ Băm ra bucket 1 &rarr; Quét phần tử đầu tiên của danh sách, thấy khóa "banana" &rarr; Trả về `40` trong `O(1)`.
+- _Initialization:_ `capacity = 7, numElements = 0`.
+- _Insert "apple" (val 100):_ `hash("apple") % 7 = 3` &rarr; Placed in `table[3]`. `numElements = 1`.
+- _Insert "banana" (val 40):_ `hash("banana") % 7 = 1` &rarr; Placed in `table[1]`. `numElements = 2`.
+- _Insert "cherry" (val 80):_ `hash("cherry") % 7 = 1` (Collision with banana!) &rarr; Appended to the linked list at `table[1]`. `table[1] = [banana, cherry]`.
+- _Lookup "banana":_ Hashes to bucket 1 &rarr; Scans the first element of the list, matches key "banana" &rarr; Returns `40` in `O(1)`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-- **Thao tác Trung bình (Average Case):** `O(1)` cho cả Insert, Delete, và Lookup khi hàm băm phân phối đồng đều.
-- **Trường hợp Xấu nhất (Worst Case):** `O(N)` khi tất cả các khóa đều bị băm về cùng một bucket (được khắc phục bằng cách dùng Red-Black Tree nâng cấp lên `O(\log N)`).
-- **Độ phức tạp Không gian (Space Complexity):** `O(N + M)` với `N` là số phần tử và `M` là kích thước mảng bucket.
-- **Ứng dụng thực tế:**
-  - **Hệ thống Database Indexing:** Hash Indexes trong PostgreSQL / MySQL Memory Engine cho các phép so sánh bằng (`=`).
-  - **Bộ nhớ đệm trong Bộ nhớ (In-Memory Cache):** Redis và Memcached lưu trữ cặp Key-Value siêu tốc.
-  - **Trình biên dịch & Thông dịch viên:** Bảng ký hiệu (Symbol Table) quản lý tên biến, hàm và phạm vi tầm vực (Scope).
+- **Average Case:** `O(1)` for Insert, Delete, and Lookup, assuming a uniform hash function.
+- **Worst Case:** `O(N)` when all keys hash to the exact same bucket (mitigated by upgrading long chains to Red-Black Trees to achieve `O(\log N)`).
+- **Space Complexity:** `O(N + M)` where `N` is the number of elements and `M` is the size of the bucket array.
+- **Practical Applications:**
+  - **Database Indexing Systems:** Hash Indexes in PostgreSQL / MySQL Memory Engine for equality comparisons (`=`).
+  - **In-Memory Caches:** Redis and Memcached storing ultra-fast Key-Value pairs.
+  - **Compilers & Interpreters:** Symbol Tables managing variable names, functions, and scoping rules.

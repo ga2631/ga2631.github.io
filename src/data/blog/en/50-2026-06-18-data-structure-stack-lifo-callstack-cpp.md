@@ -1,12 +1,12 @@
 ---
 id: "50"
 slug: "data-structure-stack-lifo-callstack-cpp"
-title: "Cấu trúc Dữ liệu #03: Ngăn xếp (Stack) - Nguyên lý LIFO, Cơ chế Call Stack & Cài đặt C++ Kiểm tra Ngoặc Hợp lệ"
-summary: "Mổ xẻ bản chất cấu trúc dữ liệu Ngăn xếp (Stack): Nguyên lý Vào sau Ra trước (Last-In-First-Out - LIFO), mô hình hoạt động của Call Stack trong hệ thống thực thi, so sánh cài đặt bằng Mảng động vs Danh sách liên kết và bài toán kinh điển Kiểm tra Dấu ngoặc hợp lệ (Balanced Parentheses) trong C++."
+title: "Data Structures #03: Stack - LIFO Principle, Call Stack Mechanism & Valid Parentheses C++ Implementation"
+summary: "Dissecting the essence of the Stack data structure: The Last-In-First-Out (LIFO) principle, the Call Stack execution model in systems, comparing Dynamic Array vs. Linked List implementations, and solving the classic Balanced Parentheses problem in C++."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-18"
 date: "2026-06-18"
-readTime: "11 phút đọc"
+readTime: "11 min read"
 tags:
   - "Data Structures"
   - "Stack"
@@ -16,58 +16,58 @@ tags:
   - "Parsing"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong kiến trúc phần mềm, rất nhiều tác vụ đòi hỏi khả năng **quay lui (Backtracking)**, **hoàn tác hành động (Undo/Redo)**, hoặc **ghi nhớ ngữ cảnh lồng nhau (Nested Context)** như quá trình phân tích cú pháp mã nguồn (Syntax Parsing) hay cơ chế gọi hàm trong CPU. Đặc điểm chung của các tác vụ này: _Thao tác nào diễn ra sau cùng sẽ là thao tác cần được xử lý và hoàn tất đầu tiên._
+In software architecture, numerous tasks require the ability to **Backtrack**, **Undo/Redo actions**, or **remember Nested Contexts**, such as Source Code Syntax Parsing or CPU function calling mechanisms. The common characteristic of these tasks is: _The last action to occur is the first action that needs to be processed and completed._
 
-**Ngăn xếp (Stack)** là cấu trúc dữ liệu tuyến tính trừu tượng hoạt động theo nguyên lý nghiêm ngặt **Vào sau - Ra trước (Last-In, First-Out - LIFO)**. Mọi thao tác thêm hoặc loại bỏ phần tử đều chỉ được phép diễn ra tại một đầu duy nhất gọi là **Đỉnh ngăn xếp (Top)**.
+A **Stack** is an abstract linear data structure operating under the strict **Last-In, First-Out (LIFO)** principle. Every addition or removal of an element is only permitted at one single end, known as the **Top of the stack**.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Stack có thể được hiện thực hóa dựa trên hai cấu trúc nền tảng:
+A Stack can be implemented utilizing two foundational structures:
 
-1. **Cài đặt bằng Mảng động (Dynamic Array Stack):** Lưu trữ các phần tử trong một vector. Đỉnh ngăn xếp tương ứng với chỉ số `size - 1`. Ưu điểm: Bộ nhớ liền kề, tối ưu Cache tuyệt đối. Thao tác `push()` và `pop()` đạt chi phí khấu hao `O(1)`.
-2. **Cài đặt bằng Danh sách liên kết (Linked List Stack):** Mỗi phần tử là một nút trỏ tới nút bên dưới. Đỉnh ngăn xếp chính là `head`. Ưu điểm: Dung lượng mở rộng linh hoạt từng nút một mà không bao giờ tốn chi phí nhân đôi bộ nhớ.
+1. **Dynamic Array Stack:** Stores elements in a vector. The top of the stack corresponds to the `size - 1` index. Pros: Contiguous memory, excellent CPU Cache utilization. Both `push()` and `pop()` achieve an amortized `O(1)` cost.
+2. **Linked List Stack:** Each element is a node pointing to the node below it. The top of the stack is the `head`. Pros: Highly flexible memory expansion, one node at a time, avoiding the heavy cost of capacity doubling.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Ba thao tác bất biến cốt lõi của Ngăn xếp:
+The three core invariant operations of a Stack:
 
-- `push(x)`: Đẩy một phần tử mới lên trên đỉnh Stack trong `O(1)`.
-- `pop()`: Loại bỏ và trả về phần tử đang nằm trên đỉnh Stack trong `O(1)`. Gặp lỗi _Stack Underflow_ nếu thao tác trên Stack rỗng.
-- `top() / peek()`: Xem giá trị của phần tử trên đỉnh mà không loại bỏ nó trong `O(1)`.
+- `push(x)`: Pushes a new element onto the top of the Stack in `O(1)`.
+- `pop()`: Removes and returns the element currently at the top of the Stack in `O(1)`. Encounters a _Stack Underflow_ error if operated on an empty Stack.
+- `top() / peek()`: Views the value of the top element without removing it in `O(1)`.
 
-**Bài toán Ứng dụng Tiêu biểu: Kiểm tra Dấu ngoặc Hợp lệ (Valid Parentheses):**
+**Typical Application Problem: Valid Parentheses Check:**
 
-Cho một chuỗi gồm các ký tự ngoặc: `'('`, `')'`, `'{'`, `'}'`, `'['`, `']'`. Chuỗi được coi là hợp lệ khi mọi dấu ngoặc mở đều được đóng bởi dấu ngoặc cùng loại theo đúng thứ tự lồng nhau.
+Given a string containing bracket characters: `'('`, `')'`, `'{'`, `'}'`, `'['`, `']'`. The string is considered valid if every opening bracket is closed by the same type of closing bracket in the correct nested order.
 
-- Khi gặp ngoặc mở (`(`, `{`, `[`): `push` vào Stack.
-- Khi gặp ngoặc đóng (`)`, `}`, `]`): Kiểm tra Stack. Nếu Stack rỗng &rarr; Bất hợp lệ (thừa ngoặc đóng). Ngược lại, `pop` phần tử đỉnh ra và so sánh xem có khớp cặp với ngoặc đóng hiện tại không. Nếu không khớp &rarr; Bất hợp lệ.
-- Kết thúc duyệt chuỗi: Nếu Stack rỗng hoàn toàn &rarr; Hợp lệ (Mọi ngoặc mở đều đã được đóng chính xác).
+- When an opening bracket is encountered (`(`, `{`, `[`): `push` onto the Stack.
+- When a closing bracket is encountered (`)`, `}`, `]`): Check the Stack. If the Stack is empty &rarr; Invalid (extra closing bracket). Otherwise, `pop` the top element and verify if it matches the current closing bracket. If it mismatches &rarr; Invalid.
+- End of string traversal: If the Stack is entirely empty &rarr; Valid (All opening brackets were correctly closed).
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ cơ chế hoạt động LIFO và bài toán kiểm tra dấu ngoặc hợp lệ:
+Diagram of the LIFO mechanism and the valid parentheses check problem:
 
 ```mermaid
 flowchart TD
-    subgraph StackLIFO ["Nguyên Lý Hoạt Động LIFO (Last-In, First-Out)"]
-        In["Phần tử Mới: [30]"] -->|push| S3["[30] <- ĐỈNH TOP"]
+    subgraph StackLIFO ["LIFO (Last-In, First-Out) Operational Principle"]
+        In["New Element: [30]"] -->|push| S3["[30] <- TOP"]
         S3 --- S2["[20]"]
-        S2 --- S1["[10] <- ĐÁY BOTTOM"]
-        S3 -->|pop| Out["Lấy ra đầu tiên: [30]"]
+        S2 --- S1["[10] <- BOTTOM"]
+        S3 -->|pop| Out["Extracted first: [30]"]
     end
 
-    subgraph ParenthesesCheck ["Cơ Chế Khớp Ngoặc Hợp Lệ"]
-        Str["Duyệt chuỗi: '{ [ ] }'"] --> P1["Gặp '{' -> push('{')"]
-        P1 --> P2["Gặp '[' -> push('[')"]
-        P2 --> P3["Gặp ']' -> pop() được '[' (Khớp!)"]
-        P3 --> P4["Gặp '}' -> pop() được '{' (Khớp!)"]
-        P4 --> Done["Stack Rỗng -> KẾT LUẬN: HỢP LỆ!"]
+    subgraph ParenthesesCheck ["Valid Parentheses Matching Mechanism"]
+        Str["Parse string: '{ [ ] }'"] --> P1["Encounter '{' -> push('{')"]
+        P1 --> P2["Encounter '[' -> push('[')"]
+        P2 --> P3["Encounter ']' -> pop() yields '[' (Match!)"]
+        P3 --> P4["Encounter '}' -> pop() yields '{' (Match!)"]
+        P4 --> Done["Stack Empty -> CONCLUSION: VALID!"]
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh: Stack Generic và Hàm Kiểm tra Dấu ngoặc:**
+**Complete C++ Source Code: Generic Stack and Parentheses Checking Function:**
 
 ```c++
 #include <iostream>
@@ -87,21 +87,21 @@ public:
 
     void pop() {
         if (empty()) {
-            throw std::underflow_error("Stack rong, khong the pop!");
+            throw std::underflow_error("Stack is empty, cannot pop!");
         }
         storage.pop_back();
     }
 
     T& top() {
         if (empty()) {
-            throw std::underflow_error("Stack rong, khong the truy cap top!");
+            throw std::underflow_error("Stack is empty, cannot access top!");
         }
         return storage.back();
     }
 
     const T& top() const {
         if (empty()) {
-            throw std::underflow_error("Stack rong, khong the truy cap top!");
+            throw std::underflow_error("Stack is empty, cannot access top!");
         }
         return storage.back();
     }
@@ -110,7 +110,7 @@ public:
     size_t size() const { return storage.size(); }
 };
 
-// Ứng dụng: Kiểm tra dấu ngoặc hợp lệ
+// Application: Check for valid parentheses
 bool isValidParentheses(const std::string& s) {
     MyStack<char> st;
 
@@ -118,7 +118,7 @@ bool isValidParentheses(const std::string& s) {
         if (c == '(' || c == '{' || c == '[') {
             st.push(c);
         } else if (c == ')' || c == '}' || c == ']') {
-            if (st.empty()) return false; // Thừa ngoặc đóng
+            if (st.empty()) return false; // Extra closing bracket
 
             char topChar = st.top();
             st.pop();
@@ -126,12 +126,12 @@ bool isValidParentheses(const std::string& s) {
             if ((c == ')' && topChar != '(') ||
                 (c == '}' && topChar != '{') ||
                 (c == ']' && topChar != '[')) {
-                return false; // Sai lệch loại ngoặc
+                return false; // Bracket type mismatch
             }
         }
     }
 
-    return st.empty(); // Phải đóng hết tất cả ngoặc
+    return st.empty(); // All opening brackets must be closed
 }
 
 int main() {
@@ -139,36 +139,36 @@ int main() {
     std::string s2 = "{[(])}";
     std::string s3 = "((()";
 
-    std::cout << "--- KIEM TRA DAU NGOAC HOP LE (STACK APPLICATION) ---" << std::endl;
-    std::cout << s1 << " -> " << (isValidParentheses(s1) ? "HOP LE" : "KHONG HOP LE") << std::endl;
-    std::cout << s2 << " -> " << (isValidParentheses(s2) ? "HOP LE" : "KHONG HOP LE") << std::endl;
-    std::cout << s3 << " -> " << (isValidParentheses(s3) ? "HOP LE" : "KHONG HOP LE") << std::endl;
+    std::cout << "--- VALID PARENTHESES CHECK (STACK APPLICATION) ---" << std::endl;
+    std::cout << s1 << " -> " << (isValidParentheses(s1) ? "VALID" : "INVALID") << std::endl;
+    std::cout << s2 << " -> " << (isValidParentheses(s2) ? "VALID" : "INVALID") << std::endl;
+    std::cout << s3 << " -> " << (isValidParentheses(s3) ? "VALID" : "INVALID") << std::endl;
 
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Chuỗi kiểm thử:_ `s1 = "{[()]}"`.
-- _Ký tự 1 (`'{'`):_ Ngoặc mở &rarr; `push('{')`. Stack = `['{']`.
-- _Ký tự 2 (`'['`):_ Ngoặc mở &rarr; `push('[')`. Stack = `['{', '[']`.
-- _Ký tự 3 (`'('`):_ Ngoặc mở &rarr; `push('(')`. Stack = `['{', '[', '(']`.
-- _Ký tự 4 (`')'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'('` &rarr; Khớp hoàn hảo. Stack = `['{', '[']`.
-- _Ký tự 5 (`']'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'['` &rarr; Khớp hoàn hảo. Stack = `['{']`.
-- _Ký tự 6 (`'}'`):_ Ngoặc đóng &rarr; `pop()` lấy được `'{'` &rarr; Khớp hoàn hảo. Stack = `[]`.
-- _Kết luận:_ Chuỗi duyệt xong và Stack rỗng &rarr; Kết quả `true` (Hợp lệ).
+- _Test string:_ `s1 = "{[()]}"`.
+- _Char 1 (`'{'`):_ Opening bracket &rarr; `push('{')`. Stack = `['{']`.
+- _Char 2 (`'['`):_ Opening bracket &rarr; `push('[')`. Stack = `['{', '[']`.
+- _Char 3 (`'('`):_ Opening bracket &rarr; `push('(')`. Stack = `['{', '[', '(']`.
+- _Char 4 (`')'`):_ Closing bracket &rarr; `pop()` yields `'('` &rarr; Perfect match. Stack = `['{', '[']`.
+- _Char 5 (`']'`):_ Closing bracket &rarr; `pop()` yields `'['` &rarr; Perfect match. Stack = `['{']`.
+- _Char 6 (`'}'`):_ Closing bracket &rarr; `pop()` yields `'{'` &rarr; Perfect match. Stack = `[]`.
+- _Conclusion:_ String parsing is finished and Stack is empty &rarr; Result `true` (Valid).
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-- **Độ phức tạp Thời gian (Time Complexity):**
-  - `push()`: `O(1)` Amortized với Mảng động, `O(1)` Worst-case với Danh sách liên kết.
-  - `pop()`: `O(1)` tuyệt đối.
-  - `top() / peek()`: `O(1)` tuyệt đối.
-  - Tìm kiếm phần tử bất kỳ: `O(N)` (phải dỡ toàn bộ Stack).
-- **Độ phức tạp Không gian (Space Complexity):** `O(N)` bộ nhớ tuyến tính lưu trữ các phần tử.
-- **Ứng dụng thực tế:**
-  - **Hệ thống thực thi Call Stack:** Quản lý các khung ngăn xếp (Stack Frames), lưu trữ biến cục bộ và địa chỉ trả về khi thực thi hàm đệ quy.
-  - **Trình duyệt web và Ứng dụng văn phòng:** Tính năng Undo / Redo (Ctrl + Z) và nút lùi trang (Browser Back Button).
-  - **Trình biên dịch (Compiler):** Đánh giá biểu thức toán học dạng Hậu tố (Reverse Polish Notation - RPN) và thuật toán Chuyển đổi Shunting-Yard.
-  - **Thuật toán đồ thị:** Khử đệ quy cho thuật toán Tìm kiếm theo chiều sâu (Iterative DFS).
+- **Time Complexity:**
+  - `push()`: Amortized `O(1)` with Dynamic Array, absolute `O(1)` with Linked List.
+  - `pop()`: Absolute `O(1)`.
+  - `top() / peek()`: Absolute `O(1)`.
+  - Search for an arbitrary element: `O(N)` (requires dismantling the Stack).
+- **Space Complexity:** `O(N)` linear memory to store the elements.
+- **Practical Applications:**
+  - **Execution Call Stack:** Managing Stack Frames, storing local variables and return addresses during recursive function executions.
+  - **Web Browsers and Office Applications:** Undo / Redo (Ctrl + Z) functionality and the Browser Back Button.
+  - **Compilers:** Evaluating Reverse Polish Notation (RPN) math expressions and the Shunting-Yard parsing algorithm.
+  - **Graph Algorithms:** Converting recursive Depth-First Search (DFS) into an Iterative DFS traversal.

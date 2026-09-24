@@ -1,12 +1,12 @@
 ---
 id: "26"
 slug: "mastering-mermaid-diagrams-as-code-architecture-tooling"
-title: "Làm chủ Mermaid.js: Hướng dẫn Toàn diện từ Cú pháp tới Trực quan hóa Kiến trúc & Tài liệu Kỹ thuật (Diagrams as Code)"
-summary: "Cẩm nang thực chiến về triết lý Diagrams as Code (DaC) với Mermaid.js: Khai phá toàn bộ cú pháp Flowchart, Sequence, Git Graph, Class, State và quy trình tự động hóa tài liệu kiến trúc trong CI/CD."
+title: "Mastering Mermaid.js: Comprehensive Guide from Syntax to Visualizing Architecture & Technical Documentation (Diagrams as Code)"
+summary: "A practical handbook on the Diagrams as Code (DaC) philosophy with Mermaid.js: Unlocking the full syntax of Flowcharts, Sequence, Git Graphs, Class, State, and automating architecture documentation in CI/CD pipelines."
 category: "devops-cloud-tooling"
 publishedAt: "2026-09-16"
 date: "2026-09-16"
-readTime: "8 phút đọc"
+readTime: "8 min read"
 tags:
   - "Mermaid.js"
   - "Diagrams as Code"
@@ -16,39 +16,39 @@ tags:
   - "Developer Productivity"
 ---
 
-## Mục tiêu bài viết
+## Article Objective
 
-Trong phát triển phần mềm hiện đại, tài liệu kỹ thuật và sơ đồ kiến trúc (Architecture Diagrams) đóng vai trò sống còn trong việc đồng bộ hóa nhận thức giữa các thành viên trong đội ngũ kỹ thuật. Tuy nhiên, phương pháp vẽ sơ đồ truyền thống bằng các công cụ đồ họa giao diện người dùng (như Draw.io, Visio, Lucidchart) lưu dưới dạng file ảnh nhị phân (.png, .jpg) thường bộc lộ những điểm yếu chí mạng:
+In modern software development, technical documentation and Architecture Diagrams play a vital role in synchronizing understanding among technical team members. However, the traditional method of drawing diagrams using GUI tools (like Draw.io, Visio, Lucidchart) and saving them as binary image files (.png, .jpg) often reveals fatal flaws:
 
-- **Lệch pha tài liệu (Documentation Drift):** Khi code thay đổi, việc mở lại công cụ vẽ, sửa ảnh, xuất file và commit lại vào repository thường bị bỏ qua vì tốn nhiều công đoạn, khiến tài liệu nhanh chóng bị lỗi thời.
-- **Không thể theo dõi thay đổi (No Git Diff):** Các file ảnh nhị phân không thể so sánh sự thay đổi theo từng dòng (line-by-line diff) trong các Pull Request, khiến việc review kiến trúc trở nên khó khăn.
+- **Documentation Drift:** When code changes, the process of reopening a drawing tool, editing the image, exporting, and committing back to the repository is often skipped due to the heavy workflow, causing documentation to quickly become outdated.
+- **No Git Diff:** Binary image files cannot be compared line-by-line (line-by-line diff) in Pull Requests, making architecture reviews difficult.
 
-Mục tiêu của bài viết này là giới thiệu giải pháp **Diagrams as Code (DaC)** thông qua thư viện **Mermaid.js** - biến việc vẽ biểu đồ thành các đoạn mã thuần văn bản (plain text) có thể phiên bản hóa (version-controlled), tự động render trên GitHub/GitLab và tích hợp trực tiếp vào tài liệu Markdown.
+The objective of this article is to introduce the **Diagrams as Code (DaC)** solution via the **Mermaid.js** library - transforming diagram drawing into plain text blocks that can be version-controlled, automatically rendered on GitHub/GitLab, and integrated directly into Markdown documentation.
 
-## Kiến trúc / Nguyên lý hoạt động
+## Architecture / Operating Principles
 
-Nguyên lý cốt lõi của Mermaid.js là sử dụng cú pháp biểu diễn khai báo (declarative text syntax) để xây dựng cây cú pháp trừu tượng (AST) và biên dịch trực tiếp sang định dạng đồ họa vector có thể co giãn (SVG). Dưới đây là các họ biểu đồ quan trọng nhất thường dùng trong quy trình kỹ thuật:
+The core principle of Mermaid.js is using a declarative text syntax to build an Abstract Syntax Tree (AST) and compile it directly into scalable vector graphics (SVG). Below are the most important diagram families commonly used in engineering workflows:
 
-1. **Flowchart & Architecture Graph:** Dùng để mô tả luồng điều hướng, cấu trúc hạ tầng hoặc phân tầng component. Hỗ trợ định hướng `TD` (Top-Down), `LR` (Left-Right) và nhóm khối `subgraph`.
-2. **Sequence Diagram (Sơ đồ Tuần tự):** Cực kỳ mạnh mẽ để mô tả giao thức bắt tay (handshake), luồng gọi API giữa các microservices hoặc chu kỳ vòng đời tương tác. Hỗ trợ `autonumber`, `actor`, `participant`, `alt/else` (điều kiện rẽ nhánh) và `loop`.
-3. **Git Graph:** Trực quan hóa chiến lược phân nhánh (GitFlow / Trunk-based development), chuỗi commit và thao tác merge/rebase một cách sinh động.
-4. **Class & Entity Relationship Diagram (ERD):** Mô tả lược đồ quan hệ thực thể trong cơ sở dữ liệu hoặc cấu trúc lớp đối tượng trong lập trình hướng đối tượng.
+1. **Flowchart & Architecture Graph:** Used to describe navigation flows, infrastructure structures, or component tiering. Supports `TD` (Top-Down), `LR` (Left-Right) orientations, and `subgraph` grouping.
+2. **Sequence Diagram:** Extremely powerful for describing handshake protocols, API call flows between microservices, or interaction lifecycles. Supports `autonumber`, `actor`, `participant`, `alt/else` (branching conditions), and `loop`.
+3. **Git Graph:** Vividly visualizes branching strategies (GitFlow / Trunk-based development), commit chains, and merge/rebase operations.
+4. **Class & Entity Relationship Diagram (ERD):** Describes the entity-relationship schema in a database or object-oriented programming class structures.
 
 ```mermaid
 flowchart LR
-    subgraph SourceCode [Mã nguồn và Tài liệu Markdown]
+    subgraph SourceCode [Source Code and Markdown Docs]
         MD[README.md / Tech Spec]
-        MermaidCode[Khối mã khai báo mermaid]
+        MermaidCode[Mermaid declaration code blocks]
     end
 
     subgraph CompilerEngine [Mermaid Engine Parser]
-        Lexer[Trình phân tích Lexer và Parser]
-        AST[Cây cú pháp trừu tượng AST]
+        Lexer[Lexer and Parser]
+        AST[Abstract Syntax Tree AST]
     end
 
-    subgraph RenderTarget [Đích hiển thị Vector]
-        SVG[SVG Vector sắc nét]
-        InteractiveUI[Hỗ trợ Fit View và Dark Theme]
+    subgraph RenderTarget [Vector Rendering Destination]
+        SVG[Crisp Vector SVG]
+        InteractiveUI[Fit View and Dark Theme Support]
     end
 
     MD --> MermaidCode
@@ -58,12 +58,12 @@ flowchart LR
     SVG --> InteractiveUI
 ```
 
-## Từng bước thiết lập
+## Step-by-Step Setup
 
-Quy trình từng bước áp dụng Mermaid.js vào dự án phần mềm và tài liệu hóa:
+A step-by-step process for applying Mermaid.js to software projects and documentation:
 
-1. **Khai báo khối Mermaid trong Markdown:** Sử dụng thẻ rào mã (code fence) chuẩn `mermaid` trong bất kỳ tài liệu Markdown nào. Các nền tảng như GitHub, GitLab, Notion và Obsidian đều hỗ trợ render trực tiếp từ năm 2022.
-2. **Xây dựng sơ đồ phân nhánh GitFlow mẫu:**
+1. **Declare Mermaid blocks in Markdown:** Use standard `mermaid` code fences in any Markdown document. Platforms like GitHub, GitLab, Notion, and Obsidian all natively support this rendering as of 2022.
+2. **Build a sample GitFlow branching diagram:**
 
 ```mermaid
 gitGraph
@@ -77,18 +77,18 @@ gitGraph
     commit id: "hotfix: security-patch" tag: "v1.1.1"
 ```
 
-3. **Tích hợp tự động hóa trong CI/CD Pipeline:** Sử dụng công cụ dòng lệnh `@mermaid-js/mermaid-cli` (lệnh `mmdc`) để tự động xuất sơ đồ sang file ảnh PDF/PNG phục vụ việc phát hành sách kỹ thuật hoặc tài liệu lưu trữ nội bộ.
+3. **Integrate Automation in CI/CD Pipelines:** Use the `@mermaid-js/mermaid-cli` (command `mmdc`) CLI tool to automatically export diagrams to PDF/PNG image files for publishing technical books or internal archives.
 
 ## Troubleshooting & Common Pitfalls
 
-Trong quá trình làm việc thực tế với Mermaid, các kỹ sư thường gặp phải 3 cạm bẫy phổ biến sau:
+While working practically with Mermaid, engineers often encounter these 3 common traps:
 
-1. **Lỗi ký tự đặc biệt trong nhãn (Text Label Parsing Error):** Khi chuỗi văn bản trong nhãn chứa ngoặc đơn `()`, ngoặc vuông `[]`, hoặc dấu ngoặc kép `""`, Mermaid parser có thể hiểu nhầm đó là cú pháp định dạng hình dạng node. _Khắc phục:_ Tránh lồng các ký tự ngoặc đơn hoặc ngoặc vuông bên trong nhãn không bọc chuỗi, sử dụng dấu gạch ngang phân tách: `NodeA[Tên node - Kèm thông tin chi tiết]`.
-2. **Ký tự HTML Entity:** Khi Markdown parser chuyển đổi `<` thành `<` hoặc `>` thành `>`, hãy thực hiện hàm chuẩn hóa (sanitize/unescape) chuỗi trước khi chuyển vào `mermaid.render()`.
-3. **Tràn kích thước trên sơ đồ có quá nhiều nhánh:** Tránh đặt toàn bộ 50+ service trên một biểu đồ phẳng. Hãy tận dụng `subgraph` hoặc chia nhỏ thành các biểu đồ theo từng miền nghiệp vụ (Domain-Driven Context).
+1. **Text Label Parsing Error:** When a text string in a label contains parentheses `()`, brackets `[]`, or quotes `""`, the Mermaid parser might mistake it for node shape formatting syntax. _Fix:_ Avoid nesting parentheses or brackets inside unquoted labels, use dashes as separators: `NodeA[Node Name - With details]`.
+2. **HTML Entity Characters:** When the Markdown parser converts `<` to `<` or `>` to `>`, make sure to run a sanitize/unescape function on the string before passing it to `mermaid.render()`.
+3. **Size Overflow on highly-branched diagrams:** Avoid placing all 50+ services on a flat diagram. Utilize `subgraph`s or break them down into smaller diagrams based on domain areas (Domain-Driven Context).
 
-## Đánh giá & Mở rộng
+## Evaluation & Extension
 
-- **Tối ưu hóa năng suất kỹ thuật (ROI):** Tiết kiệm tới **80% thời gian** cập nhật tài liệu khi hệ thống thay đổi kiến trúc. Mọi thay đổi đều được phản ánh trực tiếp qua các commit trong Git pull request.
-- **Tự động sinh sơ đồ từ mã nguồn (AST to Diagram):** Kết hợp các plugin OpenAPI / Swagger hoặc trình phân tích cây AST của TypeScript/Go để tự động quét codebase và phát sinh sơ đồ lớp (Class Diagram) hoặc sơ đồ luồng dữ liệu tự động mà không cần gõ tay.
-- **Khả năng tương thích nền tảng:** Định dạng vector SVG giúp biểu đồ luôn sắc nét trên mọi mật độ điểm ảnh (Retina/4K) và dễ dàng can thiệp tùy biến giao diện bằng CSS.
+- **Engineering Productivity Optimization (ROI):** Save up to **80% of the time** spent updating documentation when systems change their architecture. Every change is reflected directly through Git pull request commits.
+- **Auto-generating diagrams from source code (AST to Diagram):** Combine OpenAPI/Swagger plugins or TypeScript/Go AST parsers to automatically scan codebases and generate Class Diagrams or data flow diagrams without manual typing.
+- **Platform Compatibility:** The SVG vector format ensures diagrams remain crisp across all pixel densities (Retina/4K) and allows easy visual customization via CSS.

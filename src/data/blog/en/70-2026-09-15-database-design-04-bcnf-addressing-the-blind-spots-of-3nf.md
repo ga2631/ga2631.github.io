@@ -1,12 +1,12 @@
 ---
 id: "70"
 slug: "database-design-4-bcnf-addressing-the-blind-spots-of-3nf"
-title: "Thiết kế CSDL #04: Chuẩn BCNF - Khắc phục điểm mù của 3NF"
-summary: 'Chuẩn BCNF được đề xuất vào năm 1974 bởi Raymond F. Boyce và Edgar F. Codd. Mặc dù 3NF đã giải quyết được hầu hết các vấn đề về dư thừa dữ liệu, Codd nhận ra rằng 3NF vẫn có một "điểm mù" kỹ thuật đối với các bảng có nhiều khóa ứng viên chồng chéo (overlapping candidate keys). Do đó, BCNF ra đời và thường được giới học thuật gọi vui là chuẩn "3.5NF". Đáng tiếc, Raymond F. Boyce đã qua đời chỉ vài tháng sau khi công bố bài báo này, ở tuổi 26.'
+title: "Database Design #04: BCNF - Addressing the Blind Spots of 3NF"
+summary: 'The BCNF standard was proposed in 1974 by Raymond F. Boyce and Edgar F. Codd. Although 3NF resolved most data redundancy issues, Codd realized 3NF still had a technical "blind spot" for tables with overlapping candidate keys. Consequently, BCNF was born, often jokingly referred to by academics as "3.5NF". Unfortunately, Raymond F. Boyce passed away just a few months after publishing this paper, at age 26.'
 category: "data-engineering-analytics"
 publishedAt: "2026-09-15"
 date: "2026-09-15"
-readTime: "5 phút đọc"
+readTime: "5 minutes read"
 tags:
   - "Database"
   - "Data Engineering"
@@ -15,31 +15,31 @@ tags:
   - "PostgreSQL"
 ---
 
-## Đề bài kinh doanh / Yêu cầu dữ liệu
+## Business Context / Data Requirements
 
-Hệ thống ERP tích hợp thêm **Module Đào tạo & Chứng chỉ nội bộ (Training & Certifications)**.
-Ta có bảng `Exam_Registrations` lưu thông tin: `emp_id`, `subject_name` (môn học), và `trainer_name` (giảng viên nội bộ).
+The ERP system integrates an **Internal Training & Certifications Module**.
+We have an `Exam_Registrations` table that stores: `emp_id`, `subject_name` (the course), and `trainer_name` (internal instructor).
 
-Quy tắc nghiệp vụ của công ty như sau:
+The company's business rules are as follows:
 
-1. Một nhân viên có thể học nhiều môn. Một môn có nhiều giảng viên dạy các lớp khác nhau.
-2. Một nhân viên chỉ đăng ký học một giảng viên cho một môn cụ thể.
-3. **Mỗi giảng viên chỉ chuyên dạy ĐÚNG MỘT môn học.**
+1. An employee can take multiple subjects. A subject has multiple trainers teaching different classes.
+2. An employee only registers with one trainer for a specific subject.
+3. **Each trainer specializes in teaching EXACTLY ONE subject.**
 
-Khóa ứng viên (Candidate Keys) xác định duy nhất 1 dòng có thể là: `(emp_id, subject_name)` hoặc `(emp_id, trainer_name)`. Tất cả các cột đều nằm trong khóa ứng viên, nên bảng này **đã đạt chuẩn 3NF**.
-Nhưng rủi ro là: `subject_name` phụ thuộc vào `trainer_name` (vì giảng viên chỉ dạy 1 môn). Nếu tất cả nhân viên hủy đăng ký lớp của "Trainer Bob", dữ liệu bị xóa, hệ thống sẽ quên luôn thông tin "Trainer Bob dạy môn AWS" (Delete Anomaly).
+Candidate Keys that uniquely identify 1 row could be: `(emp_id, subject_name)` or `(emp_id, trainer_name)`. All columns are part of the candidate keys, so this table **already meets the 3NF standard**.
+But the risk is: `subject_name` depends on `trainer_name` (because a trainer only teaches 1 subject). If all employees cancel their registration for "Trainer Bob's" class, the data is deleted, and the system completely forgets the fact that "Trainer Bob teaches AWS" (Delete Anomaly).
 
-## Mô hình hóa dữ liệu
+## Data Modeling
 
-Chuẩn BCNF yêu cầu: **Đạt 3NF và với mọi phụ thuộc hàm X -> Y, X phải là một Siêu khóa (Superkey).**
-Ở đây, `trainer_name -> subject_name`, nhưng `trainer_name` đứng một mình không phải là khóa của bảng (nó không đại diện cho toàn bộ dòng). Do đó, vi phạm BCNF.
+The BCNF standard requires: **Meets 3NF and for every functional dependency X -> Y, X must be a Superkey.**
+Here, `trainer_name -> subject_name`, but `trainer_name` on its own is not a key for the table (it does not represent the entire row). Therefore, it violates BCNF.
 
 ```mermaid
 erDiagram
     "3NF_ExamRegistrations" {
         int emp_id PK
         string subject_name PK
-        string trainer_name "Phụ thuộc: Trainer -> Subject (Trainer ko phải khóa)"
+        string trainer_name "Dependency: Trainer -> Subject (Trainer is not a key)"
     }
 
     BCNF_Trainers {
@@ -52,23 +52,23 @@ erDiagram
         string trainer_name PK "FK to Trainers"
     }
 
-    "3NF_ExamRegistrations" ||--o{ BCNF_Registrations : "Nâng cấp lên BCNF"
-    BCNF_Trainers ||--o{ BCNF_Registrations : "Tách rủi ro phụ thuộc"
+    "3NF_ExamRegistrations" ||--o{ BCNF_Registrations : "Upgrade to BCNF"
+    BCNF_Trainers ||--o{ BCNF_Registrations : "Isolate dependency risk"
 ```
 
-## Xây dựng Pipeline / Script xử lý
+## Building the Pipeline / Processing Script
 
-Ta tách giảng viên và môn học thành một danh mục riêng:
+We separate trainers and subjects into their own directory:
 
 ```sql
--- 1. Tạo bảng Trainers (Chứa phụ thuộc Trainer -> Subject)
+-- 1. Create Trainers table (Contains dependency Trainer -> Subject)
 CREATE TABLE trainers_bcnf AS
 SELECT DISTINCT trainer_name, subject_name
 FROM exam_registrations_3nf;
 
 ALTER TABLE trainers_bcnf ADD PRIMARY KEY (trainer_name);
 
--- 2. Tạo bảng Đăng ký học (Loại bỏ cột Subject)
+-- 2. Create Registrations table (Remove Subject column)
 CREATE TABLE exam_registrations_bcnf AS
 SELECT emp_id, trainer_name
 FROM exam_registrations_3nf;
@@ -78,11 +78,11 @@ ALTER TABLE exam_registrations_bcnf
 ADD FOREIGN KEY (trainer_name) REFERENCES trainers_bcnf(trainer_name);
 ```
 
-## Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Data Testing & Performance Optimization
 
-- **Data Integrity:** Ta có thể khai báo một Giảng viên mới cùng môn họ dạy (INSERT vào bảng `trainers_bcnf`) ngay cả khi chưa có nhân sự nào đăng ký học lớp đó.
-- **Thiết kế không lỗ hổng:** BCNF bít lại lỗ hổng cuối cùng của các bảng có logic khóa ghép phức tạp.
+- **Data Integrity:** We can now declare a new Trainer along with the subject they teach (INSERT into the `trainers_bcnf` table) even if no employees have registered for that class yet.
+- **Flawless Design:** BCNF closes the final loophole of tables with complex composite key logic.
 
-## Tổng kết & Khuyến nghị
+## Conclusion & Recommendations
 
-Trong ERP, các nghiệp vụ như Phân công ca trực, Lịch học, hay Lịch sử dụng thiết bị rất dễ rơi vào trường hợp "3NF nhưng vi phạm BCNF". Hãy luôn dùng BCNF làm bài test độ bền bỉ cho các bảng dữ liệu có Composite Keys (khóa ghép nhiều cột).
+In an ERP, operations like Shift Assignments, Class Schedules, or Equipment Usage Logs easily fall into the "3NF but violates BCNF" scenario. Always use BCNF as a durability test for data tables with Composite Keys.

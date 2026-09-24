@@ -1,12 +1,12 @@
 ---
 id: 79
 slug: design-pattern-06-behavioral-patterns-strategy
-title: "Design Pattern #06: [Behavioral Patterns] Strategy Pattern - Linh hoạt thay đổi thuật toán tính phí vận chuyển"
-summary: "Khám phá Strategy Pattern qua bài toán tính phí vận chuyển đa dạng trong E-commerce, giúp loại bỏ các câu lệnh if-else chằng chịt và tuân thủ nguyên tắc Open/Closed."
+title: "Design Pattern #06: [Behavioral Patterns] Strategy Pattern - Flexible Shipping Fee Calculation Algorithm"
+summary: "Explore the Strategy Pattern through the diverse shipping fee calculation problem in E-commerce, helping eliminate tangled if-else statements and adhering to the Open/Closed principle."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-07-02"
 date: "2026-07-02"
-readTime: "6 phút đọc"
+readTime: "6 min read"
 tags:
   - "Design Patterns"
   - "Behavioral Patterns"
@@ -14,19 +14,19 @@ tags:
   - "Strategy"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong giai đoạn hoàn tất đơn hàng, hệ thống của chúng ta phải tính toán phí vận chuyển. Nhu cầu thực tế rất đa dạng: Vận chuyển tiêu chuẩn (Standard), Giao hàng hỏa tốc (Express), hoặc Giao trong ngày (Same-day). Thậm chí, trong các dịp Flash Sale, chúng ta có thể có thêm chiến lược "Miễn phí vận chuyển" (Freeship).
+During the order fulfillment phase, our system needs to calculate shipping fees. Real-world needs are highly diverse: Standard Shipping, Express Delivery, or Same-day Delivery. Even during Flash Sales, we might introduce a "Free Shipping" strategy.
 
-Nếu xử lý logic này bằng một hàm khổng lồ chứa hàng tá khối `if-else` hoặc `switch-case`, file `OrderService` sẽ nhanh chóng trở nên "bốc mùi" (code smell), khó test và cực kỳ rủi ro khi sửa đổi. **Strategy Pattern** sinh ra để giải quyết triệt để bài toán này.
+If this logic is handled by a giant function containing dozens of `if-else` or `switch-case` blocks, the `OrderService` file will quickly develop "code smells", becoming hard to test and extremely risky to modify. The **Strategy Pattern** is born to completely solve this problem.
 
-## Strategy Pattern là gì?
+## What is the Strategy Pattern?
 
-Strategy Pattern là một mẫu thiết kế thuộc nhóm Hành vi (Behavioral). Nó cho phép bạn định nghĩa một tập hợp các thuật toán (các "chiến lược"), đóng gói từng thuật toán lại vào các lớp độc lập và làm cho chúng có thể thay thế lẫn nhau (interchangeable) khi runtime.
+The Strategy Pattern is a Behavioral design pattern. It lets you define a family of algorithms (the "strategies"), encapsulate each one into separate classes, and make them interchangeable at runtime.
 
-## Áp dụng vào Hệ thống Xử lý Đơn hàng
+## Applying to the Order Processing System
 
-Chúng ta sẽ định nghĩa một giao diện chung `IShippingStrategy`. Các phương thức vận chuyển cụ thể sẽ là các lớp triển khai giao diện này. Class `Order` (đóng vai trò là Context) chỉ lưu một tham chiếu đến `IShippingStrategy` và gọi phương thức tính phí mà không cần biết logic bên trong.
+We will define a common interface `IShippingStrategy`. The specific shipping methods will be classes that implement this interface. The `Order` class (acting as the Context) will only hold a reference to `IShippingStrategy` and call the calculation method without needing to know the internal logic.
 
 ```mermaid
 classDiagram
@@ -57,15 +57,15 @@ classDiagram
     IShippingStrategy <|.. FreeshipStrategy
 ```
 
-## Cài đặt (Mã giả - TypeScript)
+## Implementation (Pseudocode - TypeScript)
 
 ```typescript
-// 1. Interface chung cho các chiến lược
+// 1. Common interface for strategies
 interface IShippingStrategy {
   calculate(orderValue: number, distance: number): number;
 }
 
-// 2. Các Concrete Strategies
+// 2. Concrete Strategies
 class StandardShipping implements IShippingStrategy {
   calculate(orderValue: number, distance: number): number {
     return distance * 15000; // 15k / km
@@ -74,13 +74,13 @@ class StandardShipping implements IShippingStrategy {
 
 class ExpressShipping implements IShippingStrategy {
   calculate(orderValue: number, distance: number): number {
-    return distance * 15000 + 30000; // Thêm phụ phí 30k
+    return distance * 15000 + 30000; // Extra surcharge 30k
   }
 }
 
 class FreeshipStrategy implements IShippingStrategy {
   calculate(orderValue: number, distance: number): number {
-    return 0; // Miễn phí vận chuyển
+    return 0; // Free shipping
   }
 }
 
@@ -101,30 +101,30 @@ class OrderContext {
   }
 }
 
-// Cách sử dụng
+// Usage
 const distance = 10; // 10 km
 const orderValue = 500000;
 
-// Khách chọn giao tiêu chuẩn
+// Customer chooses standard delivery
 let order = new OrderContext(new StandardShipping());
-console.log("Phí Standard:", order.getShippingFee(orderValue, distance));
+console.log("Standard Fee:", order.getShippingFee(orderValue, distance));
 
-// Đổi ý, chuyển sang Hỏa tốc khi đang runtime
+// Changes mind, switches to Express at runtime
 order.setShippingStrategy(new ExpressShipping());
-console.log("Phí Express:", order.getShippingFee(orderValue, distance));
+console.log("Express Fee:", order.getShippingFee(orderValue, distance));
 ```
 
-## Đánh giá Ưu / Nhược điểm
+## Pros / Cons Evaluation
 
-**Ưu điểm:**
+**Pros:**
 
-- **Open/Closed Principle (OCP):** Thêm chiến lược mới (ví dụ: `HolidayShipping`) mà không cần sửa code cũ.
-- **Tách biệt logic (Separation of Concerns):** Thuật toán tính phí bị tách hoàn toàn khỏi luồng xử lý đơn hàng cốt lõi.
-- **Thay đổi linh hoạt khi Runtime:** Có thể dễ dàng "swap" (đổi) chiến lược dựa trên cấu hình hoặc lựa chọn của user ngay trong quá trình chạy.
+- **Open/Closed Principle (OCP):** Add new strategies (e.g., `HolidayShipping`) without altering old code.
+- **Separation of Concerns:** Fee calculation algorithms are completely decoupled from core order processing flows.
+- **Runtime Flexibility:** Can easily "swap" strategies based on configurations or user selections while running.
 
-**Nhược điểm:**
+**Cons:**
 
-- Client (Controller/Service gọi đến Context) buộc phải biết sự tồn tại của các Concrete Strategy để chọn ra cái phù hợp.
-- Tăng số lượng class trong hệ thống. Nếu chỉ có 1-2 thuật toán hiếm khi thay đổi, dùng Strategy là quá mức cần thiết (Overkill).
+- The Client (Controller/Service calling Context) must be aware of the existence of Concrete Strategies to pick the right one.
+- Increases the number of classes in the system. If there are only 1-2 algorithms that rarely change, using Strategy is overkill.
 
-Sau khi tính phí và hoàn tất đơn hàng, hệ thống cần gửi thông báo cho khách hàng qua nhiều kênh khác nhau. Chúng ta sẽ cùng xem cách **Observer Pattern** giải quyết điều này ở bài tiếp theo.
+After calculating fees and completing the order, the system needs to notify the customer across multiple channels. We will see how the **Observer Pattern** addresses this in the next article.

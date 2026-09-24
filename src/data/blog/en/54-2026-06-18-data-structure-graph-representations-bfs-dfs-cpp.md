@@ -1,12 +1,12 @@
 ---
 id: "54"
 slug: "data-structure-graph-representations-bfs-dfs-cpp"
-title: "Cấu trúc Dữ liệu #07: Đồ thị (Graph) - Ma trận kề vs Danh sách kề, Duyệt BFS/DFS & Triển khai C++"
-summary: "Mổ xẻ toàn diện cấu trúc dữ liệu Đồ thị (Graph): Khái niệm Đỉnh (Vertices) và Cạnh (Edges), so sánh chuyên sâu Ma trận kề (Adjacency Matrix) vs Danh sách kề (Adjacency List), kỹ thuật biểu diễn đồ thị có hướng/vô hướng, thuật toán duyệt BFS/DFS và cài đặt C++ hoàn chỉnh."
+title: "Data Structures #07: Graph - Adjacency Matrix vs Adjacency List, BFS/DFS Traversal & C++ Implementation"
+summary: "A comprehensive dissection of the Graph data structure: Concepts of Vertices and Edges, an in-depth comparison of Adjacency Matrix vs. Adjacency List, representation techniques for directed/undirected graphs, BFS/DFS traversal algorithms, and a complete C++ implementation."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-18"
 date: "2026-06-18"
-readTime: "13 phút đọc"
+readTime: "13 min read"
 tags:
   - "Data Structures"
   - "Graph"
@@ -17,53 +17,53 @@ tags:
   - "C++"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Khi mô hình hóa các mạng lưới phức tạp trong thế giới thực - như mạng lưới bạn bè trên Facebook, mạng liên kết trang web của Google PageRank, hệ thống giao thông đường bay quốc tế, hay lưới phân phối điện năng - các mối quan hệ không còn đơn thuần là tuyến tính hay phân cấp một chiều. Các thực thể có thể **kết nối tùy ý với nhau tạo thành mạng lưới đa chiều**.
+When modeling complex networks in the real world - such as friendship networks on Facebook, Google PageRank's web link networks, international flight routing systems, or power distribution grids - relationships are no longer purely linear or strictly hierarchical. Entities can **connect to each other arbitrarily to form multidimensional networks**.
 
-**Đồ thị (Graph)** là cấu trúc dữ liệu phi tuyến tính tổng quát nhất, được định nghĩa toán học bởi cặp `G = (V, E)`, trong đó:
+A **Graph** is the most generalized non-linear data structure, mathematically defined by a pair `G = (V, E)`, where:
 
-- `V` (Vertices / Nodes): Tập hợp các **Đỉnh** (đại diện cho người dùng, thành phố, máy chủ).
-- `E` (Edges / Links): Tập hợp các **Cạnh** kết nối giữa các cặp đỉnh (đại diện cho quan hệ bạn bè, đường bay, cáp mạng). Cạnh có thể có hướng (Directed) hoặc vô hướng (Undirected), có trọng số (Weighted) hoặc không trọng số.
+- `V` (Vertices / Nodes): The set of **Vertices** (representing users, cities, servers).
+- `E` (Edges / Links): The set of **Edges** connecting pairs of vertices (representing friendships, flights, network cables). Edges can be Directed or Undirected, Weighted or Unweighted.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Hai phương pháp kinh điển để biểu diễn đồ thị trong bộ nhớ máy tính:
+There are two classic methods to represent a graph in computer memory:
 
-1. **Ma trận kề (Adjacency Matrix):**
+1. **Adjacency Matrix:**
 
-- Sử dụng ma trận 2 chiều `adj[V][V]`. Nếu có cạnh từ `u` đến `v` thì `adj[u][v] = 1` (hoặc bằng trọng số `w`), ngược lại bằng `0`.
-- _Ưu điểm:_ Kiểm tra xem hai đỉnh bất kỳ có cạnh nối trực tiếp hay không trong thời gian tức thời `O(1)`.
-- _Nhược điểm:_ Tiêu tốn bộ nhớ cố định `O(V²)` ngay cả khi đồ thị có rất ít cạnh (Đồ thị thưa). Duyệt qua các đỉnh kề của một nút tốn `O(V)`.
+- Uses a 2D matrix `adj[V][V]`. If there is an edge from `u` to `v`, `adj[u][v] = 1` (or equals the weight `w`), otherwise `0`.
+- _Pros:_ Checking whether any two specific vertices are directly connected takes instant `O(1)` time.
+- _Cons:_ Consumes a fixed memory of `O(V²)` even if the graph has very few edges (Sparse Graph). Traversing adjacent vertices of a node takes `O(V)`.
 
-2. **Danh sách kề (Adjacency List):**
+2. **Adjacency List:**
 
-- Sử dụng mảng gồm `V` danh sách: `std::vector<std::vector<int>> adj(V)`. Mỗi đỉnh `u` lưu danh sách các đỉnh kề trực tiếp với nó.
-- _Ưu điểm:_ Tiết kiệm bộ nhớ tối đa `O(V + E)`. Duyệt các đỉnh kề cực nhanh chỉ tốn `O(deg(u))`. Đây là cấu trúc chuẩn mực được sử dụng trong 99% các ứng dụng thực tế.
+- Uses an array of `V` lists: `std::vector<std::vector<int>> adj(V)`. Each vertex `u` stores a list of its directly adjacent vertices.
+- _Pros:_ Maximally saves memory `O(V + E)`. Extremely fast to iterate over adjacent vertices, taking only `O(deg(u))` time. This is the standard structure used in 99% of real-world applications.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-**Hai Thuật toán Duyệt Đồ thị Cơ bản (Graph Traversals):**
+**Two Fundamental Graph Traversal Algorithms:**
 
-1. **Tìm kiếm theo Chiều rộng (Breadth-First Search - BFS):**
+1. **Breadth-First Search (BFS):**
 
-- Sử dụng **Hàng chờ (Queue)** để duyệt đồ thị theo từng lớp sóng lan tỏa (Level by Level).
-- _Đặc tính:_ Luôn tìm ra **đường đi ngắn nhất** (số cạnh ít nhất) từ đỉnh nguồn đến mọi đỉnh khác trên đồ thị không trọng số.
+- Uses a **Queue** to traverse the graph layer by layer, propagating outward like ripples.
+- _Characteristics:_ Always finds the **shortest path** (fewest edges) from the source vertex to all other vertices in an unweighted graph.
 
-2. **Tìm kiếm theo Chiều sâu (Depth-First Search - DFS):**
+2. **Depth-First Search (DFS):**
 
-- Sử dụng **Đệ quy / Ngăn xếp (Call Stack)** để đi sâu nhất có thể theo từng nhánh trước khi quay lui (Backtrack).
-- _Đặc tính:_ Dùng để kiểm tra tính liên thông, phát hiện chu trình, sắp xếp Tô-pô (Topological Sort) và tìm các thành phần liên thông mạnh (SCC).
+- Uses **Recursion / Call Stack** to plunge as deep as possible into each branch before backtracking.
+- _Characteristics:_ Used to check connectivity, detect cycles, perform Topological Sorts, and find Strongly Connected Components (SCCs).
 
-_Nguyên tắc an toàn:_ Bắt buộc phải duy trì mảng `visited[V]` để đánh dấu các đỉnh đã thăm, ngăn ngừa thuật toán rơi vào vòng lặp vô tận khi đồ thị chứa chu trình.
+_Safety Rule:_ You must maintain a `visited[V]` array to mark visited vertices, preventing the algorithm from falling into infinite loops when the graph contains cycles.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ cấu trúc Danh sách kề và Cây duyệt đồ thị BFS / DFS:
+Structure diagram of an Adjacency List and BFS / DFS Traversal Trees:
 
 ```mermaid
 flowchart TD
-    subgraph GraphTopology ["Mô Hình Đồ Thị 5 Đỉnh"]
+    subgraph GraphTopology ["5-Vertex Graph Model"]
         N0((0)) --- N1((1))
         N0 --- N2((2))
         N1 --- N3((3))
@@ -71,7 +71,7 @@ flowchart TD
         N2 --- N4((4))
     end
 
-    subgraph AdjacencyList ["Danh Sách Kề (Adjacency List)"]
+    subgraph AdjacencyList ["Adjacency List"]
         L0["0: -> [1, 2]"]
         L1["1: -> [0, 3, 4]"]
         L2["2: -> [0, 4]"]
@@ -80,7 +80,7 @@ flowchart TD
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh: Graph Class với Adjacency List, BFS và DFS:**
+**Complete C++ Source Code: Graph Class with Adjacency List, BFS, and DFS:**
 
 ```c++
 #include <iostream>
@@ -113,7 +113,7 @@ public:
         }
     }
 
-    // Duyệt theo Chiều rộng (BFS)
+    // Breadth-First Search (BFS)
     void bfs(int startNode) const {
         std::vector<bool> visited(numVertices, false);
         std::queue<int> q;
@@ -121,7 +121,7 @@ public:
         visited[startNode] = true;
         q.push(startNode);
 
-        std::cout << "BFS Traversal tu " << startNode << ": ";
+        std::cout << "BFS Traversal from " << startNode << ": ";
         while (!q.empty()) {
             int u = q.front();
             q.pop();
@@ -137,10 +137,10 @@ public:
         std::cout << std::endl;
     }
 
-    // Duyệt theo Chiều sâu (DFS)
+    // Depth-First Search (DFS)
     void dfs(int startNode) const {
         std::vector<bool> visited(numVertices, false);
-        std::cout << "DFS Traversal tu " << startNode << ": ";
+        std::cout << "DFS Traversal from " << startNode << ": ";
         dfsInternal(startNode, visited);
         std::cout << std::endl;
     }
@@ -149,14 +149,14 @@ public:
 int main() {
     Graph g(5);
 
-    // Xây dựng đồ thị 5 đỉnh: 0, 1, 2, 3, 4
+    // Build a 5-vertex graph: 0, 1, 2, 3, 4
     g.addEdge(0, 1);
     g.addEdge(0, 2);
     g.addEdge(1, 3);
     g.addEdge(1, 4);
     g.addEdge(2, 4);
 
-    std::cout << "--- DEMO DUYET DO THI (GRAPH TRAVERSALS) ---" << std::endl;
+    std::cout << "--- GRAPH TRAVERSALS DEMO ---" << std::endl;
     g.bfs(0); // BFS: 0 1 2 3 4
     g.dfs(0); // DFS: 0 1 3 4 2
 
@@ -164,25 +164,25 @@ int main() {
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _BFS từ đỉnh 0:_
-  - Khởi tạo: `q = [0]`, `visited[0] = true`.
-  - Pop 0 &rarr; In `0`. Đẩy các đỉnh kề chưa thăm `1, 2` vào hàng đợi &rarr; `q = [1, 2]`.
-  - Pop 1 &rarr; In `1`. Đẩy các đỉnh kề chưa thăm `3, 4` &rarr; `q = [2, 3, 4]`.
-  - Pop 2 &rarr; In `2`. Đỉnh kề 4 đã được đánh dấu thăm nên bỏ qua.
-  - Pop 3, 4 &rarr; In `3, 4` &rarr; Kết quả BFS: `0 1 2 3 4`.
-- _DFS từ đỉnh 0:_
-  - Thăm 0 &rarr; Đi sâu vào nhánh 1 &rarr; Đi sâu vào nhánh 3 (hết đường, quay lui) &rarr; Đi sang nhánh 4 &rarr; Từ 4 đi sang 2 &rarr; Kết quả DFS: `0 1 3 4 2`.
+- _BFS from vertex 0:_
+  - Initialization: `q = [0]`, `visited[0] = true`.
+  - Pop 0 &rarr; Print `0`. Push unvisited neighbors `1, 2` to queue &rarr; `q = [1, 2]`.
+  - Pop 1 &rarr; Print `1`. Push unvisited neighbors `3, 4` &rarr; `q = [2, 3, 4]`.
+  - Pop 2 &rarr; Print `2`. Neighbor 4 is already marked visited, so skip it.
+  - Pop 3, 4 &rarr; Print `3, 4` &rarr; BFS result: `0 1 2 3 4`.
+- _DFS from vertex 0:_
+  - Visit 0 &rarr; Dive into branch 1 &rarr; Dive into branch 3 (dead end, backtrack) &rarr; Go to branch 4 &rarr; From 4 go to 2 &rarr; DFS result: `0 1 3 4 2`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-- **Độ phức tạp Thời gian (Time Complexity):** `Θ(V + E)` cho cả BFS và DFS khi dùng Danh sách kề. Mỗi đỉnh được thăm 1 lần và mỗi cạnh được duyệt qua tối đa 2 lần.
-- **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` để lưu trữ Danh sách kề và `O(V)` bộ nhớ bổ trợ cho mảng `visited` và Hàng đợi/Call Stack.
-- **So sánh Ma trận kề vs Danh sách kề:**
-  - Ma trận kề: Bộ nhớ `O(V²)`, kiểm tra cạnh `O(1)`, duyệt kề `O(V)` (Thích hợp cho đồ thị dày `E ~ V²`).
-  - Danh sách kề: Bộ nhớ `O(V + E)`, kiểm tra cạnh `O(deg(u))`, duyệt kề `O(deg(u))` (Tối ưu tuyệt đối cho đồ thị thưa).
-- **Ứng dụng thực tế:**
-  - **Đồ thị Tri thức & Mạng xã hội:** Friend Recommendation (Thuật toán gợi ý bạn bè chung qua khoảng cách 2 bước BFS).
-  - **Hệ thống Web Crawling của Công cụ Tìm kiếm:** Googlebot duyệt toàn bộ mạng Internet bằng thuật toán BFS phân tán.
-  - **Phân tích Phụ thuộc Gói phần mềm (Package Managers):** npm/yarn sử dụng DFS để kiểm tra chu trình phụ thuộc vòng (Circular Dependencies) và sinh thứ tự biên dịch (Topological Sort).
+- **Time Complexity:** `\Theta(V + E)` for both BFS and DFS when using an Adjacency List. Each vertex is visited once, and each edge is evaluated at most twice.
+- **Space Complexity:** `O(V + E)` to store the Adjacency List, and `O(V)` auxiliary memory for the `visited` array and Queue / Call Stack.
+- **Adjacency Matrix vs Adjacency List Comparison:**
+  - Adjacency Matrix: Space `O(V²)`, check edge `O(1)`, traverse neighbors `O(V)` (Suitable for Dense Graphs `E \approx V^2`).
+  - Adjacency List: Space `O(V + E)`, check edge `O(deg(u))`, traverse neighbors `O(deg(u))` (Absolutely optimal for Sparse Graphs).
+- **Practical Applications:**
+  - **Knowledge Graphs & Social Networks:** Friend Recommendations (Finding mutual friends using a 2-step BFS).
+  - **Search Engine Web Crawlers:** Googlebot indexes the entire Internet utilizing distributed BFS algorithms.
+  - **Package Dependency Management:** npm/yarn use DFS to check for Circular Dependencies and generate compilation orders (Topological Sort).

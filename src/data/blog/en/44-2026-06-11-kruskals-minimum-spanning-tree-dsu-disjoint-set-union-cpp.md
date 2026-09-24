@@ -1,12 +1,12 @@
 ---
 id: "44"
 slug: "kruskals-minimum-spanning-tree-dsu-disjoint-set-union-cpp"
-title: "Thuật toán Nâng cao #10: Thuật toán Cây khung nhỏ nhất Kruskal - Cấu trúc DSU (Disjoint Set Union), Nén đường & Triển khai C++"
-summary: "Mổ xẻ thuật toán Cây khung nhỏ nhất Kruskal (Kruskal's MST): Bản chất giải thuật Tham lam trên tập cạnh, cấu trúc dữ liệu Các tập hợp rời nhau (Disjoint Set Union - DSU) với Nén đường (Path Compression) và Hợp nhất theo Hạng (Union by Rank), đạt độ phức tạp O(E log E) với mã nguồn C++ hoàn chỉnh."
+title: "Advanced Algorithms #10: Kruskal's Minimum Spanning Tree Algorithm - Disjoint Set Union (DSU), Path Compression & C++ Implementation"
+summary: "Dissecting Kruskal's Minimum Spanning Tree (MST) algorithm: The essence of an Edge-Centric Greedy algorithm, the Disjoint Set Union (DSU) data structure with Path Compression and Union by Rank, achieving O(E log E) complexity with a complete C++ implementation."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "12 phút đọc"
+readTime: "12 min read"
 tags:
   - "Algorithms"
   - "Minimum Spanning Tree"
@@ -17,65 +17,64 @@ tags:
   - "C++"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Khi thiết kế mạng lưới đường trục cáp quang viễn thông, hệ thống đường ống dẫn khí đốt liên đô thị hay lưới điện quốc gia, mục tiêu kinh tế hàng đầu là: _Làm sao để kết nối toàn bộ `V` đô thị lại với nhau sao cho tổng chi phí xây lắp là thấp nhất và không tồn tại bất kỳ chu trình lãng phí nào?_
+When designing telecom fiber-optic backbones, intercity gas pipeline systems, or national power grids, the primary economic goal is: _How to connect all `V` cities together such that the total construction cost is minimized and no wasteful cycles exist?_
 
-Bài toán đặt ra: **Cây khung nhỏ nhất (Minimum Spanning Tree - MST)**. Cho đồ thị vô hướng, liên thông và có trọng số `G = (V, E)` gồm `V` đỉnh và `E` cạnh. Một Cây khung (Spanning Tree) là một đồ thị con liên thông chứa tất cả `V` đỉnh và đúng `V - 1` cạnh (không có chu trình). Hãy tìm một cây khung có **tổng trọng số các cạnh là nhỏ nhất**: `w(T) = sum_{(u, v) in T} w(u, v)`.
+The problem statement: **Minimum Spanning Tree (MST)**. Given an undirected, connected, weighted graph `G = (V, E)` consisting of `V` vertices and `E` edges. A Spanning Tree is a connected subgraph that contains all `V` vertices and exactly `V - 1` edges (no cycles). Find a spanning tree with the **minimum total edge weight**: `w(T) = sum_{(u, v) \in T} w(u, v)`.
 
-Thuật toán Kruskal do Joseph Kruskal phát minh năm 1956 là giải thuật kinh điển hàng đầu tiếp cận bài toán theo tư duy **Tham lam trên cạnh (Edge-Centric Greedy)**.
+Kruskal's algorithm, invented by Joseph Kruskal in 1956, is a premier classic algorithm approaching the problem via an **Edge-Centric Greedy** mindset.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Ý tưởng tham lam trực quan: Sắp xếp tất cả các cạnh theo trọng số tăng dần. Lần lượt duyệt từng cạnh từ nhỏ nhất đến lớn nhất, nếu thêm cạnh `(u, v)` vào mà không tạo thành chu trình thì ta chọn cạnh đó vào cây khung.
+An intuitive greedy idea: Sort all edges in ascending order by weight. Iterate through each edge from smallest to largest, and if adding the edge `(u, v)` does not create a cycle, select that edge for the spanning tree.
 
-Thách thức cốt tử: _Làm thế nào để kiểm tra nhanh chóng việc thêm cạnh `(u, v)` có tạo ra chu trình hay không?_
+The fatal challenge: _How to quickly check whether adding edge `(u, v)` creates a cycle?_
 
-Nếu dùng DFS hoặc BFS để kiểm tra chu trình mỗi lần xét một cạnh, chi phí kiểm tra sẽ là `O(V)`, khiến tổng thời gian thuật toán lên tới `O(E x V)` - quá chậm khi đồ thị có hàng trăm nghìn cạnh.
+If we use DFS or BFS to check for cycles every time we evaluate an edge, the check cost will be `O(V)`, making the total algorithmic time `O(E * V)` - which is too slow when the graph has hundreds of thousands of edges.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Thuật toán Kruskal đạt hiệu năng siêu việt nhờ kết hợp với cấu trúc dữ liệu **Các tập hợp rời nhau (Disjoint Set Union - DSU / Union-Find)**:
+Kruskal's algorithm achieves transcendent performance by combining with the **Disjoint Set Union (DSU / Union-Find)** data structure:
 
-1. **Mô hình Rừng phân mảnh (Spanning Forest):** Ban đầu, mỗi đỉnh `v in V` tạo thành một cây độc lập gồm 1 nút (tương ứng với một tập hợp rời rạc). Cây khung hoàn chỉnh sẽ được tạo ra bằng cách hợp nhất dần các cây này thành một cây duy nhất gồm `V - 1` cạnh.
-2. **Kiểm tra Chu trình trong `O(alpha(V))`:** Hai đỉnh `u` và `v` sẽ tạo thành chu trình khi và chỉ khi chúng đã thuộc về cùng một thành phần liên thông (tức là có cùng gốc đại diện: `find(u) == find(v)`).
-3. **Hai Kỹ thuật Tối ưu DSU Thần thánh:**
+1. **Spanning Forest Model:** Initially, each vertex `v \in V` forms an independent tree of 1 node (corresponding to a disjoint set). The complete spanning tree will be generated by gradually merging these trees into a single tree of `V - 1` edges.
+2. **Cycle Checking in `O(\alpha(V))`:** Two vertices `u` and `v` will form a cycle if and only if they already belong to the same connected component (i.e., they share the same representative root: `find(u) == find(v)`).
+3. **Two God-tier DSU Optimization Techniques:**
+   - **Path Compression:** Inside the `find(u)` function, directly point all nodes along the traversal path back to the root node. Tree height is squashed to almost 1.
+   - **Union by Rank:** Always attach the shallower/smaller tree to the root of the larger tree to prevent the tree from degrading into a linked list.
 
-- **Nén đường (Path Compression):** Trong hàm `find(u)`, trỏ trực tiếp tất cả các nút trên đường đi thẳng về nút gốc đại diện. Chiều cao cây bị triệt tiêu gần như bằng 1.
-- **Hợp nhất theo Hạng (Union by Rank):** Luôn gắn cây có độ sâu/kích thước nhỏ hơn vào gốc của cây lớn hơn để ngăn cây bị biến dạng thành danh sách liên kết.
+Thanks to DSU, every cycle check and set merge operation takes **nearly constant time** `O(\alpha(V))` (where `\alpha` is the inverse Ackermann function, `\alpha(V) \le 4` for all `V \le 10^{80}`). The total time of Kruskal is entirely dominated by the edge sorting step `O(E \log E) = O(E \log V)`.
 
-Nhờ DSU, mọi thao tác kiểm tra chu trình và hợp nhất tập hợp chỉ tiêu tốn thời gian **gần như hằng số** `O(alpha(V))` (với `alpha` là hàm Ackermann nghịch đảo, `alpha(V) <= 4` với mọi `V <= 10⁸⁰`). Tổng thời gian của Kruskal hoàn toàn bị chi phối bởi bước sắp xếp cạnh `O(E \log E) = O(E \log V)`.
+## Source Code Implementation & Dry Run
 
-## Triển khai mã nguồn & Dry Run
-
-Sơ đồ tiến trình chọn cạnh tham lam và cơ chế hợp nhất DSU:
+Process diagram of greedy edge selection and the DSU merge mechanism:
 
 ```mermaid
 flowchart TD
-    subgraph EdgeSorting [1. Sắp Xếp Danh Sách Cạnh Tăng Dần]
-        E1["Cạnh (1-2, w=1)"] --> E2["Cạnh (3-4, w=2)"]
-        E2 --> E3["Cạnh (2-4, w=3)"]
-        E3 --> E4["Cạnh (1-4, w=4)"]
-        E4 --> E5["Cạnh (0-1, w=5)"]
+    subgraph EdgeSorting [1. Sort Edge List in Ascending Order]
+        E1["Edge (1-2, w=1)"] --> E2["Edge (3-4, w=2)"]
+        E2 --> E3["Edge (2-4, w=3)"]
+        E3 --> E4["Edge (1-4, w=4)"]
+        E4 --> E5["Edge (0-1, w=5)"]
     end
 
-    subgraph DSUVerification [2. Duyệt Cạnh & Hợp Nhất Rừng DSU]
-        E1 -->|find 1 != find 2| Add1["THÊM (1-2) -> Hợp nhất {1, 2}"]
-        E2 -->|find 3 != find 4| Add2["THÊM (3-4) -> Hợp nhất {3, 4}"]
-        E3 -->|find 2 != find 4| Add3["THÊM (2-4) -> Hợp nhất {1, 2, 3, 4}"]
-        E4 -->|find 1 == find 4| Reject["LOẠI BỎ (1-4) -> Tránh Chu Trình!"]
-        E5 -->|find 0 != find 1| Add4["THÊM (0-1) -> Hoàn tất MST gồm V-1=4 cạnh"]
+    subgraph DSUVerification [2. Traverse Edges & Merge DSU Forest]
+        E1 -->|find 1 != find 2| Add1["ADD (1-2) -> Union {1, 2}"]
+        E2 -->|find 3 != find 4| Add2["ADD (3-4) -> Union {3, 4}"]
+        E3 -->|find 2 != find 4| Add3["ADD (2-4) -> Union {1, 2, 3, 4}"]
+        E4 -->|find 1 == find 4| Reject["REJECT (1-4) -> Avoid Cycle!"]
+        E5 -->|find 0 != find 1| Add4["ADD (0-1) -> Complete MST with V-1=4 edges"]
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh (Kruskal với DSU Nén đường và Gộp theo hạng):**
+**Complete C++ Source Code (Kruskal with DSU Path Compression and Union by Rank):**
 
 ```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
 
-// Cấu trúc dữ liệu Disjoint Set Union (DSU) chuẩn mực
+// Standard Disjoint Set Union (DSU) data structure
 class DisjointSet {
 private:
     std::vector<int> parent;
@@ -86,25 +85,25 @@ public:
         parent.resize(n);
         rank.assign(n, 0);
         for (int i = 0; i < n; ++i) {
-            parent[i] = i; // Ban đầu mỗi nút là cha của chính nó
+            parent[i] = i; // Initially, each node is its own parent
         }
     }
 
-    // Tìm gốc đại diện kết hợp Nén đường (Path Compression)
+    // Find representative root with Path Compression
     int find(int u) {
         if (parent[u] != u) {
-            parent[u] = find(parent[u]); // Gán trực tiếp lên nút gốc
+            parent[u] = find(parent[u]); // Direct assignment to the root node
         }
         return parent[u];
     }
 
-    // Hợp nhất 2 tập hợp theo Hạng (Union by Rank)
+    // Merge 2 sets using Union by Rank
     bool unite(int u, int v) {
         int rootU = find(u);
         int rootV = find(v);
 
         if (rootU == rootV) {
-            return false; // Cùng gốc -> Đã liên thông -> Sẽ tạo chu trình
+            return false; // Same root -> Already connected -> Would form a cycle
         }
 
         if (rank[rootU] < rank[rootV]) {
@@ -123,7 +122,7 @@ struct Edge {
     int u, v;
     long long weight;
 
-    // Toán tử so sánh để sắp xếp cạnh theo trọng số tăng dần
+    // Comparison operator to sort edges by weight ascending
     bool operator<(const Edge& other) const {
         return weight < other.weight;
     }
@@ -135,20 +134,20 @@ struct MSTResult {
 };
 
 MSTResult kruskalMST(int V, std::vector<Edge>& edges) {
-    // Bước 1: Sắp xếp toàn bộ E cạnh theo trọng số tăng dần O(E log E)
+    // Step 1: Sort all E edges in ascending order by weight O(E log E)
     std::sort(edges.begin(), edges.end());
 
     DisjointSet dsu(V);
     long long totalWeight = 0;
     std::vector<Edge> mstEdges;
 
-    // Bước 2: Duyệt từng cạnh và hợp nhất DSU
+    // Step 2: Iterate through each edge and union via DSU
     for (const auto& edge : edges) {
         if (dsu.unite(edge.u, edge.v)) {
             totalWeight += edge.weight;
             mstEdges.push_back(edge);
 
-            // Dừng sớm khi đã chọn đủ V - 1 cạnh
+            // Early exit when exactly V - 1 edges have been picked
             if (static_cast<int>(mstEdges.size()) == V - 1) {
                 break;
             }
@@ -159,7 +158,7 @@ MSTResult kruskalMST(int V, std::vector<Edge>& edges) {
 }
 
 int main() {
-    int V = 5; // 5 đỉnh: 0, 1, 2, 3, 4
+    int V = 5; // 5 vertices: 0, 1, 2, 3, 4
     std::vector<Edge> edges = {
         {0, 1, 9}, {0, 2, 75}, {1, 2, 95},
         {1, 3, 19}, {1, 4, 42}, {2, 3, 51},
@@ -168,31 +167,31 @@ int main() {
 
     auto result = kruskalMST(V, edges);
 
-    std::cout << "--- KET QUA CAY KHUNG NHO NHAT KRUSKAL ---" << std::endl;
-    std::cout << "Tong trong so MST: " << result.totalWeight << std::endl;
-    std::cout << "Cac canh duoc chon:" << std::endl;
+    std::cout << "--- KRUSKAL'S MINIMUM SPANNING TREE RESULT ---" << std::endl;
+    std::cout << "Total MST weight: " << result.totalWeight << std::endl;
+    std::cout << "Selected edges:" << std::endl;
     for (const auto& e : result.mstEdges) {
-        std::cout << "Canh (" << e.u << " - " << e.v << ") voi trong so: " << e.weight << std::endl;
+        std::cout << "Edge (" << e.u << " - " << e.v << ") with weight: " << e.weight << std::endl;
     }
 
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Danh sách cạnh sau khi sort:_ `(0-1: 9), (1-3: 19), (3-4: 31), (1-4: 42), (2-3: 51), (0-2: 75), (1-2: 95)`.
-- _Cạnh 1 (0-1, w=9):_ `find(0)!=find(1)` &rarr; Chọn! `total=9`, DSU gom `{0, 1}`.
-- _Cạnh 2 (1-3, w=19):_ `find(1)!=find(3)` &rarr; Chọn! `total=9+19=28`, DSU gom `{0, 1, 3}`.
-- _Cạnh 3 (3-4, w=31):_ `find(3)!=find(4)` &rarr; Chọn! `total=28+31=59`, DSU gom `{0, 1, 3, 4}`.
-- _Cạnh 4 (1-4, w=42):_ `find(1) == find(4)` (đều thuộc tập `{0, 1, 3, 4}`) &rarr; Bỏ qua để tránh tạo chu trình `1-3-4-1`.
-- _Cạnh 5 (2-3, w=51):_ `find(2)!=find(3)` &rarr; Chọn! `total=59+51=110`, gom đủ `V-1 = 4` cạnh &rarr; Thuật toán kết thúc với tổng trọng số `110`.
+- _Sorted Edge List:_ `(0-1: 9), (1-3: 19), (3-4: 31), (1-4: 42), (2-3: 51), (0-2: 75), (1-2: 95)`.
+- _Edge 1 (0-1, w=9):_ `find(0) != find(1)` &rarr; Selected! `total=9`, DSU groups `{0, 1}`.
+- _Edge 2 (1-3, w=19):_ `find(1) != find(3)` &rarr; Selected! `total=9+19=28`, DSU groups `{0, 1, 3}`.
+- _Edge 3 (3-4, w=31):_ `find(3) != find(4)` &rarr; Selected! `total=28+31=59`, DSU groups `{0, 1, 3, 4}`.
+- _Edge 4 (1-4, w=42):_ `find(1) == find(4)` (both belong to set `{0, 1, 3, 4}`) &rarr; Skipped to avoid creating cycle `1-3-4-1`.
+- _Edge 5 (2-3, w=51):_ `find(2) != find(3)` &rarr; Selected! `total=59+51=110`, gathered `V-1 = 4` edges &rarr; Algorithm terminates with a total weight of `110`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-- **Độ phức tạp Thời gian (Time Complexity):** `O(E \log E) = O(E \log V)`. Thao tác sắp xếp `E` cạnh chiếm `O(E \log E)`, thao tác duyệt và thao tác DSU mất `O(E alpha(V))`.
-- **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` gồm `O(V)` cho cấu trúc DSU (mảng `parent` và `rank`) và `O(E)` lưu trữ mảng cạnh.
-- **Ứng dụng thực tế:**
-  - **Thiết kế hạ tầng mạng cáp viễn thông và lưới điện:** Kết nối toàn bộ các trạm biến áp hoặc trung tâm dữ liệu với tổng chiều dài cáp nhỏ nhất.
-  - **Phân cụm dữ liệu trong Học máy (Single-Linkage Hierarchical Clustering):** Dừng quá trình Kruskal khi số thành phần liên thông bằng `K` để phân tách dữ liệu thành `K` cụm tối ưu.
-  - **Thiết kế mạch tích hợp VLSI:** Đi dây đồng trên vi mạch (Routing) giảm thiểu diện tích và độ trễ tín hiệu.
+- **Time Complexity:** `O(E \log E) = O(E \log V)`. The operation to sort `E` edges takes `O(E \log E)`, and iterating through DSU operations takes `O(E \alpha(V))`.
+- **Space Complexity:** `O(V + E)` which includes `O(V)` for the DSU structure (`parent` and `rank` arrays) and `O(E)` to store the edge array.
+- **Practical Applications:**
+  - **Designing telecom cable and power grid infrastructure:** Connecting all substations or data centers using the minimum total cable length.
+  - **Data clustering in Machine Learning (Single-Linkage Hierarchical Clustering):** Stop Kruskal's process when the number of connected components equals `K` to optimally partition data into `K` clusters.
+  - **VLSI Integrated Circuit Design:** Routing copper wires on microchips to minimize surface area and signal delay.

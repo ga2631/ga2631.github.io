@@ -1,12 +1,12 @@
 ---
 id: "66"
 slug: "moving-away-from-json-to-markdown"
-title: "Rời bỏ JSON: Cấu trúc lại hệ thống lưu trữ Blog tĩnh với Markdown và SSG"
-summary: 'Hành trình chuyển đổi mô hình lưu trữ bài viết từ file JSON nguyên khối sang hệ thống file Markdown độc lập. Bài viết phân tích bài toán nút thắt hiệu năng (bottleneck) trên môi trường GitHub Pages, thiết kế lại kiến trúc, và những đánh đổi kỹ thuật khi áp dụng tư duy "Build-time" thay cho "Run-time".'
+title: "Moving Away from JSON: Restructuring the Static Blog Storage System with Markdown and SSG"
+summary: 'The journey of transitioning the article storage model from a monolithic JSON file to an independent Markdown file system. This article analyzes the performance bottleneck on GitHub Pages, the architecture redesign, and the technical trade-offs of adopting a "Build-time" mindset instead of "Run-time".'
 category: "architecture-system-design"
 publishedAt: "2026-09-14"
 date: "2026-09-14"
-readTime: "9 phút đọc"
+readTime: "9 minutes read"
 tags:
   - "Architecture"
   - "SSG"
@@ -14,108 +14,108 @@ tags:
   - "Frontend Engineering"
 ---
 
-## Bối cảnh & Vấn đề
+## Context & Problem
 
-Khi bắt đầu xây dựng dự án CV tích hợp Blog cá nhân, mục tiêu của tôi là tạo ra một hệ thống gọn nhẹ, không tốn chi phí duy trì server và có thể host trực tiếp trên GitHub Pages.
+When I started building my CV project integrated with a personal Blog, my goal was to create a lightweight system with no server maintenance costs that could be hosted directly on GitHub Pages.
 
-Phiên bản đầu tiên được thiết kế với tư duy của một Single Page Application (SPA) truyền thống: Toàn bộ bài viết được lưu trữ trong một file `data.json` duy nhất. Frontend (React) sẽ fetch file JSON này về ở chế độ run-time, parse dữ liệu và render ra giao diện.
+The first version was designed with a traditional Single Page Application (SPA) mindset: All articles were stored in a single `data.json` file. The Frontend (React) would fetch this JSON file at run-time, parse the data, and render the UI.
 
-Tuy nhiên, với mục tiêu viết blog hằng ngày (Daily Blogging), mô hình này nhanh chóng bộc lộ **điểm yếu chí mạng**:
+However, with a Daily Blogging goal, this model quickly revealed a **fatal weakness**:
 
-1. **Phình to dữ liệu (Data Bloat):** Khi số lượng bài viết đạt con số hàng trăm, file `data.json` sẽ phình to lên mức vài Megabytes.
-2. **Nút thắt băng thông (Bandwidth Bottleneck):** Để đọc một bài viết mới nhất, trình duyệt của người dùng buộc phải tải _toàn bộ_ lịch sử bài viết từ trước đến nay.
-3. **Developer Experience (DX) tồi tệ:** Việc viết nội dung dài, chèn code snippet, hay định dạng văn bản bên trong một chuỗi String của JSON là một cơn ác mộng về escaping (`\n`, `\"`).
+1. **Data Bloat:** When the number of articles reached the hundreds, the `data.json` file bloated to several Megabytes.
+2. **Bandwidth Bottleneck:** To read a single new article, the user's browser was forced to download the _entire_ article history.
+3. **Terrible Developer Experience (DX):** Writing long content, inserting code snippets, or formatting text inside a JSON String is an escaping nightmare (`\n`, `\"`).
 
-Giải pháp duy nhất để mở rộng (scale) là thay đổi hoàn toàn cách dữ liệu được lưu trữ và phân phối.
+The only scalable solution was to completely change how data was stored and distributed.
 
-## Yêu cầu hệ thống
+## System Requirements
 
-Kiến trúc mới cần thoả mãn các ràng buộc khắt khe của một dự án cá nhân:
+The new architecture needed to satisfy the strict constraints of a personal project:
 
-- **Zero-backend:** Không sử dụng Database Server để tiết kiệm chi phí và công sức bảo trì.
-- **Tối ưu TTI (Time to Interactive):** Người dùng vào bài viết nào, chỉ tải đúng lượng dữ liệu của bài viết đó.
-- **Bảo toàn tính năng:** Vẫn phải hỗ trợ Lọc (Filter), Tìm kiếm (Search) theo Tag và Category.
-- **DX thân thiện:** Hỗ trợ viết bài trơn tru trên IDE, highlight code chuẩn xác và vẽ được biểu đồ kỹ thuật.
+- **Zero-backend:** No Database Server to save costs and maintenance effort.
+- **Optimized TTI (Time to Interactive):** Whichever article the user visits, download exactly the data for that article.
+- **Feature Preservation:** Still must support Filtering and Searching by Tag and Category.
+- **Friendly DX:** Smooth writing support on an IDE, accurate code highlighting, and the ability to draw technical diagrams.
 
-## Thiết kế kiến trúc
+## Architecture Design
 
-Để giải quyết bài toán trên, tôi quyết định chuyển đổi từ mô hình **Client-side Rendering (CSR) + JSON** sang mô hình **Static Site Generation (SSG) + Markdown**.
+To solve this problem, I decided to switch from the **Client-side Rendering (CSR) + JSON** model to the **Static Site Generation (SSG) + Markdown** model.
 
-Cốt lõi của sự thay đổi nằm ở việc dời "thời điểm xử lý dữ liệu" từ **Run-time** (lúc người dùng mở web) sang **Build-time** (lúc code được đẩy lên GitHub).
+The core of this change lies in moving the "data processing moment" from **Run-time** (when the user opens the web) to **Build-time** (when the code is pushed to GitHub).
 
 ```mermaid
 graph TD
   subgraph Old["CSR + JSON (Run-time)"]
-    A[data.json] -->|Chứa toàn bộ bài viết| B(Client Browser)
-    B -->|Tải 5MB JSON| C[Parse Data]
+    A[data.json] -->|Contains all articles| B(Client Browser)
+    B -->|Downloads 5MB JSON| C[Parse Data]
     C --> D[Render Blog List]
     C --> E[Render Post Detail]
   end
 
   subgraph New["SSG + Markdown (Build-time)"]
     F[Markdown Files] -->|Frontmatter & Content| G(SSG Engine: Next.js/Docusaurus)
-    G -->|Extract Metadata| H[metadata.json siêu nhỏ]
+    G -->|Extract Metadata| H[Tiny metadata.json]
     G -->|Compile HTML| I[Static HTML/JS per route]
 
-    H -->|Client tải| J[Render Blog List / Filter]
-    I -->|Client tải| K[Render Post Detail độc lập]
+    H -->|Client loads| J[Render Blog List / Filter]
+    I -->|Client loads| K[Render Independent Post Detail]
   end
 
   style Old fill:#fee2e2,stroke:#ef4444,stroke-width:2px
   style New fill:#dcfce7,stroke:#22c55e,stroke-width:2px
 ```
 
-**Cách luồng dữ liệu mới hoạt động:**
+**How the new data flow works:**
 
-1. **Lưu trữ:** Mỗi bài viết là một file `.md` hoặc `.mdx` riêng biệt. Dữ liệu mô tả (Title, Date, Tags) được lưu ở phần đầu file (Frontmatter YAML).
-2. **Build-time:** Khi đẩy code lên GitHub, SSG Engine sẽ duyệt qua toàn bộ thư mục bài viết. Nó tách Frontmatter ra tạo thành một file metadata rất nhỏ (chỉ vài chục KB) phục vụ cho trang danh sách. Phần nội dung Markdown được compile thành các trang HTML tĩnh riêng lẻ.
-3. **Phân phối:** Khi người dùng truy cập `/blog/my-post`, GitHub Pages chỉ trả về đúng file HTML của bài đó. Tốc độ phản hồi tính bằng mili-giây.
+1. **Storage:** Each article is a separate `.md` or `.mdx` file. Metadata (Title, Date, Tags) is stored at the top of the file (Frontmatter YAML).
+2. **Build-time:** When pushing code to GitHub, the SSG Engine scans the entire article directory. It extracts the Frontmatter to create a tiny metadata file (just a few dozen KBs) serving the list page. The Markdown content is compiled into individual static HTML pages.
+3. **Distribution:** When users visit `/blog/my-post`, GitHub Pages returns exactly the HTML file for that post. Response speed is measured in milliseconds.
 
-## Phân tích đánh đổi
+## Trade-off Analysis
 
-Mọi quyết định kiến trúc đều là sự đánh đổi (Trade-offs). Dù giải quyết được vấn đề "phình JSON", mô hình mới cũng mang lại một số đặc tả cần cân nhắc:
+Every architectural decision is a Trade-off. Although it solves the "JSON bloat", the new model also brings certain characteristics to consider:
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Tiêu chí</th>
-      <th style="padding: 8px;">Mô hình cũ (JSON)</th>
-      <th style="padding: 8px;">Mô hình mới (Markdown + SSG)</th>
+      <th style="padding: 8px;">Criteria</th>
+      <th style="padding: 8px;">Old Model (JSON)</th>
+      <th style="padding: 8px;">New Model (Markdown + SSG)</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Tốc độ tải trang chi tiết</b></td>
-      <td style="padding: 8px">Chậm (Phải parse cục data lớn)</td>
-      <td style="padding: 8px">Cực nhanh (HTML render sẵn)</td>
+      <td style="padding: 8px"><b>Detail Page Load Speed</b></td>
+      <td style="padding: 8px">Slow (Must parse large chunk of data)</td>
+      <td style="padding: 8px">Extremely fast (Pre-rendered HTML)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Chi phí bảo trì Content</b></td>
-      <td style="padding: 8px">Rất khó (Sửa lỗi syntax JSON)</td>
-      <td style="padding: 8px">Rất dễ (Git Version Control, IDE support)</td>
+      <td style="padding: 8px"><b>Content Maintenance Cost</b></td>
+      <td style="padding: 8px">Very hard (Fixing JSON syntax errors)</td>
+      <td style="padding: 8px">Very easy (Git Version Control, IDE support)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Thời gian Build (CI/CD)</b></td>
-      <td style="padding: 8px">Nhanh (Chỉ copy file tĩnh)</td>
-      <td style="padding: 8px">Tăng dần theo số lượng bài viết (Cần compile MD sang HTML)</td>
+      <td style="padding: 8px"><b>Build Time (CI/CD)</b></td>
+      <td style="padding: 8px">Fast (Just copying static files)</td>
+      <td style="padding: 8px">Increases with post count (Compiling MD to HTML)</td>
     </tr>
     <tr>
-      <td style="padding: 8px"><b>Tính năng động (Comments)</b></td>
-      <td style="padding: 8px">Có thể tự chế qua API</td>
-      <td style="padding: 8px">Phải dựa vào 3rd party (Giscus, Utterances)</td>
+      <td style="padding: 8px"><b>Dynamic Features (Comments)</b></td>
+      <td style="padding: 8px">Can self-build via API</td>
+      <td style="padding: 8px">Must rely on 3rd party (Giscus, Utterances)</td>
     </tr>
   </tbody>
 </table>
 
-Đối với một Blog cá nhân, việc thời gian build trên GitHub Actions tăng thêm 1-2 phút là một cái giá quá rẻ để đổi lấy hiệu năng frontend tuyệt đối và trải nghiệm viết lách mượt mà.
+For a personal Blog, 1-2 extra minutes of build time on GitHub Actions is a very cheap price to pay for absolute frontend performance and a smooth writing experience.
 
-## Bài học thực tế & Best Practices
+## Real-world Lessons & Best Practices
 
-Qua quá trình chuyển đổi, đây là những thực hành tốt nhất (Best Practices) mà tôi đúc kết được để duy trì hệ thống SSG lâu dài:
+Through the migration process, here are the Best Practices I've gathered to maintain an SSG system long-term:
 
-1. **Chuẩn hoá Frontmatter ngay từ đầu:** Việc định nghĩa Schema rõ ràng cho metadata (ví dụ bắt buộc phải có `date` định dạng `YYYY-MM-DD`, `tags` dạng array) sẽ giúp tránh lỗi lúc build-time.
-2. **Tuyệt đối không load Content vào trang danh sách (List Page):** Khi xử lý dữ liệu lúc build, chỉ trích xuất các trường Frontmatter để tạo bộ lọc. Đừng mang cả nội dung bài viết (body text) vào mảng metadata, nếu không bạn sẽ lại lặp lại lỗi "phình JSON" phiên bản SSG.
-3. **Tận dụng MDX:** Trong hệ sinh thái React, sử dụng MDX (`.mdx`) cho phép nhúng trực tiếp các React Component (như biểu đồ Mermaid, nút tương tác, bảng tính) ngay giữa lòng bài viết Markdown, xoá nhoà ranh giới giữa nội dung tĩnh và ứng dụng động.
-4. **Tự động hoá với GitHub Actions:**Thiết lập một workflow để mỗi khi có commit mới vào nhánh `main`, hệ thống sẽ tự động gõ lệnh `npm run build` và deploy thẳng thư mục `dist` lên nhánh `gh-pages`. Bạn chỉ việc viết bài, việc còn lại để máy móc lo.
+1. **Standardize Frontmatter from the start:** Defining a clear Schema for metadata (e.g., mandatory `date` in `YYYY-MM-DD` format, `tags` as an array) prevents build-time errors.
+2. **Absolutely never load Content into the List Page:** When processing data at build-time, extract only the Frontmatter fields to create filters. Do not bring the body text into the metadata array, otherwise you'll repeat the "JSON bloat" error in the SSG version.
+3. **Leverage MDX:** In the React ecosystem, using MDX (`.mdx`) allows directly embedding React Components (like Mermaid charts, interactive buttons, spreadsheets) right inside the Markdown article, blurring the line between static content and dynamic applications.
+4. **Automate with GitHub Actions:** Set up a workflow so that whenever there's a new commit to the `main` branch, the system automatically runs `npm run build` and deploys the `dist` folder directly to the `gh-pages` branch. You just write, let the machines handle the rest.
 
-Kiến trúc tốt không phải là kiến trúc phức tạp nhất, mà là kiến trúc phù hợp nhất với nguồn lực và đặc thù của dự án ở thời điểm hiện tại.
+A good architecture is not the most complex one, but the most suitable for the project's resources and specifics at the current time.

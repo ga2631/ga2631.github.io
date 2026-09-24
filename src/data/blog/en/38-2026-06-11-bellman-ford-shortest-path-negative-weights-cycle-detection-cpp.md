@@ -1,12 +1,12 @@
 ---
 id: "38"
 slug: "bellman-ford-shortest-path-negative-weights-cycle-detection-cpp"
-title: "Thuật toán Nâng cao #04: Thuật toán Tìm đường đi ngắn nhất Bellman-Ford - Xử lý Trọng số Âm, Phát hiện Chu trình Âm & Triển khai C++"
-summary: "Mổ xẻ thuật toán Bellman-Ford: Tìm đường đi ngắn nhất từ một nguồn (SSSP) trên đồ thị tổng quát chứa trọng số âm, cơ chế duyệt V-1 vòng lặp nới lỏng cạnh O(V * E), phát hiện chu trình âm (Negative Cycle Detection) và cài đặt C++ tối ưu cờ hiệu dừng sớm."
+title: "Advanced Algorithms #04: Bellman-Ford Shortest Path Algorithm - Negative Weights, Negative Cycle Detection & C++ Implementation"
+summary: "Dissecting the Bellman-Ford algorithm: Finding the Single-Source Shortest Path (SSSP) on generalized graphs containing negative weights, the O(V * E) edge relaxation loop mechanism, Negative Cycle Detection, and C++ optimization with an early-exit flag."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "12 phút đọc"
+readTime: "12 min read"
 tags:
   - "Algorithms"
   - "Bellman-Ford"
@@ -16,54 +16,54 @@ tags:
   - "Negative Cycle"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong thực tế, không phải mọi mạng lưới đều có chi phí dương. Trong thị trường tài chính (giao dịch chênh lệch tỷ giá - Currency Arbitrage) hay các mô hình trao đổi năng lượng tái tạo, các cạnh đồ thị có thể mang **trọng số âm** (thể hiện lợi nhuận thu được khi thực hiện giao dịch).
+In reality, not all networks have positive costs. In financial markets (Currency Arbitrage) or renewable energy exchange models, graph edges can carry **negative weights** (representing profit gained when executing a transaction).
 
-Đề bài đặt ra: Cho đồ thị có hướng `G = (V, E)` với `V` đỉnh và `E` cạnh, trọng số cạnh có thể nhận giá trị âm bất kỳ. Cho đỉnh nguồn `s`, hãy:
+The premise: Given a directed graph `G = (V, E)` with `V` vertices and `E` edges, edge weights can take any negative values. Given a source vertex `s`:
 
-1. Tìm độ dài đường đi ngắn nhất từ `s` đến tất cả các đỉnh còn lại trong đồ thị.
-2. Phát hiện xem đồ thị có tồn tại **Chu trình trọng số âm (Negative Cycle)** hay không. Chu trình âm là một vòng khép kín có tổng trọng số &lt; 0. Nếu đi vòng qua chu trình này vô hạn lần, chi phí đường đi sẽ giảm về `-&infin;`, khiến bài toán đường đi ngắn nhất mất nghiệm.
+1. Find the shortest path length from `s` to all other vertices in the graph.
+2. Detect if the graph contains a **Negative Cycle**. A negative cycle is a closed loop with a total sum of weights < 0. If traversed infinitely, the path cost would drop to `-\infty`, rendering the shortest path problem unsolvable.
 
-Thuật toán Bellman-Ford (phát triển bởi Richard Bellman và Lester Ford Jr.) là giải thuật chuẩn mực giải quyết trọn vẹn thách thức này.
+The Bellman-Ford algorithm (developed by Richard Bellman and Lester Ford Jr.) is the standard algorithm perfectly equipped to tackle this challenge.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Thuật toán Dijkstra thất bại hoàn toàn trên đồ thị có trọng số âm vì chiến lược Tham lam chốt cố định đỉnh có khoảng cách nhỏ nhất tại mỗi bước. Khi một cạnh âm xuất hiện ở bước sau, khoảng cách đến đỉnh đã chốt có thể bị giảm xuống, nhưng Dijkstra không có cơ chế hoàn tác hoặc cập nhật lại các đỉnh đã bị loại khỏi hàng đợi ưu tiên.
+Dijkstra's algorithm fails entirely on graphs with negative weights because its Greedy strategy permanently finalizes the vertex with the smallest distance at each step. When a negative edge appears later, the distance to an already finalized vertex could decrease, but Dijkstra has no mechanism to undo or update vertices already removed from the priority queue.
 
-Để đảm bảo tính chính xác tuyệt đối mà không cần giả định tham lam, ta phải chuyển sang tư duy Quy hoạch động: Thực hiện nới lỏng (Relax) trên _toàn bộ danh sách cạnh_ một cách có hệ thống.
+To ensure absolute accuracy without greedy assumptions, we must shift to a Dynamic Programming mindset: Systematically perform Relaxation over the _entire list of edges_.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Bản chất toán học của thuật toán Bellman-Ford dựa trên **Nguyên lý đường đi đơn (Simple Path Invariant)**:
+The mathematical essence of Bellman-Ford is based on the **Simple Path Invariant**:
 
-1. **Độ dài tối đa của đường đi ngắn nhất:** Trong một đồ thị gồm `V` đỉnh không có chu trình âm, một đường đi đơn ngắn nhất bất kỳ chỉ có thể chứa tối đa `V - 1` cạnh (nếu chứa từ `V` cạnh trở lên, theo nguyên lý Dirichlet phải có ít nhất 1 đỉnh bị lặp lại, tạo thành chu trình).
-2. **Quy hoạch động qua `V - 1` lượt duyệt:** Tại lượt thứ `k` (với `k = 1, 2, ..., V - 1`), thuật toán đảm bảo tìm được đường đi ngắn nhất cho tất cả các hành trình sử dụng tối đa `k` cạnh. Sau `V - 1` lượt duyệt qua toàn bộ `E` cạnh, mọi đỉnh đều đạt khoảng cách tối ưu tuyệt đối.
-3. **Cơ chế Phát hiện Chu trình Âm (Lượt duyệt thứ `V`):** Thực hiện thêm lượt duyệt thứ `V`. Nếu vẫn tồn tại bất kỳ cạnh `(u, v)` nào thỏa mãn `dist[u] + w < dist[v]`, điều đó chứng tỏ tồn tại một chu trình âm có thể tiếp tục rút ngắn khoảng cách vô hạn lần.
-4. **Tối ưu hóa Cờ hiệu Dừng sớm (Early-Exit Flag):** Nếu trong một lượt duyệt mà không có bất kỳ cạnh nào được nới lỏng (`updated = false`), thuật toán có thể dừng ngay lập tức. Điều này giúp Bellman-Ford đạt `O(E)` trong Best-case khi đồ thị có cấu trúc thuận lợi.
+1. **Maximum length of a shortest path:** In a graph of `V` vertices with no negative cycles, any simple shortest path can contain at most `V - 1` edges (if it contained `V` or more edges, by the Dirichlet principle at least 1 vertex would repeat, forming a cycle).
+2. **Dynamic Programming over `V - 1` passes:** At the `k`-th pass (where `k = 1, 2, ..., V - 1`), the algorithm guarantees finding the shortest path for all journeys using up to `k` edges. After `V - 1` passes over all `E` edges, every vertex achieves its absolute optimal distance.
+3. **Negative Cycle Detection Mechanism (Pass `V`):** Perform an additional `V`-th pass. If there is still any edge `(u, v)` satisfying `dist[u] + w < dist[v]`, it proves the existence of a negative cycle that can continue shortening the distance infinitely.
+4. **Early-Exit Flag Optimization:** If during any pass no edges are relaxed (`updated = false`), the algorithm can terminate immediately. This helps Bellman-Ford achieve `O(E)` in the best case when the graph has a favorable structure.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ tiến trình nới lỏng qua các lượt và cơ chế phát hiện chu trình âm:
+Relaxation progression diagram across passes and negative cycle detection mechanism:
 
 ```mermaid
 flowchart TD
-    subgraph BellmanFordLifecycle [Tiến Trình Duyệt Bellman-Ford]
-        Pass1["Lượt 1: Relax toàn bộ E cạnh -> Chốt đường đi độ dài 1 cạnh"]
-        Pass2["Lượt 2: Relax toàn bộ E cạnh -> Chốt đường đi độ dài 2 cạnh"]
-        PassV1["Lượt V-1: Chốt toàn bộ đường đi đơn tối đa V-1 cạnh"]
-        PassV["Lượt V: Kiểm tra Chu Trình Âm"]
+    subgraph BellmanFordLifecycle [Bellman-Ford Execution Process]
+        Pass1["Pass 1: Relax all E edges -> Finalize 1-edge length paths"]
+        Pass2["Pass 2: Relax all E edges -> Finalize 2-edge length paths"]
+        PassV1["Pass V-1: Finalize all simple paths up to V-1 edges"]
+        PassV["Pass V: Check Negative Cycle"]
 
         Pass1 --> Pass2 --> PassV1 --> PassV
     end
 
-    subgraph DecisionCycle [Kết Luận Kiểm Tra Chu Trình Âm]
-        PassV -->|Có cạnh tiếp tục giảm khoảng cách| NegFound["Phát Hiện Chu Trình Âm (Negative Cycle Detected!) -> Báo Lỗi"]
-        PassV -->|Không có cạnh nào giảm thêm| Optimal["Hội Tụ Tối Ưu Tuyệt Đối (Optimal Convergence)"]
+    subgraph DecisionCycle [Negative Cycle Check Conclusion]
+        PassV -->|Edges still decrease distance| NegFound["Negative Cycle Detected! -> Report Error"]
+        PassV -->|No further distance decrease| Optimal["Absolute Optimal Convergence"]
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh (Bellman-Ford với Tối ưu Dừng sớm & Phát hiện Chu trình âm):**
+**Complete C++ Source Code (Bellman-Ford with Early-Exit & Negative Cycle Detection):**
 
 ```c++
 #include <iostream>
@@ -78,7 +78,7 @@ struct Edge {
     long long weight;
 };
 
-// Kết quả trả về gồm mảng khoảng cách và cờ báo chu trình âm
+// Return result includes distance array and negative cycle flag
 struct BellmanFordResult {
     std::vector<long long> dist;
     std::vector<int> parent;
@@ -90,7 +90,7 @@ BellmanFordResult bellmanFord(int startNode, int numVertices, const std::vector<
     std::vector<int> parent(numVertices, -1);
     dist[startNode] = 0;
 
-    // 1. Thực hiện tối đa V - 1 lượt nới lỏng toàn bộ cạnh
+    // 1. Perform up to V - 1 relaxation passes over all edges
     for (int i = 1; i <= numVertices - 1; ++i) {
         bool updated = false;
 
@@ -102,18 +102,18 @@ BellmanFordResult bellmanFord(int startNode, int numVertices, const std::vector<
             }
         }
 
-        // Tối ưu hóa dừng sớm nếu không còn cạnh nào được nới lỏng
+        // Early exit optimization if no edges were relaxed
         if (!updated) {
             break;
         }
     }
 
-    // 2. Lượt thứ V: Kiểm tra sự tồn tại của Chu trình Âm
+    // 2. V-th pass: Check for the existence of Negative Cycles
     bool hasNegativeCycle = false;
     for (const auto& edge : edges) {
         if (dist[edge.from] != INF && dist[edge.from] + edge.weight < dist[edge.to]) {
             hasNegativeCycle = true;
-            break; // Tìm thấy chu trình âm
+            break; // Negative cycle found
         }
     }
 
@@ -136,11 +136,11 @@ int main() {
     auto result = bellmanFord(0, V, edges);
 
     if (result.hasNegativeCycle) {
-        std::cout << "CANH BAO: Do thi ton tai Chu trinh trong so am!" << std::endl;
+        std::cout << "WARNING: The graph contains a Negative-Weight Cycle!" << std::endl;
     } else {
-        std::cout << "--- KET QUA BELLMAN-FORD TU DINH 0 ---" << std::endl;
+        std::cout << "--- BELLMAN-FORD RESULTS FROM VERTEX 0 ---" << std::endl;
         for (int i = 0; i < V; ++i) {
-            std::cout << "Khoang cach den dinh " << i << ": " << result.dist[i] << std::endl;
+            std::cout << "Distance to vertex " << i << ": " << result.dist[i] << std::endl;
         }
     }
 
@@ -148,32 +148,32 @@ int main() {
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Khởi tạo:_ `dist = [0, &infin;, &infin;, &infin;, &infin;]`.
-- _Lượt 1 (i = 1):_
-  - Cạnh `(0->1, w=-1)`: `dist[1] = 0 + (-1) = -1`.
-  - Cạnh `(0->2, w=4)`: `dist[2] = 4`.
-  - Cạnh `(1->3, w=2)`: `dist[3] = -1 + 2 = 1`.
-  - Cạnh `(1->4, w=2)`: `dist[4] = -1 + 2 = 1`.
-  - Cạnh `(1->2, w=3)`: `-1 + 3 = 2 < 4` &rarr; `dist[2] = 2`.
-  - Kết thúc lượt 1: `dist = [0, -1, 2, 1, 1]`.
-- _Lượt 2 (i = 2):_
-  - Cạnh `(4->3, w=-3)`: `dist[4] + (-3) = 1 - 3 = -2 < dist[3]=1` &rarr; Nới lỏng! `dist[3] = -2`.
-  - Cạnh `(3->1, w=1)`: `dist[3] + 1 = -2 + 1 = -1 == dist[1]` (không đổi).
-  - Kết thúc lượt 2: `dist = [0, -1, 2, -2, 1]`.
-- _Lượt 3 (i = 3):_ Không còn cạnh nào cải thiện thêm &rarr; Cờ `updated = false` &rarr; Thoát sớm ở lượt 3 thay vì chờ hết 4 lượt.
-- _Kiểm tra chu trình âm:_ Duyệt toàn bộ 8 cạnh, không có cạnh nào giảm thêm khoảng cách &rarr; Đồ thị an toàn, kết quả chốt `[0, -1, 2, -2, 1]`.
+- _Initialization:_ `dist = [0, \infty, \infty, \infty, \infty]`.
+- _Pass 1 (i = 1):_
+  - Edge `(0->1, w=-1)`: `dist[1] = 0 + (-1) = -1`.
+  - Edge `(0->2, w=4)`: `dist[2] = 4`.
+  - Edge `(1->3, w=2)`: `dist[3] = -1 + 2 = 1`.
+  - Edge `(1->4, w=2)`: `dist[4] = -1 + 2 = 1`.
+  - Edge `(1->2, w=3)`: `-1 + 3 = 2 < 4` &rarr; `dist[2] = 2`.
+  - End of pass 1: `dist = [0, -1, 2, 1, 1]`.
+- _Pass 2 (i = 2):_
+  - Edge `(4->3, w=-3)`: `dist[4] + (-3) = 1 - 3 = -2 < dist[3]=1` &rarr; Relaxed! `dist[3] = -2`.
+  - Edge `(3->1, w=1)`: `dist[3] + 1 = -2 + 1 = -1 == dist[1]` (unchanged).
+  - End of pass 2: `dist = [0, -1, 2, -2, 1]`.
+- _Pass 3 (i = 3):_ No edges yield further improvement &rarr; Flag `updated = false` &rarr; Early exit at pass 3 instead of waiting for all 4 passes.
+- _Negative cycle check:_ Traverse all 8 edges, no edge further reduces distances &rarr; The graph is safe, finalized result `[0, -1, 2, -2, 1]`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+Performance metric summary according to the standard RAM Model:
 
-- **Độ phức tạp Thời gian (Time Complexity):**
-  - Worst & Average Case: `O(V x E)`. Với đồ thị dày (`E ~ V²`), độ phức tạp tiến đến `O(V³)`.
-  - Best Case: `O(E)` khi mảng khoảng cách hội tụ ngay từ lượt đầu tiên nhờ cờ hiệu dừng sớm.
-- **Độ phức tạp Không gian (Space Complexity):** `O(V)` cho mảng khoảng cách `dist` và mảng `parent`, cùng `O(E)` để lưu trữ danh sách cạnh rời rạc.
-- **Ứng dụng thực tế:**
-  - **Giao thức định tuyến RIP (Routing Information Protocol):** Nền tảng của thuật toán Distance-Vector Routing trong mạng viễn thông.
-  - **Phát hiện Kinh doanh chênh lệch giá (Currency Arbitrage Detection):** Chuyển đổi ma trận tỷ giá hối đoái bằng phép logarit `-log(rate)` để biến bài toán nhân tỷ giá thành bài toán tìm chu trình âm trong đồ thị.
-  - **Lập lịch ràng buộc thời gian (Difference Constraints System):** Giải hệ bất phương trình dạng `x[j] - x[i] <= c` trong biên dịch và quản lý dự án.
+- **Time Complexity:**
+  - Worst & Average Case: `O(V \times E)`. For dense graphs (`E \approx V^2`), complexity approaches `O(V^3)`.
+  - Best Case: `O(E)` when the distance array converges after the first pass thanks to the early exit flag.
+- **Space Complexity:** `O(V)` for the `dist` and `parent` arrays, plus `O(E)` to store the discrete edge list.
+- **Practical Applications:**
+  - **RIP (Routing Information Protocol):** The foundation of Distance-Vector Routing in telecommunication networks.
+  - **Currency Arbitrage Detection:** Transforming exchange rate matrices using logarithms `-log(rate)` to turn the rate multiplication problem into finding negative cycles in a graph.
+  - **Difference Constraints System Scheduling:** Solving systems of inequalities of the form `x[j] - x[i] \leq c` in compilers and project management.

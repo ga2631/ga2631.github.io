@@ -1,12 +1,12 @@
 ---
 id: "31"
 slug: "linear-search-sequential-scanning-sentinel-technique-cpp"
-title: "Thuật toán Cơ bản #05: Thuật toán Tìm kiếm Tuyến tính (Linear Search) - Duyệt Tuần tự, Kỹ thuật Lính canh & C++ Implementation"
-summary: "Khám phá thuật toán Tìm kiếm Tuyến tính (Linear Search): Cơ chế quét tuần tự trên cấu trúc dữ liệu không có thứ tự, tối ưu hóa triệt để bằng kỹ thuật Phần tử Lính canh (Sentinel Search) giúp loại bỏ phép kiểm tra biên trong vòng lặp."
+title: "Fundamental Algorithms #05: Linear Search Algorithm - Sequential Scanning, Sentinel Technique & C++ Implementation"
+summary: "Exploring the Linear Search algorithm: The sequential scanning mechanism on unordered data structures, drastically optimized using the Sentinel element technique (Sentinel Search) to eliminate bounds checking within the loop."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-04"
 date: "2026-06-04"
-readTime: "7 phút đọc"
+readTime: "7 min read"
 tags:
   - "Algorithms"
   - "Linear Search"
@@ -16,51 +16,51 @@ tags:
   - "Data Structures"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Truy xuất dữ liệu là thao tác xuất hiện nhiều nhất trong mọi ứng dụng phần mềm. Đề bài đặt ra: Cho một danh sách `N` phần tử _chưa được sắp xếp_ hoặc một luồng dữ liệu liên kết không hỗ trợ truy xuất ngẫu nhiên (như Single Linked List), hãy tìm vị trí xuất hiện đầu tiên của giá trị `target` hoặc trả về `-1` nếu không tìm thấy.
+Data retrieval is the most frequent operation in any software application. The prompt is: Given a list of `N` _unsorted_ elements or a linked data stream that does not support random access (like a Singly Linked List), find the first occurrence index of a `target` value, or return `-1` if not found.
 
-Tìm kiếm Tuyến tính (Linear Search) là giải pháp tổng quát duy nhất khả thi khi dữ liệu không có bất kỳ cấu trúc bổ trợ hay trật tự sắp xếp nào từ trước.
+Linear Search is the only viable general solution when the data lacks any supplementary structure or pre-existing sorted order.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach Idea
 
-Cách tiếp cận tiêu chuẩn (Standard Loop):
+The standard approach (Standard Loop):
 
-- Sử dụng vòng lặp `for (int i = 0; i < n; ++i)` duyệt tuần tự từ đầu đến cuối mảng.
-- _Điểm nghẽn CPU:_ Tại mỗi bước lặp, CPU phải thực hiện **2 phép so sánh**: một phép kiểm tra điều kiện biên `i < n` và một phép kiểm tra giá trị `arr[i] == target`. Trên tập dữ liệu lớn, việc kiểm tra biên chiếm tới 50% thời gian thực thi của vòng lặp.
+- Use a `for (int i = 0; i < n; ++i)` loop to scan sequentially from the beginning to the end of the array.
+- _CPU Bottleneck:_ At each iteration, the CPU must perform **2 comparisons**: a bounds check `i < n` and a value check `arr[i] == target`. On large datasets, the bounds check accounts for up to 50% of the loop's execution time.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithmic Structure
 
-Tối ưu hóa bằng Kỹ thuật Phần tử Lính canh (Sentinel Linear Search):
+Optimization using the Sentinel Element Technique (Sentinel Linear Search):
 
-1. **Đặt Lính canh ở cuối mảng:** Lưu tạm phần tử cuối cùng `last = arr[n - 1]`, sau đó gán giá trị `target` vào vị trí cuối `arr[n - 1] = target`.
-2. **Loại bỏ hoàn toàn phép kiểm tra biên `i < n`:** Vì chắc chắn `target` sẽ xuất hiện ở cuối mảng, vòng lặp `while (arr[i] != target) ++i;` sẽ không bao giờ bị tràn mảng. Số lượng lệnh so sánh của CPU giảm đúng 50%.
-3. **Khôi phục và Xác thực:** Sau khi thoát vòng lặp, khôi phục lại giá trị `arr[n - 1] = last` và kiểm tra xem vị trí `i` tìm thấy là phần tử thật trong mảng hay chính là lính canh.
+1. **Place a Sentinel at the end of the array:** Temporarily store the last element `last = arr[n - 1]`, then assign the `target` value to the last position `arr[n - 1] = target`.
+2. **Completely eliminate the bounds check `i < n`:** Since the `target` is guaranteed to appear at the end of the array, the `while (arr[i] != target) ++i;` loop will never run out of bounds. The number of CPU comparison instructions is reduced by exactly 50%.
+3. **Restore and Verify:** After exiting the loop, restore the value `arr[n - 1] = last` and check if the found index `i` is a real element in the array or the sentinel itself.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Minh họa cơ chế duyệt tuần tự và kỹ thuật lính canh trên mảng `[20, 35, 10, 80, 45]` với `target = 10`:
+Illustrating the sequential scanning mechanism and sentinel technique on the array `[20, 35, 10, 80, 45]` with `target = 10`:
 
 ```mermaid
 flowchart LR
-    subgraph StandardSearch [Tìm kiếm Tuyến tính Chuẩn - 2 phép kiểm tra mỗi bước]
-        A0["i = 0: Kiểm tra i < 5 & arr[0] == 10 (False)"] --> A1["i = 1: Kiểm tra i < 5 & arr[1] == 10 (False)"]
-        A1 --> A2["i = 2: Kiểm tra i < 5 & arr[2] == 10 (MATCH!)"]
+    subgraph StandardSearch [Standard Linear Search - 2 checks per step]
+        A0["i = 0: Check i < 5 & arr[0] == 10 (False)"] --> A1["i = 1: Check i < 5 & arr[1] == 10 (False)"]
+        A1 --> A2["i = 2: Check i < 5 & arr[2] == 10 (MATCH!)"]
     end
-    subgraph SentinelSearch [Tìm kiếm Lính canh - Chỉ 1 phép so sánh]
-        B0["Đặt lính canh arr[4] = 10"]
-        B0 --> B1["while (arr[i] != 10): i=0, i=1, i=2 (Dừng ngay tại index 2)"]
-        B1 --> B2["Khôi phục arr[4] = 45 -> Trả về index 2"]
+    subgraph SentinelSearch [Sentinel Search - Only 1 comparison]
+        B0["Place sentinel arr[4] = 10"]
+        B0 --> B1["while (arr[i] != 10): i=0, i=1, i=2 (Stop immediately at index 2)"]
+        B1 --> B2["Restore arr[4] = 45 -> Return index 2"]
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh cả 2 phương pháp:**
+**Complete C++ source code for both methods:**
 
 ```c++
 #include <iostream>
 #include <vector>
 
-// 1. Tìm kiếm Tuyến tính Chuẩn
+// 1. Standard Linear Search
 int linearSearch(const std::vector<int>& arr, int target) {
     int n = static_cast<int>(arr.size());
     for (int i = 0; i < n; ++i) {
@@ -71,20 +71,20 @@ int linearSearch(const std::vector<int>& arr, int target) {
     return -1;
 }
 
-// 2. Tìm kiếm Tuyến tính với Kỹ thuật Lính canh (Sentinel)
+// 2. Linear Search with Sentinel Technique
 int sentinelLinearSearch(std::vector<int>& arr, int target) {
     int n = static_cast<int>(arr.size());
     if (n == 0) return -1;
 
     int last = arr[n - 1];
-    arr[n - 1] = target; // Đặt lính canh ở cuối
+    arr[n - 1] = target; // Place sentinel at the end
 
     int i = 0;
     while (arr[i] != target) {
         ++i;
     }
 
-    arr[n - 1] = last; // Khôi phục mảng ban đầu
+    arr[n - 1] = last; // Restore the original array
 
     if (i < n - 1 || arr[n - 1] == target) {
         return i;
@@ -96,26 +96,26 @@ int main() {
     std::vector<int> data = {20, 35, 10, 80, 45};
     int target = 10;
     int idx = sentinelLinearSearch(data, target);
-    std::cout << "Vị trí của " << target << ": " << idx << std::endl;
+    std::cout << "Position of " << target << ": " << idx << std::endl;
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi (Dry Run Trace):**
+**Execution Flow Analysis (Dry Run Trace):**
 
-- _Đầu vào:_ `data = {20, 35, 10, 80, 45}`, `target = 10`.
-- _Lính canh:_ Lưu `last = 45`, gán `data[4] = 10`. Mảng tạm thành `{20, 35, 10, 80, 10}`.
-- _Vòng lặp:_ `i = 0` (20 != 10) `-> i = 1` (35 != 10) `-> i = 2` (`10 == 10` &rarr; Thoát vòng lặp).
-- _Kiểm tra:_ Khôi phục `data[4] = 45`. `i = 2 < 4` `->` Kết luận phần tử nằm tại index `2`.
+- _Input:_ `data = {20, 35, 10, 80, 45}`, `target = 10`.
+- _Sentinel:_ Store `last = 45`, assign `data[4] = 10`. Temporary array becomes `{20, 35, 10, 80, 10}`.
+- _Loop:_ `i = 0` (20 != 10) `-> i = 1` (35 != 10) `-> i = 2` (`10 == 10` &rarr; Exit loop).
+- _Verification:_ Restore `data[4] = 45`. `i = 2 < 4` `->` Conclude the element is at index `2`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-**Đánh giá Hiệu năng theo Framework Chuẩn:**
+**Performance Evaluation per Standard Framework:**
 
-1. **Worst-Case Time Complexity (`O`):** `O(N)` khi phần tử nằm ở cuối mảng hoặc không tồn tại.
-2. **Best-Case Time Complexity (`Ω`):** `Ω(1)` khi phần tử nằm ngay vị trí đầu tiên (`i = 0`).
-3. **Average-Case Time Complexity (`Θ`):** `Θ(N)` (trung bình cần quét `N / 2` phần tử).
-4. **Auxiliary Space Complexity:** `O(1)` - Không tốn thêm bộ nhớ phụ trợ.
-5. **Ưu thế CPU Cache Locality:** Do mảng được duyệt tuần tự liên tục theo khối nhớ (Sequential Memory Access), Linear Search đạt hiệu suất nạp Cache Line (Spatial Locality) tối đa, thường chạy nhanh hơn cây tìm kiếm với `N <= 64`.
+1. **Worst-Case Time Complexity (`O`):** `O(N)` when the element is at the end of the array or does not exist.
+2. **Best-Case Time Complexity (`Ω`):** `Ω(1)` when the element is right at the first position (`i = 0`).
+3. **Average-Case Time Complexity (`Θ`):** `Θ(N)` (requires scanning `N / 2` elements on average).
+4. **Auxiliary Space Complexity:** `O(1)` - Consumes no extra auxiliary memory.
+5. **CPU Cache Locality Advantage:** Because the array is scanned sequentially through memory blocks (Sequential Memory Access), Linear Search achieves maximum Cache Line loading efficiency (Spatial Locality), often running faster than search trees for `N <= 64`.
 
-**Ứng dụng thực tế:** Tra cứu trên tập dữ liệu nhỏ chưa sắp xếp, tìm kiếm trên Danh sách liên kết (Linked List), lọc stream dữ liệu thô từ socket mạng.
+**Practical Applications:** Lookups on small unsorted datasets, searching on Linked Lists, filtering raw data streams from network sockets.

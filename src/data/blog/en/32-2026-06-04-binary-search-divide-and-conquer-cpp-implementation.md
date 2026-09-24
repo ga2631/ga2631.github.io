@@ -1,12 +1,12 @@
 ---
 id: "32"
 slug: "binary-search-divide-and-conquer-cpp-implementation"
-title: "Thuật toán Cơ bản #06: Thuật toán Tìm kiếm Nhị phân (Binary Search) - Cơ chế Cắt đôi Không gian, Xử lý Integer Overflow & C++ Implementation"
-summary: "Mổ xẻ toàn diện thuật toán Tìm kiếm Nhị phân (Binary Search): Nguyên lý Chia để Trị loại bỏ 50% không gian tìm kiếm, kỹ thuật chống tràn số nguyên 32-bit khi tính Mid, triển khai Iterative chuẩn O(1) space và mở rộng hàm lower_bound."
+title: "Fundamental Algorithms #06: Binary Search Algorithm - Halving Search Space, Integer Overflow Handling & C++ Implementation"
+summary: "A comprehensive dissection of the Binary Search algorithm: The Divide and Conquer principle that eliminates 50% of the search space, techniques to prevent 32-bit integer overflow when calculating Mid, a standard O(1) space iterative implementation, and extending to the lower_bound function."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-04"
 date: "2026-06-04"
-readTime: "9 phút đọc"
+readTime: "9 min read"
 tags:
   - "Algorithms"
   - "Binary Search"
@@ -16,76 +16,76 @@ tags:
   - "Data Structures"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Khi khối lượng dữ liệu phình to lên hàng triệu bản ghi (`N = 10⁷`), tìm kiếm tuyến tính với thời gian `O(N)` sẽ làm tê liệt hệ thống. Đề bài đặt ra: Cho một mảng số nguyên `N` phần tử **đã được sắp xếp tăng dần**, hãy tìm chỉ số của giá trị `target` trong thời gian ngắn nhất.
+When data volume swells to millions of records (`N = 10⁷`), linear searching in `O(N)` time will paralyze the system. The prompt is: Given an integer array of `N` elements **sorted in ascending order**, find the index of a `target` value in the shortest possible time.
 
-Tìm kiếm Nhị phân (Binary Search) áp dụng mô hình Chia để Trị (Divide and Conquer) để giảm thời gian tìm kiếm từ tuyến tính `O(N)` xuống thang đo logarit `O(log₂ N)`.
+Binary Search applies the Divide and Conquer model to reduce search time from linear `O(N)` to the logarithmic scale `O(log₂ N)`.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach Idea
 
-Cách tiếp cận ngây thơ:
+Naive approach:
 
-- Sử dụng vòng lặp duyệt tuần tự từ đầu mảng `for (int i = 0; i < n; ++i)`.
-- _Lãng phí:_ Hoàn toàn bỏ qua thuộc tính vô giá rằng mảng _đã có thứ tự sẵn_, dẫn đến việc phải duyệt qua hàng triệu phần tử vô ích.
+- Use a sequential loop from the beginning of the array `for (int i = 0; i < n; ++i)`.
+- _Wasteful:_ Completely ignores the invaluable property that the array _is already sorted_, leading to iterating through millions of elements uselessly.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithmic Structure
 
-Tư duy Chia để Trị và các kỹ thuật cốt lõi của Binary Search:
+The Divide and Conquer mindset and core techniques of Binary Search:
 
-1. **Loại trừ 50% Không gian sau mỗi bước:** So sánh `arr[mid]` với `target`:
+1. **Eliminate 50% of the Space after each step:** Compare `arr[mid]` with `target`:
 
-- Nếu `arr[mid] == target`: Tìm thấy ngay lập tức.
-- Nếu `arr[mid] < target`: Toàn bộ nửa trái chắc chắn nhỏ hơn target &rarr; Thu hẹp tìm kiếm về nửa phải `[mid + 1, right]`.
-- Nếu `arr[mid] > target`: Toàn bộ nửa phải chắc chắn lớn hơn &rarr; Thu hẹp về nửa trái `[left, mid - 1]`.
+- If `arr[mid] == target`: Found immediately.
+- If `arr[mid] < target`: The entire left half is definitely smaller than target &rarr; Narrow search to the right half `[mid + 1, right]`.
+- If `arr[mid] > target`: The entire right half is definitely larger &rarr; Narrow to the left half `[left, mid - 1]`.
 
-2. **Phòng chống Cạm bẫy Tràn số nguyên (Integer Overflow):** Công thức `mid = (left + right) / 2` có thể tràn số nguyên 32-bit có dấu khi `left + right > 2^31 - 1`. _Kỹ thuật chuẩn:_ Luôn viết `mid = left + (right - left) / 2`.
-3. **Mở rộng Tìm kiếm Biên (Lower Bound):** Tìm phần tử đầu tiên `>= target`, nền tảng của các chỉ mục cơ sở dữ liệu B-Tree.
+2. **Preventing the Integer Overflow Trap:** The formula `mid = (left + right) / 2` can overflow a signed 32-bit integer when `left + right > 2^31 - 1`. _Standard technique:_ Always write `mid = left + (right - left) / 2`.
+3. **Extending to Boundary Search (Lower Bound):** Finding the first element `>= target`, the foundation for B-Tree database indexes.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Minh họa không gian tìm kiếm bị thu hẹp 50% sau mỗi vòng lặp với `target = 23`:
+Illustrating the search space halved after each iteration with `target = 23`:
 
 ```mermaid
 flowchart TD
-    subgraph Iteration1 ["Vòng 1: Phạm vi (0..9) - mid = 4"]
-        A1["[2, 5, 8, 12, 16, 23, 38, 56, 72, 91]"] -->|"arr(4)=16 < 23: Loại bỏ 5 phần tử bên trái"| A2["Khoảng mới: (5..9)"]
+    subgraph Iteration1 ["Iteration 1: Range (0..9) - mid = 4"]
+        A1["[2, 5, 8, 12, 16, 23, 38, 56, 72, 91]"] -->|"arr(4)=16 < 23: Eliminate 5 left elements"| A2["New range: (5..9)"]
     end
-    subgraph Iteration2 ["Vòng 2: Phạm vi (5..9) - mid = 7"]
-        A2 -->|"arr(7)=56 > 23: Loại bỏ 2 phần tử bên phải"| A3["Khoảng mới: (5..6)"]
+    subgraph Iteration2 ["Iteration 2: Range (5..9) - mid = 7"]
+        A2 -->|"arr(7)=56 > 23: Eliminate 2 right elements"| A3["New range: (5..6)"]
     end
-    subgraph Iteration3 ["Vòng 3: Phạm vi (5..6) - mid = 5"]
-        A3 -->|"arr(5)=23 == 23: TÌM THẤY!"| A4["Kết quả: index = 5"]
+    subgraph Iteration3 ["Iteration 3: Range (5..6) - mid = 5"]
+        A3 -->|"arr(5)=23 == 23: FOUND!"| A4["Result: index = 5"]
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh:**
+**Complete C++ Source Code:**
 
 ```c++
 #include <iostream>
 #include <vector>
 
-// 1. Binary Search dạng Vòng lặp: O(1) Bộ nhớ phụ trợ
+// 1. Iterative Binary Search: O(1) Auxiliary Space
 int binarySearch(const std::vector<int>& arr, int target) {
     int left = 0;
     int right = static_cast<int>(arr.size()) - 1;
 
     while (left <= right) {
-        // Tránh tràn số nguyên 32-bit (Integer Overflow)
+        // Prevent 32-bit Integer Overflow
         int mid = left + (right - left) / 2;
 
         if (arr[mid] == target) {
-            return mid; // Tìm thấy phần tử tại chỉ số mid
+            return mid; // Found the element at index mid
         } else if (arr[mid] < target) {
-            left = mid + 1; // Thu hẹp không gian tìm kiếm sang nửa phải
+            left = mid + 1; // Narrow search space to the right half
         } else {
-            right = mid - 1; // Thu hẹp không gian tìm kiếm sang nửa trái
+            right = mid - 1; // Narrow search space to the left half
         }
     }
-    return -1; // Không tìm thấy
+    return -1; // Not found
 }
 
-// 2. Tìm kiếm Cận dưới (Lower Bound): Tìm phần tử đầu tiên >= target
+// 2. Lower Bound Search: Find the first element >= target
 int lowerBound(const std::vector<int>& arr, int target) {
     int left = 0;
     int right = static_cast<int>(arr.size());
@@ -104,25 +104,25 @@ int main() {
     std::vector<int> data = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};
     int target = 23;
     int idx = binarySearch(data, target);
-    std::cout << "Vi tri cua " << target << ": " << idx << std::endl;
+    std::cout << "Position of " << target << ": " << idx << std::endl;
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Flow Analysis (Dry Run Trace):**
 
-- _Dữ liệu đầu vào:_ `data = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91}`, `N = 10`, `target = 23`.
-- _Lần lặp 1:_ `left = 0`, `right = 9` &rarr; `mid = 0 + (9 - 0) / 2 = 4`. Giá trị `data[4] = 16 < 23` &rarr; `left = mid + 1 = 5`. Loại bỏ 5 phần tử nửa trái.
-- _Lần lặp 2:_ `left = 5`, `right = 9` &rarr; `mid = 5 + (9 - 5) / 2 = 7`. Giá trị `data[7] = 56 > 23` &rarr; `right = mid - 1 = 6`. Loại bỏ 2 phần tử nửa phải.
-- _Lần lặp 3:_ `left = 5`, `right = 6` &rarr; `mid = 5 + (6 - 5) / 2 = 5`. Giá trị `data[5] = 23 == 23` &rarr; Khớp chính xác! Trả về chỉ số `5` chỉ sau đúng 3 phép so sánh.
+- _Input data:_ `data = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91}`, `N = 10`, `target = 23`.
+- _Iteration 1:_ `left = 0`, `right = 9` &rarr; `mid = 0 + (9 - 0) / 2 = 4`. Value `data[4] = 16 < 23` &rarr; `left = mid + 1 = 5`. Eliminate 5 elements on the left half.
+- _Iteration 2:_ `left = 5`, `right = 9` &rarr; `mid = 5 + (9 - 5) / 2 = 7`. Value `data[7] = 56 > 23` &rarr; `right = mid - 1 = 6`. Eliminate 2 elements on the right half.
+- _Iteration 3:_ `left = 5`, `right = 6` &rarr; `mid = 5 + (6 - 5) / 2 = 5`. Value `data[5] = 23 == 23` &rarr; Exact match! Returns index `5` after just 3 comparisons.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-**Đánh giá Hiệu năng theo Framework Chuẩn:**
+**Performance Evaluation per Standard Framework:**
 
-1. **Worst-Case Time Complexity (`O`):** `O(log₂ N)` - Với `N = 1,000,000`, Binary Search chỉ mất tối đa **20 phép so sánh** (so với 1,000,000 của Linear Search &rarr; tăng tốc **50,000 lần**).
-2. **Best-Case Time Complexity (`Ω`):** `Ω(1)` khi target nằm ngay chính giữa mảng ở lần chia đầu tiên.
+1. **Worst-Case Time Complexity (`O`):** `O(log₂ N)` - With `N = 1,000,000`, Binary Search takes a maximum of **20 comparisons** (compared to 1,000,000 for Linear Search &rarr; **50,000x** speedup).
+2. **Best-Case Time Complexity (`Ω`):** `Ω(1)` when target is exactly in the middle of the array on the first split.
 3. **Average-Case Time Complexity (`Θ`):** `Θ(log₂ N)`.
-4. **Auxiliary Space Complexity:** `O(1)` cho bản Iterative (vòng lặp không tiêu tốn Call Stack frame).
+4. **Auxiliary Space Complexity:** `O(1)` for the Iterative version (the loop consumes no Call Stack frames).
 
-**Ứng dụng thực tế:** Chỉ mục cơ sở dữ liệu (B-Tree / LSM-Tree Indexing), `std::lower_bound` trong C++ STL, lệnh `git bisect` để truy vết commit gây lỗi, và kỹ thuật Tìm kiếm Nhị phân trên miền kết quả (Binary Search on Answer).
+**Practical Applications:** Database indexing (B-Tree / LSM-Tree Indexing), `std::lower_bound` in C++ STL, `git bisect` command to trace bug-inducing commits, and Binary Search on Answer techniques.

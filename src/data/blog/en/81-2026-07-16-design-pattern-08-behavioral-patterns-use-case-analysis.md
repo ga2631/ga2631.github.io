@@ -1,12 +1,12 @@
 ---
-id: 80
+id: 81
 slug: design-pattern-08-behavioral-patterns-use-case-analysis
-title: "Design Pattern #08: Phân tích Use case và Chọn lựa Behavioral Patterns phù hợp"
-summary: "Tổng kết nhóm Behavioral: Cách Strategy và Observer tương tác trong hệ thống xử lý đơn hàng, cùng với ma trận quyết định giúp bạn chọn đúng pattern về mặt hành vi."
+title: "Design Pattern #08: Use Case Analysis and Choosing Suitable Behavioral Patterns"
+summary: "Behavioral group wrap-up: How Strategy and Observer interact in the order processing system, along with a decision matrix to help you choose the right behavioral pattern."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-07-16"
 date: "2026-07-16"
-readTime: "5 phút đọc"
+readTime: "5 min read"
 tags:
   - "Design Patterns"
   - "Behavioral Patterns"
@@ -14,26 +14,26 @@ tags:
   - "Best Practices"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Qua 2 bài viết về **Strategy** và **Observer**, chúng ta đã giải quyết được những bài toán phức tạp về sự thay đổi thuật toán và điều phối sự kiện trong **Hệ thống Xử lý Đơn hàng**. Nhóm Behavioral (Hành vi) không lo về việc khởi tạo đối tượng, mà tập trung vào **sự phân chia trách nhiệm** và **giao tiếp** giữa chúng.
+Through the 2 articles on **Strategy** and **Observer**, we have solved complex problems regarding algorithm changes and event coordination in the **Order Processing System**. The Behavioral group does not worry about object instantiation, but focuses on **responsibility delegation** and **communication** between them.
 
-## Tương tác hệ thống với Behavioral Patterns
+## System Interaction with Behavioral Patterns
 
-Cùng nhìn lại luồng xử lý sau khi áp dụng cả Strategy và Observer:
+Let's look back at the processing flow after applying both Strategy and Observer:
 
 ```mermaid
 flowchart TD
     API[Order API Request] --> Ctx[Order Context]
 
     subgraph Behavioral: Strategy
-        Ctx -->|Gọi Tính phí| Strat[Shipping Strategy Interface]
+        Ctx -->|Call Fee Calculation| Strat[Shipping Strategy Interface]
         Strat -.->|Runtime Swap| S_Std[Standard]
         Strat -.->|Runtime Swap| S_Exp[Express]
     end
 
     Ctx --> Repo[(Database)]
-    Repo -->|Lưu thành công| Subj["Order Subject\n(Đổi trạng thái)"]
+    Repo -->|Saved Successfully| Subj["Order Subject\n(Status Change)"]
 
     subgraph Behavioral: Observer
         Subj -->|Notify| Obs_E[Email Observer]
@@ -42,48 +42,48 @@ flowchart TD
     end
 ```
 
-Như bạn thấy, **Strategy** đóng vai trò "Kéo" (Pull) - Context chủ động gọi chiến lược để lấy kết quả tính phí. Trong khi đó, **Observer** đóng vai trò "Đẩy" (Push) - Subject tự động đẩy trạng thái mới tới các dịch vụ bị động chờ đợi.
+As you can see, **Strategy** plays a "Pull" role - the Context actively calls the strategy to get the calculation result. Meanwhile, **Observer** plays a "Push" role - the Subject automatically pushes the new status to the passively waiting services.
 
-## Tiêu chí chọn lựa (Decision Matrix)
+## Selection Criteria (Decision Matrix)
 
-Bên cạnh Strategy và Observer, nhóm Behavioral còn nhiều pattern khác. Hãy sử dụng bảng dưới đây để quyết định pattern phù hợp cho bài toán backend của bạn:
+Besides Strategy and Observer, the Behavioral group has many other patterns. Use the table below to decide the appropriate pattern for your backend problem:
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Đặc tả bài toán (Use Case)</th>
+      <th style="padding: 8px;">Problem Specification (Use Case)</th>
       <th style="padding: 8px;">Pattern</th>
-      <th style="padding: 8px;">Ví dụ áp dụng thực tế (Backend)</th>
+      <th style="padding: 8px;">Real-world application example (Backend)</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">Hệ thống có <strong>nhiều thuật toán/quy tắc</strong> thay thế được cho nhau (VD: giảm giá, xếp hạng, tính thuế) và sinh ra một rừng <code>if-else</code>?</td>
+      <td style="padding: 8px;">Does the system have <strong>multiple algorithms/rules</strong> that can be substituted for one another (e.g., discounts, ranking, tax calculation) leading to a jungle of <code>if-else</code>?</td>
       <td style="padding: 8px;"><strong>Strategy</strong></td>
-      <td style="padding: 8px;">Tính phí ship, chọn phương thức nén file, áp dụng các thuật toán mã hóa (AES, DES).</td>
+      <td style="padding: 8px;">Calculating shipping fees, choosing file compression methods, applying encryption algorithms (AES, DES).</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">Một sự kiện xảy ra ở module này cần <strong>kích hoạt hành động ở nhiều module khác</strong>, nhưng bạn không muốn chúng phụ thuộc chặt chẽ?</td>
+      <td style="padding: 8px;">Does an event occurring in one module need to <strong>trigger actions in multiple other modules</strong>, but you don't want them to be tightly coupled?</td>
       <td style="padding: 8px;"><strong>Observer</strong></td>
-      <td style="padding: 8px;">Hệ thống Pub/Sub, Notification Engine, Cập nhật Cache khi DB thay đổi.</td>
+      <td style="padding: 8px;">Pub/Sub Systems, Notification Engines, Cache updates when DB changes.</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">Object của bạn có <strong>quá nhiều trạng thái</strong> (Draft, Pending, Shipped, Cancelled) và hành vi thay đổi hoàn toàn tùy theo trạng thái đó?</td>
-      <td style="padding: 8px;"><strong>State</strong> <em>(Mở rộng)</em></td>
-      <td style="padding: 8px;">Máy bán hàng tự động, Luồng duyệt bài viết, Lifecycle của Đơn hàng.</td>
+      <td style="padding: 8px;">Does your object have <strong>too many states</strong> (Draft, Pending, Shipped, Cancelled) and behavior completely changes depending on that state?</td>
+      <td style="padding: 8px;"><strong>State</strong> <em>(Extension)</em></td>
+      <td style="padding: 8px;">Vending machines, Article approval flows, Order Lifecycle.</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;">Cần đóng gói một yêu cầu/hành động thành một object để có thể <strong>Lưu trữ, Hủy bỏ (Undo), hay xếp hàng (Queue)</strong>?</td>
-      <td style="padding: 8px;"><strong>Command</strong> <em>(Mở rộng)</em></td>
-      <td style="padding: 8px;">Hệ thống Task Scheduler (Job Queue), Undo/Redo operations, Macro recording.</td>
+      <td style="padding: 8px;">Need to encapsulate a request/action into an object so it can be <strong>Stored, Undone, or Queued</strong>?</td>
+      <td style="padding: 8px;"><strong>Command</strong> <em>(Extension)</em></td>
+      <td style="padding: 8px;">Task Scheduler Systems (Job Queue), Undo/Redo operations, Macro recording.</td>
     </tr>
   </tbody>
 </table>
 
-## Best Practices (Bài học thực chiến)
+## Best Practices
 
-1. **Với Strategy:** Đừng đưa state (trạng thái) vào bên trong Concrete Strategy. Các class chiến lược nên hoàn toàn vô trạng thái (Stateless), chỉ nhận input tính toán và trả về output.
-2. **Với Observer trong Backend phân tán (Microservices):** Observer Pattern truyền thống (chạy trong cùng một Process) thường được thay thế bằng các kiến trúc **Message Broker / Event Bus** (RabbitMQ, Kafka). Nguyên lý không đổi (Publish / Subscribe), nhưng phạm vi mở rộng ra cấp độ hạ tầng (Infrastructure).
-3. **Cẩn thận với độ trễ (Latency):** Bất cứ khi nào bạn thông báo đến nhiều Observers, hãy tự hỏi: _"Chúng có cần chạy đồng bộ không?"_. Nếu không, luôn ưu tiên xử lý bất đồng bộ (Async) để tránh làm nghẽn luồng chính.
+1. **With Strategy:** Do not put state inside the Concrete Strategy. Strategy classes should be completely Stateless, only taking input for calculation and returning output.
+2. **With Observer in Distributed Backend (Microservices):** Traditional Observer Pattern (running in the same Process) is often replaced by **Message Broker / Event Bus** architectures (RabbitMQ, Kafka). The principle is the same (Publish / Subscribe), but the scope expands to the Infrastructure level.
+3. **Beware of Latency:** Whenever you notify multiple Observers, ask yourself: _"Do they need to run synchronously?"_. If not, always prioritize asynchronous processing (Async) to avoid blocking the main thread.
 
-Ở chương tiếp theo, chúng ta sẽ bước sang nhóm cuối cùng nhưng vô cùng thú vị: **Structural Patterns (Decorator, Adapter, Facade)**. Chúng ta sẽ giải quyết bài toán voucher giảm giá tầng tầng lớp lớp và kết nối với các đối tác vận chuyển đời cũ.
+In the next chapter, we will step into the final but extremely interesting group: **Structural Patterns (Decorator, Adapter, Facade)**. We will solve the problem of multi-layered discount vouchers and connecting with legacy shipping partners.

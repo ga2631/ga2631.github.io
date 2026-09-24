@@ -58,13 +58,13 @@ Các sai lầm thực chiến thường gặp:
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Độ phức tạp (Đồ thị thưa)</b></td>
-      <td style="padding: 8px">`O(E \log V)` (Vượt trội)</td>
-      <td style="padding: 8px">`O(E \log V)`</td>
+      <td style="padding: 8px"><code>O(E \log V)</code> (Vượt trội)</td>
+      <td style="padding: 8px"><code>O(E \log V)</code></td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Độ phức tạp (Đồ thị dày)</b></td>
-      <td style="padding: 8px">`O(V² \log V)` (Bị chậm do sort)</td>
-      <td style="padding: 8px">`O(V²)` với ma trận (Tối ưu tuyệt đối)</td>
+      <td style="padding: 8px"><code>O(V² \log V)</code> (Bị chậm do sort)</td>
+      <td style="padding: 8px"><code>O(V²)</code> với ma trận (Tối ưu tuyệt đối)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Biểu diễn đồ thị</b></td>

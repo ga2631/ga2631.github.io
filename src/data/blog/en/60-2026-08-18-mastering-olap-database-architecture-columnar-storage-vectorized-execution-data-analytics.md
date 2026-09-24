@@ -1,12 +1,12 @@
 ---
 id: "60"
 slug: "mastering-olap-database-architecture-columnar-storage-vectorized-execution-data-analytics"
-title: "Làm chủ Kiến trúc Cơ sở Dữ liệu OLAP: Lưu trữ Dạng Cột (Columnar Storage), Tính toán Vector Hóa (SIMD) & Bí quyết Tối ưu Hóa Truy vấn Hàng Tỷ Bản Ghi"
-summary: "Khám phá chuyên sâu về thế giới cơ sở dữ liệu xử lý phân tích trực tuyến (OLAP - Online Analytical Processing): So sánh toàn diện giữa MOLAP, ROLAP, HOLAP và các Real-time OLAP Engines hiện đại (ClickHouse, Snowflake, DuckDB); giải mã sức mạnh của định dạng lưu trữ dạng cột (Parquet/MergeTree) kết hợp nén Dictionary/RLE/Gorilla; cơ chế thực thi truy vấn Vector hóa tận dụng CPU SIMD (AVX-512); kèm mã nguồn ClickHouse DDL và câu lệnh SQL phân tích đa chiều xử lý 1 tỷ dòng trong vài chục mili-giây."
+title: "Mastering OLAP Database Architecture: Columnar Storage, Vectorized Execution (SIMD) & Query Optimization Secrets for Billions of Records"
+summary: "An in-depth exploration of the Online Analytical Processing (OLAP) database world: A comprehensive comparison of MOLAP, ROLAP, HOLAP, and modern Real-time OLAP Engines (ClickHouse, Snowflake, DuckDB); decoding the power of columnar storage formats (Parquet/MergeTree) combined with Dictionary/RLE/Gorilla compression; Vectorized query execution leveraging CPU SIMD (AVX-512); along with ClickHouse DDL source code and multi-dimensional analytical SQL queries processing 1 billion rows in tens of milliseconds."
 category: "data-engineering-analytics"
 publishedAt: "2026-08-18"
 date: "2026-08-18"
-readTime: "15 phút đọc"
+readTime: "15 minutes read"
 tags:
   - "OLAP"
   - "Columnar Database"
@@ -18,66 +18,66 @@ tags:
   - "Big Data"
 ---
 
-## Đề bài kinh doanh / Yêu cầu dữ liệu
+## Business Context / Data Requirements
 
-Trong khi các hệ thống OLTP được xây dựng để xử lý hàng triệu giao dịch ghi đơn lẻ với độ trễ tính bằng mili-giây, các nhà phân tích dữ liệu (Data Analysts) và các nhà khoa học dữ liệu (Data Scientists) lại đối mặt với một bài toán hoàn toàn trái ngược: **Làm thế nào để quét, lọc và tính toán tổng hợp trên hàng tỷ bản ghi lịch sử trong thời gian thực để trả về biểu đồ phân tích kinh doanh tức thì?**
+While OLTP systems are built to process millions of single write transactions with millisecond latency, Data Analysts and Data Scientists face a completely opposite problem: **How to scan, filter, and calculate aggregations on billions of historical records in real-time to return instant business analytical charts?**
 
-Hãy xem xét các bài toán kinh doanh đòi hỏi năng lực xử lý phân tích quy mô lớn:
+Consider business problems requiring large-scale analytical processing capabilities:
 
-1. **Phân tích Hành vi Người dùng Thời gian thực (Clickstream Analytics):** Theo dõi luồng sự kiện (Pageviews, Clicks, Add-to-Cart) của hàng chục triệu người dùng hoạt động hàng ngày, phát hiện các điểm rơi phễu chuyển đổi (Funnel Drop-off) và đề xuất sản phẩm theo thời gian thực.
-2. **Báo cáo Tài chính & Doanh thu Hợp nhất Đa chiều (Multi-dimensional Financial BI):** Tính toán doanh thu thuần, tỷ suất lợi nhuận và tăng trưởng so với cùng kỳ (YoY, MoM) trên hàng trăm triệu giao dịch đơn hàng qua 10 năm lịch sử, cho phép lãnh đạo cắt lát dữ liệu theo vùng miền, danh mục và kênh bán hàng.
-3. **Giám sát Hệ thống & Phát hiện Gian lận (Observability & Fraud Detection):** Phân tích hàng terabyte logs mạng và số liệu thanh toán mỗi giờ để phát hiện các mẫu tấn công DDoS hoặc giao dịch gian lận trong vòng vài giây.
+1. **Real-time User Behavior Analysis (Clickstream Analytics):** Tracking the event stream (Pageviews, Clicks, Add-to-Cart) of tens of millions of daily active users, detecting conversion funnel drop-offs, and recommending products in real-time.
+2. **Multi-dimensional Consolidated Financial & Revenue Reporting (Multi-dimensional Financial BI):** Calculating net revenue, profit margins, and year-over-year (YoY, MoM) growth across hundreds of millions of order transactions over 10 years of history, allowing executives to slice and dice data by region, category, and sales channel.
+3. **System Monitoring & Fraud Detection (Observability & Fraud Detection):** Analyzing terabytes of network logs and hourly payment metrics to detect DDoS attack patterns or fraudulent transactions within seconds.
 
-**Tại sao Cơ sở Dữ liệu Dạng Dòng (Row-oriented) Bất lực trước Bài toán Phân tích?**
+**Why are Row-oriented Databases Powerless against Analytical Problems?**
 
-Trong cơ sở dữ liệu dạng dòng (như PostgreSQL, MySQL), toàn bộ các cột của một bản ghi được lưu trữ liền kề nhau trên đĩa cứng. Khi bạn chạy câu lệnh `SELECT AVG(total_amount) FROM orders WHERE order_date >= '2026-01-01';`, database bắt buộc phải đọc toàn bộ dung lượng của tất cả các cột (tên khách hàng, địa chỉ, ghi chú, mã thanh toán) lên bộ nhớ đệm, gây lãng phí tới 95-99% băng thông I/O đĩa cứng. Để giải quyết triệt để bài toán này, **Cơ sở dữ liệu OLAP dạng cột (Column-Oriented Architecture)** đã ra đời.
+In row-oriented databases (like PostgreSQL, MySQL), all columns of a record are stored adjacent to each other on the hard drive. When you run the query `SELECT AVG(total_amount) FROM orders WHERE order_date >= '2026-01-01';`, the database is forced to read the entire volume of all columns (customer name, address, notes, payment code) into the cache, wasting up to 95-99% of disk I/O bandwidth. To completely solve this problem, **Column-Oriented Architecture (OLAP Database)** was born.
 
-## Mô hình hóa dữ liệu
+## Data Modeling
 
-Để xây dựng và khai thác hệ thống OLAP đạt hiệu năng cao nhất, kỹ sư dữ liệu cần hiểu rõ sự tiến hóa của các mô hình OLAP và cơ chế vật lý của công nghệ lưu trữ dạng cột.
+To build and exploit OLAP systems for maximum performance, data engineers need to clearly understand the evolution of OLAP models and the physical mechanics of columnar storage technology.
 
-**1. Bốn Thế hệ Kiến trúc OLAP: MOLAP vs ROLAP vs HOLAP vs Modern Real-Time OLAP:**
+**1. Four Generations of OLAP Architecture: MOLAP vs ROLAP vs HOLAP vs Modern Real-Time OLAP:**
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Mô hình OLAP</th>
-      <th style="padding: 8px;">Nguyên lý Hoạt động</th>
-      <th style="padding: 8px;">Ưu Điểm</th>
-      <th style="padding: 8px;">Nhược Điểm & Hạn Chế</th>
+      <th style="padding: 8px;">OLAP Model</th>
+      <th style="padding: 8px;">Operating Principle</th>
+      <th style="padding: 8px;">Advantages</th>
+      <th style="padding: 8px;">Disadvantages & Limitations</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>MOLAP (Multidimensional)</b></td>
-      <td style="padding: 8px">Tính toán trước và lưu trữ kết quả trong các khối đa chiều (Cubes - SSAS, Apache Kylin)</td>
-      <td style="padding: 8px">Tốc độ truy vấn siêu nhanh trên các chiều cố định</td>
-      <td style="padding: 8px">Bùng nổ dung lượng lưu trữ (Cube Explosion), không linh hoạt khi thêm chiều mới</td>
+      <td style="padding: 8px">Pre-computes and stores results in multi-dimensional cubes (Cubes - SSAS, Apache Kylin)</td>
+      <td style="padding: 8px">Ultra-fast query speed on fixed dimensions</td>
+      <td style="padding: 8px">Storage capacity explosion (Cube Explosion), inflexible when adding new dimensions</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>ROLAP (Relational)</b></td>
-      <td style="padding: 8px">Lưu trữ dữ liệu dạng bảng quan hệ (Star/Snowflake Schema) và tính toán động qua SQL</td>
-      <td style="padding: 8px">Linh hoạt tuyệt đối, hỗ trợ truy vấn Ad-hoc phong phú</td>
-      <td style="padding: 8px">Tốn tài nguyên tính toán nếu không có cơ chế tối ưu cột</td>
+      <td style="padding: 8px">Stores data in relational tables (Star/Snowflake Schema) and calculates dynamically via SQL</td>
+      <td style="padding: 8px">Absolute flexibility, supports rich Ad-hoc queries</td>
+      <td style="padding: 8px">Consumes computational resources if no column optimization mechanism exists</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>HOLAP (Hybrid)</b></td>
-      <td style="padding: 8px">Kết hợp lưu trữ tóm tắt trong MOLAP và dữ liệu chi tiết trong ROLAP</td>
-      <td style="padding: 8px">Cân bằng giữa tốc độ báo cáo tổng quan và khả năng khoan sâu (Drill-down)</td>
-      <td style="padding: 8px">Kiến trúc phức tạp, khó đồng bộ dữ liệu</td>
+      <td style="padding: 8px">Combines summary storage in MOLAP and detail data in ROLAP</td>
+      <td style="padding: 8px">Balances between high-level reporting speed and drill-down capabilities</td>
+      <td style="padding: 8px">Complex architecture, difficult to synchronize data</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Modern Real-Time OLAP (ClickHouse, Snowflake, DuckDB)</b></td>
-      <td style="padding: 8px">Lưu trữ dạng cột tự nhiên (Columnar), nén dữ liệu cực đại và xử lý Vector hóa (SIMD)</td>
-      <td style="padding: 8px">Hiệu năng quét hàng tỷ dòng trong mili-giây, nén đĩa 90%, nạp dữ liệu Real-time</td>
-      <td style="padding: 8px">Hạn chế trong các giao dịch ghi cập nhật từng dòng nhỏ lẻ (Single-row UPDATEs)</td>
+      <td style="padding: 8px">Native Columnar storage, extreme data compression, and Vectorized execution (SIMD)</td>
+      <td style="padding: 8px">Performance to scan billions of rows in milliseconds, 90% disk compression, Real-time data ingestion</td>
+      <td style="padding: 8px">Limitations in small, individual single-row UPDATE transactions</td>
     </tr>
   </tbody>
 </table>
 
-**2. Bản chất Cơ chế Lưu trữ Dạng Cột & Các Thuật toán Nén Dữ liệu Đỉnh cao:**
+**2. The Nature of Columnar Storage Mechanisms & Advanced Data Compression Algorithms:**
 
-Thay vì xếp các dòng cạnh nhau, cơ sở dữ liệu OLAP chia nhỏ bảng thành các khối dữ liệu (Data Blocks / Row Groups) và lưu trữ từng cột trong các file vật lý riêng biệt:
+Instead of arranging rows next to each other, OLAP databases divide tables into data blocks (Row Groups) and store each column in separate physical files:
 
 ```mermaid
 flowchart TD
@@ -96,24 +96,24 @@ flowchart TD
     end
 ```
 
-**3. Kỹ thuật Thực thi Truy vấn Vector Hóa (Vectorized SIMD Query Execution):**
+**3. Vectorized SIMD Query Execution Technique:**
 
-Trong các CSDL truyền thống (Volcano Iterator Model), mỗi dòng dữ liệu được gọi hàm `next()` lần lượt từng bản ghi một, gây tắc nghẽn CPU Cache và overhead gọi hàm. Ngược lại, **Vectorized Engine** tải một mảng gồm 1.024 hoặc 2.048 giá trị của cùng một cột vào trực tiếp các thanh ghi CPU (Registers) và sử dụng tập lệnh **SIMD (Single Instruction, Multiple Data - AVX2/AVX-512)** để tính toán song song hàng chục phép cộng/lọc chỉ trong một chu kỳ xung nhịp CPU.
+In traditional databases (Volcano Iterator Model), each row of data calls the `next()` function one record at a time, causing CPU Cache bottlenecks and function call overhead. Conversely, a **Vectorized Engine** loads an array of 1,024 or 2,048 values of the same column directly into CPU Registers and uses the **SIMD (Single Instruction, Multiple Data - AVX2/AVX-512)** instruction set to compute tens of additions/filters in parallel in just a single CPU clock cycle.
 
-## Xây dựng Pipeline / Script xử lý
+## Building the Pipeline / Processing Script
 
-Để minh họa việc triển khai hệ thống OLAP hiện đại, dưới đây là kiến trúc luồng dữ liệu thời gian thực và mã nguồn tạo bảng **ClickHouse MergeTree Engine** kết hợp với câu lệnh SQL phân tích nâng cao.
+To illustrate the implementation of a modern OLAP system, below is the real-time data flow architecture and the source code for creating a **ClickHouse MergeTree Engine** table combined with advanced analytical SQL queries.
 
-**1. Sơ đồ Luồng Dữ liệu Nền tảng OLAP Thời gian thực (Real-Time Modern OLAP Stack):**
+**1. Real-Time Modern OLAP Stack Data Flow Diagram:**
 
 ```mermaid
 flowchart LR
-    subgraph EventStream ["1. Nguồn Dữ Liệu Sự Kiện (High-Throughput Streams)"]
+    subgraph EventStream ["1. Event Data Sources (High-Throughput Streams)"]
         KafkaEvents["Kafka Event Bus<br/>(Clickstream & Orders CDC)"]
         AppLogs["Fluentbit / Vector Logs"]
     end
 
-    subgraph RealTimeOLAP ["2. Động Cơ Phân Tích Dạng Cột Tốc Độ Cao (ClickHouse Cluster)"]
+    subgraph RealTimeOLAP ["2. High-Speed Columnar Analytical Engine (ClickHouse Cluster)"]
         CHBuffer["ClickHouse Buffer Engine"]
         CHMergeTree["ClickHouse ReplacingMergeTree<br/>(Partition by Month, Order by Date, User, Product)"]
         CHMaterialized["Materialized View<br/>(Hourly Aggregation Summary)"]
@@ -123,7 +123,7 @@ flowchart LR
         CHMergeTree --> CHMaterialized
     end
 
-    subgraph VisualAnalytics ["3. Tầng Trực Quan Hóa & Báo Cáo (Sub-second Analytics)"]
+    subgraph VisualAnalytics ["3. Visualization & Reporting Layer (Sub-second Analytics)"]
         Superset["Apache Superset Dashboard"]
         Metabase["Metabase Real-time Monitor"]
         DataAnalysts["Ad-hoc SQL Analytics (Window & HyperLogLog)"]
@@ -134,17 +134,17 @@ flowchart LR
     end
 ```
 
-**2. Mã nguồn ClickHouse DDL Thiết kế Bảng OLAP Tối ưu (MergeTree Engine):**
+**2. ClickHouse DDL Source Code for Optimal OLAP Table Design (MergeTree Engine):**
 
 ```sql
--- Tạo bảng ClickHouse tối ưu hóa cho phân tích hành vi người dùng và đơn hàng
+-- Create a ClickHouse table optimized for analyzing user behavior and orders
 CREATE TABLE analytics.fact_user_events_hourly
 (
     event_timestamp DateTime64(3, 'UTC') CODEC(DoubleDelta, LZ4),
     event_date Date DEFAULT toDate(event_timestamp) CODEC(DoubleDelta, LZ4),
     user_id UInt64 CODEC(DoubleDelta, LZ4),
     session_id UUID CODEC(ZSTD),
-    event_type LowCardinality(String) CODEC(ZSTD), -- Áp dụng Dictionary Compression
+    event_type LowCardinality(String) CODEC(ZSTD), -- Apply Dictionary Compression
     page_url String CODEC(ZSTD(3)),
     referrer_domain LowCardinality(String) CODEC(ZSTD),
     device_type LowCardinality(String) CODEC(ZSTD),
@@ -153,41 +153,41 @@ CREATE TABLE analytics.fact_user_events_hourly
     processing_time_ms UInt32 CODEC(Gorilla, ZSTD)
 )
 ENGINE = ReplacingMergeTree(event_timestamp)
--- Phân vùng dữ liệu theo Tháng để dễ quản lý vòng đời và Pruning
+-- Partition data by Month for easy lifecycle management and Pruning
 PARTITION BY toYYYYMM(event_date)
--- Khóa sắp xếp vật lý (Sorting Key / Primary Index): Đặt cột có lực lượng thấp trước
+-- Physical Sorting Key (Primary Index): Place lower cardinality columns first
 PRIMARY KEY (event_date, event_type, user_id)
 ORDER BY (event_date, event_type, user_id, event_timestamp)
--- Tự động dọn dẹp dữ liệu cũ sau 365 ngày (TTL Retention Policy)
+-- Automatically clean up old data after 365 days (TTL Retention Policy)
 TTL event_date + INTERVAL 365 DAY
 SETTINGS index_granularity = 8192;
 ```
 
-**3. Câu lệnh SQL Phân tích Đa chiều Tận dụng Thuật toán Ước lượng HyperLogLog & Window Functions:**
+**3. Multi-dimensional Analytical SQL Query Leveraging HyperLogLog Estimations & Window Functions:**
 
 ```sql
--- Truy vấn phân tích tỷ lệ chuyển đổi phễu và đếm người dùng duy nhất siêu tốc trên 1 tỷ dòng
+-- Query to analyze funnel conversion rates and count unique users at lightning speed on 1 billion rows
 SELECT
     event_date,
     country,
     device_type,
-    -- Đếm chính xác số lượng sự kiện
+    -- Accurately count the number of events
     count() AS total_events,
-    -- Thuật toán HyperLogLog ước lượng số người dùng duy nhất với sai số < 1% trong vài mili-giây
+    -- HyperLogLog algorithm estimates the number of unique users with < 1% margin of error in milliseconds
     uniqCombined64(user_id) AS approx_unique_users,
-    -- Đếm số người dùng thêm vào giỏ hàng
+    -- Count the number of users who added to cart
     uniqCombined64If(user_id, event_type = 'ADD_TO_CART') AS cart_users,
-    -- Đếm số người dùng thanh toán thành công
+    -- Count the number of users who successfully purchased
     uniqCombined64If(user_id, event_type = 'PURCHASE') AS paying_users,
-    -- Tính tỷ lệ chuyển đổi thanh toán (Conversion Rate)
+    -- Calculate the checkout Conversion Rate
     ROUND(
         uniqCombined64If(user_id, event_type = 'PURCHASE')
         / NULLIF(uniqCombined64If(user_id, event_type = 'ADD_TO_CART'), 0) * 100,
         2
     ) AS cart_to_purchase_cvr_pct,
-    -- Tổng giá trị giao dịch
+    -- Gross Merchandise Value
     SUM(cart_total_amount) AS gross_merchandise_value,
-    -- Window Function tính tỷ trọng đóng góp doanh thu của từng quốc gia trong ngày
+    -- Window Function calculating the revenue contribution weight of each country for the day
     ROUND(
         SUM(cart_total_amount)
         / SUM(SUM(cart_total_amount)) OVER (PARTITION BY event_date) * 100,
@@ -199,43 +199,43 @@ GROUP BY event_date, country, device_type
 ORDER BY event_date DESC, gross_merchandise_value DESC;
 ```
 
-## Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Data Testing & Performance Optimization
 
-Để đạt được tốc độ phản hồi truy vấn dưới 100ms trên các tập dữ liệu khổng lồ (Petabyte-scale), Data Engineer cần làm chủ các kỹ thuật tối ưu hóa vật lý chuyên sâu sau:
+To achieve query response speeds under 100ms on massive datasets (Petabyte-scale), Data Engineers need to master the following deep physical optimization techniques:
 
-**1. Thiết kế Khóa Sắp xếp Vật lý (Sorting Keys & Sparse Primary Index):**
+**1. Designing Physical Sorting Keys & Sparse Primary Index:**
 
-- **Quy tắc Thứ tự Cột trong ORDER BY:** Luôn đặt các cột thường xuyên xuất hiện trong mệnh đề `WHERE` và có lực lượng giá trị (Cardinality) từ thấp đến cao ở đầu khóa sắp xếp (ví dụ: `(event_date, country, event_type, user_id)`). Cách sắp xếp này giúp nén dữ liệu tốt nhất và loại bỏ tối đa các khối dữ liệu không khớp (MinMax Data Skipping).
-- **Sparse Index Granularity:** Chỉ mục sơ cấp dạng thưa (mỗi 8.192 dòng chỉ lưu 1 điểm đánh dấu) giúp toàn bộ chỉ mục của bảng hàng tỷ dòng nằm gọn trong RAM chỉ với vài megabyte bộ nhớ.
+- **Column Order Rule in ORDER BY:** Always place the columns that frequently appear in the `WHERE` clause and have value Cardinality from low to high at the beginning of the sorting key (e.g., `(event_date, country, event_type, user_id)`). This arrangement helps compress data best and eliminates maximum mismatched data blocks (MinMax Data Skipping).
+- **Sparse Index Granularity:** A sparse primary index (saving only 1 marker for every 8,192 rows) allows the entire index of a billion-row table to fit neatly in RAM using just a few megabytes of memory.
 
-**2. Sử dụng Thuật toán Xác suất & Cấu trúc Dữ liệu Phác thảo (Approximate & Sketch Algorithms):**
+**2. Utilizing Probabilistic Algorithms & Sketch Data Structures:**
 
-- Khi số lượng người dùng lên tới hàng trăm triệu, việc chạy `COUNT(DISTINCT user_id)` truyền thống đòi hỏi chi phí bộ nhớ khổng lồ để lưu trữ toàn bộ ID phục vụ loại trùng lặp.
-- Sử dụng các thuật toán xấp xỉ như **HyperLogLog (HLL)** và **t-Digest (tính phân vị Percentile p95, p99)** giúp giảm 99% RAM và tăng tốc độ xử lý lên gấp 50 lần với độ chính xác trên 99%.
+- When the number of users reaches hundreds of millions, running a traditional `COUNT(DISTINCT user_id)` requires huge memory costs to store all IDs for deduplication.
+- Using approximation algorithms like **HyperLogLog (HLL)** and **t-Digest (calculating Percentile p95, p99)** helps reduce RAM usage by 99% and accelerates processing speed by up to 50 times with over 99% accuracy.
 
-**3. Bảng Benchmark Đánh giá Hiệu năng Truy vấn Thực tế (Dataset: 1.000.000.000 Bản ghi - 1 Tỷ dòng Sự kiện):**
+**3. Real-world Query Performance Benchmark Table (Dataset: 1,000,000,000 Records - 1 Billion Event Rows):**
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Kiến Trúc Cơ Sở Dữ Liệu</th>
-      <th style="padding: 8px">Thời Gian Truy Vấn Quét & Gom Nhóm</th>
-      <th style="padding: 8px">Dung Lượng Quét Đĩa</th>
-      <th style="padding: 8px">Tỷ Lệ Nén Dữ Liệu Đĩa Cứng</th>
+      <th style="padding: 8px;">Database Architecture</th>
+      <th style="padding: 8px">Scan & Group By Query Time</th>
+      <th style="padding: 8px">Disk Scan Volume</th>
+      <th style="padding: 8px">Hard Disk Data Compression Ratio</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Cơ sở Dữ liệu Dạng Dòng (PostgreSQL 16)</b></td>
-      <td style="padding: 8px">340.000ms (Hơn 5.6 phút)</td>
-      <td style="padding: 8px">142 GB (Quét toàn bộ hàng)</td>
-      <td style="padding: 8px">1.2x (Nén dòng thông thường)</td>
+      <td style="padding: 8px"><b>Row-Oriented Database (PostgreSQL 16)</b></td>
+      <td style="padding: 8px">340,000ms (Over 5.6 minutes)</td>
+      <td style="padding: 8px">142 GB (Full table scan)</td>
+      <td style="padding: 8px">1.2x (Standard row compression)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Hệ Thống Phân Tán ROLAP Truyền Thống</b></td>
-      <td style="padding: 8px">12.500ms (12.5 giây)</td>
+      <td style="padding: 8px"><b>Traditional ROLAP Distributed System</b></td>
+      <td style="padding: 8px">12,500ms (12.5 seconds)</td>
       <td style="padding: 8px">18.5 GB</td>
-      <td style="padding: 8px">3.5x (Nén Snappy cơ bản)</td>
+      <td style="padding: 8px">3.5x (Basic Snappy compression)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px"><b>Cloud MPP DWH (Snowflake Standard)</b></td>
@@ -252,18 +252,18 @@ ORDER BY event_date DESC, gross_merchandise_value DESC;
   </tbody>
 </table>
 
-## Tổng kết & Khuyến nghị
+## Conclusion & Recommendations
 
-Cơ sở dữ liệu OLAP dạng cột đại diện cho đỉnh cao của kỹ thuật tối ưu hóa phần cứng và thuật toán xử lý dữ liệu lớn hiện đại.
+Column-oriented OLAP databases represent the pinnacle of hardware optimization engineering and modern big data processing algorithms.
 
-**Lựa chọn Động cơ OLAP Phù hợp với Bối cảnh Doanh nghiệp:**
+**Choosing the Right OLAP Engine for the Business Context:**
 
-- Sử dụng **ClickHouse / StarRocks** khi cần phân tích thời gian thực với độ trễ truy vấn dưới 100ms trên luồng dữ liệu nạp liên tục (Clickstream, Log Analytics, Real-time Dashboard).
-- Sử dụng **Snowflake / BigQuery** khi cần xây dựng kho dữ liệu doanh nghiệp toàn diện (Enterprise DWH / BI) phục vụ đa phòng ban với khả năng mở rộng điện toán không giới hạn.
-- Sử dụng **DuckDB** khi cần một động cơ phân tích dạng cột siêu nhẹ, nhúng trực tiếp trong ứng dụng Python / Data Science mà không cần dựng cụm server phức tạp.
+- Use **ClickHouse / StarRocks** when you need real-time analytics with sub-100ms query latency on continuously ingested data streams (Clickstream, Log Analytics, Real-time Dashboard).
+- Use **Snowflake / BigQuery** when you need to build a comprehensive enterprise data warehouse (Enterprise DWH / BI) serving multiple departments with unlimited compute scalability.
+- Use **DuckDB** when you need an ultra-lightweight columnar analytical engine embedded directly in Python / Data Science applications without needing to build a complex server cluster.
 
-**Luôn Tận dụng Nén Dữ liệu Chuyên biệt theo Kiểu Dữ liệu:** Sử dụng `LowCardinality` hoặc Dictionary Encoding cho các cột chuỗi lặp lại, `DoubleDelta` cho chuỗi thời gian và `T64/Gorilla` cho số thập phân.
+**Always Leverage Data Type-Specific Data Compression:** Use `LowCardinality` or Dictionary Encoding for repeating string columns, `DoubleDelta` for time series, and `T64/Gorilla` for decimals.
 
-**Ứng dụng Thuật toán Phác thảo (Sketching) Cho Tập Dữ Liệu Lớn:** Đào tạo đội ngũ Data Analyst chuyển từ việc dùng `COUNT(DISTINCT)` chính xác tuyệt đối sang `HyperLogLog (HLL)` khi làm việc với các chỉ số ước lượng (Reach, Active Users) để tăng tốc độ phân tích lên hàng chục lần.
+**Applying Sketching Algorithms For Large Datasets:** Train your Data Analyst team to shift from using absolute precision `COUNT(DISTINCT)` to `HyperLogLog (HLL)` when working with estimation metrics (Reach, Active Users) to speed up analysis by tens of times.
 
-> **Lời kết:** _Làm chủ cơ chế hoạt động của OLAP từ tầng lưu trữ dạng cột đến tập lệnh SIMD giúp Data Engineer tự tin biến hàng chục terabyte dữ liệu phức tạp thành những câu trả lời kinh doanh tức thì trong chớp mắt!_
+> **Final words:** _Mastering the mechanics of OLAP, from columnar storage layers to the SIMD instruction set, helps Data Engineers confidently transform tens of terabytes of complex data into instant business answers in the blink of an eye!_

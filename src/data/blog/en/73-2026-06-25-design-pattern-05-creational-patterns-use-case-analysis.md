@@ -1,12 +1,12 @@
 ---
 id: 73
 slug: design-pattern-05-creational-patterns-use-case-analysis
-title: "Design Pattern #05: Phân tích Use case và Chọn lựa Creational Patterns phù hợp"
-summary: "Tổng kết phần pattern khởi tạo: Thông qua 4 bài viết trước, chúng ta đã xây dựng thành công bộ khung cho Hệ thống Xử lý Đơn hàng. Mỗi chốt chặn sinh ra object (Object Creation) đều được áp dụng một pattern cụ thể. Dưới đây là bức tranh toàn cảnh về luồng vận hành của hệ thống."
+title: "Design Pattern #05: Use Case Analysis and Choosing Suitable Creational Patterns"
+summary: "Creational patterns wrap-up: Through the previous 4 articles, we successfully built the framework for the Order Processing System. Each checkpoint that generates an object (Object Creation) has a specific pattern applied. Below is the big picture of the system's operational flow."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-25"
 date: "2026-06-25"
-readTime: "5 phút đọc"
+readTime: "5 min read"
 tags:
   - "Design Patterns"
   - "Creational Patterns"
@@ -14,23 +14,23 @@ tags:
   - "Best Practices"
 ---
 
-## Kiến trúc tổng thể với Creational Patterns
+## Overall Architecture with Creational Patterns
 
 ```mermaid
 flowchart TD
-  Start[Request tạo đơn hàng] --> Cfg
+  Start[Order Creation Request] --> Cfg
 
   subgraph Config & Resources
     Cfg["AppConfig\n(Singleton)"] --> Pool
     Pool["DB Connection Pool\n(Object Pool)"]
   end
 
-  Pool --> DB[(Lưu Đơn hàng)]
+  Pool --> DB[(Save Order)]
   DB --> Payment
 
   subgraph Payment Process
-    Payment["Payment Gateway Factory\n(Factory Method)"] -->|Tạo| P_VNP[VNPay]
-    Payment -->|Tạo| P_MOMO[Momo]
+    Payment["Payment Gateway Factory\n(Factory Method)"] -->|Create| P_VNP[VNPay]
+    Payment -->|Create| P_MOMO[Momo]
   end
 
   P_VNP --> Fulfillment
@@ -38,61 +38,61 @@ flowchart TD
 
   subgraph Order Fulfillment
     Fulfillment["Fulfillment Factory\n(Abstract Factory)"]
-    Fulfillment -->|Nội địa| F_Dom[Domestic Factory]
-    Fulfillment -->|Quốc tế| F_Int[International Factory]
+    Fulfillment -->|Domestic| F_Dom[Domestic Factory]
+    Fulfillment -->|International| F_Int[International Factory]
 
     F_Dom --> T1(VAT Tax) & S1(GHTK)
     F_Int --> T2(Import Tax) & S2(DHL)
   end
 ```
 
-## Tiêu chí chọn lựa (Decision Matrix)
+## Selection Criteria (Decision Matrix)
 
-Khi đứng trước quyết định thiết kế cho một hệ thống lớn (ERP, E-commerce, Data Pipeline), hãy đặt các câu hỏi sau để chọn đúng Creational Pattern:
+When facing design decisions for a large system (ERP, E-commerce, Data Pipeline), ask the following questions to choose the right Creational Pattern:
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Đặc tả bài toán (Use Case)</th>
+      <th style="padding: 8px;">Problem Specification (Use Case)</th>
       <th style="padding: 8px;">Pattern</th>
-      <th style="padding: 8px;">Ví dụ áp dụng thực tế (Backend)</th>
+      <th style="padding: 8px;">Real-world application example (Backend)</th>
     </tr>
   </thead>
   <tbody>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <td style="padding: 8px">Cần kiểm soát chặt chẽ để <strong>chỉ có 1 instance</strong> duy nhất tồn tại toàn cục?</td>
+      <td style="padding: 8px">Need strict control so that <strong>only 1 instance</strong> exists globally?</td>
       <td style="padding: 8px"><strong>Singleton</strong></td>
       <td style="padding: 8px">System Logger, Configuration Manager, State Manager.</td>
     </tr>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <td style="padding: 8px">Chi phí khởi tạo object (CPU, I/O, Network) <strong>rất đắt đỏ</strong>, cần cấp phát và thu hồi liên tục?</td>
+      <td style="padding: 8px">Object initialization cost (CPU, I/O, Network) is <strong>very expensive</strong>, requiring continuous allocation and deallocation?</td>
       <td style="padding: 8px"><strong>Object Pool</strong></td>
       <td style="padding: 8px">Database/Redis Connection Pool, Thread Pool, Worker Pool.</td>
     </tr>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <td style="padding: 8px">Cần khởi tạo 1 object chung interface nhưng <strong>logic sinh ra cụ thể phụ thuộc vào subclass / param</strong>?</td>
+      <td style="padding: 8px">Need to create an object with a common interface but the <strong>specific generation logic depends on subclass/param</strong>?</td>
       <td style="padding: 8px"><strong>Factory Method</strong></td>
-      <td style="padding: 8px">Khởi tạo Data Exporter (PDF/CSV/Excel), Cổng thanh toán.</td>
+      <td style="padding: 8px">Initializing Data Exporter (PDF/CSV/Excel), Payment Gateways.</td>
     </tr>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <td style="padding: 8px">Cần sinh ra <strong>một lúc nhiều object phụ thuộc vào nhau</strong>, thuộc chung một họ (gia đình/family)?</td>
+      <td style="padding: 8px">Need to spawn <strong>multiple interdependent objects at once</strong>, belonging to the same family?</td>
       <td style="padding: 8px"><strong>Abstract Factory</strong></td>
-      <td style="padding: 8px">Tạo UI Component đa nền tảng, Infrastructure Provisioning đa Cloud (AWS/GCP), Module Xử lý theo vùng miền (Nội địa/Quốc tế).</td>
+      <td style="padding: 8px">Creating cross-platform UI Components, Multi-Cloud Infrastructure Provisioning (AWS/GCP), Regional Processing Modules (Domestic/International).</td>
     </tr>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <td style="padding: 8px"><em>Bổ sung:</em> Object cấu tạo <strong>quá phức tạp</strong>, cần sinh ra qua nhiều bước tuần tự?</td>
-      <td style="padding: 8px"><strong>Builder</strong> <em>(Tham khảo thêm)</em></td>
-      <td style="padding: 8px">Tạo câu lệnh SQL động (Query Builder), Build HTTP Request phức tạp.</td>
+      <td style="padding: 8px"><em>Addition:</em> Object construction is <strong>too complex</strong>, needing to be built through multiple sequential steps?</td>
+      <td style="padding: 8px"><strong>Builder</strong> <em>(For reference)</em></td>
+      <td style="padding: 8px">Creating dynamic SQL queries (Query Builder), Building complex HTTP Requests.</td>
     </tr>
   </tbody>
 </table>
 
-## Bài học rút ra
+## Lessons Learned
 
-Lạm dụng Design Pattern là con đường ngắn nhất dẫn đến _Over-engineering_ (phức tạp hóa hệ thống không cần thiết).
+Abusing Design Patterns is the shortest path to _Over-engineering_ (unnecessarily complicating the system).
 
-- Đừng dùng Singleton nếu object đó không thực sự chia sẻ chung trạng thái (state).
-- Đừng vội dùng Abstract Factory nếu hệ thống chỉ có một phương thức vận chuyển duy nhất; Factory Method hoặc Dependency Injection là đủ.
-- Luôn ưu tiên tính dễ đọc và bảo trì (Maintainability) lên hàng đầu.
+- Do not use Singleton if the object doesn't truly share state.
+- Do not rush to use Abstract Factory if the system only has one single shipping method; Factory Method or Dependency Injection is sufficient.
+- Always prioritize readability and Maintainability.
 
-Thiết kế phần mềm không phải là áp đặt rập khuôn các Pattern, mà là **hiểu rõ nỗi đau của bài toán** để chọn công cụ giải quyết thanh lịch nhất.
+Software design isn't about rigidly imposing Patterns, but rather **understanding the core pain points of the problem** to choose the most elegant tool for the job.

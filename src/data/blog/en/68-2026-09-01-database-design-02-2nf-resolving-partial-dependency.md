@@ -1,12 +1,12 @@
 ---
 id: "68"
 slug: "database-design-2-2nf-resolving-partial-dependency"
-title: "Thiết kế CSDL #02: Chuẩn 2NF - Khắc phục phụ thuộc từng phần"
-summary: 'Chuẩn 2NF được Edgar F. Codd giới thiệu một năm sau đó (1971) trong tài liệu "Further Normalization of the Data Base Relational Model". Codd nhận ra rằng 1NF vẫn gây ra các bất thường khi cập nhật (Update Anomalies), do đó ông định nghĩa thêm khái niệm "Phụ thuộc hàm" (Functional Dependency) để tinh chỉnh cấu trúc.'
+title: "Database Design #02: 2NF - Resolving Partial Dependency"
+summary: 'The 2NF standard was introduced by Edgar F. Codd a year later (1971) in the document "Further Normalization of the Data Base Relational Model". Codd realized that 1NF still caused Update Anomalies, so he further defined the concept of "Functional Dependency" to refine the structure.'
 category: "data-engineering-analytics"
 publishedAt: "2026-09-01"
 date: "2026-09-01"
-readTime: "5 phút đọc"
+readTime: "5 minutes read"
 tags:
   - "Database"
   - "Data Engineering"
@@ -15,16 +15,16 @@ tags:
   - "PostgreSQL"
 ---
 
-## Đề bài kinh doanh / Yêu cầu dữ liệu
+## Business Context / Data Requirements
 
-Hệ thống ERP của chúng ta tiếp tục mở rộng thêm **Module Phân công dự án (Project Allocation)**.
-Các kỹ sư đã tạo một bảng `Project_Assignments` lưu trữ việc nhân viên nào được phân vào dự án nào, số giờ làm việc (hours), cùng với `project_name` và `client_name` (tên đối tác).
+Our ERP system continues to expand with the **Project Allocation Module**.
+The engineers have created a `Project_Assignments` table to store which employee is assigned to which project, their working hours, along with `project_name` and `client_name` (partner name).
 
-Bảng này có khóa chính ghép (Composite Primary Key) là `(emp_id, project_id)`. Tuy nhiên, một ngày nọ đối tác đổi tên công ty (client_name). Hệ thống phải quét và UPDATE hàng ngàn dòng phân công của toàn bộ nhân viên tham gia dự án đó. Rõ ràng, `project_name` và `client_name` không phụ thuộc vào `emp_id`, chúng chỉ phụ thuộc vào `project_id`. Đây gọi là **Phụ thuộc từng phần (Partial Dependency)**.
+This table has a Composite Primary Key of `(emp_id, project_id)`. However, one day, the partner changes their company name (`client_name`). The system has to scan and UPDATE thousands of assignment rows for all employees involved in that project. Obviously, `project_name` and `client_name` do not depend on `emp_id`, they only depend on `project_id`. This is called **Partial Dependency**.
 
-## Mô hình hóa dữ liệu
+## Data Modeling
 
-Chuẩn 2NF yêu cầu: **Bảng phải đạt 1NF và KHÔNG có thuộc tính không-khóa nào phụ thuộc vào một phần của khóa chính.**
+The 2NF standard requires: **The table must meet 1NF and NO non-key attribute can depend on only a part of the primary key.**
 
 ```mermaid
 erDiagram
@@ -32,8 +32,8 @@ erDiagram
         int emp_id PK
         int project_id PK
         int assigned_hours
-        string project_name "Phụ thuộc từng phần (chỉ vào project_id)"
-        string client_name "Phụ thuộc từng phần (chỉ vào project_id)"
+        string project_name "Partial Dependency (only on project_id)"
+        string client_name "Partial Dependency (only on project_id)"
     }
 
     "2NF_Projects" {
@@ -48,23 +48,23 @@ erDiagram
         int assigned_hours
     }
 
-    "1NF_ProjectAssignments" ||--o{ "2NF_ProjectAssignments" : "Nâng cấp lên 2NF"
-    "2NF_Projects" ||--o{ "2NF_ProjectAssignments" : "Tách bảng Master"
+    "1NF_ProjectAssignments" ||--o{ "2NF_ProjectAssignments" : "Upgrade to 2NF"
+    "2NF_Projects" ||--o{ "2NF_ProjectAssignments" : "Split Master table"
 ```
 
-## Xây dựng Pipeline / Script xử lý
+## Building the Pipeline / Processing Script
 
-Chúng ta bóc tách thông tin Dự án thành một bảng Master độc lập (Projects) và giữ lại bảng Phân công (Assignments) làm bảng Transaction:
+We extract the Project information into an independent Master table (Projects) and keep the Assignment table as the Transaction table:
 
 ```sql
--- 1. Tạo bảng Projects (Master Data)
+-- 1. Create the Projects table (Master Data)
 CREATE TABLE projects_2nf AS
 SELECT DISTINCT project_id, project_name, client_name
 FROM project_assignments_1nf;
 
 ALTER TABLE projects_2nf ADD PRIMARY KEY (project_id);
 
--- 2. Tạo bảng Assignments chuẩn 2NF
+-- 2. Create the 2NF compliant Assignments table
 CREATE TABLE project_assignments_2nf AS
 SELECT emp_id, project_id, assigned_hours
 FROM project_assignments_1nf;
@@ -72,14 +72,14 @@ FROM project_assignments_1nf;
 ALTER TABLE project_assignments_2nf ADD PRIMARY KEY (emp_id, project_id);
 ALTER TABLE project_assignments_2nf
 ADD FOREIGN KEY (project_id) REFERENCES projects_2nf(project_id);
--- (Lưu ý: emp_id cũng nên có FK trỏ về bảng employees_1nf ở bài trước)
+-- (Note: emp_id should also have an FK pointing back to the employees_1nf table from the previous article)
 ```
 
-## Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Data Testing & Performance Optimization
 
-- **Kiểm thử Update:** Giờ đây, khi đối tác đổi tên, ta chỉ cần chạy duy nhất 1 lệnh Update: `UPDATE projects_2nf SET client_name = 'New Client' WHERE project_id = 101;`. Dữ liệu lập tức đồng bộ trên toàn bộ hệ thống phân công.
-- **Tối ưu không gian:** Các chuỗi string dài (tên dự án, tên đối tác) không còn bị lặp lại hàng nghìn lần, giúp giảm dung lượng ổ cứng và tăng tốc độ scan.
+- **Update Testing:** Now, when a partner changes their name, we only need to run a single Update command: `UPDATE projects_2nf SET client_name = 'New Client' WHERE project_id = 101;`. Data is instantly synchronized across the entire assignment system.
+- **Space Optimization:** Long strings (project names, partner names) are no longer duplicated thousands of times, reducing storage consumption and speeding up scans.
 
-## Tổng kết & Khuyến nghị
+## Conclusion & Recommendations
 
-Chuẩn 2NF giải quyết dứt điểm rắc rối của các bảng có Khóa chính ghép (Composite Keys). Nguyên tắc cốt lõi trong ERP: Hãy luôn tách biệt dữ liệu Danh mục (Master Data - như Dự án, Khách hàng) khỏi dữ liệu Giao dịch/Sự kiện (Transaction Data - như Bảng phân công, Chấm công).
+The 2NF standard decisively solves the troubles of tables with Composite Primary Keys. A core principle in ERP: Always separate Master Data (like Projects, Customers) from Transaction Data (like Assignments, Timesheets).

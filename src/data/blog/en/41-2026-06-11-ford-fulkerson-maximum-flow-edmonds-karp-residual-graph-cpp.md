@@ -1,12 +1,12 @@
 ---
 id: "41"
 slug: "ford-fulkerson-maximum-flow-edmonds-karp-residual-graph-cpp"
-title: "Thuật toán Nâng cao #07: Thuật toán Tìm luồng cực đại Ford-Fulkerson - Đồ thị dư (Residual Graph), Cung ngược & Biến thể Edmonds-Karp C++"
-summary: "Mổ xẻ bản chất bài toán Luồng cực đại trên mạng (Max Flow): Định lý Lát cắt cực tiểu (Max-Flow Min-Cut Theorem), cơ chế hoàn luồng qua Cung ngược (Backward Edges) trên Đồ thị dư (Residual Graph), biến thể Edmonds-Karp BFS đạt O(V * E²) và cài đặt C++ hoàn chỉnh."
+title: "Advanced Algorithms #07: Ford-Fulkerson Maximum Flow Algorithm - Residual Graph, Backward Edges & Edmonds-Karp C++ Variant"
+summary: "Dissecting the essence of the Maximum Network Flow problem: the Max-Flow Min-Cut Theorem, the flow rerouting mechanism via Backward Edges on a Residual Graph, the Edmonds-Karp BFS variant achieving O(V * E²), and a complete C++ implementation."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "13 phút đọc"
+readTime: "13 min read"
 tags:
   - "Algorithms"
   - "Max Flow"
@@ -17,59 +17,60 @@ tags:
   - "C++"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong các hệ thống phân phối dầu khí, mạng truyền tải điện, hạ tầng băng thông mạng Internet hay điều phối chuyến bay, bài toán cốt lõi đặt ra là: _Làm thế nào để vận chuyển khối lượng vật chất hoặc thông tin lớn nhất từ điểm phát đến điểm thu mà không làm quá tải bất kỳ đường ống/đường truyền nào?_
+In oil and gas distribution systems, electrical transmission grids, Internet bandwidth infrastructure, or flight scheduling, the core problem is: _How can we transport the maximum volume of physical material or information from a source to a destination without overloading any pipeline/link?_
 
-Đề bài đặt ra: **Bài toán Luồng Cực đại trên Mạng (Maximum Flow Problem)**. Cho mạng luồng `G = (V, E)` là một đồ thị có hướng, trong đó mỗi cạnh `(u, v)` có một dung lượng tải tối đa (Capacity) `c(u, v) >= 0`. Cho trước hai đỉnh đặc biệt: **Đỉnh nguồn (Source `s`)** và **Đỉnh thu (Sink `t`)**.
+The challenge is the **Maximum Flow Problem**. Given a flow network `G = (V, E)` which is a directed graph where each edge `(u, v)` has a maximum `c(u, v) >= 0`. We are given two special vertices: the **Source `s`** and the **Sink `t`**.
 
-Hãy xác định một hàm luồng `f(u, v)` thỏa mãn hai điều kiện bất biến:
+Determine a flow function `f(u, v)` that satisfies two invariant conditions:
 
-1. **Ràng buộc dung lượng (Capacity Constraint):** `0 <= f(u, v) <= c(u, v)` với mọi cạnh `(u, v)`.
-2. **Bảo toàn luồng (Conservation of Flow):** Tổng luồng đi vào một đỉnh trung gian bất kỳ phải đúng bằng tổng luồng đi ra khỏi đỉnh đó (với mọi đỉnh ngoại trừ `s` và `t`).
+1. **Capacity Constraint:** `0 <= f(u, v) <= c(u, v)` for every edge `(u, v)`.
+2. **Conservation of Flow:** The total flow entering any intermediate vertex must exactly equal the total flow exiting that vertex (for all vertices except `s` and `t`).
 
-Mục tiêu: Cực đại hóa tổng luồng đi từ nguồn `s` đến đích `t`: `|f| = sum f(s, v)`.
+Goal: Maximize the total flow from source `s` to sink `t`: `|f| = sum f(s, v)`.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Cách tiếp cận ngây thơ ban đầu là sử dụng giải thuật Tham lam (Greedy): Tìm một đường đi bất kỳ từ `s` đến `t` bằng DFS/BFS, đẩy luồng tối đa có thể qua đường đi này, giảm dung lượng của các cạnh đã đi qua và lặp lại cho đến khi không còn đường đi nào nối từ `s` đến `t`.
+A naive initial approach is to use a Greedy algorithm: Find any path from `s` to `t` using DFS/BFS, push the maximum possible flow through this path, reduce the capacities of the traversed edges, and repeat until no more paths from `s` to `t` exist.
 
-Chiến lược tham lam thuần túy này **thất bại** vì một khi luồng đã được đẩy vào một đường dẫn kém tối ưu, nó sẽ chiếm dụng dung lượng và vĩnh viễn chặn đứng các đường đi tối ưu khác mà không có cơ hội sửa sai.
+This purely greedy strategy **fails** because once flow is pushed down a suboptimal path, it occupies capacity and permanently blocks other optimal paths without an opportunity to correct the mistake.
 
-Lester Ford Jr. và Delbert Fulkerson vào năm 1956 đã đưa ra giải pháp đột phá: **Cung ngược (Backward Edge)** trên **Đồ thị dư (Residual Graph)**, cho phép thuật toán &quot;hoàn trả luồng&quot; (Undo/Reroute flow) đã gửi sai trước đó.
+Lester Ford Jr. and Delbert Fulkerson introduced a breakthrough solution in 1956: The **Backward Edge** on a **Residual Graph**, allowing the algorithm to "undo" or "reroute" flow that was previously sent incorrectly.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Phương pháp Ford-Fulkerson vận hành dựa trên 3 trụ cột lý thuyết vững chắc:
+The Ford-Fulkerson method operates on three solid theoretical pillars:
 
-1. **Đồ thị dư (Residual Graph `G_f`):** Với mỗi cạnh `(u, v)` có dung lượng `c` và luồng hiện thời `f`:
+1. **Residual Graph (`G_f`):** For each edge `(u, v)` with capacity `c` and current flow `f`:
+   - _Forward Edge:_ Has a residual capacity of `c(u, v) - f(u, v)` (representing the ability to push more flow).
+   - _Backward Edge:_ Has a residual capacity of `f(u, v)` (representing the ability to cancel flow already sent through `(u, v)` to redirect it elsewhere).
 
-- _Cung xuôi (Forward Edge):_ Có dung lượng dư là `c(u, v) - f(u, v)` (thể hiện khả năng đẩy thêm luồng).
-- _Cung ngược (Backward Edge):_ Có dung lượng dư là `f(u, v)` (thể hiện khả năng hủy luồng đã gửi qua `(u, v)` để chuyển hướng luồng đi nơi khác).
+2. **Augmenting Path:** A simple path from source `s` to sink `t` on the residual graph where all edges on the path have a residual capacity `> 0`. The amount of flow that can be added (Bottleneck) is the minimum residual capacity along that path.
 
-2. **Đường tăng luồng (Augmenting Path):** Một đường đi đơn từ nguồn `s` đến đích `t` trên đồ thị dư mà tất cả các cạnh trên đường đi đều có dung lượng dư `> 0`. Giá trị luồng tăng thêm (Bottleneck) chính là dung lượng dư nhỏ nhất trên đường đi đó.
-3. **Định lý Luồng cực đại - Lát cắt cực tiểu (Max-Flow Min-Cut Theorem):** Giá trị luồng cực đại từ `s` đến `t` chính xác bằng tổng dung lượng của lát cắt nhỏ nhất (Min-Cut) phân tách đồ thị thành 2 tập đỉnh chứa `s` và `t`.
-4. **Tối ưu hóa Edmonds-Karp (1972):** Thay vì dùng DFS có thể bị lặp vô hạn nếu dung lượng là số vô tỉ hoặc chạy rất chậm với `O(E x |f*|)`, Edmonds và Karp đề xuất luôn dùng **BFS** để tìm đường tăng luồng ngắn nhất (ít cạnh nhất). Điều này đảm bảo thuật toán đạt thời gian đa thức chặt chẽ `O(V x E²)`.
+3. **Max-Flow Min-Cut Theorem:** The maximum flow value from `s` to `t` is exactly equal to the total capacity of the minimum cut (Min-Cut) that partitions the graph into 2 sets of vertices containing `s` and `t` respectively.
 
-## Triển khai mã nguồn & Dry Run
+4. **Edmonds-Karp Optimization (1972):** Instead of using DFS, which can loop infinitely with irrational capacities or run very slowly in `O(E * |f*|)`, Edmonds and Karp proposed always using **BFS** to find the shortest augmenting path (fewest edges). This guarantees the algorithm runs in a strictly polynomial time of `O(V * E²)`.
 
-Sơ đồ cơ chế cung ngược và tiến trình tăng luồng trên đồ thị dư:
+## Source Code Implementation & Dry Run
+
+Diagram of the backward edge mechanism and flow augmentation on the residual graph:
 
 ```mermaid
 flowchart LR
-    subgraph FlowStep1 [Đẩy Luồng Qua Cung Xuôi]
+    subgraph FlowStep1 [Push Flow via Forward Edge]
         S1((S)) -->|"f=10 / c=10"| U1((U))
         U1 -->|"f=10 / c=10"| T1((T))
     end
 
-    subgraph ResidualGraph [Đồ Thị Dư - Residual Graph]
-        S2((S)) -.->|"Cung ngược: cap=10"| U2((U))
-        U2 -.->|"Cho phép hủy luồng để đổi hướng sang V"| V2((V))
-        V2 -->|"Đẩy luồng mới tới T"| T2((T))
+    subgraph ResidualGraph [Residual Graph]
+        S2((S)) -.->|"Backward edge: cap=10"| U2((U))
+        U2 -.->|"Allows undoing flow to redirect to V"| V2((V))
+        V2 -->|"Push new flow to T"| T2((T))
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh (Thuật toán Edmonds-Karp với BFS):**
+**Complete C++ Source Code (Edmonds-Karp Algorithm using BFS):**
 
 ```c++
 #include <iostream>
@@ -79,19 +80,19 @@ flowchart LR
 
 const long long INF = 1e18;
 
-// Thuật toán Edmonds-Karp tìm Luồng cực đại
+// Edmonds-Karp Algorithm for Maximum Flow
 class EdmondsKarp {
 private:
-    int n; // Số lượng đỉnh
+    int n; // Number of vertices
     std::vector<std::vector<long long>> capacity;
     std::vector<std::vector<int>> adj;
 
-    // Tìm đường tăng luồng ngắn nhất từ s đến t bằng BFS
+    // Find the shortest augmenting path from s to t using BFS
     long long bfs(int s, int t, std::vector<int>& parent) {
         std::fill(parent.begin(), parent.end(), -1);
-        parent[s] = -2; // Đánh dấu đỉnh nguồn đã thăm
+        parent[s] = -2; // Mark source vertex as visited
 
-        // Hàng đợi lưu cặp {đỉnh hiện tại, luồng nghẽn nhỏ nhất tới đỉnh này}
+        // Queue stores pair {current vertex, minimum bottleneck flow to this vertex}
         std::queue<std::pair<int, long long>> q;
         q.push({s, INF});
 
@@ -104,13 +105,13 @@ private:
                     parent[v] = u;
                     long long newFlow = std::min(flow, capacity[u][v]);
                     if (v == t) {
-                        return newFlow; // Đã tìm thấy đường đi tới đích t
+                        return newFlow; // Found path to sink t
                     }
                     q.push({v, newFlow});
                 }
             }
         }
-        return 0; // Không còn đường tăng luồng
+        return 0; // No augmenting path left
     }
 
 public:
@@ -120,9 +121,9 @@ public:
     }
 
     void addEdge(int from, int to, long long cap) {
-        capacity[from][to] += cap; // Hỗ trợ đa cạnh
+        capacity[from][to] += cap; // Support multiple edges
         adj[from].push_back(to);
-        adj[to].push_back(from); // Thêm cung ngược vào danh sách kề
+        adj[to].push_back(from); // Add backward edge to adjacency list
     }
 
     long long maxFlow(int s, int t) {
@@ -130,15 +131,15 @@ public:
         std::vector<int> parent(n);
         long long newFlow = 0;
 
-        // Lặp lại việc tìm đường tăng luồng cho đến khi BFS trả về 0
+        // Repeatedly find augmenting paths until BFS returns 0
         while ((newFlow = bfs(s, t, parent)) > 0) {
             totalFlow += newFlow;
             int curr = t;
-            // Cập nhật dung lượng dư dọc theo đường đi
+            // Update residual capacities along the path
             while (curr != s) {
                 int prev = parent[curr];
-                capacity[prev][curr] -= newFlow; // Giảm dung lượng cung xuôi
-                capacity[curr][prev] += newFlow; // Tăng dung lượng cung ngược
+                capacity[prev][curr] -= newFlow; // Decrease forward edge capacity
+                capacity[curr][prev] += newFlow; // Increase backward edge capacity
                 curr = prev;
             }
         }
@@ -147,7 +148,7 @@ public:
 };
 
 int main() {
-    int V = 6; // Đồ thị 6 đỉnh: 0 (Nguồn S), 5 (Đích T)
+    int V = 6; // Graph with 6 vertices: 0 (Source S), 5 (Sink T)
     EdmondsKarp ek(V);
 
     ek.addEdge(0, 1, 16);
@@ -162,30 +163,30 @@ int main() {
     ek.addEdge(4, 5, 4);
 
     long long flow = ek.maxFlow(0, 5);
-    std::cout << "--- KET QUA LUONG CUC DAI EDMONDS-KARP ---" << std::endl;
-    std::cout << "Luong cuc dai tu 0 den 5: " << flow << std::endl;
+    std::cout << "--- EDMONDS-KARP MAX FLOW RESULT ---" << std::endl;
+    std::cout << "Maximum flow from 0 to 5: " << flow << std::endl;
 
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Mạng luồng:_ `S = 0, T = 5`.
-- _Đường tăng luồng 1:_ BFS tìm thấy `0 -> 1 -> 3 -> 5` với `bottleneck = min(16, 12, 20) = 12` &rarr; Luồng tăng lên `12`. Trừ dung lượng cung xuôi, tăng cung ngược.
-- _Đường tăng luồng 2:_ BFS tìm thấy `0 -> 2 -> 4 -> 5` với `bottleneck = min(13, 14, 4) = 4` &rarr; Luồng tăng lên `12 + 4 = 16`.
-- _Đường tăng luồng 3:_ BFS tìm thấy `0 -> 2 -> 4 -> 3 -> 5` với `bottleneck = min(9, 10, 7, 8) = 7` &rarr; Luồng tăng lên `16 + 7 = 23`.
-- _Kết thúc:_ BFS không còn tìm thấy đường nào có dung lượng &gt; 0 từ 0 đến 5 &rarr; Luồng cực đại chốt giá trị `23`.
+- _Flow Network:_ `S = 0, T = 5`.
+- _Augmenting Path 1:_ BFS finds `0 -> 1 -> 3 -> 5` with `bottleneck = min(16, 12, 20) = 12` &rarr; Flow increases to `12`. Subtract forward capacity, increase backward capacity.
+- _Augmenting Path 2:_ BFS finds `0 -> 2 -> 4 -> 5` with `bottleneck = min(13, 14, 4) = 4` &rarr; Flow increases to `12 + 4 = 16`.
+- _Augmenting Path 3:_ BFS finds `0 -> 2 -> 4 -> 3 -> 5` with `bottleneck = min(9, 10, 7, 8) = 7` &rarr; Flow increases to `16 + 7 = 23`.
+- _Termination:_ BFS can no longer find any path with capacity > 0 from 0 to 5 &rarr; Maximum flow finalizes at `23`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+Performance metric summary according to the standard RAM Model:
 
-- **Độ phức tạp Thời gian (Time Complexity):**
-  - Ford-Fulkerson nguyên bản (DFS): `O(E x |f*|)` với `|f*|` là giá trị luồng cực đại.
-  - Edmonds-Karp (BFS): `O(V x E²)`. Mỗi lần tìm đường mất `O(E)`, số lần tăng luồng bị chặn trên bởi `O(V x E)`.
-- **Độ phức tạp Không gian (Space Complexity):** `O(V²)` ma trận dung lượng hoặc `O(V + E)` nếu sử dụng danh sách cạnh đối xứng.
-- **Ứng dụng thực tế:**
-  - **Mạng ống dẫn dầu và truyền tải nước:** Tính toán lưu lượng cấp nước tối đa của hệ thống thủy lợi đô thị.
-  - **Cắt ảnh trong Thị giác máy tính (Graph Cut Image Segmentation):** Phân tách tiền cảnh (Foreground) và hậu cảnh (Background) trong xử lý ảnh y tế.
-  - **Lập lịch phi hành đoàn hàng không:** Ghép cặp phi công - tiếp viên - chuyến bay tối ưu theo ràng buộc an toàn hàng không.
+- **Time Complexity:**
+  - Original Ford-Fulkerson (DFS): `O(E * |f*|)` where `|f*|` is the maximum flow value.
+  - Edmonds-Karp (BFS): `O(V * E²)`. Each path search takes `O(E)`, and the total number of augmentations is upper-bounded by `O(V * E)`.
+- **Space Complexity:** `O(V²)` for the capacity matrix or `O(V + E)` if using a symmetric edge list.
+- **Practical Applications:**
+  - **Oil Pipeline and Water Transmission Networks:** Calculating the maximum water supply flow for municipal irrigation systems.
+  - **Graph Cut Image Segmentation in Computer Vision:** Separating the foreground and background in medical image processing.
+  - **Airline Crew Scheduling:** Optimally matching pilots, flight attendants, and flights under aviation safety constraints.

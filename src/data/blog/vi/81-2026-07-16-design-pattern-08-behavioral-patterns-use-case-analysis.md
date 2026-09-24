@@ -1,5 +1,5 @@
 ---
-id: 80
+id: 81
 slug: design-pattern-08-behavioral-patterns-use-case-analysis
 title: "Design Pattern #08: Phân tích Use case và Chọn lựa Behavioral Patterns phù hợp"
 summary: "Tổng kết nhóm Behavioral: Cách Strategy và Observer tương tác trong hệ thống xử lý đơn hàng, cùng với ma trận quyết định giúp bạn chọn đúng pattern về mặt hành vi."

@@ -1,12 +1,12 @@
 ---
 id: 86
 slug: design-pattern-13-data-access-patterns-repository
-title: "Design Pattern #13: [Data Access Patterns] Repository Pattern - Chuẩn hóa giao tiếp Cơ sở dữ liệu"
-summary: "Tách biệt hoàn toàn Business Logic khỏi các câu lệnh SQL/ORM phức tạp bằng Repository Pattern, giúp hệ thống dễ dàng thay đổi Database và dễ dàng viết Unit Test."
+title: "Design Pattern #13: [Data Access Patterns] Repository Pattern - Standardizing Database Communication"
+summary: "Completely decouple Business Logic from complex SQL/ORM commands using the Repository Pattern, making it easy to swap Databases and write Unit Tests."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-08-20"
 date: "2026-08-20"
-readTime: "7 phút đọc"
+readTime: "7 min read"
 tags:
   - "Design Patterns"
   - "Repository Patterns"
@@ -14,19 +14,19 @@ tags:
   - "Unit of Work"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong `OrderService` của chúng ta, sau khi xử lý xong các logic như áp dụng mã giảm giá và tính toán phí vận chuyển, bước tiếp theo là lưu trữ đơn hàng vào Database (ví dụ: PostgreSQL).
+In our `OrderService`, after processing logic like applying discount codes and calculating shipping fees, the next step is to save the order into the Database (e.g., PostgreSQL).
 
-Nếu bạn nhúng trực tiếp các câu lệnh SQL hoặc ORM (như `SELECT`, `INSERT`) ngay bên trong `OrderService`, mã nguồn của bạn sẽ bị "dính chặt" (tightly coupled) với cấu trúc bảng trong Database. Nếu sau này công ty quyết định đổi sang MongoDB, bạn sẽ phải đập bỏ và viết lại toàn bộ `OrderService`. **Repository Pattern** chính là lớp bảo vệ giúp bạn tránh khỏi kịch bản đó.
+If you embed SQL or ORM commands (like `SELECT`, `INSERT`) directly inside the `OrderService`, your source code will be "tightly coupled" to the table structures in the Database. If the company later decides to switch to MongoDB, you will have to tear down and rewrite the entire `OrderService`. The **Repository Pattern** is the protective layer that saves you from that scenario.
 
-## Repository Pattern là gì?
+## What is the Repository Pattern?
 
-Repository đóng vai trò trung gian giữa tầng Business Logic (Service) và tầng Truy xuất dữ liệu (Data Access / Database). Nó hoạt động như một bộ sưu tập (collection) các đối tượng trong bộ nhớ, che giấu mọi chi tiết về cách dữ liệu được lưu trữ hay truy vấn bên dưới.
+The Repository acts as an intermediary between the Business Logic layer (Service) and the Data Access layer (Database). It acts like an in-memory collection of objects, hiding all details about how the data is stored or queried underneath.
 
-## Áp dụng vào Hệ thống Xử lý Đơn hàng
+## Applying to the Order Processing System
 
-Chúng ta sẽ định nghĩa một giao diện `IOrderRepository`. `OrderService` chỉ giao tiếp với giao diện này. Phía dưới, ta triển khai `PostgresOrderRepository` chứa các câu lệnh SQL thực tế.
+We will define an `IOrderRepository` interface. `OrderService` will only communicate with this interface. Below, we implement `PostgresOrderRepository` which contains the actual SQL commands.
 
 ```mermaid
 classDiagram
@@ -58,7 +58,7 @@ classDiagram
     IOrderRepository <|.. MongoOrderRepository
 ```
 
-## Cài đặt (Mã giả - TypeScript)
+## Implementation (Pseudocode - TypeScript)
 
 ```typescript
 // 1. Domain Model
@@ -76,21 +76,23 @@ interface IOrderRepository {
   save(order: Order): void;
 }
 
-// 3. Concrete Repository (Triển khai thực tế cho PostgreSQL)
+// 3. Concrete Repository (Real implementation for PostgreSQL)
 class PostgresOrderRepository implements IOrderRepository {
   public findById(id: string): Order | null {
-    console.log(`[Postgres] Thực thi: SELECT * FROM orders WHERE id = '${id}'`);
-    return new Order(id, 100000, "Pending"); // Giả lập dữ liệu trả về
+    console.log(
+      `[Postgres] Executing: SELECT * FROM orders WHERE id = '${id}'`,
+    );
+    return new Order(id, 100000, "Pending"); // Simulated return data
   }
 
   public save(order: Order): void {
     console.log(
-      `[Postgres] Thực thi: INSERT INTO orders VALUES ('${order.id}', ${order.total})`,
+      `[Postgres] Executing: INSERT INTO orders VALUES ('${order.id}', ${order.total})`,
     );
   }
 }
 
-// 4. Concrete Repository (Dùng cho Unit Test)
+// 4. Concrete Repository (Used for Unit Tests)
 class MockOrderRepository implements IOrderRepository {
   private db: Map<string, Order> = new Map();
 
@@ -103,7 +105,7 @@ class MockOrderRepository implements IOrderRepository {
   }
 }
 
-// 5. Service (Chỉ phụ thuộc vào Interface)
+// 5. Service (Depends only on the Interface)
 class OrderService {
   private orderRepo: IOrderRepository;
 
@@ -114,27 +116,27 @@ class OrderService {
   public createOrder(id: string, total: number) {
     const newOrder = new Order(id, total, "Pending");
     this.orderRepo.save(newOrder);
-    console.log("Đã lưu đơn hàng thành công!");
+    console.log("Order saved successfully!");
   }
 }
 
-// Cách sử dụng
+// Usage
 const dbRepo = new PostgresOrderRepository();
 const service = new OrderService(dbRepo);
 service.createOrder("ORD-001", 500000);
 ```
 
-## Đánh giá Ưu / Nhược điểm
+## Pros / Cons Evaluation
 
-**Ưu điểm:**
+**Pros:**
 
-- **Dễ dàng Unit Test:** Bạn có thể dễ dàng tạo `MockOrderRepository` lưu dữ liệu vào mảng/Map trên RAM để test `OrderService` mà không cần kết nối DB thật.
-- **Tách biệt mối quan tâm (SoC):** Thay đổi cấu trúc database hoặc đổi ORM (từ Sequelize sang Prisma) chỉ ảnh hưởng tới file Repository, không làm vỡ logic của Service.
-- Giúp code đọc giống ngôn ngữ tự nhiên (Domain-driven) hơn là các lệnh thao tác DB.
+- **Easy to Unit Test:** You can easily create a `MockOrderRepository` that stores data in an array/Map in RAM to test the `OrderService` without needing a real DB connection.
+- **Separation of Concerns (SoC):** Changing the database structure or switching ORMs (from Sequelize to Prisma) only affects the Repository file, without breaking the Service logic.
+- Makes the code read more like natural language (Domain-driven) rather than DB manipulation commands.
 
-**Nhược điểm:**
+**Cons:**
 
-- Tạo ra nhiều file boilerplate (interface, class implementation).
-- Có thể bị coi là dư thừa (overhead) đối với các dự án nhỏ (CRUD cơ bản) hoặc khi sử dụng các ORM hiện đại vốn dĩ đã áp dụng sẵn mô hình Active Record hoặc Repository bên trong nó.
+- Creates a lot of boilerplate files (interfaces, class implementations).
+- Can be considered an overhead for small projects (basic CRUD) or when using modern ORMs that inherently apply the Active Record or Repository patterns built-in.
 
-Tuy nhiên, nếu hệ thống phát sinh nhu cầu lưu dữ liệu vào 2, 3 bảng cùng lúc và yêu cầu phải thành công tất cả hoặc thất bại tất cả (Transaction), Repository đơn lẻ sẽ không giải quyết được. Chúng ta cần sự kết hợp của **Unit Of Work Pattern** ở bài tiếp theo.
+However, if the system requires saving data into 2 or 3 tables simultaneously, and demands an all-or-nothing completion (Transaction), a standalone Repository won't cut it. We need the combination with the **Unit Of Work Pattern** in the next article.

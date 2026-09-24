@@ -1,12 +1,12 @@
 ---
 id: "23"
 slug: "mastering-css-sticky-grid-filter-drift-containment"
-title: "Làm chủ CSS Sticky trong CSS Grid: Khắc phục Lỗi Trôi Filter Bar & Giới hạn Chiều cao Container khi Cuộn Danh sách Sâu"
-summary: "Phân tích cơ chế Containing Block của CSS Sticky, giải quyết triệt để hiện tượng trôi thanh công cụ lọc khi cuộn qua hàng chục bài viết và tối ưu hóa hiệu năng render 60fps trong React."
+title: "Mastering CSS Sticky in CSS Grid: Fixing Filter Bar Drift & Container Height Limits in Deep List Scrolling"
+summary: "Analyzing the Containing Block mechanism of CSS Sticky, completely resolving the drifting filter toolbar issue when scrolling past dozens of articles, and optimizing 60fps rendering performance in React."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-09-17"
 date: "2026-09-17"
-readTime: "6 phút đọc"
+readTime: "6 min read"
 tags:
   - "CSS Grid"
   - "React"
@@ -15,44 +15,44 @@ tags:
   - "UI Engineering"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Khi xây dựng giao diện Catalog hoặc trang Blog kỹ thuật với bố cục 2 cột (Left Sidebar + Right Content Area), thanh tìm kiếm và bộ lọc nhanh (Filter Controls Bar) thường được thiết kế với hiệu ứng ghim đầu trang (`position: sticky; top: 16px;`) để người dùng có thể lọc theo chuyên đề hoặc từ khóa bất cứ lúc nào.
+When building a Catalog interface or a Tech Blog layout with a 2-column design (Left Sidebar + Right Content Area), the search bar and quick filters (Filter Controls Bar) are often designed with a sticky header effect (`position: sticky; top: 16px;`) so users can filter by topic or keyword at any time.
 
-Tuy nhiên, trong quá trình thử nghiệm thực tế với danh sách hơn 20 bài viết (chiều cao cuộn vượt trên 3,000px), một lỗi khó chịu xuất hiện: Khi người dùng cuộn tới khoảng bài viết thứ 15 trở đi, thanh Filter Bar bỗng nhiên bị trôi dần lên trên và biến mất khỏi khung nhìn (viewport) thay vì giữ vị trí cố định trên đầu trang. Mục tiêu bài viết là phân tích nguyên nhân gốc rễ về ranh giới chứa (Containing Block) của CSS Sticky và đưa ra giải pháp kiến trúc layout chuẩn xác.
+However, during practical testing with a list of over 20 articles (scroll height exceeding 3,000px), an annoying bug appears: When the user scrolls past the 15th article, the Filter Bar suddenly drifts upward and disappears from the viewport instead of holding its fixed position at the top of the page. The objective of this article is to analyze the root cause regarding the Containing Block boundary of CSS Sticky and provide an accurate layout architecture solution.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach Idea
 
-Cách tiếp cận ban đầu thường thấy trong các ứng dụng React:
+The initial approach often seen in React applications:
 
-- Đặt `.blog-controls-panel` làm phần tử anh em (sibling) cùng cấp với danh sách bài viết `.blog-grid` bên trong container cha chung `.blog-main-inner-content` (được cấu hình dạng Flexbox: `display: flex; flex-direction: column; gap: 20px;`).
-- Gán CSS `position: sticky; top: 16px;` cho `.blog-controls-panel`.
+- Place `.blog-controls-panel` as a sibling element at the same level as the article list `.blog-grid` inside a common parent container `.blog-main-inner-content` (configured as Flexbox: `display: flex; flex-direction: column; gap: 20px;`).
+- Assign `position: sticky; top: 16px;` to `.blog-controls-panel`.
 
-**Tại sao cách này thất bại?** Theo đặc tả CSS Positioning, một phần tử `position: sticky` chỉ có thể hoạt động trong phạm vi chiều cao của _Containing Block_ (phần tử cha trực tiếp) của nó. Khi cuộn sâu xuống dưới, nếu container cha có các ràng buộc về flex alignment hoặc khi vùng nhìn cuộn chạm tới giới hạn biên dưới của container cha, phần tử sticky sẽ bị đẩy trôi theo dòng chảy tự nhiên của trang.
+**Why does this approach fail?** According to the CSS Positioning specification, a `position: sticky` element can only operate within the height boundaries of its _Containing Block_ (its direct parent element). When scrolling deep down, if the parent container has flex alignment constraints or when the scroll viewport hits the bottom boundary of the parent container, the sticky element is pushed away, drifting along with the page's natural flow.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithmic Structure
 
-Để giải quyết triệt để vấn đề mà không làm phức tạp hóa mã nguồn, tôi phân tích các phương án:
+To completely solve the issue without overcomplicating the source code, I analyzed these alternatives:
 
-- **Phương án 1 (JavaScript Scroll Listener + `position: fixed`):** Lắng nghe sự kiện scroll và gán `position: fixed` khi chạm ngưỡng. _Nhược điểm:_ Gây hiện tượng nhảy layout (Layout Shift) do phần tử bị rút khỏi DOM flow, buộc phải tính toán lại kích thước thủ công và dễ gây giật khung hình (Layout Thrashing / Reflow).
-- **Phương án 2 (Đưa Filter Bar vào trong CSS Grid Container):** Di chuyển `.blog-controls-panel` vào làm phần tử con trực tiếp đầu tiên của `.blog-grid`. Vì `.blog-grid` chứa toàn bộ 20+ card bài viết nên chiều cao của nó trải dài suốt toàn bộ hành trình cuộn của người dùng.
+- **Option 1 (JavaScript Scroll Listener + `position: fixed`):** Listen to the scroll event and assign `position: fixed` when hitting a threshold. _Drawback:_ Causes Layout Shift because the element is removed from the DOM flow, forcing manual size recalculations and easily causing frame drops (Layout Thrashing / Reflow).
+- **Option 2 (Moving the Filter Bar into the CSS Grid Container):** Move `.blog-controls-panel` to be the first direct child element of `.blog-grid`. Because `.blog-grid` contains all 20+ article cards, its height stretches across the user's entire scrolling journey.
 
-Trong CSS Grid, các phần tử con mặc định sẽ chiếm 1 ô (cell). Do đó, bí quyết mấu chốt để thanh Filter vẫn hiển thị toàn chiều ngang (full-width banner) nằm trên tất cả các cột card là áp dụng thuộc tính: `grid-column: 1 / -1;`.
+In CSS Grid, child elements default to occupying 1 cell. Therefore, the key secret to keeping the Filter bar displayed across the entire width (full-width banner) above all card columns is applying the property: `grid-column: 1 / -1;`.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Triển khai giải pháp chuẩn trong JSX và SCSS:
+Implementing the standard solution in JSX and SCSS:
 
-- **Cấu trúc JSX trong BlogPage.tsx:** Đưa `.blog-controls-panel` vào làm phần tử con trực tiếp đầu tiên bên trong `.blog-grid`.
-- **Cấu hình CSS Grid & Sticky:** Gán `grid-column: 1 / -1; position: sticky; top: 16px; z-index: 25;` cho `.blog-controls-panel` để bao trọn toàn bộ chiều rộng grid và ghim cố định ở đầu trang suốt hành trình cuộn.
-- **Hiệu ứng chuyển đổi mượt mà:** Kết hợp `backdrop-filter: blur(16px)` và tự động kích hoạt class `.is-stuck` với hiệu ứng đổ bóng khi cuộn vượt ngưỡng 40px.
+- **JSX Structure in BlogPage.tsx:** Move `.blog-controls-panel` to be the first direct child inside `.blog-grid`.
+- **CSS Grid & Sticky Configuration:** Assign `grid-column: 1 / -1; position: sticky; top: 16px; z-index: 25;` to `.blog-controls-panel` so it spans the entire grid width and remains pinned at the top throughout the scroll.
+- **Smooth Transition Effects:** Combine `backdrop-filter: blur(16px)` and automatically toggle an `.is-stuck` class with a drop shadow effect when scrolling past the 40px threshold.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-**Phân tích hiệu năng & Độ phức tạp:**
+**Performance & Complexity Analysis:**
 
-- **Độ phức tạp DOM:** O(1) - Không cần tạo thêm wrapper div trung gian hay logic tính toán vị trí bằng JavaScript phức tạp.
-- **Hiệu năng dựng hình (Rendering Performance):** Cơ chế sticky thuần CSS được xử lý trực tiếp trên GPU Compositing Layer của trình duyệt, duy trì tốc độ khung hình **60 FPS** ổn định ngay cả khi cuộn nhanh trên màn hình di động hoặc thiết bị có cấu hình thấp.
-- **Trải nghiệm người dùng (UX):** Thanh tìm kiếm và bộ lọc luôn hiển thị trong tầm mắt tại mọi vị trí cuộn, kết hợp nền mờ glassmorphism và đổ bóng khi ghim cố định giúp nội dung bên dưới cuộn qua thanh thoát và chuyên nghiệp.
+- **DOM Complexity:** O(1) - No need to create intermediate wrapper divs or use complex JavaScript positioning logic.
+- **Rendering Performance:** The pure CSS sticky mechanism is handled directly on the browser's GPU Compositing Layer, maintaining a stable **60 FPS** framerate even during fast scrolling on mobile screens or low-end devices.
+- **User Experience (UX):** The search and filter bar is always visible at any scroll position, combining a glassmorphism blur and drop shadow when pinned, helping the underlying content scroll past elegantly and professionally.
 
-**Ứng dụng mở rộng:** Mô hình `position: sticky` kết hợp `grid-column: 1 / -1` là kiến trúc mẫu mực cho các ứng dụng E-Commerce (bộ lọc sản phẩm), Bảng dữ liệu Analytics (Data Tables ghim tiêu đề cột) và các trang Dashboard quản trị hiện đại.
+**Extended Applications:** The `position: sticky` combined with `grid-column: 1 / -1` pattern is an exemplary architecture for E-Commerce apps (product filters), Analytics Data Tables (pinning column headers), and modern Admin Dashboards.

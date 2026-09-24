@@ -1,131 +1,93 @@
 ---
-id: 84
-slug: design-pattern-11-structural-patterns-facade
-title: "Design Pattern #11: [Structural Patterns] Facade Pattern - Đơn giản hóa API Checkout"
-summary: "Tạo ra một mặt tiền (Facade) duy nhất để che giấu sự phức tạp của toàn bộ quy trình Checkout gồm Kiểm tra kho, Thanh toán, Lưu Database và Gửi email."
+id: 85
+slug: design-pattern-12-structural-patterns-use-case-analysis
+title: "Design Pattern #12: Use Case Analysis and Choosing Suitable Structural Patterns"
+summary: "Looking back at the big picture of how Decorator, Adapter, and Facade connect the E-commerce system, along with a matrix to help you choose the correct structural design pattern."
 category: "code-craftsmanship-languages"
-publishedAt: "2026-08-06"
-date: "2026-08-06"
-readTime: "6 phút đọc"
+publishedAt: "2026-08-13"
+date: "2026-08-13"
+readTime: "5 min read"
 tags:
   - "Design Patterns"
   - "Structural Patterns"
-  - "Facade"
   - "Use Case Analysis"
+  - "Best Practices"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Chúng ta đã xây dựng rất nhiều module nhỏ gọn và mạnh mẽ: Tính giá (Decorator), Tồn kho (Adapter), Thanh toán (Factory), Thông báo (Observer).
-Bây giờ, tại API Endpoint `/checkout`, client (Mobile App / Web React) chỉ muốn gọi một API duy nhất để hoàn tất đơn hàng.
+Through the 3 articles on **Structural Patterns**, our Order Processing System's architecture has been significantly perfected. This group solves the problem: _"How can independent classes / modules work together under a flexible overall structure?"_
 
-Nếu Controller phải tự mình gọi lần lượt: Check tồn kho -> Apply Voucher -> Charge thẻ tín dụng -> Lưu DB -> Bắn Email... thì Controller sẽ biến thành một "Thảm họa" (Fat Controller). **Facade Pattern** giúp chúng ta tạo ra một lớp giao tiếp thân thiện hơn.
+## System Interaction with Structural Patterns
 
-## Facade Pattern là gì?
-
-Facade (Mặt tiền) cung cấp một giao diện cấp cao, đơn giản hóa và đồng nhất cho một nhóm các giao diện phức tạp của một hệ thống con (subsystem). Nó "che đậy" sự phức tạp bên dưới khỏi Client.
-
-## Áp dụng vào Hệ thống
-
-Chúng ta tạo class `CheckoutFacade`. Mobile/Web chỉ việc gọi `checkoutFacade.placeOrder(cart, user)`. Bên trong Facade sẽ đứng ra điều phối tất cả các service khác nhau.
+Let's see how these patterns connect the entire system:
 
 ```mermaid
-classDiagram
-    class MobileClient {
-        +clickCheckout()
-    }
+flowchart TD
+  Client["Web/Mobile App"] --> |Call API| Facade["Checkout Facade\n(Simplifies communication)"]
 
-    class CheckoutFacade {
-        +placeOrder(cart, user): Result
-    }
+  Facade --> |1. Pricing| Decorator["Order Decorator\n(Stacking Vouchers)"]
+  Decorator --> |Base Order| BaseOrder(Base Order)
+  Decorator -.-> |Wraps| Voucher1(10% Voucher)
+  Decorator -.-> |Wraps| Voucher2(Freeship)
 
-    class InventoryService { +checkStock() }
-    class PricingService { +calculate() }
-    class PaymentService { +charge() }
-    class NotificationService { +sendEmail() }
+  Facade --> |2. Check Stock| Adapter["Inventory Adapter\n(Interface conversion)"]
+  Adapter --> |Call XML/SOAP| Legacy["(Legacy Inventory System)"]
 
-    MobileClient --> CheckoutFacade : Gọi 1 hàm duy nhất
-    CheckoutFacade --> InventoryService : 1. Điều phối
-    CheckoutFacade --> PricingService : 2. Điều phối
-    CheckoutFacade --> PaymentService : 3. Điều phối
-    CheckoutFacade --> NotificationService : 4. Điều phối
+  Facade --> |3. Payment...| Other["Payment, Notification..."]
 ```
 
-## Cài đặt (Mã giả - TypeScript)
+- **Facade:** Acts as the Entry point, hiding complexity.
+- **Decorator:** Flexibly handles billing operations at the Business Logic layer.
+- **Adapter:** Acts as an interpreter at the Infrastructure / 3rd-party communication layer.
 
-```typescript
-// Các hệ thống con (Subsystems) - Rất phức tạp
-class InventorySvc {
-  checkStock(id: string) {
-    return true;
-  }
-}
-class PricingSvc {
-  applyDiscount(val: number) {
-    return val * 0.9;
-  }
-}
-class PaymentSvc {
-  process(val: number) {
-    console.log(`Charged ${val}`);
-    return true;
-  }
-}
-class NotiSvc {
-  send(msg: string) {
-    console.log(`Email sent: ${msg}`);
-  }
-}
+## Selection Criteria (Decision Matrix)
 
-// Lớp Facade
-class CheckoutFacade {
-  private inventory: InventorySvc;
-  private pricing: PricingSvc;
-  private payment: PaymentSvc;
-  private noti: NotiSvc;
+When facing the "assembly" of a system, use the following table to choose the appropriate Pattern:
 
-  constructor() {
-    this.inventory = new InventorySvc();
-    this.pricing = new PricingSvc();
-    this.payment = new PaymentSvc();
-    this.noti = new NotiSvc();
-  }
+<table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
+  <thead>
+    <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
+      <th style="padding: 8px;">Problem Specification (Use Case)</th>
+      <th style="padding: 8px;">Pattern</th>
+      <th style="padding: 8px;">Real-world application example (Backend)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid #edf2f7;">
+      <td style="padding: 8px;">You have an old or 3rd-party API/Library with an <strong>interface incompatible</strong> with the current system standards?</td>
+      <td style="padding: 8px;"><strong>Adapter</strong></td>
+      <td style="padding: 8px;">Wrapping old logger libraries, integrating payment gateways with quirky payloads, parsing XML to JSON.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #edf2f7;">
+      <td style="padding: 8px;">You want to provide a <strong>single, simple API</strong> to call a series of complex underlying steps?</td>
+      <td style="padding: 8px;"><strong>Facade</strong></td>
+      <td style="padding: 8px;">Creating Checkout API, System Bootstrapper, Module Entrypoint.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #edf2f7;">
+      <td style="padding: 8px;">You want to <strong>add features to an object at runtime</strong>, allowing combinations of features without using Inheritance?</td>
+      <td style="padding: 8px;"><strong>Decorator</strong></td>
+      <td style="padding: 8px;">Middleware (Express/NestJS), Interceptors, Adding discount codes, Tagging logs.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #edf2f7;">
+      <td style="padding: 8px;">You have objects organized in a <strong>Tree structure</strong> (Folders - Files) and want to treat them uniformly?</td>
+      <td style="padding: 8px;"><strong>Composite</strong> <em>(Extension)</em></td>
+      <td style="padding: 8px;">Multi-level Product Category structures, Dynamic Menu Systems, Org Charts.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #edf2f7;">
+      <td style="padding: 8px;">You need a "representative" object to <strong>control access, lazy load, or log</strong> before calling the real object?</td>
+      <td style="padding: 8px;"><strong>Proxy</strong> <em>(Extension)</em></td>
+      <td style="padding: 8px;">Caching Database Queries, API Rate Limiters, Auth Guards blocking access.</td>
+    </tr>
+  </tbody>
+</table>
 
-  // Giao diện duy nhất phơi bày cho Client
-  public placeOrder(productId: string, price: number): boolean {
-    console.log("--- Bắt đầu quy trình Checkout ---");
+## Best Practices
 
-    if (!this.inventory.checkStock(productId)) {
-      console.log("Hết hàng!");
-      return false;
-    }
+1.  **Facade vs Adapter:** Very easy to confuse.
+    - _Adapter_ changes an existing interface to make it compatible with another interface. It works with a single object.
+    - _Facade_ defines a new, simpler interface for a subsystem of MULTIPLE objects.
+2.  **Decorator vs Inheritance:** Prioritize Decorators (Composition) over Inheritance when the number of feature combinations is massive. Inheritance is a static relationship (Compile-time), while Decorators are dynamic (Run-time).
+3.  **Limit God Facade:** A good Facade should only act to "delegate" to subsystems. Do not write Business logic, complex loops, or algorithms directly inside the Facade.
 
-    const finalPrice = this.pricing.applyDiscount(price);
-
-    if (!this.payment.process(finalPrice)) {
-      console.log("Thanh toán lỗi!");
-      return false;
-    }
-
-    this.noti.send(`Đơn hàng cho SP ${productId} đã thành công!`);
-    console.log("--- Hoàn tất Checkout ---");
-    return true;
-  }
-}
-
-// Tại Controller (Client) - Rất sạch sẽ và ngắn gọn
-const facade = new CheckoutFacade();
-facade.placeOrder("IPHONE-15", 30000000);
-```
-
-## Đánh giá Ưu / Nhược điểm
-
-**Ưu điểm:**
-
-- Cực kỳ thân thiện với Client, giảm sự kết dính (coupling) giữa giao diện người dùng / HTTP Controller với logic lõi.
-- Dễ dàng nâng cấp hoặc thay đổi các subsystem bên trong mà không ảnh hưởng đến API gọi từ bên ngoài.
-
-**Nhược điểm:**
-
-- Nguy cơ Facade trở thành một "God Object" (Lớp chứa quá nhiều thứ) nếu bạn nhồi nhét mọi logic vào đây.
-- Facade không ngăn chặn client sử dụng trực tiếp các subsystem nếu họ muốn. Nó chỉ cung cấp một lối đi tiện lợi hơn.
+In the final group, **Data Access Patterns**, we will explore how the system communicates with the Database via the **Repository** and ensures data integrity with **Unit Of Work**.

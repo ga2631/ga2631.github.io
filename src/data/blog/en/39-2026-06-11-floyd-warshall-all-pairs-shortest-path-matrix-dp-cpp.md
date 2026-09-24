@@ -1,12 +1,12 @@
 ---
 id: "39"
 slug: "floyd-warshall-all-pairs-shortest-path-matrix-dp-cpp"
-title: "Thuật toán Nâng cao #05: Thuật toán Tìm đường đi ngắn nhất Floyd-Warshall - Quy hoạch động Ma trận O(V³), All-Pairs Shortest Path & Triển khai C++"
-summary: "Phân tích toàn diện thuật toán Floyd-Warshall: Giải bài toán Tìm đường đi ngắn nhất giữa mọi cặp đỉnh (All-Pairs Shortest Path) bằng Quy hoạch động ma trận O(V³), vai trò của đỉnh trung gian k, phát hiện chu trình âm qua đường chéo chính và mã nguồn C++ tái tạo đường đi."
+title: "Advanced Algorithms #05: Floyd-Warshall Algorithm - O(V³) Matrix DP, All-Pairs Shortest Path & C++ Implementation"
+summary: "Comprehensive analysis of the Floyd-Warshall algorithm: Solving the All-Pairs Shortest Path problem using O(V³) Matrix Dynamic Programming, the role of intermediate vertex k, negative cycle detection via the main diagonal, and C++ source code for path reconstruction."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "12 phút đọc"
+readTime: "12 min read"
 tags:
   - "Algorithms"
   - "Floyd-Warshall"
@@ -16,32 +16,32 @@ tags:
   - "C++"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong nhiều hệ thống thực tế như mạng lưới giao thông liên tỉnh, hệ thống chuyển mạch viễn thông hay game nhập vai thế giới mở, hệ thống cần tra cứu khoảng cách ngắn nhất giữa **bất kỳ cặp đỉnh nào `(u, v)`** trong thời gian tức thời `O(1)` sau một pha tiền tính toán duy nhất.
+In many real-world systems such as interprovincial transport networks, telecom switching systems, or open-world RPG games, the system needs to query the shortest distance between **any pair of vertices `(u, v)`** in `O(1)` instant time after a single precomputation phase.
 
-Bài toán đặt ra: **Tìm đường đi ngắn nhất giữa mọi cặp đỉnh (All-Pairs Shortest Path - APSP)**. Cho đồ thị có hướng `G = (V, E)` có thể chứa trọng số âm nhưng không chứa chu trình âm. Hãy xây dựng ma trận khoảng cách `dist[V][V]` sao cho `dist[i][j]` biểu diễn độ dài đường đi ngắn nhất từ đỉnh `i` đến đỉnh `j` với mọi `0 <= i, j < V`.
+The challenge: **Find the All-Pairs Shortest Path (APSP)**. Given a directed graph `G = (V, E)` that may contain negative weights but no negative cycles. Construct a distance matrix `dist[V][V]` such that `dist[i][j]` represents the shortest path length from vertex `i` to vertex `j` for all `0 \leq i, j < V`.
 
-Thuật toán Floyd-Warshall (do Robert Floyd và Stephen Warshall công bố năm 1962) là lời giải kinh điển, thanh lịch bậc nhất với cấu trúc 3 vòng lặp lồng nhau cực kỳ tinh gọn.
+The Floyd-Warshall algorithm (published by Robert Floyd and Stephen Warshall in 1962) is the classic, most elegant solution featuring an extremely concise structure of 3 nested loops.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Ta có thể giải bài toán APSP bằng cách chạy các thuật toán Single-Source Shortest Path (SSSP) lặp lại `V` lần với từng đỉnh làm nguồn:
+We could solve the APSP problem by running Single-Source Shortest Path (SSSP) algorithms repeatedly `V` times, with each vertex as the source:
 
-- **Chạy Dijkstra `V` lần:** Chi phí thời gian `O(V x (V + E) \log V)`. Tuy nhiên, Dijkstra không xử lý được trọng số âm.
-- **Chạy Bellman-Ford `V` lần:** Chi phí thời gian `O(V x V x E) = O(V² E)`. Với đồ thị dày (`E ~ V²`), độ phức tạp vọt lên `O(V⁴)` - quá nặng nề và phức tạp khi cài đặt.
+- **Run Dijkstra `V` times:** Time cost `O(V \times (V + E) \log V)`. However, Dijkstra cannot handle negative weights.
+- **Run Bellman-Ford `V` times:** Time cost `O(V \times V \times E) = O(V^2 E)`. For dense graphs (`E \approx V^2`), complexity shoots up to `O(V^4)` - far too heavy and complex to implement.
 
-Floyd-Warshall giải quyết bài toán này chỉ trong `O(V³)` bằng Quy hoạch động ma trận tại chỗ (In-Place Matrix DP), không đòi hỏi cấu trúc dữ liệu phức tạp như Heap hay danh sách kề.
+Floyd-Warshall solves this problem in just `O(V^3)` using In-Place Matrix Dynamic Programming (DP), requiring no complex data structures like Heaps or adjacency lists.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Tư duy Quy hoạch động của Floyd-Warshall định nghĩa trạng thái dựa trên **Tập hợp các đỉnh trung gian cho phép**:
+The DP mindset of Floyd-Warshall defines states based on **the set of allowable intermediate vertices**:
 
-1. **Định nghĩa trạng thái DP:** Gọi `dp[k][i][j]` là độ dài đường đi ngắn nhất từ đỉnh `i` đến đỉnh `j`, với điều kiện mọi đỉnh trung gian trên hành trình chỉ được phép chọn từ tập hợp `{0, 1, 2, ..., k}`.
-2. **Hệ thức chuyển trạng thái:** Khi mở rộng tập đỉnh trung gian cho phép từ `k - 1` lên `k`, ta có hai lựa chọn:
+1. **DP State Definition:** Let `dp[k][i][j]` be the shortest path length from vertex `i` to vertex `j`, provided that all intermediate vertices on the route can only be chosen from the set `{0, 1, 2, ..., k}`.
+2. **State Transition Relation:** When expanding the allowable intermediate vertex set from `k - 1` to `k`, we have two choices:
 
-- _Không đi qua đỉnh trung gian `k`:_ Khoảng cách giữ nguyên là `dp[k - 1][i][j]`.
-- _Đi qua đỉnh trung gian `k`:_ Đường đi tách thành hai đoạn `i -> k` và `k -> j`, có tổng chi phí là `dp[k - 1][i][k] + dp[k - 1][k][j]`.
+- _Do not go through intermediate vertex `k`:_ The distance remains `dp[k - 1][i][j]`.
+- _Go through intermediate vertex `k`:_ The path splits into two segments `i \rightarrow k` and `k \rightarrow j`, with a total cost of `dp[k - 1][i][k] + dp[k - 1][k][j]`.
 
 ```
 dp[k][i][j] = min(
@@ -50,38 +50,38 @@ dp[k][i][j] = min(
 )
 ```
 
-3. **Tối ưu bộ nhớ tại chỗ (In-Place 2D Matrix):** Vì các giá trị ở hàng `k` và cột `k` không bị thay đổi khi dùng chính đỉnh `k` làm trung gian, ta có thể bỏ chiều `k` và cập nhật trực tiếp trên ma trận 2 chiều `dist[i][j]`. _Quy tắc vàng:_ Vòng lặp biến `k` bắt buộc phải nằm ở **ngoài cùng**.
-4. **Phát hiện Chu trình Âm:** Sau khi hoàn tất `V` bước, kiểm tra đường chéo chính: Nếu tồn tại bất kỳ đỉnh `i` nào có `dist[i][i] < 0`, chứng tỏ đỉnh `i` nằm trong một chu trình âm.
+3. **In-Place 2D Matrix Memory Optimization:** Because the values in row `k` and column `k` remain unchanged when vertex `k` itself is used as an intermediate, we can drop the `k` dimension and update directly on the 2D matrix `dist[i][j]`. _Golden rule:_ The `k` variable loop MUST be placed on the **outermost** level.
+4. **Negative Cycle Detection:** After completing all `V` steps, check the main diagonal: If there is any vertex `i` where `dist[i][i] < 0`, it proves that vertex `i` belongs to a negative cycle.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ chuyển trạng thái ma trận qua đỉnh trung gian `k`:
+State transition matrix diagram through intermediate vertex `k`:
 
 ```mermaid
 graph LR
-    subgraph IntermediateBridge [Cơ Chế Bắc Cầu Qua Đỉnh Trung Gian k]
-        I((Đỉnh i)) -->|"dist i-j cũ"| J((Đỉnh j))
-        I -->|"dist i-k"| K((Đỉnh k - Trung Gian))
+    subgraph IntermediateBridge [Bridging Mechanism via Intermediate Vertex k]
+        I((Vertex i)) -->|"old dist i-j"| J((Vertex j))
+        I -->|"dist i-k"| K((Vertex k - Intermediate))
         K -->|"dist k-j"| J
     end
 
-    subgraph MatrixUpdate [Quy Hoạch Động Tại Chỗ]
+    subgraph MatrixUpdate [In-Place Dynamic Programming]
         Formula["dist[i, j] = MIN(dist[i, j], dist[i, k] + dist[k, j])"]
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh (Floyd-Warshall với Ma trận Next để tái tạo đường đi):**
+**Complete C++ Source Code (Floyd-Warshall with Next Matrix for Path Reconstruction):**
 
 ```c++
 #include <iostream>
 #include <vector>
 #include <algorithm>
 
-const long long INF = 1e15; // Giá trị an toàn tránh tràn số khi cộng
+const long long INF = 1e15; // Safe large value to avoid overflow when adding
 
 void floydWarshall(int V, std::vector<std::vector<long long>>& dist,
                    std::vector<std::vector<int>>& nextNode) {
-    // Khởi tạo ma trận nextNode để phục vụ truy vết đường đi
+    // Initialize the nextNode matrix for path reconstruction tracking
     for (int i = 0; i < V; ++i) {
         for (int j = 0; j < V; ++j) {
             if (i == j) {
@@ -95,14 +95,14 @@ void floydWarshall(int V, std::vector<std::vector<long long>>& dist,
         }
     }
 
-    // 3 vòng lặp lồng nhau: k (đỉnh trung gian) BẮT BUỘC ở vòng ngoài cùng
+    // 3 nested loops: k (intermediate vertex) MUST be the outermost loop
     for (int k = 0; k < V; ++k) {
         for (int i = 0; i < V; ++i) {
             for (int j = 0; j < V; ++j) {
                 if (dist[i][k] != INF && dist[k][j] != INF) {
                     if (dist[i][k] + dist[k][j] < dist[i][j]) {
                         dist[i][j] = dist[i][k] + dist[k][j];
-                        nextNode[i][j] = nextNode[i][k]; // Kế thừa đỉnh bước kế tiếp
+                        nextNode[i][j] = nextNode[i][k]; // Inherit next step vertex
                     }
                 }
             }
@@ -110,7 +110,7 @@ void floydWarshall(int V, std::vector<std::vector<long long>>& dist,
     }
 }
 
-// Hàm kiểm tra chu trình âm qua đường chéo chính
+// Check for negative cycles via the main diagonal
 bool hasNegativeCycle(int V, const std::vector<std::vector<long long>>& dist) {
     for (int i = 0; i < V; ++i) {
         if (dist[i][i] < 0) return true;
@@ -118,7 +118,7 @@ bool hasNegativeCycle(int V, const std::vector<std::vector<long long>>& dist) {
     return false;
 }
 
-// Phục dựng đường đi ngắn nhất từ u đến v
+// Reconstruct the shortest path from u to v
 std::vector<int> getPath(int u, int v, const std::vector<std::vector<int>>& nextNode) {
     if (nextNode[u][v] == -1) return {};
     std::vector<int> path = {u};
@@ -134,7 +134,7 @@ int main() {
     std::vector<std::vector<long long>> dist(V, std::vector<long long>(V, INF));
     std::vector<std::vector<int>> nextNode(V, std::vector<int>(V, -1));
 
-    // Khởi tạo đồ thị có hướng 4 đỉnh
+    // Initialize directed graph with 4 vertices
     dist[0][1] = 5;
     dist[0][3] = 10;
     dist[1][2] = 3;
@@ -143,9 +143,9 @@ int main() {
     floydWarshall(V, dist, nextNode);
 
     if (hasNegativeCycle(V, dist)) {
-        std::cout << "Phat hien Chu trinh am trong do thi!" << std::endl;
+        std::cout << "Negative Cycle Detected in the graph!" << std::endl;
     } else {
-        std::cout << "--- MA TRAN KHOANG CACH NGAN NHAT ALL-PAIRS ---" << std::endl;
+        std::cout << "--- ALL-PAIRS SHORTEST PATH DISTANCE MATRIX ---" << std::endl;
         for (int i = 0; i < V; ++i) {
             for (int j = 0; j < V; ++j) {
                 if (dist[i][j] == INF) std::cout << "INF\t";
@@ -154,33 +154,33 @@ int main() {
             std::cout << std::endl;
         }
 
-        std::cout << "\nDuong di tu dinh 0 den dinh 3: ";
+        std::cout << "\nPath from vertex 0 to 3: ";
         auto path = getPath(0, 3, nextNode);
         for (size_t i = 0; i < path.size(); ++i) {
             std::cout << path[i] << (i + 1 < path.size() ? " -> " : "");
         }
-        std::cout << " (Chi phi: " << dist[0][3] << ")" << std::endl;
+        std::cout << " (Cost: " << dist[0][3] << ")" << std::endl;
     }
 
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Trạng thái ban đầu:_ `dist[0][1]=5, dist[0][3]=10, dist[1][2]=3, dist[2][3]=1`.
-- _Khi `k = 0`:_ Dùng đỉnh 0 làm trung gian, không có cặp nào được cải thiện thêm.
-- _Khi `k = 1`:_ Dùng đỉnh 1 làm trung gian &rarr; Xét cặp `(0, 2)`: `dist[0][1] + dist[1][2] = 5 + 3 = 8 < INF` &rarr; Cập nhật `dist[0][2] = 8`.
-- _Khi `k = 2`:_ Dùng đỉnh 2 làm trung gian &rarr; Xét cặp `(0, 3)`: `dist[0][2] + dist[2][3] = 8 + 1 = 9 < dist[0][3]=10` &rarr; Cập nhật `dist[0][3] = 9`! Hành trình chuyển từ đường trực tiếp `0->3 (w=10)` sang đi vòng `0 -> 1 -> 2 -> 3 (w=9)`.
-- _Khi `k = 3`:_ Dùng đỉnh 3 làm trung gian, ma trận ổn định hoàn toàn.
+- _Initial state:_ `dist[0][1]=5, dist[0][3]=10, dist[1][2]=3, dist[2][3]=1`.
+- _When `k = 0`:_ Using vertex 0 as intermediate, no pairs improve.
+- _When `k = 1`:_ Using vertex 1 as intermediate &rarr; Evaluate pair `(0, 2)`: `dist[0][1] + dist[1][2] = 5 + 3 = 8 < \infty` &rarr; Update `dist[0][2] = 8`.
+- _When `k = 2`:_ Using vertex 2 as intermediate &rarr; Evaluate pair `(0, 3)`: `dist[0][2] + dist[2][3] = 8 + 1 = 9 < dist[0][3]=10` &rarr; Update `dist[0][3] = 9`! Journey shifts from direct `0->3 (w=10)` to taking a detour `0 -> 1 -> 2 -> 3 (w=9)`.
+- _When `k = 3`:_ Using vertex 3 as intermediate, the matrix stabilizes completely.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+Performance metric summary according to the standard RAM Model:
 
-- **Độ phức tạp Thời gian (Time Complexity):** `Θ(V³)` trong mọi trường hợp do 3 vòng lặp cố định `V x V x V`. Không phụ thuộc vào số lượng cạnh `E`.
-- **Độ phức tạp Không gian (Space Complexity):** `O(V²)` để lưu trữ 2 ma trận kích thước `V x V` (ma trận khoảng cách `dist` và ma trận truy vết `nextNode`). Cực kỳ thân thiện với bộ nhớ đệm CPU (Cache Locality) do truy cập mảng tuần tự liên tục.
-- **Ứng dụng thực tế:**
-  - **Bao đóng bắc cầu (Transitive Closure):** Thuật toán Warshall kiểm tra tính liên thông và khả năng chạm tới giữa mọi cặp đỉnh trong đồ thị định hướng (ứng dụng phân tích phụ thuộc trong Compiler).
-  - **Hệ thống Logistics và Định tuyến Đa phương thức:** Bảng tra cứu khoảng cách cố định giữa hàng nghìn bưu cục hoặc sân bay toàn cầu.
-  - **Lý thuyết mạng xã hội:** Tính toán độ trung tâm tiệm cận (Closeness Centrality) và độ trung tâm trung gian (Betweenness Centrality) của các nút mạng.
+- **Time Complexity:** `\Theta(V^3)` in all cases due to the 3 fixed loops `V \times V \times V`. Independent of the number of edges `E`.
+- **Space Complexity:** `O(V^2)` to store 2 matrices of size `V \times V` (`dist` distance matrix and `nextNode` trace matrix). Extremely CPU cache-friendly (Cache Locality) due to contiguous sequential array access.
+- **Practical Applications:**
+  - **Transitive Closure:** Warshall's algorithm checks connectivity and reachability between all pairs of vertices in directed graphs (used in dependency analysis for Compilers).
+  - **Logistics and Multimodal Routing Systems:** Fixed distance lookup tables between thousands of global post offices or airports.
+  - **Social Network Theory:** Calculating Closeness Centrality and Betweenness Centrality for network nodes.

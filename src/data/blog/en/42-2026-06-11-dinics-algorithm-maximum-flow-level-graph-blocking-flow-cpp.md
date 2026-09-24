@@ -1,12 +1,12 @@
 ---
 id: "42"
 slug: "dinics-algorithm-maximum-flow-level-graph-blocking-flow-cpp"
-title: "Thuật toán Nâng cao #08: Thuật toán Tìm luồng cực đại Dinic - Đồ thị Phân tầng (Level Graph), Luồng chặn (Blocking Flow) & Triển khai C++ Siêu tốc"
-summary: "Mổ xẻ thuật toán tìm luồng cực đại Dinic: Đột phá hiệu năng O(V² * E) nhờ cấu trúc Đồ thị phân tầng (Level Graph), kỹ thuật đẩy Luồng chặn (Blocking Flow) qua DFS và con trỏ dead-end pruning work[], đạt O(E * sqrt(V)) trên mạng đơn vị."
+title: "Advanced Algorithms #08: Dinic's Maximum Flow Algorithm - Level Graph, Blocking Flow & High-Speed C++ Implementation"
+summary: "Dissecting Dinic's maximum flow algorithm: A performance breakthrough achieving O(V² * E) thanks to the Level Graph structure, Blocking Flow pushing technique via DFS, and dead-end pruning using the work[] pointer, reaching O(E * sqrt(V)) on unit networks."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "13 phút đọc"
+readTime: "13 min read"
 tags:
   - "Algorithms"
   - "Max Flow"
@@ -17,51 +17,49 @@ tags:
   - "C++"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Mặc dù thuật toán Edmonds-Karp đảm bảo tính đa thức với độ phức tạp `O(V x E²)`, nhưng trên các đồ thị có quy mô lớn trong thực tế (hàng chục nghìn đỉnh và hàng trăm nghìn cạnh), việc chạy lại toàn bộ thuật toán BFS từ đầu chỉ để tăng luồng trên _một con đường duy nhất_ là một nút thắt cổ chai hiệu năng nghiêm trọng.
+Although the Edmonds-Karp algorithm guarantees polynomial time with an `O(V * E²)` complexity, on real-world large-scale graphs (tens of thousands of vertices and hundreds of thousands of edges), re-running the entire BFS from scratch just to augment flow on _a single path_ acts as a severe performance bottleneck.
 
-Nhà toán học Yefim A. Dinitz vào năm 1970 đã phát minh ra **Thuật toán Dinic (Dinitz's Algorithm)**. Thuật toán giới thiệu một bước nhảy vọt về tư duy: Thay vì tăng luồng đơn lẻ, Dinic xây dựng **Đồ thị phân tầng (Level Graph)** và đẩy đồng thời nhiều đường tăng luồng cùng lúc trong một pha duy nhất thông qua khái niệm **Luồng chặn (Blocking Flow)**.
+In 1970, mathematician Yefim A. Dinitz invented **Dinic's Algorithm** (also known as Dinitz's Algorithm). This algorithm introduced a paradigm shift: Instead of augmenting a single flow at a time, Dinic constructs a **Level Graph** and simultaneously pushes multiple augmenting flows in a single phase using the concept of **Blocking Flow**.
 
-Thuật toán đạt độ phức tạp xuất sắc `O(V² x E)` trên đồ thị tổng quát và đạt tốc độ không tưởng `O(E sqrtV)` trên mạng đơn vị (Unit Network - tương đương giải thuật Hopcroft-Karp trong bài toán Cặp ghép cực đại).
+The algorithm achieves an excellent complexity of `O(V² * E)` on general graphs and reaches an incredible speed of `O(E \sqrt{V})` on unit networks (equivalent to the Hopcroft-Karp algorithm for Maximum Bipartite Matching).
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Sự khác biệt căn bản giữa Edmonds-Karp và Dinic nằm ở kiến trúc xử lý:
+The fundamental difference between Edmonds-Karp and Dinic lies in their processing architecture:
 
-- **Edmonds-Karp:** Chạy 1 lần BFS &rarr; Tìm 1 đường tăng luồng &rarr; Cập nhật đồ thị dư &rarr; Lặp lại. Phải thực hiện tới `O(V x E)` lần BFS độc lập.
-- **Dinic:** Chạy 1 lần BFS để phân tầng toàn bộ đồ thị theo khoảng cách ngắn nhất &rarr; Chạy DFS liên tục đẩy luồng qua tất cả các đường hợp lệ trên đồ thị phân tầng cho đến khi bị bão hòa hoàn toàn (Luồng chặn) &rarr; Tiến sang pha phân tầng kế tiếp. Số pha phân tầng bị chặn cứng ở `V - 1` pha.
+- **Edmonds-Karp:** Runs BFS once &rarr; Finds 1 augmenting path &rarr; Updates residual graph &rarr; Repeats. Must execute up to `O(V * E)` independent BFS passes.
+- **Dinic:** Runs BFS once to build a layered graph based on shortest distances &rarr; Continuously runs DFS to push flow through all valid paths on the level graph until completely saturated (Blocking Flow) &rarr; Moves to the next level phase. The number of level phases is strictly bounded to `V - 1` phases.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Thuật toán Dinic vận hành theo cấu trúc 2 pha lặp đi lặp lại:
+Dinic's algorithm operates on a repeating two-phase structure:
 
-1. **Pha 1: Xây dựng Đồ thị Phân tầng (Level Graph bằng BFS):**
+1. **Phase 1: Build the Level Graph (using BFS):**
+   - Assign a level to the source vertex: `level[s] = 0`.
+   - Propagate using BFS: For each edge `(u, v)` with residual capacity `capacity[u][v] > 0`, if `level[v] == -1`, assign `level[v] = level[u] + 1`.
+   - If the sink vertex `t` cannot be reached (`level[t] == -1`), the algorithm stops immediately &rarr; Maximum flow has been reached.
 
-- Gán cấp độ cho đỉnh nguồn: `level[s] = 0`.
-- Dùng BFS lan truyền: Với mỗi cạnh `(u, v)` có dung lượng dư `capacity[u][v] > 0`, nếu `level[v] == -1` thì gán `level[v] = level[u] + 1`.
-- Nếu đỉnh đích `t` không thể chạm tới (`level[t] == -1`), thuật toán dừng ngay lập tức &rarr; Đã đạt luồng cực đại.
+2. **Phase 2: Push Blocking Flow (using DFS):**
+   - Only allow pushing flow from `level[u]` strictly to the next level `level[u] + 1`: Meaning the condition for a valid edge traversal is `level[v] == level[u] + 1` and `cap > 0`.
+   - **Dead-end Pruning Optimization (Work Pointer):** Maintain a `work[u]` array storing the index of the currently processed adjacent edge. When a DFS branch from vertex `u` gets blocked (no more flow can be pushed), the `work[u]` pointer automatically increments to permanently skip that dead end for the current phase, avoiding useless edge revisits.
 
-2. **Pha 2: Đẩy Luồng chặn (Blocking Flow bằng DFS):**
+## Source Code Implementation & Dry Run
 
-- Chỉ cho phép đẩy luồng từ tầng `level[u]` sang tầng kế tiếp `level[u] + 1`: Tức là điều kiện duyệt cạnh hợp lệ là `level[v] == level[u] + 1` và `cap > 0`.
-- **Tối ưu hóa con trỏ nhánh cụt (Work Pointer / Head Optimization):** Duy trì mảng `work[u]` lưu chỉ số của cạnh kề đang xét. Khi một nhánh DFS từ đỉnh `u` bị nghẽn (không đẩy được thêm luồng), con trỏ `work[u]` tự động tăng lên để loại bỏ vĩnh viễn nhánh cụt đó trong pha hiện tại, tránh duyệt lại các cạnh vô ích.
-
-## Triển khai mã nguồn & Dry Run
-
-Sơ đồ kiến trúc 2 pha của Thuật toán Dinic:
+Architecture diagram of the 2-phase Dinic's Algorithm:
 
 ```mermaid
 flowchart TD
-    Start["Bắt Đầu Pha Dinic Mới"] --> BFS["Pha 1: BFS Xây Dựng Đồ Thị Phân Tầng (Level Graph)"]
-    BFS --> LevelCheck{"Đích T có chạm tới được không?"}
-    LevelCheck -->|"Không chạm tới: level(T) == -1"| Terminate["KẾT THÚC: Đạt Luồng Cực Đại Toàn Cục!"]
-    LevelCheck -->|"Có chạm tới"| DFS["Pha 2: DFS Đẩy Luồng Chặn (Blocking Flow) với con trỏ work"]
-    DFS --> ResetWork["Đẩy Luồng Bão Hòa: Quay Lại Pha 1"]
+    Start["Start New Dinic Phase"] --> BFS["Phase 1: BFS Build Level Graph"]
+    BFS --> LevelCheck{"Is Sink T reachable?"}
+    LevelCheck -->|"Unreachable: level(T) == -1"| Terminate["END: Global Maximum Flow Reached!"]
+    LevelCheck -->|"Reachable"| DFS["Phase 2: DFS Push Blocking Flow with work pointer"]
+    DFS --> ResetWork["Flow Saturated: Return to Phase 1"]
     ResetWork --> BFS
 ```
 
-**Mã nguồn C++ hoàn chỉnh (Dinic Thuật toán Luồng Cực đại Tối ưu hóa Con trỏ Work):**
+**Complete C++ Source Code (Dinic's Max Flow Algorithm with Work Pointer Optimization):**
 
 ```c++
 #include <iostream>
@@ -71,12 +69,12 @@ flowchart TD
 
 const long long INF = 1e18;
 
-// Cấu trúc cạnh đồ thị mạng luồng Dinic
+// Edge structure for Dinic's network flow graph
 struct FlowEdge {
     int to;
     long long cap;
     long long flow = 0;
-    int rev; // Chỉ số của cung ngược trong danh sách kề của đỉnh đích
+    int rev; // Index of the reverse edge in the destination vertex's adjacency list
 };
 
 class Dinic {
@@ -85,9 +83,9 @@ private:
     int s, t;
     std::vector<std::vector<FlowEdge>> adj;
     std::vector<int> level;
-    std::vector<int> work; // Con trỏ tối ưu hóa dead-end pruning
+    std::vector<int> work; // Pointer for dead-end pruning optimization
 
-    // Pha 1: BFS gán nhãn phân tầng level graph
+    // Phase 1: BFS to assign level graph labels
     bool bfs() {
         std::fill(level.begin(), level.end(), -1);
         level[s] = 0;
@@ -105,10 +103,10 @@ private:
                 }
             }
         }
-        return level[t] != -1; // Trả về true nếu đích t chạm tới được
+        return level[t] != -1; // Return true if sink t is reachable
     }
 
-    // Pha 2: DFS đẩy luồng chặn (blocking flow)
+    // Phase 2: DFS to push blocking flow
     long long dfs(int u, long long pushed) {
         if (pushed == 0) return 0;
         if (u == t) return pushed;
@@ -117,18 +115,18 @@ private:
             auto& edge = adj[u][cid];
             int v = edge.to;
 
-            // Chỉ đi từ tầng level[u] sang đúng tầng level[u] + 1
+            // Only transition from level[u] to exactly level[u] + 1
             if (level[u] + 1 != level[v] || edge.cap - edge.flow <= 0) {
                 continue;
             }
 
             long long tr = dfs(v, std::min(pushed, edge.cap - edge.flow));
             if (tr == 0) {
-                continue; // Nhánh này không đẩy được luồng, work[u] sẽ tự tăng qua ++cid
+                continue; // This branch cannot push flow; work[u] will increment via ++cid
             }
 
             edge.flow += tr;
-            adj[v][edge.rev].flow -= tr; // Cập nhật cung ngược
+            adj[v][edge.rev].flow -= tr; // Update backward edge
             return tr;
         }
         return 0;
@@ -144,7 +142,7 @@ public:
 
     void addEdge(int from, int to, long long cap) {
         FlowEdge a{to, cap, 0, static_cast<int>(adj[to].size())};
-        FlowEdge b{from, 0, 0, static_cast<int>(adj[from].size())}; // Dung lượng cung ngược ban đầu = 0
+        FlowEdge b{from, 0, 0, static_cast<int>(adj[from].size())}; // Initial backward capacity = 0
         adj[from].push_back(a);
         adj[to].push_back(b);
     }
@@ -177,33 +175,33 @@ int main() {
     dinic.addEdge(4, 5, 10);
 
     long long maxF = dinic.maxFlow();
-    std::cout << "--- KET QUA DINIC MAXIMUM FLOW ---" << std::endl;
-    std::cout << "Tong luong cuc dai: " << maxF << std::endl;
+    std::cout << "--- DINIC MAXIMUM FLOW RESULT ---" << std::endl;
+    std::cout << "Total maximum flow: " << maxF << std::endl;
 
     return 0;
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
-- _Pha 1 (BFS 1):_ Gán nhãn tầng `level = [0, 1, 1, 2, 2, 3]`. `level[T=5] = 3`.
-- _Pha 1 (DFS 1):_
-  - Đường `0 -> 1 -> 3 -> 5`: `pushed = min(10, 4, 10) = 4` &rarr; Luồng = 4.
-  - Đường `0 -> 1 -> 4 -> 5`: `pushed = min(6, 8, 10) = 6` &rarr; Luồng = 4 + 6 = 10 (Đỉnh 1 bão hòa).
-  - Đường `0 -> 2 -> 4 -> 5`: `pushed = min(10, 9, 4) = 4` &rarr; Luồng = 10 + 4 = 14 (Đỉnh 5 bão hòa tầng 3).
-- _Pha 2 (BFS 2):_ Đồ thị dư cập nhật &rarr; BFS gán lại tầng &rarr; DFS đẩy tiếp luồng qua đường `0 -> 2 -> 4 -> 3 -> 5` thêm `5` đơn vị &rarr; Luồng = `19`.
-- _Pha 3 (BFS 3):_ `level[T] = -1` (không còn đường) &rarr; Dừng ngay lập tức với kết quả luồng cực đại bằng `19`.
+- _Phase 1 (BFS 1):_ Assign level labels `level = [0, 1, 1, 2, 2, 3]`. `level[T=5] = 3`.
+- _Phase 1 (DFS 1):_
+  - Path `0 -> 1 -> 3 -> 5`: `pushed = min(10, 4, 10) = 4` &rarr; Flow = 4.
+  - Path `0 -> 1 -> 4 -> 5`: `pushed = min(6, 8, 10) = 6` &rarr; Flow = 4 + 6 = 10 (Vertex 1 saturated).
+  - Path `0 -> 2 -> 4 -> 5`: `pushed = min(10, 9, 4) = 4` &rarr; Flow = 10 + 4 = 14 (Vertex 5 saturated at layer 3).
+- _Phase 2 (BFS 2):_ Residual graph updated &rarr; BFS recalculates levels &rarr; DFS pushes more flow through path `0 -> 2 -> 4 -> 3 -> 5` adding `5` units &rarr; Flow = `19`.
+- _Phase 3 (BFS 3):_ `level[T] = -1` (no paths left) &rarr; Immediately terminates with maximum flow result of `19`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+Performance metric summary according to the standard RAM Model:
 
-- **Độ phức tạp Thời gian (Time Complexity):**
-  - Đồ thị tổng quát: `O(V² x E)`. Có tối đa `V - 1` pha BFS, mỗi pha DFS đẩy luồng chặn tốn `O(V x E)` nhờ con trỏ `work[]` loại bỏ nhánh cụt.
-  - Mạng đơn vị (Unit Network): `O(E sqrtV)` - Tốc độ xử lý hàng trăm nghìn đỉnh chỉ trong vài mili-giây.
-  - Mạng có dung lượng đơn vị ở đỉnh (Bipartite Matching): `O(E sqrtV)` (Tương đương thuật toán Hopcroft-Karp).
-- **Độ phức tạp Không gian (Space Complexity):** `O(V + E)` cho danh sách kề và mảng cấu trúc `FlowEdge` đối xứng.
-- **Ứng dụng thực tế:**
-  - **Bài toán Cặp ghép Cực đại trên Đồ thị Hai phía (Max Bipartite Matching):** Xếp lịch phân công giảng viên - môn học, tuyển dụng ứng viên - công việc.
-  - **Bài toán Đóng dự án (Project Selection Problem):** Tối ưu hóa danh mục dự án đầu tư có điều kiện phụ thuộc tiên quyết.
-  - **Hệ thống Phân phối Băng thông CDN:** Định tuyến luồng video streaming từ hàng nghìn máy chủ Edge đến người dùng cuối.
+- **Time Complexity:**
+  - General graphs: `O(V² * E)`. There are at most `V - 1` BFS phases, and each DFS phase pushing blocking flow takes `O(V * E)` thanks to the `work[]` pointer pruning dead ends.
+  - Unit Network: `O(E \sqrt{V})` - Able to process hundreds of thousands of vertices in just a few milliseconds.
+  - Network with unit capacities at vertices (Bipartite Matching): `O(E \sqrt{V})` (Equivalent to Hopcroft-Karp algorithm).
+- **Space Complexity:** `O(V + E)` for the adjacency list and symmetric `FlowEdge` structures.
+- **Practical Applications:**
+  - **Maximum Bipartite Matching:** Scheduling professor-course assignments, recruiting candidate-job mappings.
+  - **Project Selection Problem:** Optimizing an investment project portfolio with prerequisite dependencies.
+  - **CDN Bandwidth Distribution:** Routing video streaming flow from thousands of Edge servers to end users.

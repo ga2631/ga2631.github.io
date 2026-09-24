@@ -1,12 +1,12 @@
 ---
 id: "22"
 slug: "optimizing-mermaid-frontend-ui-theme-viewport-responsive"
-title: "Tối ưu hóa Hiệu năng & Xử lý Mermaid.js Tương thích Giao diện Web: Đồng bộ Dark Theme, Phóng to Viewport & Trải nghiệm Responsive"
-summary: "Nghệ thuật tích hợp Mermaid.js vào ứng dụng Single Page Application (React/TypeScript): Tối ưu tải động ESM, đồng bộ tương phản Dark Mode, cơ chế Fit View tương tác với Pan/Zoom và loại bỏ cảm giác đóng hộp thô cứng."
+title: "Optimizing Performance & Handling Mermaid.js Web UI Compatibility: Synchronizing Dark Theme, Viewport Zoom & Responsive Experience"
+summary: "The art of integrating Mermaid.js into a Single Page Application (React/TypeScript): Optimizing dynamic ESM loading, synchronizing Dark Mode contrast, interactive Fit View mechanism with Pan/Zoom, and eliminating the rigid boxed-in feel."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-09-10"
 date: "2026-09-10"
-readTime: "8 phút đọc"
+readTime: "8 min read"
 tags:
   - "Mermaid.js"
   - "Frontend Engineering"
@@ -17,63 +17,63 @@ tags:
   - "CSS Architecture"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Việc nhúng biểu đồ kỹ thuật động (Dynamic Diagramming) vào các trang blog công nghệ hoặc hệ thống quản lý tài liệu (Documentation Portals) mang lại trải nghiệm đọc rất trực quan. Tuy nhiên, khi đưa thư viện `mermaid` vào ứng dụng Single Page Application (SPA) viết bằng React và TypeScript, các kỹ sư frontend thường đối mặt với 4 thách thức kỹ thuật gai góc:
+Embedding dynamic technical diagrams (Dynamic Diagramming) into tech blogs or Documentation Portals provides a highly visual reading experience. However, when introducing the `mermaid` library into a Single Page Application (SPA) written in React and TypeScript, frontend engineers often face 4 thorny technical challenges:
 
-1. **Dung lượng gói phình to (Bundle Size Bloat):** Thư viện Mermaid đóng gói đầy đủ các engine dựng hình (Dagre, Cytoscape, KaTeX, D3) với kích thước vượt trên 1.4MB. Nếu import tĩnh ở đầu trang, thời gian tải trang đầu tiên (First Contentful Paint - FCP) sẽ bị suy giảm nghiêm trọng.
-2. **Lỗi tương phản màu trong Dark Mode:** Khi người dùng chuyển sang giao diện tối, màu chữ và nét vẽ mặc định của SVG có thể bị chìm hoàn toàn vào màu nền tối, khiến nội dung không thể đọc được.
-3. **Trải nghiệm hạn chế trên màn hình di động:** Các sơ đồ kiến trúc phức tạp với nhiều cột hoặc chuỗi microservices dài thường bị co rút quá nhỏ hoặc tràn khung nhìn gây vỡ giao diện.
-4. **Cảm giác 'đóng hộp' thô cứng:** Nếu bọc biểu đồ trong các card có viền và đổ bóng nặng, sơ đồ sẽ tạo cảm giác bị cô lập, tách biệt khỏi mạch văn tự nhiên của bài viết.
+1. **Bundle Size Bloat:** The Mermaid library packages full rendering engines (Dagre, Cytoscape, KaTeX, D3), with a footprint exceeding 1.4MB. If statically imported at the top of the page, the First Contentful Paint (FCP) time will severely degrade.
+2. **Color Contrast Issues in Dark Mode:** When users switch to the dark theme, the default text and stroke colors of the SVG might completely blend into the dark background, making the content unreadable.
+3. **Limited Experience on Mobile Screens:** Complex architecture diagrams with multiple columns or long microservices chains often shrink too small or overflow the viewport, breaking the layout.
+4. **Rigid 'Boxed-in' Feel:** If the diagram is wrapped in cards with hard borders and heavy shadows, it creates a sense of isolation, detaching it from the natural flow of the article.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach Idea
 
-Cách tiếp cận ngây thơ thường gặp trong các dự án ban đầu:
+A naive approach commonly seen in early projects:
 
-- Import tĩnh `import mermaid from 'mermaid'` và gọi `mermaid.run()` trực tiếp sau khi component mount.
-- Bọc toàn bộ khối sơ đồ trong một thẻ `<div class="card">` có nền thẻ, viền cứng và đổ bóng.
-- Sử dụng theme mặc định `theme: 'default'` mà không đồng bộ với hệ thống Design Tokens của trang.
+- Statically import via `import mermaid from 'mermaid'` and call `mermaid.run()` directly after the component mounts.
+- Wrap the entire diagram block in a `<div class="card">` with a background, hard borders, and shadows.
+- Use the default theme `theme: 'default'` without syncing it with the site's Design Tokens system.
 
-**Tại sao cách này bộc lộ nhiều điểm nghẽn?** Sơ đồ không thể tự động cập nhật khi người dùng nhấn nút chuyển Dark/Light Mode. Trên mobile, người dùng không thể phóng to để xem chi tiết. Đồng thời, cấu trúc card cứng nhắc làm mất đi tính liền mạch của bài viết chuyên sâu.
+**Why does this approach expose many bottlenecks?** The diagram cannot automatically update when the user toggles Dark/Light Mode. On mobile, users cannot zoom in to see details. Moreover, the rigid card structure breaks the seamlessness of an in-depth article.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithmic Structure
 
-Để giải quyết triệt để các vấn đề trên và mang lại trải nghiệm đọc đỉnh cao, tôi xây dựng một kiến trúc tích hợp toàn diện:
+To thoroughly resolve the above issues and deliver a top-tier reading experience, I built a comprehensive integration architecture:
 
-1. **Tải động theo yêu cầu (Dynamic On-Demand Loading):** Chỉ import Mermaid khi trong bài viết thực sự có chứa khối mã `pre.mermaid`, kết hợp cơ chế import đa tầng bền bỉ (resilient fallback).
-2. **Đồng bộ hóa bộ biến Theme và Định dạng Mermaid Nội tại:** Sử dụng chế độ `theme: 'base'` kết hợp bộ biến `themeVariables` chi tiết (đồng bộ mã màu Ruby / Crimson) và hỗ trợ hoàn hảo cú pháp `style`/`classDef` nội tại trong Mermaid, loại bỏ các can thiệp CSS cưỡng chế để biểu đồ tự do tùy biến màu sắc.
-3. **Cơ chế Phóng to toàn Viewport (Fit View Modal):** Tích hợp nút micro-pill gọn gàng ở góc trên. Khi click, mở rộng sơ đồ lên toàn bộ viewport (95vw x 86vh), hỗ trợ thao tác kéo rê chuột (Pan) và cuộn chuột thu phóng (Zoom 40% - 350%).
-4. **Hòa nhập tự nhiên vào dòng văn bản:** Loại bỏ viền và nền box thô cứng, biến biểu đồ thành hình minh họa vector tự nhiên giữa các đoạn văn.
+1. **Dynamic On-Demand Loading:** Only import Mermaid when the article actually contains a `pre.mermaid` code block, combined with a resilient fallback multi-tier import mechanism.
+2. **Synchronizing Theme Variables and Internal Mermaid Formatting:** Use `theme: 'base'` mode combined with a detailed `themeVariables` set (syncing Ruby / Crimson color codes) and perfectly supporting Mermaid's internal `style`/`classDef` syntax, eliminating forced CSS overrides so diagrams can freely customize colors.
+3. **Full Viewport Zoom Mechanism (Fit View Modal):** Integrate a neat micro-pill button in the top corner. When clicked, it expands the diagram to the full viewport (95vw x 86vh), supporting mouse dragging (Pan) and scroll zooming (Zoom 40% - 350%).
+4. **Natural Integration into the Text Flow:** Remove rigid borders and box backgrounds, turning the diagram into a natural vector illustration nestled between paragraphs.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Triển khai kiến trúc xử lý trong React component và SCSS:
+Implementing the processing architecture in React components and SCSS:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Reader as Người đọc (User)
+    actor Reader as Reader (User)
     participant Article as ModalArticle.tsx
     participant MermaidEngine as Mermaid.js Dynamic ESM
     participant Viewer as ModalDiagramViewer.tsx
 
-    Reader->>Article: Mở bài viết có chứa biểu đồ
-    Article->>MermaidEngine: Tải on-demand và render SVG với Light Theme
-    MermaidEngine-->>Article: Chèn SVG sắc nét và gắn nút Fit View
-    opt Người dùng click vào biểu đồ
-        Reader->>Article: Click chuột hoặc nhấn Enter hoặc Space
-        Article->>Viewer: Kích hoạt Fullscreen Fit View Overlay
-        Viewer-->>Reader: Trải nghiệm Pan và Zoom tương tác 60 FPS
+    Reader->>Article: Opens an article containing a diagram
+    Article->>MermaidEngine: Loads on-demand and renders SVG with Light Theme
+    MermaidEngine-->>Article: Inserts crisp SVG and attaches Fit View button
+    opt User clicks on the diagram
+        Reader->>Article: Mouse click or presses Enter/Space
+        Article->>Viewer: Triggers Fullscreen Fit View Overlay
+        Viewer-->>Reader: 60 FPS interactive Pan and Zoom experience
     end
 ```
 
-**Điểm mấu chốt trong mã nguồn:**
+**Key takeaways in the source code:**
 
-- **Giới hạn selector CSS `> svg`:** Đảm bảo các thuộc tính kích thước lớn của sơ đồ không làm vỡ icon `11x11px` bên trong nút Fit View.
-- **Tối ưu hóa Theme đồng nhất:** Khởi tạo Mermaid trực tiếp ở chế độ Light Theme với bộ `themeVariables` chuẩn mực, loại bỏ hoàn toàn chi phí lắng nghe MutationObserver.
+- **Restrict CSS selector `> svg`:** Ensure that the large dimension properties of the diagram do not break the `11x11px` icon inside the Fit View button.
+- **Uniform Theme Optimization:** Initialize Mermaid directly in Light Theme with a standard `themeVariables` set, completely eliminating the overhead of listening to MutationObserver.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-- **Hiệu năng dựng hình GPU:** Thao tác Pan & Zoom trong modal viewer sử dụng thuộc tính `transform: translate3d(...) scale(...)` thuần túy, tận dụng tối đa GPU Compositing để đạt độ mượt **60 FPS** tuyệt đối.
-- **Giảm tải Bundle ban đầu:** Kỹ thuật lazy-load giúp tiết kiệm hơn **1.4 MB JavaScript** cho các bài viết không chứa sơ đồ.
-- **Khả năng ứng dụng rộng rãi:** Giải pháp này là kiến trúc mẫu mực cho các nền tảng kỹ thuật phức tạp như API Documentation, Enterprise Architecture Dashboards, và các Tech Blogs chuyên nghiệp.
+- **GPU Rendering Performance:** Pan & Zoom operations in the modal viewer use pure `transform: translate3d(...) scale(...)` properties, fully leveraging GPU Compositing to achieve an absolute smooth **60 FPS**.
+- **Reducing Initial Bundle Load:** The lazy-load technique saves over **1.4 MB of JavaScript** for articles that do not contain diagrams.
+- **Wide Applicability:** This solution is an exemplary architecture for complex technical platforms like API Documentation, Enterprise Architecture Dashboards, and professional Tech Blogs.

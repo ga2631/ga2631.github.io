@@ -1,45 +1,45 @@
 ---
 id: 93
 slug: "review-of-my-five-year-career-journey"
-title: "Review hành trình 5 năm làm nghề: Thăng trầm và sự đánh đổi đam mê đi khắp Việt Nam"
-summary: "Năm năm trong ngành phần mềm trôi qua tựa như một cái chớp mắt, nhưng nhìn lại, nó đủ dài để định hình lại hoàn toàn một con người - từ cách tư duy, lối sống cho đến những vết sẹo nghề nghiệp đầu đời."
+title: "Reviewing my 5-year career journey: Ups and downs and trading the passion for traveling across Vietnam"
+summary: "Five years in the software industry passed like the blink of an eye, but looking back, it's long enough to completely reshape a person - from mindset and lifestyle to the first career scars."
 category: "tech-radar-career-insights"
 publishedAt: "2026-09-25"
 date: "2026-09-25"
-readTime: "7 phút đọc"
+readTime: "7 min read"
 tags:
   - "Career Insight"
   - "Confide"
 ---
 
-Người ta thường đo lường chặng đường này bằng số dòng code, cấp bậc trên danh thiếp hay mức lương hàng tháng. Nhưng với tôi, năm năm đầu tiên bước vào thế giới kỹ nghệ phần mềm là một cuộc lột xác đầy va đập: giữa đam mê và trách nhiệm, giữa khát khao tự do và những đêm kiệt quệ, và sau cùng là sự dũng cảm để buông bỏ một điều từng là cả thanh xuân.
+People often measure this journey by lines of code, titles on business cards, or monthly salaries. But for me, the first five years stepping into the world of software engineering were a profoundly impactful metamorphosis: between passion and responsibility, between the thirst for freedom and exhausting nights, and ultimately, the courage to let go of something that once defined my youth.
 
-## Từ đứa trẻ học việc đến người gánh vác toàn bộ bức tranh
+## From an apprentice to the one carrying the entire picture
 
-Tôi vẫn nhớ như in cảm giác run rẩy của những ngày đầu tiên: gõ từng dòng lệnh chập chững, nhìn màn hình terminal đỏ rực vì lỗi cú pháp và cảm giác thót tim mỗi lần bấm nút tạo Pull Request. Lúc ấy, thế giới của tôi chỉ vỏn vẹn trong cái khung chữ nhật của trình soạn thảo code. Tôi từng nghĩ một lập trình viên giỏi chỉ cần thuộc lòng thuật toán và viết code thật nhanh, thật ít bug.
+I still vividly remember the trembling feeling of the early days: typing out hesitant lines of command, seeing the terminal screen glow red with syntax errors, and the heart-stopping feeling every time I hit the button to create a Pull Request. At that time, my world was confined to the rectangular frame of the code editor. I used to think a good programmer just needed to memorize algorithms and write code extremely fast, with very few bugs.
 
-Thế nhưng, thực tế công việc đã nhanh chóng đập tan ảo tưởng ngây thơ đó. Trải qua từng dự án, từng lần hệ thống chao đảo, vai trò của tôi dần mở rộng ra ngoài chiếc vỏ bọc an toàn của một "coder thuần túy". Tôi bắt đầu phải tự mình đặt câu hỏi về bài toán kinh doanh đằng sau mỗi tính năng, tự phác thảo ý tưởng sản phẩm từ con số không. Tôi học cách ngồi hàng giờ vẽ sơ đồ kiến trúc hạ tầng, tính toán từng luồng dữ liệu, đắn đo giữa chi phí cloud và hiệu năng chịu tải. Tôi bước sang cả mảng giao diện, tự tay cân chỉnh từng khoảng cách pixel để người dùng không cảm thấy ức chế. Và thử thách lớn nhất đến khi tôi bắt đầu dẫn dắt đội ngũ: học cách lắng nghe, chia việc, nâng đỡ những người đi sau và chịu trách nhiệm cao nhất cho kết quả của cả tập thể. Cảm giác từ một người chỉ biết "làm theo lệnh" trở thành người "kiến tạo giải pháp toàn diện" mang lại sự tự tin rất lớn, nhưng nó cũng là khởi đầu cho một cái giá vô hình khác.
+However, the reality of the job quickly shattered that naive illusion. Through each project, each time the system swayed, my role gradually expanded beyond the safe shell of a "pure coder". I began to ask myself about the business problems behind every feature, sketching product ideas from scratch. I learned to sit for hours drawing infrastructure architecture diagrams, calculating every data flow, and weighing cloud costs against load-bearing performance. I stepped into the interface realm, manually tweaking every pixel distance so users wouldn't feel frustrated. And the biggest challenge came when I started leading the team: learning how to listen, delegate tasks, uplift those coming up behind me, and take ultimate responsibility for the team's results. The feeling of transitioning from someone who just "follows orders" to someone who "creates comprehensive solutions" brought immense confidence, but it was also the beginning of another, invisible cost.
 
-## Khi balo phượt phủ bụi và những đêm mệt lả bên bàn phím
+## When the travel backpack gathered dust and exhausted nights at the keyboard
 
-Trước khi bước chân vào guồng quay này, tôi từng là một kẻ nghiện những cung đường phượt. Tôi đã có một hứu hẹn với thanh xuân của mình là sẽ đi khắp ngóc ngách Việt Nam. Thanh xuân của tôi gắn liền với chiếc xe máy, những con đèo mù sương, mùi đất ẩm sau cơn mưa rừng và cảm giác tự do tuyệt đối dưới bầu trời lộng gió. Những chuyến đi ấy từng là nguồn sống, là cách tôi hít thở và tái tạo năng lượng.
+Before entering this hamster wheel, I used to be an addict of backpacking routes. I made a promise to my youth that I would travel to every corner of Vietnam. My youth was tied to my motorbike, misty mountain passes, the smell of damp earth after a forest rain, and the feeling of absolute freedom under the windy sky. Those trips used to be my life source, my way to breathe and recharge.
 
-Nhưng rồi, trách nhiệm với công việc lớn dần lên theo từng nấc thang thăng tiến. Hệ thống phình to, dữ liệu phình to, và mức độ phụ thuộc của công ty vào năng lực của mình ngày càng nặng nề. Tôi bắt đầu bước vào những chuỗi ngày làm việc không hồi kết. Những ngày cuối tuần thong dong dần bị thay thế bởi những ca trực hệ thống, những đợt release thâu đêm suốt sáng. Chiếc balo phượt nằm im lìm trong góc phòng, bám đầy bụi bặm qua từng mùa mưa nắng.
+But then, responsibilities at work grew with every step up the career ladder. The systems bloated, the data bloated, and the company's reliance on my capabilities became increasingly heavy. I began entering endless streaks of workdays. Leisurely weekends were gradually replaced by on-call shifts and all-night releases. The travel backpack lay still in the corner of my room, gathering dust through seasons of rain and shine.
 
-Có những đêm nhìn đồng hồ đã điểm hai, ba giờ sáng, lưng mỏi nhừ, mắt cay xè và đầu óc đặc quánh lại vì xử lý sự cố. Tôi gục xuống bàn phím vì mệt lả, tự hỏi bản thân đang đánh đổi điều gì. Sự tự do của tuổi trẻ đã lặng lẽ nhường chỗ cho sự mệt mỏi thể xác và áp lực tinh thần. Niềm tự hào khi thấy hệ thống vận hành trơn tru đôi khi không đủ để khỏa lấp cảm giác trống rỗng khi nhận ra mình đã quá lâu rồi không được nhìn thấy một buổi hoàng hôn đúng nghĩa.
+There were nights when the clock struck two or three in the morning, my back aching, eyes stinging, and mind thick from troubleshooting incidents. I collapsed at the keyboard from exhaustion, asking myself what I was trading off. The freedom of youth had quietly made way for physical fatigue and mental pressure. The pride of seeing a system run smoothly sometimes wasn't enough to fill the void of realizing it had been far too long since I had seen a proper sunset.
 
-## Cuộc chia tay sau nửa thập kỷ: Khi con đường rẽ đôi ngả
+## Parting ways after half a decade: When the path diverges
 
-Trong giới công nghệ - nơi mà việc nhảy việc sau một hoặc hai năm là điều quá đỗi bình thường - ở lại một công ty suốt 5 năm gần như là một điều kỳ lạ. Nơi đó không chỉ là chỗ kiếm cơm; nó là nơi lưu giữ toàn bộ bước chân trưởng thành của tôi, nơi từng dòng code, từng cụm server đều mang dấu ấn cá nhân mà tôi nâng niu như đứa con tinh thần.
+In the tech world—where job-hopping after a year or two is completely normal—staying at one company for a full 5 years is almost an anomaly. That place wasn't just a place to earn a living; it preserved every step of my growth, where every line of code, every server cluster bore my personal mark that I cherished like a brainchild.
 
-Nhưng 5 năm cũng là lúc con người ta thay đổi nhiều nhất. Đến một ngày, tôi giật mình nhận ra khoảng cách tư duy giữa mình và người leader - người từng đồng hành và dẫn dắt tôi suốt chặng đường dài - đã không còn chung một nhịp đập.
+But 5 years is also the time when a person changes the most. One day, I was startled to realize that the mindset gap between myself and my leader—the person who had accompanied and guided me throughout this long journey—was no longer beating to the same rhythm.
 
-Đó không phải là một cuộc cãi vã hay mâu thuẫn cá nhân gì cả. Đó là sự lệch pha về định hướng chiến lược, về triết lý phát triển sản phẩm và cách định vị tương lai của đội ngũ. Khi tôi nhìn thấy một chân trời mới cần sự bứt phá và đổi mới cấu trúc, thì người dẫn dắt lại đi theo hướng đi của riêng họ, và không còn chọn công nghệ là sản phẩm cốt lõi nữa. Tôi không còn tìm thấy niềm tin vào con đường đi sắp tới. Ở lại đồng nghĩa với việc chấp nhận sự thỏa hiệp, làm những điều mình không còn thấy ý nghĩa, và để ngọn lửa nghề trong mình lụi tàn dần trong 2 năm sau đó.
+It wasn't an argument or a personal conflict. It was a misalignment in strategic direction, product development philosophy, and how to position the team's future. While I saw a new horizon that required breakthroughs and structural innovation, the leader followed their own path and no longer chose technology as the core product. I could no longer find faith in the upcoming path. Staying meant accepting compromise, doing things I no longer found meaningful, and letting the professional fire inside me slowly die out over the next 2 years.
 
-Quyết định nộp đơn thôi việc sau nửa thập kỷ gắn bó là một trong những quyết định khó khăn và đau đớn nhất. Nó giống như việc bạn phải tự tay chặt đi cái rễ cây mà mình đã mất 5 năm để cắm sâu vào lòng đất. Nhưng đó là sự chia tay cần thiết của sự trưởng thành.
+The decision to hand in my resignation after half a decade of dedication was one of the most difficult and painful decisions. It felt like having to manually chop down the tree root that I had spent 5 years planting deep into the ground. But it was a necessary separation for growth.
 
-## Nhìn lại để bước tiếp
+## Looking back to move forward
 
-Năm năm đầu tiên khép lại không phải bằng một cái kết màu hồng, nhưng nó để lại trong tôi những bài học vô giá. Tôi nhận ra kỹ sư phần mềm không đơn thuần là một công việc kỹ thuật, mà là một hành trình rèn luyện bản lĩnh sống. Tôi phải trả giá bằng sự ngây thơ để đổi lấy năng lực giải quyết vấn đề. Tôi phải nếm trải sự kiệt quệ để biết trân trọng giới hạn của bản thân. Và quan trọng nhất, tôi phải biết thời điểm nào cần dốc lòng cống hiến, thời điểm nào cần dũng cảm dừng lại để giữ vững định hướng của chính mình.
+The first five years didn't end with a fairy-tale conclusion, but they left me with invaluable lessons. I realized that software engineering isn't purely a technical job, but a journey of forging life resilience. I had to pay with naivety in exchange for problem-solving capabilities. I had to experience exhaustion to appreciate my own limits. And most importantly, I had to know when to devote myself wholeheartedly, and when to bravely stop to maintain my own true direction.
 
-Những ngày tháng mệt lả bên bàn phím đã qua, chiếc balo cũ có thể sẽ được giặt sạch cho những chuyến đi mới. Một chu kỳ 5 năm đã hoàn thành sứ mệnh của nó: biến một kẻ mơ mộng thành một người kỹ sư thực thụ, sẵn sàng bước vào chương tiếp theo với một tâm thế hoàn toàn tự chủ.
+The exhausting days at the keyboard have passed; the old backpack might get washed clean for new journeys. A 5-year cycle has fulfilled its mission: turning a dreamer into a true engineer, ready to step into the next chapter with a completely autonomous mindset.

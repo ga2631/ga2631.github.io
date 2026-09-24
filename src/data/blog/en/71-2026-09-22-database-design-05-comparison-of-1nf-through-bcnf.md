@@ -1,12 +1,12 @@
 ---
 id: "71"
 slug: "database-design-5-comparison-of-1nf-through-bcnf"
-title: "Thiết kế CSDL #05: So sánh 1NF đến BCNF và Bài toán Khử chuẩn hóa (Denormalization)"
-summary: 'Chặng đường từ 1NF (1970) đến BCNF (1974) đánh dấu thời kỳ hoàng kim của mô hình dữ liệu quan hệ. Về sau, Ronald Fagin bổ sung 4NF (1977) xử lý phụ thuộc đa trị và 5NF. Tuy nhiên, trong 99% các dự án phần mềm thực tế, 3NF/BCNF được xem là "điểm dừng ngọt ngào" (sweet spot). Việc theo đuổi 4NF hay 5NF thường khiến cấu trúc quá phân mảnh và làm giảm hiệu năng hệ thống một cách không cần thiết.'
+title: "Database Design #05: Comparison of 1NF through BCNF and the Denormalization Problem"
+summary: 'The journey from 1NF (1970) to BCNF (1974) marks the golden age of the relational data model. Later, Ronald Fagin added 4NF (1977) to handle multivalued dependencies and 5NF. However, in 99% of real-world software projects, 3NF/BCNF is considered the "sweet spot". Pursuing 4NF or 5NF often makes the structure too fragmented and unnecessarily reduces system performance.'
 category: "data-engineering-analytics"
 publishedAt: "2026-09-22"
 date: "2026-09-22"
-readTime: "5 phút đọc"
+readTime: "5 min read"
 tags:
   - "Database"
   - "Data Engineering"
@@ -15,36 +15,36 @@ tags:
   - "Looker Studio"
 ---
 
-## Đề bài kinh doanh / Yêu cầu dữ liệu
+## Business Problem / Data Requirements
 
-Quay lại với hệ thống ERP của chúng ta. Trải qua 4 module (Nhân sự, Dự án, Phòng ban, Đào tạo), CSDL backend hiện đã đạt chuẩn 3NF/BCNF cực kỳ chặt chẽ, an toàn, không có dư thừa dữ liệu. Các thao tác Update, Delete diễn ra hoàn hảo.
+Returning to our ERP system. After going through 4 modules (HR, Projects, Departments, Training), the backend Database has achieved a very strict and safe 3NF/BCNF standard with no data redundancy. Update and Delete operations are performed perfectly.
 
-Thế nhưng, Ban Giám Đốc yêu cầu team Data Analytics tạo một **Dashboard Phân bổ Nguồn lực (Resource Allocation)** trên Looker Studio. Báo cáo này cần hiển thị: _Nhân sự nào thuộc phòng ban nào, có kỹ năng gì, đang làm dự án cho client nào, và học chứng chỉ gì._
-Câu truy vấn (Query) giờ đây phải `JOIN` qua 7-8 bảng khác nhau trên tập dữ liệu hàng triệu dòng. Backend Database bị thắt cổ chai, dashboard quay vòng vòng (timeout).
+However, the Board of Directors requested the Data Analytics team to create a **Resource Allocation Dashboard** on Looker Studio. This report needs to display: _Which employee belongs to which department, what skills they have, which client project they are working on, and what certifications they are studying._
+The query now has to `JOIN` across 7-8 different tables on a dataset of millions of rows. The Backend Database becomes a bottleneck, and the dashboard spins endlessly (timeout).
 
-Đây là lúc chúng ta thảo luận về kỹ thuật **Denormalization (Khử chuẩn hóa)** dành cho phân tích OLAP/Data Warehouse.
+This is when we discuss the **Denormalization** technique for OLAP/Data Warehouse analysis.
 
-## Bức tranh tổng thể: Tiến trình Chuẩn hóa và Khử chuẩn hóa
+## The Big Picture: Normalization and Denormalization Process
 
 ```mermaid
 flowchart TD
-    UNF[Dữ liệu thô ban đầu <br> Kỹ năng nhân sự thành mảng] -->|Tách cột đa trị| 1NF(1NF: Module Nhân sự)
-    1NF -->|Tách dự án khỏi phân công| 2NF(2NF: Module Dự án)
-    2NF -->|Tách phòng ban độc lập| 3NF(3NF: Module Tổ chức)
-    3NF -->|Xử lý giảng viên & môn học| BCNF(BCNF: Module Đào tạo)
+    UNF[Initial Raw Data <br> Employee skills as array] -->|Split multivalued columns| 1NF(1NF: HR Module)
+    1NF -->|Split projects from assignments| 2NF(2NF: Project Module)
+    2NF -->|Independent department split| 3NF(3NF: Organization Module)
+    3NF -->|Process instructors & subjects| BCNF(BCNF: Training Module)
 
-    BCNF -.->|ETL / Data Pipeline đẩy sang Data Warehouse| Denorm[Khử chuẩn hóa - OBT / Star Schema]
+    BCNF -.->|ETL / Data Pipeline pushes to Data Warehouse| Denorm[Denormalization - OBT / Star Schema]
 
     style BCNF fill:#2ca02c,stroke:#fff,stroke-width:2px,color:#fff
     style Denorm fill:#ff7f0e,stroke:#fff,stroke-width:2px,color:#fff
 ```
 
-## Bảng So Sánh Các Chuẩn Thiết Kế
+## Comparison Table of Design Standards
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Tiêu chí</th>
+      <th style="padding: 8px;">Criteria</th>
       <th style="padding: 8px;">1NF</th>
       <th style="padding: 8px;">2NF</th>
       <th style="padding: 8px;">3NF</th>
@@ -54,54 +54,54 @@ flowchart TD
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;"><strong>Quy tắc</strong></td>
-      <td style="padding: 8px;">Nguyên tử, ko mảng lặp.</td>
-      <td style="padding: 8px;">1NF + Ko phụ thuộc 1 phần PK.</td>
-      <td style="padding: 8px;">2NF + Ko phụ thuộc bắc cầu.</td>
-      <td style="padding: 8px;">3NF + Mọi quyết định là Siêu khóa.</td>
-      <td style="padding: 8px;">Cố tình gộp bảng, cho phép lặp dữ liệu.</td>
+      <td style="padding: 8px;"><strong>Rule</strong></td>
+      <td style="padding: 8px;">Atomic, no repeating arrays.</td>
+      <td style="padding: 8px;">1NF + No partial dependency on PK.</td>
+      <td style="padding: 8px;">2NF + No transitive dependency.</td>
+      <td style="padding: 8px;">3NF + Every determinant is a Super Key.</td>
+      <td style="padding: 8px;">Intentionally merge tables, allow data duplication.</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;"><strong>Vấn đề giải quyết trong ERP</strong></td>
-      <td style="padding: 8px;">Lỗi parse chuỗi skills, ko Index.</td>
-      <td style="padding: 8px;">Update sai lệch client_name dự án.</td>
-      <td style="padding: 8px;">Update thiếu địa chỉ phòng ban.</td>
-      <td style="padding: 8px;">Delete nhầm dữ liệu môn học nội bộ.</td>
-      <td style="padding: 8px;">Truy vấn báo cáo (JOIN) quá chậm.</td>
+      <td style="padding: 8px;"><strong>Problem Solved in ERP</strong></td>
+      <td style="padding: 8px;">Errors parsing skills string, no Index.</td>
+      <td style="padding: 8px;">Inconsistent update of project client_name.</td>
+      <td style="padding: 8px;">Missing update of department address.</td>
+      <td style="padding: 8px;">Accidental deletion of internal subject data.</td>
+      <td style="padding: 8px;">Report queries (JOINs) are too slow.</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;"><strong>Đặc điểm mô hình</strong></td>
-      <td style="padding: 8px;">Bảng ít, cột chứa list.</td>
-      <td style="padding: 8px;">Sinh ra bảng Master/Trans.</td>
-      <td style="padding: 8px;">Nhiều bảng, ForeignKey chặt.</td>
-      <td style="padding: 8px;">An toàn tuyệt đối logic phức tạp.</td>
-      <td style="padding: 8px;">Một bảng siêu rộng (One Big Table).</td>
+      <td style="padding: 8px;"><strong>Model Characteristics</strong></td>
+      <td style="padding: 8px;">Fewer tables, list-containing columns.</td>
+      <td style="padding: 8px;">Creates Master/Trans tables.</td>
+      <td style="padding: 8px;">Many tables, strict Foreign Keys.</td>
+      <td style="padding: 8px;">Absolute safety for complex logic.</td>
+      <td style="padding: 8px;">One extremely wide table (One Big Table).</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px;"><strong>Phép JOIN</strong></td>
-      <td style="padding: 8px;">Rất ít</td>
-      <td style="padding: 8px;">Trung bình</td>
-      <td style="padding: 8px;">Rất nhiều</td>
-      <td style="padding: 8px;">Rất nhiều</td>
-      <td style="padding: 8px;">Ít hoặc Không có</td>
+      <td style="padding: 8px;"><strong>JOIN Operations</strong></td>
+      <td style="padding: 8px;">Very few</td>
+      <td style="padding: 8px;">Average</td>
+      <td style="padding: 8px;">Very many</td>
+      <td style="padding: 8px;">Very many</td>
+      <td style="padding: 8px;">Few or None</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
       <td style="padding: 8px;"><strong>Use case</strong></td>
       <td style="padding: 8px;">Data Staging</td>
-      <td style="padding: 8px;">Module nhỏ</td>
+      <td style="padding: 8px;">Small modules</td>
       <td style="padding: 8px;">Core ERP Backend (OLTP)</td>
-      <td style="padding: 8px;">Module Lịch, Phân ca (OLTP)</td>
-      <td style="padding: 8px;">Data Warehouse, Dashboard BI</td>
+      <td style="padding: 8px;">Calendar, Shift modules (OLTP)</td>
+      <td style="padding: 8px;">Data Warehouse, BI Dashboard</td>
     </tr>
   </tbody>
 </table>
 
-## Xây dựng Pipeline / Script xử lý (Denormalization)
+## Building Processing Pipeline / Script (Denormalization)
 
-Để giải quyết bài toán Report, thay vì đập bỏ thiết kế BCNF của Core ERP, Data Engineer xây dựng một **Materialized View** (hoặc dùng ETL đẩy sang BigQuery/ClickHouse) để "Khử chuẩn hóa" thành One Big Table (OBT):
+To solve the Report problem, instead of tearing down the Core ERP's BCNF design, Data Engineers build a **Materialized View** (or use ETL to push to BigQuery/ClickHouse) to "Denormalize" it into One Big Table (OBT):
 
 ```sql
--- Tạo Materialized View phục vụ Looker Studio (Khử chuẩn hóa)
+-- Create Materialized View for Looker Studio (Denormalization)
 CREATE MATERIALIZED VIEW mv_resource_analytics AS
 SELECT
     e.emp_id,
@@ -118,20 +118,20 @@ LEFT JOIN employee_skills_1nf sk ON e.emp_id = sk.emp_id
 LEFT JOIN project_assignments_2nf pa ON e.emp_id = pa.emp_id
 LEFT JOIN projects_2nf p ON pa.project_id = p.project_id;
 
--- Tạo index để hỗ trợ filter dashboard
+-- Create indexes to support dashboard filtering
 CREATE INDEX idx_mv_dept ON mv_resource_analytics(department_name);
 CREATE INDEX idx_mv_skill ON mv_resource_analytics(skill_name);
 
--- Lên lịch REFRESH MATERIALIZED VIEW định kỳ (VD: mỗi đêm)
+-- Schedule periodic REFRESH of the MATERIALIZED VIEW (e.g., every night)
 ```
 
-## Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Data Testing & Performance Optimization
 
-- **Core ERP (Chuẩn 3NF/BCNF):** Các thao tác nhân sự, cập nhật dự án diễn ra siêu tốc, lock bảng rất ít, bảo vệ toàn vẹn ACID.
-- **Hệ thống Analytics (Khử chuẩn hóa):** Truy vấn tổng hợp số giờ làm việc theo Phòng ban và Kỹ năng giảm từ vài phút xuống vài chục mili-giây do loại bỏ hoàn toàn chi phí JOIN.
+- **Core ERP (3NF/BCNF Standard):** HR operations and project updates happen at lightning speed, table locking is minimal, and ACID integrity is preserved.
+- **Analytics System (Denormalized):** Aggregated queries of working hours by Department and Skill drop from minutes to a few dozen milliseconds due to the complete elimination of JOIN costs.
 
-## Tổng kết & Khuyến nghị
+## Summary & Recommendations
 
-- **Luôn hướng đến 3NF/BCNF** làm nền tảng tiêu chuẩn khi thiết kế Database cho Backend Services, ERP. Sự chặt chẽ của Codd và Boyce sẽ cứu bạn khỏi những đêm thức trắng fix bug Data Inconsistency.
-- **Hãy linh hoạt phá vỡ quy tắc:** Ở tầng Data Engineering / Analytics, Khử chuẩn hóa (Denormalize) với Dimensional Modeling hoặc One-Big-Table mới là chân lý tốc độ.
-- Một Software/Data Engineer xuất sắc không chỉ nằm lòng các chuẩn mực thiết kế, mà còn biết **khi nào nên tuân thủ, và khi nào nên vượt rào** để tối ưu hóa giá trị hệ thống.
+- **Always aim for 3NF/BCNF** as the standard foundation when designing Databases for Backend Services and ERPs. The strictness of Codd and Boyce will save you from sleepless nights fixing Data Inconsistency bugs.
+- **Be flexible in breaking rules:** At the Data Engineering / Analytics layer, Denormalization with Dimensional Modeling or One-Big-Table is the true path to speed.
+- An excellent Software/Data Engineer not only masters design standards but also knows **when to follow them and when to cross the line** to optimize system value.

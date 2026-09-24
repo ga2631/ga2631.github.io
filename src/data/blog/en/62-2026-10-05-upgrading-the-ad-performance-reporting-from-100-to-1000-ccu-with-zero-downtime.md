@@ -1,12 +1,12 @@
 ---
 id: "62"
 slug: "upgrading-the-ad-performance-reporting-from-100-to-1000-ccu-with-zero-downtime"
-title: "Từ 100 đến 1000 CCU #03: Hành trình nâng cấp hệ thống báo cáo từ 100 lên 1000 CCU không gây downtime"
-summary: 'Bạn không thể tắt hệ thống 1 tuần để "đập đi xây lại" từ kiến trúc của Bài 1 sang Bài 2. Bài viết này trình bày chiến lược nâng cấp tiệm tiến (Phase-by-Phase Migration). Hành trình đi qua 3 giai đoạn: "Cấp cứu" bằng Caching, "Dịch chuyển" bằng cơ chế ghi song song (Dual-write), và "Hoàn thiện" Data Pipeline chuyên dụng.'
+title: "From 100 to 1000 CCU #03: The Journey to Upgrade the Reporting System from 100 to 1000 CCU with Zero Downtime"
+summary: 'You cannot shut down the system for a week to "tear down and rebuild" from the architecture in Part 1 to Part 2. This article presents a Phase-by-Phase Migration strategy. The journey goes through 3 stages: "Emergency" with Caching, "Migration" with a Dual-write mechanism, and "Completion" of a dedicated Data Pipeline.'
 category: "architecture-system-design"
 publishedAt: "2026-10-05"
 date: "2026-10-05"
-readTime: "4 phút đọc"
+readTime: "4 minutes read"
 tags:
   - "System design"
   - "Migration"
@@ -14,63 +14,63 @@ tags:
   - "Data engineering"
 ---
 
-## Bối cảnh & Vấn đề
+## Context & Problem
 
-Hệ thống PostgreSQL ở Bài 1 bắt đầu xuất hiện những "tiếng thở dốc". Khi lượng CCU chạm ngưỡng 300, CPU của database liên tục duy trì ở mức 90-100% vào mỗi sáng thứ Hai. Thời gian phản hồi API (API Response Time) tăng vọt từ 2 giây lên 15 giây, thỉnh thoảng xuất hiện lỗi `504 Gateway Timeout`.
-Nhiệm vụ đặt ra: Phải đưa hệ thống này tiến lên kiến trúc Data Warehouse (BigQuery) ở Bài 2, nhưng **tuyệt đối không được gây downtime** hoặc làm sai lệch dữ liệu báo cáo của khách hàng đang sử dụng.
+The PostgreSQL system from Part 1 is starting to "gasp for air." As the CCU reaches the 300 threshold, the database CPU consistently stays at 90-100% every Monday morning. API Response Time surges from 2 seconds to 15 seconds, occasionally throwing `504 Gateway Timeout` errors.
+The mission: Advance this system to the Data Warehouse (BigQuery) architecture described in Part 2, but **absolutely without causing downtime** or altering the reporting data for active customers.
 
-## Thiết kế kiến trúc: Chiến lược nâng cấp 3 giai đoạn
+## Architecture Design: 3-Phase Upgrade Strategy
 
-Thay vì thay đổi toàn bộ cùng lúc, hệ thống sẽ được nâng cấp qua 3 Phase.
+Instead of changing everything at once, the system will be upgraded across 3 Phases.
 
 ```mermaid
 graph TD
-    subgraph phase1 ["Phase 1: Cấp Cứu (Caching Layer)"]
+    subgraph phase1 ["Phase 1: Emergency (Caching Layer)"]
         A1[API Server] -->|1. Check Cache| B1[(Redis)]
         A1 -->|2. Cache Miss| C1[(PostgreSQL)]
-        B1 -.->|Giảm 60% tải DB| C1
+        B1 -.->|Reduces DB load by 60%| C1
     end
 
-    subgraph phase2 ["Phase 2: Dịch Chuyển (Dual-Write)"]
-        D2[Cronjob Worker] -->|Ghi dữ liệu thô| C2[(PostgreSQL)]
-        D2 -->|Đẩy batch| E2[(BigQuery)]
-        A2[API Server] -->|Phục vụ User| C2
+    subgraph phase2 ["Phase 2: Migration (Dual-Write)"]
+        D2[Cronjob Worker] -->|Write raw data| C2[(PostgreSQL)]
+        D2 -->|Push batch| E2[(BigQuery)]
+        A2[API Server] -->|Serve User| C2
         A2 -.->|Shadow Read| E2
     end
 
-    subgraph phase3 ["Phase 3: Decoupling (Tách bạch hoàn toàn)"]
+    subgraph phase3 ["Phase 3: Decoupling (Complete Separation)"]
         F3[ETL Pipeline - Rust/Python] --> G3[(Cloud Storage)]
         G3 --> E3[(BigQuery)]
-        A3[API Server] -->|Chỉ query Report| E3
-        A3 -->|Chỉ query User/Auth| C3[(PostgreSQL)]
+        A3[API Server] -->|Query Report only| E3
+        A3 -->|Query User/Auth only| C3[(PostgreSQL)]
     end
 
     phase1 ==> phase2 ==> phase3
 ```
 
-### Phase 1: Cấp cứu hệ thống (Introduce Redis Cache)
+### Phase 1: System Emergency (Introduce Redis Cache)
 
-- **Vấn đề:** 80% user vào dashboard chỉ xem cùng một khoảng thời gian (ví dụ: 7 ngày gần nhất). Việc bắt Postgres phải scan và tính toán lại `SUM()` cho mỗi cú click là sự lãng phí tài nguyên khủng khiếp.
-- **Hành động:** Chèn Redis vào giữa API và PostgreSQL. Khi user A gọi báo cáo, kết quả được tính toán và lưu vào Redis với TTL (Time-to-Live) là 15 phút. User B gọi cùng tham số sẽ nhận ngay data từ RAM (Redis).
-- **Kết quả:** CPU Database lập tức giảm từ 100% xuống còn 40%. Hệ thống có thêm thời gian "thở" để team kỹ sư chuẩn bị cho Phase 2.
+- **Problem:** 80% of users visiting the dashboard only look at the same time range (e.g., the last 7 days). Forcing Postgres to scan and recalculate `SUM()` for every click is a massive waste of resources.
+- **Action:** Insert Redis between the API and PostgreSQL. When user A calls a report, the result is calculated and stored in Redis with a 15-minute TTL (Time-to-Live). User B calling the same parameters will instantly get data from RAM (Redis).
+- **Result:** Database CPU immediately drops from 100% to 40%. The system gains "breathing" room for the engineering team to prepare for Phase 2.
 
-### Phase 2: Dịch chuyển dữ liệu ngầm (Dual-Write & Shadow Read)
+### Phase 2: Background Data Migration (Dual-Write & Shadow Read)
 
-- **Vấn đề:** Cần đưa dữ liệu từ Postgres sang BigQuery mà không làm gián đoạn luồng đang chạy.
-- **Hành động:** Sửa lại các Worker kéo data (Cronjob). Thay vì chỉ ghi vào Postgres, Worker sẽ ghi thêm 1 bản (Dual-write) vào BigQuery. Đồng thời, ở tầng API, ta triển khai cơ chế **Shadow Read**: API vẫn trả về kết quả từ Postgres cho user, nhưng ngầm gọi thêm truy vấn sang BigQuery và ghi log so sánh xem kết quả của 2 bên có khớp nhau 100% hay không.
+- **Problem:** Need to move data from Postgres to BigQuery without disrupting the active flow.
+- **Action:** Modify the Workers pulling data (Cronjobs). Instead of writing only to Postgres, Workers will write an extra copy (Dual-write) to BigQuery. Simultaneously, at the API layer, implement a **Shadow Read** mechanism: The API still returns results from Postgres to the user, but silently makes an additional query to BigQuery and logs a comparison to see if the results match 100%.
 
-### Phase 3: Cắt rốn & Hoàn thiện Data Pipeline
+### Phase 3: Cutting the Cord & Completing Data Pipeline
 
-- **Vấn đề:** Postgres vẫn đang phình to, Worker cũ chạy quá chậm.
-- **Hành động:** Xóa bỏ hoàn toàn việc ghi data quảng cáo vào Postgres. Viết lại Data Pipeline bằng Rust hoặc Python (tuân theo chuẩn Medallion Architecture) để đẩy data thẳng vào Data Lake và BigQuery. Chuyển đổi (Toggle) API để truy vấn 100% dữ liệu báo cáo từ BigQuery. Postgres giờ đây được "giải phóng", chỉ còn làm đúng nhiệm vụ lưu trữ thông tin User, Auth và Config.
+- **Problem:** Postgres is still bloating, and old Workers are running too slow.
+- **Action:** Completely remove writing ad data to Postgres. Rewrite the Data Pipeline using Rust or Python (following Medallion Architecture) to push data directly into the Data Lake and BigQuery. Toggle the API to query 100% of reporting data from BigQuery. Postgres is now "liberated," only fulfilling its task of storing User, Auth, and Config information.
 
-## Phân tích đánh đổi
+## Trade-off Analysis
 
-- **Tăng chi phí ngắn hạn (Dual-Cost):** Trong Phase 2, bạn phải trả tiền cho cả hạ tầng cũ (PostgreSQL đang phình to) và hạ tầng mới (BigQuery) cùng lúc. Đây là cái giá bắt buộc phải trả cho sự an toàn (Zero Downtime).
-- **Sự phức tạp trong đồng bộ dữ liệu:** Quá trình Dual-write có thể dẫn đến rủi ro lệch dữ liệu nếu Worker ghi vào Postgres thành công nhưng ghi vào BigQuery thất bại. Cần có cơ chế Retry và Idempotency (tính không thay đổi, chạy lại bao nhiêu lần vẫn ra 1 kết quả).
+- **Short-term Cost Increase (Dual-Cost):** In Phase 2, you have to pay for both the old infrastructure (bloating PostgreSQL) and the new one (BigQuery) simultaneously. This is the mandatory price for safety (Zero Downtime).
+- **Complexity in Data Synchronization:** The Dual-write process can lead to data inconsistency risks if the Worker successfully writes to Postgres but fails to write to BigQuery. Retry and Idempotency mechanisms are necessary (it yields the exact same result no matter how many times it runs).
 
-## Bài học thực tế & Best Practices
+## Real-world Lessons & Best Practices
 
-1.  **Dùng Feature Flags (Cờ tính năng):** Khi bắt đầu định tuyến (route) người dùng sang đọc dữ liệu từ BigQuery, đừng áp dụng cho 100% user cùng lúc. Hãy dùng Feature Flag để bật cho nhóm Internal Team test trước, sau đó là 10% user, 50% và cuối cùng là 100%. Nếu có lỗi ở BigQuery, chỉ mất 1 giây gạt cờ để fallback (quay về) Postgres.
-2.  **Giữ lại hệ thống cũ làm Backup:** Sau khi hoàn thành Phase 3, đừng tắt tính năng báo cáo của Postgres ngay lập tức. Hãy để nó chạy không tải thêm 1-2 tuần. Đây là chiếc "dù cứu sinh" trong trường hợp Data Warehouse gặp sự cố không lường trước.
-3.  **Observability (Khả năng quan sát) là số 1:** Nếu không có các dashboard giám sát (như Grafana) để nhìn thấy CPU, RAM và API Latency, bạn sẽ không thể biết Phase 1 (Redis) hay Phase 2 (Shadow Read) có thực sự mang lại hiệu quả hay đang làm hệ thống chậm đi.
+1.  **Use Feature Flags:** When routing users to read data from BigQuery, do not apply it to 100% of users at once. Use a Feature Flag to turn it on for the Internal Team to test first, then 10% of users, 50%, and finally 100%. If there is an error with BigQuery, it takes just 1 second to toggle the flag to fallback to Postgres.
+2.  **Keep the Old System as a Backup:** After completing Phase 3, don't immediately turn off the Postgres reporting feature. Let it idle for another 1-2 weeks. This is a "life parachute" in case the Data Warehouse encounters an unforeseen incident.
+3.  **Observability is Number 1:** If you don't have monitoring dashboards (like Grafana) to visualize CPU, RAM, and API Latency, you won't know if Phase 1 (Redis) or Phase 2 (Shadow Read) is actually effective or if it's slowing the system down.

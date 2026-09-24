@@ -1,12 +1,12 @@
 ---
 id: 78
 slug: design-pattern-00-design-patterns-series-intro
-title: "Design Pattern #00: Giới thiệu Series Design Patterns Thực Chiến: Xây dựng Hệ thống Xử lý Đơn hàng"
-summary: "Mở đầu chuỗi bài viết Design Patterns. Khám phá lộ trình học tập qua một Case Study thực tế: Hệ thống Xử lý Đơn hàng E-commerce, từ khởi tạo đối tượng đến tương tác cơ sở dữ liệu."
+title: "Design Pattern #00: Introduction to Practical Design Patterns Series: Building an Order Processing System"
+summary: "Opening the Design Patterns series. Explore the learning path through a practical Case Study: An E-commerce Order Processing System, from object creation to database interactions."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-05-21"
 date: "2026-05-21"
-readTime: "4 phút đọc"
+readTime: "4 min read"
 tags:
   - "Design Patterns"
   - "Architecture"
@@ -15,91 +15,91 @@ tags:
   - "Series"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Chào mừng bạn đến với chuỗi bài viết chuyên sâu về **Design Patterns (Mẫu thiết kế phần mềm)**.
+Welcome to the comprehensive series on **Design Patterns**.
 
-Thông thường, khi học về Design Patterns, chúng ta hay gặp phải những ví dụ rời rạc như con vịt (Duck), hình học (Shape), hay các phương tiện (Vehicle). Mặc dù dễ hiểu về mặt khái niệm, nhưng khi áp dụng vào một dự án Backend thực tế với hàng nghìn dòng code, nhiều lập trình viên lại lúng túng không biết đặt pattern nào vào đâu cho hợp lý.
+Usually, when learning about Design Patterns, we often encounter disconnected examples like Ducks, Shapes, or Vehicles. Although easy to understand conceptually, when applied to a real-world Backend project with thousands of lines of code, many programmers are left confused about where to logically place which pattern.
 
-Để giải quyết vấn đề đó, series này được thiết kế với một cách tiếp cận hoàn toàn khác: **Học thông qua một Case Study duy nhất và xuyên suốt**.
+To solve that problem, this series is designed with a completely different approach: **Learning through a single, continuous Case Study**.
 
-## Case Study: Hệ thống Xử lý Đơn hàng (Order Processing System)
+## Case Study: Order Processing System
 
-Xuyên suốt toàn bộ các bài viết, chúng ta sẽ đóng vai trò là những Kỹ sư phần mềm đang thiết kế backend cho một nền tảng Thương mại điện tử (E-commerce). Hệ thống này phải giải quyết các bài toán thực tế:
+Throughout all the articles, we will play the role of Software Engineers designing the backend for an E-commerce platform. This system must solve real-world problems:
 
-- Quản lý cấu hình tập trung.
-- Chịu tải cao khi ghi dữ liệu.
-- Tích hợp nhiều cổng thanh toán, đơn vị vận chuyển.
-- Xử lý các quy tắc tính giá, mã giảm giá phức tạp.
-- Thông báo cho người dùng khi trạng thái đơn hàng thay đổi.
+- Centralized configuration management.
+- High load tolerance during data writes.
+- Integration with multiple payment gateways and shipping providers.
+- Handling complex pricing rules and discount codes.
+- Notifying users when order status changes.
 
-Dưới đây là bức tranh tổng thể về kiến trúc hệ thống và những nơi chúng ta sẽ "lắp ráp" các Design Patterns:
+Below is the big picture of the system architecture and where we will "assemble" Design Patterns:
 
 ```mermaid
 flowchart TD
-  User([Người dùng]) --> API["Checkout API\n(Structural: Facade)"]
+  User([User]) --> API["Checkout API\n(Structural: Facade)"]
 
-  subgraph Core System [Hệ thống lõi]
+  subgraph Core System
     direction TB
     Config["App Config\n(Creational: Singleton)"] -.-> API
     DBPool["DB Connection Pool\n(Creational: Object Pool)"] -.-> Repo
 
-    API --> Pricing["Tính giá & Khuyến mãi\n(Behavioral: Strategy + Structural: Decorator)"]
-    Pricing --> Repo["Lưu trữ Đơn hàng\n(Data Access: Repository + UoW)"]
+    API --> Pricing["Pricing & Promotions\n(Behavioral: Strategy + Structural: Decorator)"]
+    Pricing --> Repo["Order Storage\n(Data Access: Repository + UoW)"]
 
-    Repo --> Payment["Thanh toán\n(Creational: Factory / Abstract)"]
-    Payment --> LegacyAdapter["Tích hợp API Cũ\n(Structural: Adapter)"]
+    Repo --> Payment["Payment\n(Creational: Factory / Abstract)"]
+    Payment --> LegacyAdapter["Legacy API Integration\n(Structural: Adapter)"]
 
-    Payment --> Notification["Gửi Thông báo\n(Behavioral: Observer)"]
+    Payment --> Notification["Send Notifications\n(Behavioral: Observer)"]
   end
 
   Repo ---> Database[(Database)]
   Notification ---> Email/SMS([Email / SMS / App Push])
 ```
 
-Nhìn vào sơ đồ trên, bạn có thể thấy các vấn đề kỹ thuật không đứng độc lập mà liên kết chặt chẽ với nhau. Mỗi Pattern sẽ đóng vai trò như một "bánh răng" để cỗ máy vận hành trơn tru, dễ bảo trì và dễ mở rộng.
+Looking at the diagram above, you can see that technical problems don't stand alone but are tightly coupled. Each Pattern will act as a "gear" to keep the machine running smoothly, easy to maintain, and highly scalable.
 
-## Lộ trình của Series
+## Series Roadmap
 
-Chuỗi bài viết được chia thành 4 nhóm mẫu thiết kế chính và 1 bài tổng kết, cụ thể như sau:
+The series is divided into 4 main design pattern groups and 1 summary article, specifically:
 
-### Phần 1: Creational Patterns (Nhóm Khởi tạo)
+### Part 1: Creational Patterns
 
-Tập trung vào cách tạo ra các đối tượng một cách an toàn, linh hoạt và tối ưu hiệu suất.
+Focuses on how to create objects safely, flexibly, and optimized for performance.
 
-- **Singleton Pattern:** Xây dựng trình quản lý cấu hình hệ thống (AppConfig).
-- **Object Pool Pattern:** Tối ưu hóa tái sử dụng kết nối Cơ sở dữ liệu (Database Connection Pool).
-- **Factory Method Pattern:** Mở rộng linh hoạt các cổng thanh toán (Momo, VNPay, Stripe).
-- **Abstract Factory Pattern:** Đóng gói quy trình hoàn tất đơn hàng (Fulfillment) cho nội địa và quốc tế.
-- **Phân tích Use case:** Tổng kết và tiêu chí chọn lựa Creational Patterns.
+- **Singleton Pattern:** Building a system configuration manager (AppConfig).
+- **Object Pool Pattern:** Optimizing the reuse of Database connections (Database Connection Pool).
+- **Factory Method Pattern:** Flexibly extending payment gateways (Momo, VNPay, Stripe).
+- **Abstract Factory Pattern:** Encapsulating the order fulfillment process for domestic and international.
+- **Use Case Analysis:** Summary and selection criteria for Creational Patterns.
 
-### Phần 2: Behavioral Patterns (Nhóm Hành vi)
+### Part 2: Behavioral Patterns
 
-Tập trung vào cách các đối tượng giao tiếp, phân chia trách nhiệm và kiểm soát luồng điều khiển.
+Focuses on how objects communicate, distribute responsibilities, and control flow.
 
-- **Strategy Pattern:** Áp dụng các chiến lược tính phí vận chuyển và thuật toán xếp hạng khách hàng.
-- **Observer Pattern:** Xây dựng hệ thống Event-driven, tự động gửi email/SMS thông báo khi đơn hàng thay đổi trạng thái.
-- **Phân tích Use case:** Tiêu chí chọn lựa Behavioral Patterns.
+- **Strategy Pattern:** Applying shipping fee calculation strategies and customer ranking algorithms.
+- **Observer Pattern:** Building an Event-driven system, automatically sending email/SMS notifications upon order status changes.
+- **Use Case Analysis:** Selection criteria for Behavioral Patterns.
 
-### Phần 3: Structural Patterns (Nhóm Cấu trúc)
+### Part 3: Structural Patterns
 
-Tập trung vào cách lắp ráp các đối tượng và lớp thành các cấu trúc lớn hơn, nhưng vẫn giữ được sự linh hoạt.
+Focuses on how to assemble objects and classes into larger structures while maintaining flexibility.
 
-- **Decorator Pattern:** Thiết kế hệ thống áp dụng mã giảm giá (Discount) xếp chồng lên nhau mà không làm phình to logic tính tiền.
-- **Adapter Pattern:** Tích hợp hệ thống kiểm tra tồn kho (Inventory) của một đối tác cũ (Legacy System) vào chuẩn mới.
-- **Facade Pattern:** Cung cấp một API Checkout duy nhất, che giấu sự phức tạp của toàn bộ hệ thống bên dưới.
-- **Phân tích Use case:** Tiêu chí chọn lựa Structural Patterns.
+- **Decorator Pattern:** Designing a system to stack discount codes without bloating pricing logic.
+- **Adapter Pattern:** Integrating an old partner's Inventory system (Legacy System) into new standards.
+- **Facade Pattern:** Providing a single Checkout API, hiding the underlying complexity of the entire system.
+- **Use Case Analysis:** Selection criteria for Structural Patterns.
 
-### Phần 4: Data Access Patterns (Nhóm Truy xuất Dữ liệu)
+### Part 4: Data Access Patterns
 
-Tập trung vào tầng giao tiếp với Cơ sở dữ liệu, tách biệt logic nghiệp vụ khỏi logic truy vấn.
+Focuses on the Database interaction layer, decoupling business logic from query logic.
 
-- **Repository Pattern:** Xây dựng cầu nối chuẩn hóa giữa Domain Models và Database.
-- **Unit Of Work Pattern:** Đảm bảo tính toàn vẹn dữ liệu (Transaction) khi lưu đơn hàng, lịch sử thanh toán và trừ tồn kho cùng lúc.
-- **Phân tích Use case:** Tiêu chí chọn lựa Data Access Patterns.
+- **Repository Pattern:** Building a standardized bridge between Domain Models and Database.
+- **Unit Of Work Pattern:** Ensuring data integrity (Transactions) when saving orders, payment histories, and deducting inventory simultaneously.
+- **Use Case Analysis:** Selection criteria for Data Access Patterns.
 
-### Phần 5: Tổng kết
+### Part 5: Summary
 
-- **Tổng hợp các pattern và ứng dụng vào thực tế:** Nhìn lại toàn bộ kiến trúc mã nguồn. Làm sao để kết hợp chúng lại mà không rơi vào bẫy "Over-engineering" (phức tạp hóa hệ thống quá mức).
+- **Synthesizing patterns and real-world application:** Looking back at the entire source code architecture. How to combine them without falling into the "Over-engineering" trap.
 
-Hãy chuẩn bị một tách cà phê, mở IDE lên và cùng bắt đầu cuộc hành trình thiết kế hệ thống với bài viết đầu tiên: **Creational Patterns - Singleton**.
+Prepare a cup of coffee, fire up your IDE, and let's begin the system design journey with the first article: **Creational Patterns - Singleton**.

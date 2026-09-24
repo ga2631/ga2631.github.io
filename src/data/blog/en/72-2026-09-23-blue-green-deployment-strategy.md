@@ -1,12 +1,12 @@
 ---
 id: "72"
 slug: "blue-green-deployment-strategy"
-title: "Chiến Lược Triển Khai Blue-Green Deployment"
-summary: "Hướng dẫn chi tiết về chiến lược Blue-Green Deployment trong CI/CD. Trả lời câu hỏi khi nào nên áp dụng, nguyên lý hoạt động, từng bước thiết lập và cách khắc phục sự cố downtime."
+title: "Blue-Green Deployment Strategy"
+summary: "Detailed guide on the Blue-Green Deployment strategy in CI/CD. Answers when to apply it, how it works, step-by-step setup, and how to troubleshoot downtime issues."
 category: "devops-cloud-tooling"
 publishedAt: "2026-09-23"
 date: "2026-09-23"
-readTime: "4 phút đọc"
+readTime: "4 min read"
 tags:
   - CI/CD
   - Blue-Green Deployment
@@ -15,56 +15,56 @@ tags:
   - Zero downtime
 ---
 
-## Mục tiêu bài viết
+## Objective of the Article
 
-Trong môi trường phần mềm hiện đại, việc gián đoạn dịch vụ (downtime) khi cập nhật phiên bản mới là điều tối kỵ. Bài viết này thuộc chuyên đề **DevOps, Cloud & Tooling**, tập trung phân tích và hướng dẫn áp dụng chiến lược **Blue-Green Deployment** vào quy trình CI/CD.
+In modern software environments, service disruption (downtime) during a new version update is taboo. This article belongs to the **DevOps, Cloud & Tooling** series, focusing on analyzing and guiding the application of the **Blue-Green Deployment** strategy into the CI/CD pipeline.
 
-Bài viết sẽ giải quyết hai câu hỏi cốt lõi:
+The article will address two core questions:
 
-- **Khi nào dùng?** Sử dụng khi hệ thống yêu cầu **zero-downtime** (không có thời gian chết), cần khả năng **rollback (hoàn tác) tức thì** nếu có lỗi, và ứng dụng là các hệ thống mission-critical (tài chính, y tế, thương mại điện tử lớn).
+- **When to use it?** Use it when the system requires **zero-downtime**, needs immediate **rollback** capability if errors occur, and the applications are mission-critical systems (finance, healthcare, large e-commerce).
 
-- **Dùng như thế nào?** Thông qua việc duy trì hai môi trường độc lập nhưng giống hệt nhau về hạ tầng, kết hợp với cơ chế điều hướng traffic (lưu lượng) linh hoạt ở tầng Load Balancer/Router.
+- **How to use it?** By maintaining two independent but infrastructure-identical environments, combined with a flexible traffic routing mechanism at the Load Balancer/Router layer.
 
-## Kiến trúc / Nguyên lý hoạt động
+## Architecture / Working Principle
 
-Nguyên lý của Blue-Green Deployment xoay quanh việc vận hành song song hai môi trường hạ tầng giống hệt nhau:
+The principle of Blue-Green Deployment revolves around running two identical infrastructure environments in parallel:
 
-- **Môi trường Blue (Active):** Đang chạy phiên bản hiện tại và phục vụ 100% traffic từ người dùng.
+- **Blue Environment (Active):** Running the current version and serving 100% of user traffic.
 
-- **Môi trường Green (Idle):** Môi trường tĩnh, được dùng để triển khai và kiểm thử phiên bản mới (vNext).
+- **Green Environment (Idle):** A static environment used to deploy and test the new version (vNext).
 
-Khi phiên bản mới trên Green đã vượt qua mọi bài kiểm thử (Health checks, Integration tests), bộ định tuyến (Load Balancer, API Gateway, hoặc Ingress) sẽ chuyển hướng toàn bộ traffic từ Blue sang Green. Lúc này, Green trở thành Active, và Blue trở thành Idle (chờ để hủy hoặc dùng cho lần deploy tiếp theo).
+Once the new version on Green has passed all tests (Health checks, Integration tests), the router (Load Balancer, API Gateway, or Ingress) will redirect all traffic from Blue to Green. At this point, Green becomes Active, and Blue becomes Idle (waiting to be destroyed or used for the next deployment).
 
 ```mermaid
 graph TD
-    subgraph Trạng thái 2: Sau khi chuyển đổi thành công
-        U2((Người dùng)) --> LB2[Load Balancer / Router]
-        LB2 -. "0% Traffic (Chờ Rollback nếu cần)" .-> B2[Môi trường Blue <br> v1.0 - Idle]
-        LB2 == "100% Traffic" === G2[Môi trường Green <br> v1.1 - Active]
+    subgraph State 2: After successful switch
+        U2((User)) --> LB2[Load Balancer / Router]
+        LB2 -. "0% Traffic (Waiting for Rollback if needed)" .-> B2[Blue Environment <br> v1.0 - Idle]
+        LB2 == "100% Traffic" === G2[Green Environment <br> v1.1 - Active]
         B2 --> DB2[(Database)]
         G2 --> DB2
     end
-    subgraph Trạng thái 1: Trước khi chuyển đổi
-        U1((Người dùng)) --> LB1[Load Balancer / Router]
-        LB1 == "100% Traffic" === B1[Môi trường Blue <br> v1.0 - Active]
-        LB1 -. "0% Traffic" .-> G1[Môi trường Green <br> v1.1 - Idle]
+    subgraph State 1: Before switch
+        U1((User)) --> LB1[Load Balancer / Router]
+        LB1 == "100% Traffic" === B1[Blue Environment <br> v1.0 - Active]
+        LB1 -. "0% Traffic" .-> G1[Green Environment <br> v1.1 - Idle]
         B1 --> DB1[(Database)]
         G1 --> DB1
     end
 ```
 
-## Từng bước thiết lập
+## Step-by-Step Setup
 
-Dưới đây là luồng CI/CD tiêu chuẩn sử dụng các công cụ phổ biến (như GitLab CI/GitHub Actions, Docker, và Nginx làm Load Balancer).
+Below is a standard CI/CD flow using popular tools (like GitLab CI/GitHub Actions, Docker, and Nginx as a Load Balancer).
 
-### Bước 1: Chuẩn bị hạ tầng (Infrastructure as Code)
+### Step 1: Infrastructure Preparation (Infrastructure as Code)
 
-Đảm bảo bạn có khả năng định tuyến lưu lượng linh hoạt. Ví dụ cấu hình Nginx upstream:
+Ensure you have flexible traffic routing capabilities. For example, configuring Nginx upstream:
 
 ```nginx
 # nginx.conf
 upstream backend_servers {
-    # Biến này sẽ được CI/CD thay đổi khi swap
+    # This variable will be changed by CI/CD during swap
     server 10.0.0.1:8080; # Blue IP
     # server 10.0.0.2:8080; # Green IP
 }
@@ -77,57 +77,57 @@ server {
 }
 ```
 
-### Bước 2: Continuous Integration (CI - Tích hợp liên tục)
+### Step 2: Continuous Integration (CI)
 
-Khi Developer push code mới (v1.1):
+When Developers push new code (v1.1):
 
-1. **Build:** Đóng gói source code (ví dụ: build Docker image).
-2. **Test:** Chạy Unit Test, Linting.
-3. **Push:** Đẩy Image lên Container Registry (Docker Hub, GCR, AWS ECR).
+1. **Build:** Package the source code (e.g., build Docker image).
+2. **Test:** Run Unit Tests, Linting.
+3. **Push:** Push Image to Container Registry (Docker Hub, GCR, AWS ECR).
 
-### Bước 3: Continuous Deployment (CD - Triển khai lên Green)
+### Step 3: Continuous Deployment (CD - Deploy to Green)
 
-1. **Xác định môi trường Idle:** Script CD kiểm tra xem môi trường nào đang Active. Nếu Blue đang Active -> mục tiêu deploy là Green.
-2. **Deploy:** Pull Docker image mới nhất và khởi chạy các container trên môi trường Green.
-3. **Pre-flight Checks:** Chạy Integration Test và API Health Check trực tiếp vào IP nội bộ của môi trường Green (không qua Load Balancer bên ngoài).
+1. **Identify Idle Environment:** The CD script checks which environment is Active. If Blue is Active -> deployment target is Green.
+2. **Deploy:** Pull the latest Docker image and launch containers on the Green environment.
+3. **Pre-flight Checks:** Run Integration Tests and API Health Checks directly against the internal IP of the Green environment (bypassing external Load Balancer).
 
-### Bước 4: Chuyển đổi Traffic (Cutover)
+### Step 4: Traffic Cutover
 
-1. **Cập nhật Router:** Nếu các bài test ở Bước 3 pass, pipeline sẽ cập nhật file cấu hình Nginx (trỏ `backend_servers` sang IP của Green).
-2. **Reload Service:** Gọi lệnh reload Router (ví dụ: `nginx -s reload`) để áp dụng thay đổi mà không làm rớt các kết nối hiện tại.
-3. **Xác nhận:** Giám sát lỗi (HTTP 5xx) trong vài phút đầu. Nếu hệ thống ổn định, quá trình hoàn tất.
+1. **Update Router:** If tests in Step 3 pass, the pipeline updates the Nginx config file (pointing `backend_servers` to Green's IP).
+2. **Reload Service:** Execute the Router reload command (e.g., `nginx -s reload`) to apply changes without dropping current connections.
+3. **Verify:** Monitor for errors (HTTP 5xx) during the first few minutes. If the system is stable, the process is complete.
 
-## Khắc phục sự cố và các lỗi thường gặp
+## Troubleshooting and Common Issues
 
-1. Xung đột Database (Database Schema Changes)
+1. Database Conflicts (Database Schema Changes)
 
-- **Vấn đề:** Cả Blue và Green đều dùng chung một Database. Nếu bản cập nhật v1.1 xóa một cột mà v1.0 (đang phục vụ user) vẫn cần, hệ thống v1.0 sẽ crash ngay lập tức.
-- **Khắc phục:** Luôn áp dụng **Forward/Backward Compatible Migrations**. Phân tách việc đổi schema ra thành 2 bước: _Deploy v1.1_, thêm cột mới, code hỗ trợ cả cột cũ và mới; _Deploy v1.2_, xóa hẳn cột cũ khi v1.0 không còn tồn tại.
+- **Problem:** Both Blue and Green share the same Database. If the v1.1 update deletes a column that v1.0 (currently serving users) still needs, the v1.0 system will crash immediately.
+- **Solution:** Always apply **Forward/Backward Compatible Migrations**. Separate schema changes into 2 steps: _Deploy v1.1_, add the new column, code supports both old and new columns; _Deploy v1.2_, permanently delete the old column when v1.0 no longer exists.
 
-2. Mất Session của người dùng khi Swap
+2. Loss of User Sessions during Swap
 
-- **Vấn đề:** Khi traffic chuyển từ Blue sang Green, user bị đăng xuất hoặc gián đoạn luồng thanh toán do session lưu trên RAM của server Blue.
-- **Khắc phục:** Stateless Architecture. Chuyển toàn bộ Session State ra một hệ thống lưu trữ bên ngoài như **Redis** hoặc Memcached.
+- **Problem:** When traffic switches from Blue to Green, users are logged out or payment flows are interrupted due to sessions stored in Blue's server RAM.
+- **Solution:** Stateless Architecture. Move the entire Session State to an external storage system like **Redis** or Memcached.
 
-3. Khó khăn trong việc Rollback Data
+3. Difficulties in Data Rollback
 
-- **Vấn đề:** Đổi traffic về lại Blue rất nhanh, nhưng nếu Green đã ghi một lượng lớn "dữ liệu rác" hoặc sai cấu trúc vào DB trong thời gian nó Active thì sao?
-- **Khắc phục:** Tách biệt database migration ra khỏi luồng CI/CD của code. Nếu logic code sai, rollback traffic về Blue. Nếu data sai, phải có kịch bản Data Rollback hoặc Data Fix thủ công đã được chuẩn bị trước.
+- **Problem:** Switching traffic back to Blue is very fast, but what if Green wrote a large amount of "junk data" or incorrect structures to the DB during its Active time?
+- **Solution:** Separate database migrations from code CI/CD flows. If the code logic is flawed, rollback traffic to Blue. If the data is corrupted, there must be a pre-prepared Data Rollback or manual Data Fix scenario.
 
-## Đánh giá & Mở rộng
+## Evaluation & Extension
 
-### Đánh giá
+### Evaluation
 
-- **Ưu điểm:**
-  - Đạt được Zero-downtime thực sự.
-  - Rollback chỉ trong vài giây (chỉ việc đổi lại cấu hình Load Balancer).
-  - Giảm thiểu áp lực tâm lý cho team Dev/Ops khi release.
-- **Nhược điểm:**
-  - Chi phí nhân đôi: Phải duy trì hạ tầng gấp đôi (ít nhất là trong thời điểm deploy).
-  - Quản lý Database cực kỳ phức tạp.
+- **Pros:**
+  - Achieves true Zero-downtime.
+  - Rollbacks take only seconds (just reverting the Load Balancer config).
+  - Minimizes psychological pressure on Dev/Ops teams during releases.
+- **Cons:**
+  - Doubled costs: Must maintain double the infrastructure (at least during deployment).
+  - Extremely complex Database management.
 
-### Hướng Mở rộng (Advanced Patterns)
+### Extension Patterns (Advanced Patterns)
 
-1. **Canary Release:** Thay vì chuyển 100% traffic ngay lập tức, bạn có thể kết hợp cấu hình Router để chuyển 5% -> 10% -> 50% -> 100% traffic sang Green để đo lường rủi ro.
-2. **Automated Rollback:** Tích hợp CI/CD với các công cụ monitoring (Prometheus, Datadog). Nếu sau khi swap sang Green mà Error Rate (tỷ lệ lỗi 5xx) vượt quá 1% trong 2 phút, CI/CD tự động trigger script đổi traffic về lại Blue.
-3. **Kubernetes (K8s):** Trên môi trường Cloud Native, Blue-Green có thể được thực hiện dễ dàng bằng cách thay đổi `selector` của `Service` trỏ sang các `Pods` mang label của phiên bản mới thay vì phải tự quản lý Nginx config thủ công.
+1. **Canary Release:** Instead of switching 100% of traffic immediately, you can combine Router configurations to shift 5% -> 10% -> 50% -> 100% of traffic to Green to measure risk.
+2. **Automated Rollback:** Integrate CI/CD with monitoring tools (Prometheus, Datadog). If after swapping to Green, the Error Rate (5xx errors) exceeds 1% within 2 minutes, CI/CD automatically triggers a script to route traffic back to Blue.
+3. **Kubernetes (K8s):** In Cloud Native environments, Blue-Green can be easily implemented by changing the `selector` of a `Service` to point to `Pods` bearing the new version's label, avoiding manual Nginx config management.

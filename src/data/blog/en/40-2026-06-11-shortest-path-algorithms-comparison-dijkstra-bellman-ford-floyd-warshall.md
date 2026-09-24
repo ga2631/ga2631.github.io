@@ -1,12 +1,12 @@
 ---
 id: "40"
 slug: "shortest-path-algorithms-comparison-dijkstra-bellman-ford-floyd-warshall"
-title: "Thuật toán Nâng cao #06: So sánh Toàn diện 3 Thuật toán Tìm đường đi ngắn nhất - Dijkstra vs Bellman-Ford vs Floyd-Warshall & Cây Quyết định Lựa chọn"
-summary: "Bản đối chiếu kiến trúc toàn diện giữa 3 thuật toán tìm đường đi ngắn nhất kinh điển: Phân tích ma trận ưu nhược điểm, độ phức tạp thời gian/không gian, khả năng xử lý trọng số âm, cấu trúc dữ liệu tối ưu và Cây quyết định (Decision Tree) giúp kỹ sư chọn đúng thuật toán cho bài toán thực chiến."
+title: "Advanced Algorithms #06: Comprehensive Comparison of 3 Shortest Path Algorithms - Dijkstra vs Bellman-Ford vs Floyd-Warshall & Decision Tree"
+summary: "A comprehensive architectural comparison between 3 classic shortest path algorithms: Analyzing the pros/cons matrix, time/space complexity, negative weight handling capabilities, optimal data structures, and a Decision Tree helping engineers pick the right algorithm for real-world problems."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "11 phút đọc"
+readTime: "11 min read"
 tags:
   - "Algorithms"
   - "Shortest Path"
@@ -17,34 +17,34 @@ tags:
   - "Architecture"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong kỹ thuật phần mềm, việc lựa chọn sai thuật toán tìm đường đi ngắn nhất có thể dẫn đến hậu quả nghiêm trọng: Chương trình chạy chậm hàng nghìn lần (Time Limit Exceeded), tràn bộ nhớ (Out of Memory), hoặc sai lệch logic hoàn toàn khi gặp dữ liệu biên (như trọng số âm gây vòng lặp vô tận).
+In software engineering, choosing the wrong shortest path algorithm can lead to severe consequences: programs running thousands of times slower (Time Limit Exceeded), memory overflows (Out of Memory), or complete logic failures when hitting edge cases (like negative weights causing infinite loops).
 
-Ba trụ cột kinh điển trong bài toán tìm đường đi ngắn nhất gồm:
+The three classic pillars for the shortest path problem include:
 
-1. **Dijkstra:** Giải thuật Tham lam (Greedy) tốc độ cao cho đồ thị trọng số không âm.
-2. **Bellman-Ford:** Giải thuật Quy hoạch động duyệt cạnh xử lý an toàn trọng số âm và phát hiện chu trình âm.
-3. **Floyd-Warshall:** Giải thuật Quy hoạch động ma trận tìm đường đi ngắn nhất giữa mọi cặp đỉnh (All-Pairs).
+1. **Dijkstra:** A high-speed Greedy algorithm for non-negative weighted graphs.
+2. **Bellman-Ford:** An edge-relaxing Dynamic Programming algorithm that safely handles negative weights and detects negative cycles.
+3. **Floyd-Warshall:** A Matrix Dynamic Programming algorithm to find the shortest path between all pairs of vertices (All-Pairs).
 
-Bài viết này thiết lập một khung so sánh chuẩn xác, định lượng và cung cấp Cây quyết định trực quan giúp các kỹ sư kiến trúc hệ thống đưa ra quyết định tối ưu.
+This article establishes a precise, quantitative comparison framework and provides a visual Decision Tree to help system architecture engineers make optimal choices.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án thực tế:
+Common mistakes when selecting algorithms in real-world projects:
 
-- **Lạm dụng Dijkstra trên đồ thị chứa trọng số âm:** Dẫn đến kết quả sai lệch âm thầm mà không hề có ngoại lệ (Exception) hay cảnh báo nào phát sinh từ thư viện.
-- **Dùng Bellman-Ford trên bản đồ giao thông khổng lồ:** Với mạng lưới đường bộ có hàng triệu nút, Bellman-Ford mất hàng giờ để xử lý trong khi Dijkstra với Min-Heap giải quyết chỉ trong vài mili-giây.
-- **Chạy Dijkstra V lần trên đồ thị dày thay vì Floyd-Warshall:** Gặp chi phí overhead quản lý hàng đợi ưu tiên và phân mảnh bộ nhớ lớn hơn nhiều so với thao tác duyệt ma trận tuần tự `O(V³)` có độ tối ưu hóa phần cứng cao.
+- **Abusing Dijkstra on graphs with negative weights:** Leads to silently incorrect results without any exceptions or library warnings thrown.
+- **Using Bellman-Ford on massive traffic maps:** For road networks with millions of nodes, Bellman-Ford takes hours to process, while Dijkstra with a Min-Heap solves it in a few milliseconds.
+- **Running Dijkstra V times on a dense graph instead of Floyd-Warshall:** Faces much higher overhead for priority queue management and memory fragmentation compared to the sequential `O(V³)` matrix traversal which has high hardware optimization.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-**Ma trận So sánh Đa chiều (Comparative Architecture Matrix):**
+**Comparative Architecture Matrix:**
 
 <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
   <thead>
     <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-      <th style="padding: 8px;">Tiêu chí Đánh giá</th>
+      <th style="padding: 8px;">Evaluation Criteria</th>
       <th style="padding: 8px;">Dijkstra</th>
       <th style="padding: 8px;">Bellman-Ford</th>
       <th style="padding: 8px;">Floyd-Warshall</th>
@@ -52,43 +52,43 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
   </thead>
   <tbody>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Phạm vi bài toán</b></td>
-      <td style="padding: 8px">Một nguồn (Single-Source)</td>
-      <td style="padding: 8px">Một nguồn (Single-Source)</td>
-      <td style="padding: 8px">Mọi cặp đỉnh (All-Pairs)</td>
+      <td style="padding: 8px"><b>Problem Scope</b></td>
+      <td style="padding: 8px">Single-Source</td>
+      <td style="padding: 8px">Single-Source</td>
+      <td style="padding: 8px">All-Pairs</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Độ phức tạp Thời gian</b></td>
-      <td style="padding: 8px">`O((V + E) \log V)`</td>
-      <td style="padding: 8px">`O(V x E)` (Best: `O(E)`)</td>
-      <td style="padding: 8px">`Θ(V³)`</td>
+      <td style="padding: 8px"><b>Time Complexity</b></td>
+      <td style="padding: 8px"><code>O((V + E) \log V)</code></td>
+      <td style="padding: 8px"><code>O(V*E)</code> (Best: <code>O(E)</code>)</td>
+      <td style="padding: 8px"><code>Θ(V³)</code></td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Độ phức tạp Không gian</b></td>
-      <td style="padding: 8px">`O(V + E)`</td>
-      <td style="padding: 8px">`O(V + E)`</td>
-      <td style="padding: 8px">`O(V²)`</td>
+      <td style="padding: 8px"><b>Space Complexity</b></td>
+      <td style="padding: 8px"><code>O(V + E)</code></td>
+      <td style="padding: 8px"><code>O(V + E)</code></td>
+      <td style="padding: 8px"><code>O(V²)</code></td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Trọng số cạnh âm</b></td>
-      <td style="padding: 8px">KHÔNG hỗ trợ</td>
-      <td style="padding: 8px">HỖ TRỢ an toàn</td>
-      <td style="padding: 8px">HỖ TRỢ an toàn</td>
+      <td style="padding: 8px"><b>Negative Edge Weights</b></td>
+      <td style="padding: 8px">NOT supported</td>
+      <td style="padding: 8px">Safely SUPPORTED</td>
+      <td style="padding: 8px">Safely SUPPORTED</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Phát hiện Chu trình âm</b></td>
-      <td style="padding: 8px">KHÔNG hỗ trợ</td>
-      <td style="padding: 8px">CÓ (ở lượt duyệt V)</td>
-      <td style="padding: 8px">CÓ (`dist[i][i] < 0`)</td>
+      <td style="padding: 8px"><b>Negative Cycle Detection</b></td>
+      <td style="padding: 8px">NOT supported</td>
+      <td style="padding: 8px">YES (at pass V)</td>
+      <td style="padding: 8px">YES (<code>dist[i][i] < 0</code>)</td>
     </tr>
     <tr style="border-bottom: 1px solid #edf2f7;">
-      <td style="padding: 8px"><b>Cấu trúc Dữ liệu</b></td>
+      <td style="padding: 8px"><b>Data Structure</b></td>
       <td style="padding: 8px">Min-Heap + Adjacency List</td>
-      <td style="padding: 8px">Edge List (Mảng cạnh)</td>
-      <td style="padding: 8px">2D Matrix (Ma trận kề)</td>
+      <td style="padding: 8px">Edge List</td>
+      <td style="padding: 8px">2D Matrix (Adjacency Matrix)</td>
     </tr>
     <tr>
-      <td style="padding: 8px"><b>Giao thức / Ứng dụng</b></td>
+      <td style="padding: 8px"><b>Protocols / Applications</b></td>
       <td style="padding: 8px">OSPF, Google Maps, GPS</td>
       <td style="padding: 8px">RIP, Currency Arbitrage</td>
       <td style="padding: 8px">Transitive Closure, Logistics</td>
@@ -96,26 +96,26 @@ Các sai lầm phổ biến khi lựa chọn thuật toán trong các dự án t
   </tbody>
 </table>
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Cây quyết định (Decision Tree) giúp kỹ sư lựa chọn thuật toán chuẩn mực theo bài toán:
+Decision Tree to help engineers choose the standard algorithm based on the problem:
 
 ```mermaid
 flowchart TD
-    Start["Yêu Cầu Bài Toán Đường Đi Ngắn Nhất"] --> ScopeCheck{"Phạm vi cần tìm?"}
+    Start["Shortest Path Problem Requirement"] --> ScopeCheck{"Target Scope?"}
 
-    ScopeCheck -->|"Một nguồn duy nhất (Single Source)"| WeightCheck{"Đồ thị có cạnh mang trọng số âm?"}
-    ScopeCheck -->|"Mọi cặp đỉnh (All Pairs)"| GraphSize{"Số lượng đỉnh V?"}
+    ScopeCheck -->|"Single Source"| WeightCheck{"Graph has negative weight edges?"}
+    ScopeCheck -->|"All Pairs"| GraphSize{"Number of vertices V?"}
 
-    WeightCheck -->|"Không (Trọng số >= 0)"| RunDijkstra["Chọn DIJKSTRA (Min-Heap)<br/>Độ phức tạp: O((V + E) log V)"]
-    WeightCheck -->|"Có cạnh âm / Bắt chu trình âm"| RunBellman["Chọn BELLMAN-FORD<br/>Độ phức tạp: O(V * E)"]
+    WeightCheck -->|"No (Weights >= 0)"| RunDijkstra["Choose DIJKSTRA (Min-Heap)<br/>Complexity: O((V + E) log V)"]
+    WeightCheck -->|"Yes / Need cycle detection"| RunBellman["Choose BELLMAN-FORD<br/>Complexity: O(V * E)"]
 
-    GraphSize -->|"V <= 500 (Vừa và nhỏ)"| RunFloyd["Chọn FLOYD-WARSHALL<br/>Độ phức tạp: O(V³), Bộ nhớ: O(V²)"]
-    GraphSize -->|"V > 500 và Đồ thị thưa"| RunV_Dijkstra["Chạy DIJKSTRA V lần<br/>Độ phức tạp: O(V(V+E) log V)"]
-    GraphSize -->|"V > 500 và Có cạnh âm"| RunJohnson["Thuật toán Johnson<br/>Độ phức tạp: O(V² log V + VE)"]
+    GraphSize -->|"V <= 500 (Small to medium)"| RunFloyd["Choose FLOYD-WARSHALL<br/>Complexity: O(V³), Space: O(V²)"]
+    GraphSize -->|"V > 500 and Sparse Graph"| RunV_Dijkstra["Run DIJKSTRA V times<br/>Complexity: O(V(V+E) log V)"]
+    GraphSize -->|"V > 500 and Negative edges"| RunJohnson["Johnson's Algorithm<br/>Complexity: O(V² log V + VE)"]
 ```
 
-**Bộ kiểm thử Benchmark tích hợp C++ (Đo đạc và xác thực 3 thuật toán trên cùng đồ thị):**
+**Integrated C++ Benchmark Suite (Measurement and validation of 3 algorithms on the same graph):**
 
 ```c++
 #include <iostream>
@@ -125,7 +125,7 @@ flowchart TD
 
 const long long INF = 1e15;
 
-// Cấu trúc cạnh chung
+// Common Edge Structure
 struct Edge {
     int from, to;
     long long weight;
@@ -144,7 +144,7 @@ long long benchmarkDijkstra(int V, int start, int end, const std::vector<std::ve
         auto [d, u] = pq.top();
         pq.pop();
         if (d > dist[u]) continue;
-        if (u == end) break; // Dừng sớm khi đã tìm thấy đích
+        if (u == end) break; // Early exit when target is found
 
         for (const auto& edge : adj[u]) {
             int v = edge.first;
@@ -206,19 +206,19 @@ int main() {
         matrix[e.from][e.to] = e.weight;
     }
 
-    std::cout << "--- KET QUA DUONG DI TU 0 DEN 4 CUA 3 THUAT TOAN ---" << std::endl;
-    std::cout << "1. Dijkstra:       Khoang cach = " << benchmarkDijkstra(V, 0, 4, adj) << std::endl;
-    std::cout << "2. Bellman-Ford:  Khoang cach = " << benchmarkBellmanFord(V, 0, 4, edgeList) << std::endl;
-    std::cout << "3. Floyd-Warshall: Khoang cach = " << benchmarkFloydWarshall(V, 0, 4, matrix) << std::endl;
+    std::cout << "--- PATH DISTANCE FROM 0 TO 4 RESULTS ---" << std::endl;
+    std::cout << "1. Dijkstra:       Distance = " << benchmarkDijkstra(V, 0, 4, adj) << std::endl;
+    std::cout << "2. Bellman-Ford:   Distance = " << benchmarkBellmanFord(V, 0, 4, edgeList) << std::endl;
+    std::cout << "3. Floyd-Warshall: Distance = " << benchmarkFloydWarshall(V, 0, 4, matrix) << std::endl;
 
     return 0;
 }
 ```
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-Tổng kết chiến lược ứng dụng cho kỹ sư phần mềm:
+Summary application strategy for software engineers:
 
-1. **Khi nào chọn Dijkstra?** Khi cần tìm đường đi ngắn nhất từ một điểm xuất phát trên đồ thị lớn (đường bộ, mạng máy tính, đồ thị mạng xã hội) và đảm bảo 100% trọng số &ge; 0. Đây là giải thuật có hiệu năng cao nhất trong thực tế.
-2. **Khi nào chọn Bellman-Ford?** Khi đồ thị có khả năng xuất hiện chi phí âm (giao dịch tiền tệ, mạng năng lượng) hoặc khi cần một thuật toán phân tán đơn giản (Distance Vector trong định tuyến RIP) nơi mỗi router chỉ trao đổi thông tin với láng giềng.
-3. **Khi nào chọn Floyd-Warshall?** Khi số lượng đỉnh vừa phải (`V <= 500`) và hệ thống yêu cầu tra cứu khoảng cách giữa mọi cặp đỉnh tức thời trong `O(1)` mà không cần tính toán lại.
+1. **When to choose Dijkstra?** When needing the shortest path from a single starting point on a large graph (roads, computer networks, social graphs) and 100% ensuring weights are `\geq 0`. This is the highest-performing algorithm in practice.
+2. **When to choose Bellman-Ford?** When the graph might have negative costs (currency trading, energy grids) or when a simple distributed algorithm is needed (Distance Vector in RIP routing) where each router only exchanges information with its neighbors.
+3. **When to choose Floyd-Warshall?** When the number of vertices is moderate (`V \leq 500`) and the system requires instant shortest path lookups between all pairs in `O(1)` time without recomputation.

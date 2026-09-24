@@ -1,12 +1,12 @@
 ---
 id: "27"
 slug: "algorithmic-efficiency-metrics-time-space-complexity-big-o"
-title: "Thuật toán Cơ bản #01: Thước đo Hiệu quả Thuật toán - Phân tích Độ phức tạp Thời gian (Time Complexity), Không gian (Space Complexity) & Ký hiệu Tiệm cận (Big-O, Big-Ω, Big-Θ)"
-summary: "Thiết lập bộ khung đo lường chuẩn hóa hiệu năng thuật toán: Phân biệt Thời gian thực thi (Wall-clock) vs Mô hình tính toán RAM, phân rã Time vs Space Complexity (Auxiliary vs Total) và làm chủ hệ thống ký hiệu tiệm cận làm nền tảng cho toàn bộ series."
+title: "Fundamental Algorithms #01: Algorithm Efficiency Metrics - Analyzing Time Complexity, Space Complexity & Asymptotic Notations (Big-O, Big-Ω, Big-Θ)"
+summary: "Establishing a standardized framework for measuring algorithm performance: Differentiating Wall-clock Time vs RAM Computational Model, breaking down Time vs Space Complexity (Auxiliary vs Total), and mastering the asymptotic notation system as the foundation for the entire series."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-04"
 date: "2026-06-04"
-readTime: "9 phút đọc"
+readTime: "9 min read"
 tags:
   - "Algorithms"
   - "Big-O"
@@ -17,55 +17,55 @@ tags:
   - "Performance"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Trong phát triển phần mềm và tối ưu hóa hệ thống, câu hỏi cốt tử mà mỗi kỹ sư phải trả lời trước khi đưa bất kỳ đoạn mã nào lên môi trường Production là: _'Thuật toán này chạy nhanh đến mức nào, và nó tiêu tốn bao nhiêu tài nguyên khi lượng dữ liệu người dùng tăng trưởng gấp 1,000 lần?'_.
+In software development and system optimization, the crucial question every engineer must answer before deploying any code to Production is: _'How fast does this algorithm run, and how many resources does it consume when user data grows 1,000 times?'_.
 
-Một sai lầm kinh điển của người mới lập trình là dùng đồng hồ bấm giờ (Wall-clock Time) qua các hàm như `console.time()` hay `System.nanoTime()` để đánh giá tốc độ. Cách làm này không thể đưa ra kết luận chuẩn xác vì thời gian chạy vật lý phụ thuộc hoàn toàn vào cấu hình phần cứng CPU, nhiệt độ máy, trình biên dịch, và các tiến trình chạy nền của hệ điều hành. Do đó, khoa học máy tính cần một **hệ thống thước đo toán học chuẩn hóa (Mathematical Framework)** để phân tích độc lập với môi trường phần cứng.
+A classic mistake made by beginners is using wall-clock time via functions like `console.time()` or `System.nanoTime()` to measure speed. This approach cannot provide accurate conclusions because physical execution time depends entirely on CPU hardware configurations, machine temperature, compilers, and the operating system's background processes. Therefore, computer science requires a **standardized Mathematical Framework** for hardware-independent analysis.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach Idea
 
-Cách tiếp cận thực nghiệm ban đầu (Empirical Benchmarking):
+The initial empirical approach (Empirical Benchmarking):
 
-- Chạy thuật toán trên máy tính cá nhân với dữ liệu mẫu nhỏ (N = 100) và đo thời gian bằng mili-giây.
-- _Tại sao phương pháp này thất bại?_ Một thuật toán O(N²) có thể chạy chỉ mất `0.2ms` khi N = 100, khiến lập trình viên lầm tưởng nó đủ nhanh. Nhưng khi N tăng lên 1,000,000 trên Production, thời gian thực thi sẽ bùng nổ lên tới **hơn 11 ngày**, làm tê liệt toàn bộ hệ thống (Server Freeze).
+- Run the algorithm on a personal computer with small sample data (N = 100) and measure the time in milliseconds.
+- _Why does this method fail?_ An O(N²) algorithm might take only `0.2ms` when N = 100, making the programmer mistakenly believe it is fast enough. But when N increases to 1,000,000 in Production, the execution time will explode to **over 11 days**, paralyzing the entire system (Server Freeze).
 
-Chúng ta cần một tư duy định lượng tiệm cận (Asymptotic Analysis) để dự đoán xu hướng tăng trưởng của tài nguyên theo quy mô đầu vào N.
+We need an Asymptotic Analysis mindset to predict the resource growth trend based on the input size N.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithmic Structure
 
-Để đánh giá một thuật toán toàn diện, tôi thiết lập mô hình tính toán chuẩn dựa trên **Mô hình Máy tính RAM (Random Access Machine Model)** và 3 hệ số đo lường trụ cột:
+To comprehensively evaluate an algorithm, I established a standard computational model based on the **Random Access Machine (RAM) Model** and 3 pillar measurement metrics:
 
-1. **Phân cấp Ký hiệu Tiệm cận (Asymptotic Notations):**
+1. **Asymptotic Notations Hierarchy:**
 
-- **Big-O (O):** Chặn trên (Upper Bound) - Đại diện cho kịch bản xấu nhất (Worst-Case Scenario). Đây là metric quan trọng nhất để cam kết SLA hệ thống.
-- **Big-Omega (Ω):** Chặn dưới (Lower Bound) - Kịch bản tốt nhất (Best-Case Scenario).
-- **Big-Theta (Θ):** Chặn chặt (Tight Bound) - Khi chặn trên và chặn dưới tiệm cận trùng nhau, phản ánh hành vi trung bình thực tế.
+- **Big-O (O):** Upper Bound - Represents the Worst-Case Scenario. This is the most important metric for committing to system SLAs.
+- **Big-Omega (Ω):** Lower Bound - Best-Case Scenario.
+- **Big-Theta (Θ):** Tight Bound - When the upper and lower bounds asymptotically coincide, reflecting actual average behavior.
 
-2. **Phân biệt Rạch ròi Time vs Space Complexity:**
+2. **Strictly Differentiating Time vs Space Complexity:**
 
-- **Time Complexity:** Số lượng phép toán nguyên thủy (Primitive Operations: gán, so sánh, số học) theo hàm của N.
-- **Space Complexity (Total Space vs Auxiliary Space):** Tổng dung lượng bộ nhớ thuật toán cần dùng. Trong đó, _Auxiliary Space_ (Bộ nhớ phụ trợ) là phần bộ nhớ tạm do thuật toán tự cấp phát thêm (không tính mảng đầu vào), bao gồm Heap allocations và Call Stack frames trong đệ quy.
+- **Time Complexity:** The number of primitive operations (assignment, comparison, arithmetic) as a function of N.
+- **Space Complexity (Total Space vs Auxiliary Space):** The total memory capacity the algorithm needs to use. Within this, _Auxiliary Space_ is the temporary memory dynamically allocated by the algorithm itself (excluding the input array), including Heap allocations and Call Stack frames in recursion.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Bản đồ phân cấp tăng trưởng độ phức tạp thuật toán và cấu trúc bộ nhớ:
+The hierarchy map of algorithmic complexity growth and memory structure:
 
 ```mermaid
 flowchart TD
-    subgraph BigOComplexity [Phan cap Do Phuc Tap Thuat Toan - Big-O Hierarchy]
-        O1["O(1) - Hang so - Constant Time"]
+    subgraph BigOComplexity [Algorithmic Complexity Hierarchy - Big-O Hierarchy]
+        O1["O(1) - Constant Time"]
         OLogN["O(log n) - Logarithmic - Binary Search"]
-        ON["O(n) - Tuyen tinh - Single Pass"]
-        ONLogN["O(n log n) - Tuyen tinh Log - QuickSort, MergeSort"]
-        ON2["O(n2) - Da thuc bac 2 - Nested Loops"]
-        O2N["O(2^n) - Ham mu - Exponential Recursion"]
-        ONFact["O(n!) - Giai thua - Factorial Permutations"]
+        ON["O(n) - Linear - Single Pass"]
+        ONLogN["O(n log n) - Linearithmic - QuickSort, MergeSort"]
+        ON2["O(n2) - Quadratic - Nested Loops"]
+        O2N["O(2^n) - Exponential - Exponential Recursion"]
+        ONFact["O(n!) - Factorial - Factorial Permutations"]
     end
 
-    subgraph SpaceDimensions [Khong Gian Bo Nho - Memory Footprint]
-        StackMem["Call Stack Memory - Khung ngan xep de quy"]
-        HeapMem["Heap Dynamic Memory - Mang phu tro Auxiliary Space"]
+    subgraph SpaceDimensions [Memory Space - Memory Footprint]
+        StackMem["Call Stack Memory - Recursive stack frames"]
+        HeapMem["Heap Dynamic Memory - Auxiliary Space arrays"]
     end
 
     O1 --> OLogN --> ON --> ONLogN --> ON2 --> O2N --> ONFact
@@ -73,20 +73,20 @@ flowchart TD
     ONLogN -.-> HeapMem
 ```
 
-**Minh họa mã nguồn TypeScript chuẩn hóa các cấp độ Big-O:**
+**TypeScript source code illustrating standard Big-O levels:**
 
-- **O(1) Constant Time:** Truy xuất phần tử theo index mảng `arr[0]` hoặc tra cứu khóa trong HashMap.
-- **O(log N) Logarithmic Time:** Thuật toán tìm kiếm nhị phân chia đôi không gian tìm kiếm sau mỗi bước.
-- **O(N) Linear Time:** Duyệt qua toàn bộ N phần tử trong mảng một lần duy nhất.
-- **O(N log N) Linearithmic Time:** Các giải thuật chia để trị tối ưu như QuickSort, MergeSort, TimSort.
-- **O(N²) Quadratic Time:** 2 vòng lặp lồng nhau duyệt qua tất cả các cặp (i, j).
+- **O(1) Constant Time:** Accessing an element by array index `arr[0]` or looking up a key in a HashMap.
+- **O(log N) Logarithmic Time:** Binary search algorithm dividing the search space in half after each step.
+- **O(N) Linear Time:** Iterating through all N elements in an array exactly once.
+- **O(N log N) Linearithmic Time:** Optimal divide-and-conquer algorithms like QuickSort, MergeSort, TimSort.
+- **O(N²) Quadratic Time:** 2 nested loops iterating through all pairs (i, j).
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-Từ bài viết này trở đi, mỗi thuật toán trong series sẽ được giải phẫu và chấm điểm dựa trên đúng 5 tiêu chí cốt lõi:
+From this article onwards, every algorithm in the series will be dissected and scored based on exactly 5 core criteria:
 
-1. **Worst-Case Time Complexity (O):** Đảm bảo hệ thống không bị treo khi gặp dữ liệu nghịch đảo.
-2. **Best/Average-Case Time (Ω / Θ):** Hiệu năng thực tế trong điều kiện dữ liệu ngẫu nhiên.
-3. **Auxiliary Space Complexity:** Lượng RAM phụ cấp phát thêm trên Heap và Call Stack.
-4. **Tính ổn định (Stability) & Khả năng xử lý tại chỗ (In-place):** Có làm thay đổi thứ tự tương đối của các phần tử bằng nhau hay không.
-5. **Ngưỡng bùng nổ quy mô (Scalability Threshold):** Giới hạn N an toàn để thực thi trong dưới `100ms` trên môi trường Production.
+1. **Worst-Case Time Complexity (O):** Ensures the system doesn't hang when encountering reverse-ordered data.
+2. **Best/Average-Case Time (Ω / Θ):** Actual performance under randomized data conditions.
+3. **Auxiliary Space Complexity:** Additional RAM allocated on the Heap and Call Stack.
+4. **Stability & In-place Processing:** Whether it alters the relative order of equal elements.
+5. **Scalability Threshold:** The safe N limit to execute in under `100ms` in a Production environment.

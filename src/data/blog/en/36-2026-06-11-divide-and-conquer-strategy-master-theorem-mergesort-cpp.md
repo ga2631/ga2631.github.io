@@ -1,12 +1,12 @@
 ---
 id: "36"
 slug: "divide-and-conquer-strategy-master-theorem-mergesort-cpp"
-title: "Thuật toán Nâng cao #02: Thuật toán Chia để trị (Divide and Conquer) - Định lý Thợ (Master Theorem), MergeSort O(N log N) & Triển khai C++"
-summary: "Khám phá tư duy Chia để trị (Divide and Conquer): 3 giai đoạn Chia - Trị - Kết hợp, giải mã Định lý Thợ (Master Theorem) để đánh giá độ phức tạp đệ quy, phân tích thuật toán Sắp xếp Trộn (MergeSort) với độ ổn định tuyệt đối và mã nguồn C++ chuẩn hóa."
+title: "Advanced Algorithms #02: Divide and Conquer Strategy - Master Theorem, MergeSort O(N log N) & C++ Implementation"
+summary: "Explore the Divide and Conquer mindset: the 3 phases of Divide - Conquer - Combine, decoding the Master Theorem to evaluate recursive complexity, analyzing the MergeSort algorithm with absolute stability, and standard C++ source code."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-06-11"
 date: "2026-06-11"
-readTime: "11 phút đọc"
+readTime: "11 min read"
 tags:
   - "Algorithms"
   - "Divide and Conquer"
@@ -16,41 +16,41 @@ tags:
   - "Master Theorem"
 ---
 
-## Mô tả bài toán
+## Problem Description
 
-Khi đối mặt với các bài toán có quy mô dữ liệu khổng lồ (hàng triệu đến hàng tỷ phần tử), việc xử lý trực tiếp toàn khối dữ liệu thường dẫn đến các giải thuật bậc hai `O(N²)` hoặc hàm mũ. Chiến lược **Chia để trị (Divide and Conquer - D&C)** là một trong những mô hình thiết kế thuật toán quyền năng nhất, dựa trên triết lý phân rã bài toán lớn thành các bài toán con độc lập có cùng cấu trúc nhưng quy mô nhỏ hơn.
+When dealing with massive data scales (millions to billions of elements), processing the entire data block directly often leads to quadratic `O(N²)` or exponential algorithms. The **Divide and Conquer (D&C)** strategy is one of the most powerful algorithm design paradigms, based on the philosophy of decomposing a large problem into independent sub-problems of the same structure but smaller scale.
 
-Một bài toán mẫu mực cho chiến lược này là **Sắp xếp mảng kích thước lớn (Large-Scale Sorting)**: Cho một mảng gồm `N` phần tử chưa có thứ tự, hãy sắp xếp mảng theo thứ tự không giảm sao cho thời gian thực thi trong mọi kịch bản đều bị chặn trên bởi `O(N \log N)` và đảm bảo _tính ổn định (Stability)_ - bảo toàn thứ tự ban đầu của các phần tử có giá trị tương đương.
+A classic problem for this strategy is **Large-Scale Sorting**: Given an array of `N` unordered elements, sort the array in non-decreasing order such that the execution time in all scenarios is upper-bounded by `O(N \log N)` and ensures _Stability_ - preserving the original relative order of elements with equivalent values.
 
-## Ý tưởng tiếp cận ban đầu
+## Initial Approach
 
-Các thuật toán sắp xếp cơ bản như Bubble Sort, Selection Sort hay Insertion Sort chỉ thao tác lân cận từng phần tử, dẫn đến chi phí thời gian `O(N²)`. Khi `N = 10⁶`, `N² = 10¹²` phép tính, tiêu tốn hàng nghìn giây xử lý trên CPU hiện đại.
+Basic sorting algorithms like Bubble Sort, Selection Sort, or Insertion Sort only manipulate adjacent elements, resulting in a time cost of `O(N²)`. When `N = 10⁶`, `N² = 10¹²` operations, consuming thousands of seconds of processing time on modern CPUs.
 
-Nếu ta chỉ đơn thuần chia nhỏ mảng mà không có chiến lược kết hợp hiệu quả, thời gian xử lý vẫn không được cải thiện. John von Neumann vào năm 1945 đã đề xuất thuật toán **MergeSort**: Chia đôi mảng thành 2 nửa bằng nhau, sắp xếp đệ quy từng nửa, rồi hợp nhất (Merge) hai dãy đã có thứ tự lại thành một dãy hoàn chỉnh chỉ với chi phí tuyến tính `O(N)`.
+If we merely divide the array without an effective combination strategy, the processing time won't improve. In 1945, John von Neumann proposed the **MergeSort** algorithm: Divide the array into 2 equal halves, recursively sort each half, and then merge the two sorted sequences into a complete sequence with a linear cost of `O(N)`.
 
-## Tư duy tối ưu & Cấu trúc thuật toán
+## Optimization Mindset & Algorithm Structure
 
-Chiến lược Chia để trị luôn tuân thủ **3 giai đoạn chuẩn mực**:
+The Divide and Conquer strategy always follows **3 standard phases**:
 
-1. **Chia (Divide):** Phân rã bài toán ban đầu có kích thước `N` thành `a` bài toán con độc lập, mỗi bài toán con có kích thước `N / b`. Trong MergeSort, `a = 2, b = 2` (chia mảng làm 2 nửa đối xứng).
-2. **Trị (Conquer):** Giải quyết đệ quy từng bài toán con. Khi quy mô bài toán giảm về trường hợp cơ sở (Base Case: mảng có 0 hoặc 1 phần tử), bài toán tự động được coi là đã giải quyết xong với chi phí `O(1)`.
-3. **Kết hợp (Combine):** Hợp nhất lời giải của các bài toán con thành lời giải hoàn chỉnh cho bài toán ban đầu. Trong MergeSort, thủ tục `merge()` dùng 2 con trỏ quét song song qua 2 mảng con đã sắp xếp để ghép vào bộ đệm trong thời gian `O(N)`.
+1. **Divide:** Decompose the original problem of size `N` into `a` independent sub-problems, each of size `N / b`. In MergeSort, `a = 2, b = 2` (dividing the array into 2 symmetric halves).
+2. **Conquer:** Recursively solve each sub-problem. When the problem scale reduces to the base case (an array of 0 or 1 element), the problem is automatically considered solved with a cost of `O(1)`.
+3. **Combine:** Merge the solutions of the sub-problems into a complete solution for the original problem. In MergeSort, the `merge()` procedure uses 2 pointers scanning in parallel across 2 sorted sub-arrays to merge them into a buffer in `O(N)` time.
 
-**Công cụ đánh giá: Định lý Thợ (Master Theorem):**
+**Evaluation Tool: Master Theorem:**
 
-Hầu hết các hệ thức truy hồi dạng Chia để trị đều có dạng: `T(N) = a x T(N / b) + f(N)`, trong đó `f(N) = O(Nᵈ)` là chi phí của giai đoạn Chia và Kết hợp.
+Most Divide and Conquer recurrence relations take the form: `T(N) = a \times T(N / b) + f(N)`, where `f(N) = O(Nᵈ)` is the cost of the Divide and Combine phases.
 
-- **Trường hợp 1 (Chi phí tập trung ở lá):** Nếu `d < log_b(a)` &rarr; `T(N) = Θ(N^{log_b(a)})`.
-- **Trường hợp 2 (Chi phí phân bổ đều mọi tầng):** Nếu `d = log_b(a)` &rarr; `T(N) = Θ(Nᵈ log N)`. Với MergeSort: `a = 2, b = 2, d = 1` &rarr; `log_2(2) = 1 = d` &rarr; `T(N) = Θ(N log N)`.
-- **Trường hợp 3 (Chi phí tập trung ở gốc):** Nếu `d > log_b(a)` &rarr; `T(N) = Θ(f(N))`.
+- **Case 1 (Cost concentrated at leaves):** If `d < \log_b(a)` &rarr; `T(N) = \Theta(N^{\log_b(a)})`.
+- **Case 2 (Cost evenly distributed across all levels):** If `d = \log_b(a)` &rarr; `T(N) = \Theta(N^d \log N)`. For MergeSort: `a = 2, b = 2, d = 1` &rarr; `\log_2(2) = 1 = d` &rarr; `T(N) = \Theta(N \log N)`.
+- **Case 3 (Cost concentrated at root):** If `d > \log_b(a)` &rarr; `T(N) = \Theta(f(N))`.
 
-## Triển khai mã nguồn & Dry Run
+## Source Code Implementation & Dry Run
 
-Sơ đồ cây phân rã đệ quy (Divide) và quá trình hợp nhất (Combine) của MergeSort:
+Recursive decomposition tree (Divide) and merging process (Combine) of MergeSort:
 
 ```mermaid
 graph TD
-    subgraph DividePhase [Giai Đoạn Chia - Divide]
+    subgraph DividePhase [Divide Phase]
         Root["[38, 27, 43, 3, 9, 82, 10]"]
         L1["[38, 27, 43, 3]"]
         R1["[9, 82, 10]"]
@@ -66,13 +66,13 @@ graph TD
         R1 --> R2_2
     end
 
-    subgraph CombinePhase [Giai Đoạn Hợp Nhất Tuyến Tính - Combine]
+    subgraph CombinePhase [Linear Combine Phase]
         M1["[27, 38]"]
         M2["[3, 43]"]
         M3["[9, 82]"]
         M4["[3, 27, 38, 43]"]
         M5["[9, 10, 82]"]
-        FinalSorted["[3, 9, 10, 27, 38, 43, 82] (ĐÃ SẮP XẾP)"]
+        FinalSorted["[3, 9, 10, 27, 38, 43, 82] (SORTED)"]
 
         L2_1 -.-> M1
         L2_2 -.-> M2
@@ -86,20 +86,20 @@ graph TD
     end
 ```
 
-**Mã nguồn C++ hoàn chỉnh (MergeSort chuẩn hóa với mảng đệm):**
+**Complete C++ Source Code (Standard MergeSort with a buffer array):**
 
 ```c++
 #include <iostream>
 #include <vector>
 
-// Hàm hợp nhất 2 mảng con đã có thứ tự: arr[left..mid] và arr[mid+1..right]
+// Merge 2 sorted sub-arrays: arr[left..mid] and arr[mid+1..right]
 void merge(std::vector<int>& arr, std::vector<int>& temp, int left, int mid, int right) {
-    int i = left;      // Con trỏ duyệt mảng con trái
-    int j = mid + 1;   // Con trỏ duyệt mảng con phải
-    int k = left;      // Con trỏ ghi dữ liệu vào mảng tạm
+    int i = left;      // Pointer traversing the left sub-array
+    int j = mid + 1;   // Pointer traversing the right sub-array
+    int k = left;      // Pointer writing data to the temporary array
 
     while (i <= mid && j <= right) {
-        // Sử dụng <= để đảm bảo tính ổn định (Stable Sort)
+        // Use <= to ensure stability (Stable Sort)
         if (arr[i] <= arr[j]) {
             temp[k++] = arr[i++];
         } else {
@@ -107,39 +107,39 @@ void merge(std::vector<int>& arr, std::vector<int>& temp, int left, int mid, int
         }
     }
 
-    // Sao chép các phần tử còn lại của mảng con trái
+    // Copy the remaining elements of the left sub-array
     while (i <= mid) {
         temp[k++] = arr[i++];
     }
 
-    // Sao chép các phần tử còn lại của mảng con phải
+    // Copy the remaining elements of the right sub-array
     while (j <= right) {
         temp[k++] = arr[j++];
     }
 
-    // Chuyển dữ liệu đã sắp xếp từ mảng tạm về mảng gốc
+    // Transfer the sorted data from the temporary array back to the original array
     for (int idx = left; idx <= right; ++idx) {
         arr[idx] = temp[idx];
     }
 }
 
-// Hàm chia để trị đệ quy
+// Recursive divide and conquer function
 void mergeSortInternal(std::vector<int>& arr, std::vector<int>& temp, int left, int right) {
     if (left >= right) {
-        return; // Trường hợp cơ sở: Mảng có 0 hoặc 1 phần tử
+        return; // Base case: Array has 0 or 1 element
     }
 
-    int mid = left + (right - left) / 2; // Tránh tràn số nguyên 32-bit
+    int mid = left + (right - left) / 2; // Prevent 32-bit integer overflow
 
-    // 1. Chia (Divide) và Trị (Conquer)
+    // 1. Divide and Conquer
     mergeSortInternal(arr, temp, left, mid);
     mergeSortInternal(arr, temp, mid + 1, right);
 
-    // 2. Kết hợp (Combine)
+    // 2. Combine
     merge(arr, temp, left, mid, right);
 }
 
-// Wrapper Interface thân thiện với người dùng
+// User-friendly Wrapper Interface
 void mergeSort(std::vector<int>& arr) {
     if (arr.empty()) return;
     std::vector<int> temp(arr.size());
@@ -150,7 +150,7 @@ int main() {
     std::vector<int> data = {38, 27, 43, 3, 9, 82, 10};
     mergeSort(data);
 
-    std::cout << "Mang sau khi sap xep MergeSort: ";
+    std::cout << "Array after MergeSort: ";
     for (int x : data) std::cout << x << " ";
     std::cout << std::endl;
 
@@ -158,31 +158,31 @@ int main() {
 }
 ```
 
-**Phân tích luồng thực thi chi tiết (Dry Run Trace):**
+**Detailed Execution Trace (Dry Run):**
 
 - _Input:_ `data = {38, 27, 43, 3, 9, 82, 10}` (`N = 7`).
-- _Tầng chia 1:_ `left=0, right=6, mid=3` &rarr; Nửa trái `[0..3] = {38, 27, 43, 3}`, Nửa phải `[4..6] = {9, 82, 10}`.
-- _Xử lý nửa trái:_
-  - Chia `[0..3]` thành `[0..1]={38, 27}` và `[2..3]={43, 3}`.
-  - Hợp nhất `{38}` và `{27}` &rarr; `{27, 38}`.
-  - Hợp nhất `{43}` và `{3}` &rarr; `{3, 43}`.
-  - Hợp nhất `{27, 38}` và `{3, 43}`: So sánh 2 con trỏ &rarr; `{3, 27, 38, 43}`.
-- _Xử lý nửa phải:_
-  - Chia `[4..6]` thành `[4..5]={9, 82}` và `[6..6]={10}`.
-  - Hợp nhất `{9}` và `{82}` &rarr; `{9, 82}`.
-  - Hợp nhất `{9, 82}` và `{10}` &rarr; `{9, 10, 82}`.
-- _Hợp nhất tầng gốc:_ `merge({3, 27, 38, 43}, {9, 10, 82})`:
-  - 3 &lt; 9 &rarr; `[3]`; 27 &gt; 9 &rarr; `[3, 9]`; 27 &gt; 10 &rarr; `[3, 9, 10]`; 27 &lt; 82 &rarr; `[3, 9, 10, 27]`; 38 &lt; 82 &rarr; `[3, 9, 10, 27, 38]`; 43 &lt; 82 &rarr; `[3, 9, 10, 27, 38, 43]`; Chép phần tử còn lại 82 &rarr; Hoàn tất mảng sắp xếp trong đúng `O(N log N)`.
+- _Divide level 1:_ `left=0, right=6, mid=3` &rarr; Left half `[0..3] = {38, 27, 43, 3}`, Right half `[4..6] = {9, 82, 10}`.
+- _Process left half:_
+  - Divide `[0..3]` into `[0..1]={38, 27}` and `[2..3]={43, 3}`.
+  - Merge `{38}` and `{27}` &rarr; `{27, 38}`.
+  - Merge `{43}` and `{3}` &rarr; `{3, 43}`.
+  - Merge `{27, 38}` and `{3, 43}`: Compare 2 pointers &rarr; `{3, 27, 38, 43}`.
+- _Process right half:_
+  - Divide `[4..6]` into `[4..5]={9, 82}` and `[6..6]={10}`.
+  - Merge `{9}` and `{82}` &rarr; `{9, 82}`.
+  - Merge `{9, 82}` and `{10}` &rarr; `{9, 10, 82}`.
+- _Root level merge:_ `merge({3, 27, 38, 43}, {9, 10, 82})`:
+  - 3 &lt; 9 &rarr; `[3]`; 27 &gt; 9 &rarr; `[3, 9]`; 27 &gt; 10 &rarr; `[3, 9, 10]`; 27 &lt; 82 &rarr; `[3, 9, 10, 27]`; 38 &lt; 82 &rarr; `[3, 9, 10, 27, 38]`; 43 &lt; 82 &rarr; `[3, 9, 10, 27, 38, 43]`; Copy remaining element 82 &rarr; Complete sorted array in exactly `O(N \log N)`.
 
-## Đánh giá độ phức tạp & Ứng dụng thực tế
+## Complexity Evaluation & Practical Applications
 
-Bảng tổng hợp chỉ số hiệu năng theo hệ quy chiếu chuẩn RAM Model:
+Performance metric summary according to the standard RAM Model:
 
-- **Độ phức tạp Thời gian (Time Complexity):** `Θ(N log N)` đồng nhất trong cả 3 trường hợp Best, Average, và Worst Case. Thuật toán không bao giờ bị suy biến về `O(N²)` như QuickSort khi gặp dữ liệu phân bố xấu.
-- **Độ phức tạp Không gian (Space Complexity):** `O(N)` bộ nhớ phụ trợ (Auxiliary Space) dành cho mảng đệm `temp` và `O(log N)` không gian Call Stack cho các khung đệ quy.
-- **Tính ổn định (Stability):** Đảm bảo tuyệt đối (Stable Sort) nhờ điều kiện so sánh `arr[i] <= arr[j]` trong vòng lặp `merge`.
-- **Ứng dụng thực tế:**
-  - **Sắp xếp ngoài (External Sorting):** Sắp xếp các tệp dữ liệu kích thước hàng Terabyte vượt quá dung lượng RAM vật lý (nguyên lý của giai đoạn Shuffle/Sort trong Apache Spark và Hadoop MapReduce).
-  - **Thuật toán Biến đổi Fourier Nhanh (FFT - Fast Fourier Transform):** Phân tích phổ tín hiệu trong viễn thông số và nén âm thanh MP3.
-  - **Thuật toán Strassen:** Nhân ma trận nhanh trong đồ họa máy tính và mạng nơ-ron học sâu.
-  - **Hình học tính toán (Computational Geometry):** Tìm cặp điểm gần nhau nhất (Closest Pair of Points) trong không gian 2D/3D với chi phí `O(N log N)`.
+- **Time Complexity:** `\Theta(N \log N)` consistently across Best, Average, and Worst Cases. The algorithm never degrades to `O(N²)` like QuickSort when encountering poorly distributed data.
+- **Space Complexity:** `O(N)` auxiliary space for the `temp` buffer array and `O(\log N)` Call Stack space for recursive frames.
+- **Stability:** Absolutely guaranteed (Stable Sort) thanks to the comparison condition `arr[i] <= arr[j]` in the `merge` loop.
+- **Practical Applications:**
+  - **External Sorting:** Sorting Terabyte-sized data files that exceed physical RAM capacity (the principle of the Shuffle/Sort phase in Apache Spark and Hadoop MapReduce).
+  - **Fast Fourier Transform (FFT):** Signal spectrum analysis in digital telecommunications and MP3 audio compression.
+  - **Strassen's Algorithm:** Fast matrix multiplication in computer graphics and deep learning neural networks.
+  - **Computational Geometry:** Finding the Closest Pair of Points in 2D/3D space with an `O(N \log N)` cost.

@@ -1,12 +1,12 @@
 ---
 id: "67"
 slug: "database-design-1-1nf-standard–converting-data-to-atomic-form"
-title: "Thiết kế CSDL #01: Chuẩn 1NF - Đưa dữ liệu về dạng nguyên tử"
-summary: 'Chuẩn 1NF được định nghĩa bởi Edgar F. Codd vào năm 1970 trong bài báo nền tảng "A Relational Model of Data for Large Shared Data Banks". Ông nhấn mạnh rằng các domain (trường dữ liệu) trong mô hình quan hệ chỉ được chứa các giá trị đơn trị (atomic values), đặt nền móng cho hệ quản trị CSDL quan hệ (RDBMS) hiện đại.'
+title: "Database Design #01: 1NF Standard - Converting Data to Atomic Form"
+summary: 'The 1NF standard was defined by Edgar F. Codd in 1970 in the foundational paper "A Relational Model of Data for Large Shared Data Banks". He emphasized that domains (data fields) in the relational model must only contain atomic values, laying the foundation for modern Relational Database Management Systems (RDBMS).'
 category: "data-engineering-analytics"
 publishedAt: "2026-08-25"
 date: "2026-08-25"
-readTime: "5 phút đọc"
+readTime: "5 minutes read"
 tags:
   - "Database"
   - "Data Engineering"
@@ -15,23 +15,23 @@ tags:
   - "PostgreSQL"
 ---
 
-## Đề bài kinh doanh / Yêu cầu dữ liệu
+## Business Context / Data Requirements
 
-Giả sử bạn là Data Engineer chịu trách nhiệm xây dựng hệ thống ERP (Enterprise Resource Planning) cho công ty. Module đầu tiên cần làm là **Quản lý Hồ sơ nhân sự (HR)**.
-Trong giai đoạn đầu MVP, bảng `Employees` lưu trữ thông tin cơ bản. Để tiện lợi, các lập trình viên lưu toàn bộ các kỹ năng (skills) của nhân sự vào chung một cột `skills`, cách nhau bởi dấu phẩy (VD: "Python, SQL, AWS").
+Suppose you are a Data Engineer responsible for building an ERP (Enterprise Resource Planning) system for a company. The first module to build is **HR Profile Management**.
+In the initial MVP phase, the `Employees` table stores basic information. For convenience, developers save all of the employee's skills into a single `skills` column, separated by commas (e.g., "Python, SQL, AWS").
 
-Khi công ty phát triển lên 500 nhân sự, Resource Manager cần tìm gấp các nhân sự biết "SQL" để đưa vào dự án mới. Việc dùng truy vấn `LIKE '%SQL%'` không những rất chậm (do không dùng được Index) mà còn dễ sai sót (có thể match nhầm với "NoSQL"). Hệ thống ERP bắt đầu bộc lộ điểm yếu đầu tiên.
+When the company grows to 500 employees, the Resource Manager urgently needs to find personnel who know "SQL" to place into a new project. Using a `LIKE '%SQL%'` query is not only very slow (because Indexes cannot be used) but also error-prone (might mistakenly match with "NoSQL"). The ERP system begins to reveal its first weakness.
 
-## Mô hình hóa dữ liệu
+## Data Modeling
 
-Chuẩn 1NF yêu cầu: **Mỗi cột của một bảng phải là nguyên tử (không thể chia nhỏ hơn), không chứa các mảng hoặc danh sách, và mỗi dòng phải là duy nhất.**
+The 1NF standard requires: **Each column of a table must be atomic (cannot be further divided), must not contain arrays or lists, and each row must be unique.**
 
 ```mermaid
 erDiagram
     UNF_Employees {
         int emp_id PK
         string name
-        string skills "Lỗi: Chứa danh sách (Python, SQL, AWS)"
+        string skills "Error: Contains a list (Python, SQL, AWS)"
     }
 
     "1NF_Employees" {
@@ -42,19 +42,19 @@ erDiagram
     "1NF_EmployeeSkills" {
         int id PK
         int emp_id FK
-        string skill_name "Nguyên tử: SQL"
+        string skill_name "Atomic: SQL"
     }
 
-    UNF_Employees ||--o{ "1NF_Employees" : "Chuẩn hóa thành"
-    "1NF_Employees" ||--|{ "1NF_EmployeeSkills" : "Tách bảng"
+    UNF_Employees ||--o{ "1NF_Employees" : "Normalized to"
+    "1NF_Employees" ||--|{ "1NF_EmployeeSkills" : "Split table"
 ```
 
-## Xây dựng Pipeline / Script xử lý
+## Building the Pipeline / Processing Script
 
-Để chuyển đổi dữ liệu trên PostgreSQL, ta dùng hàm `unnest()` và `string_to_array()` để tách các kỹ năng thành từng dòng độc lập:
+To transform the data in PostgreSQL, we use the `unnest()` and `string_to_array()` functions to split the skills into independent rows:
 
 ```sql
--- 1. Tạo bảng theo chuẩn 1NF
+-- 1. Create tables following the 1NF standard
 CREATE TABLE employees_1nf (
     emp_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL
@@ -66,7 +66,7 @@ CREATE TABLE employee_skills_1nf (
     skill_name VARCHAR(50) NOT NULL
 );
 
--- 2. Migrate dữ liệu từ hệ thống cũ (UNF)
+-- 2. Migrate data from the old system (UNF)
 INSERT INTO employees_1nf (emp_id, name)
 SELECT emp_id, name FROM employees_unf;
 
@@ -78,11 +78,11 @@ FROM employees_unf
 WHERE skills IS NOT NULL;
 ```
 
-## Kiểm thử dữ liệu & Tối ưu hiệu năng
+## Data Testing & Performance Optimization
 
-- **Kiểm thử:** Truy vấn tìm nhân sự theo skill giờ sử dụng phép `JOIN` chuẩn mực: `SELECT e.name FROM employees_1nf e JOIN employee_skills_1nf s ON e.emp_id = s.emp_id WHERE s.skill_name = 'SQL';`
-- **Tối ưu hiệu năng:** Bằng cách đánh B-Tree Index lên cột `skill_name`, tốc độ tìm kiếm nhân sự giảm từ `O(N)` (Quét toàn bộ bảng) xuống `O(log N)`.
+- **Testing:** The query to find employees by skill now uses a standard `JOIN`: `SELECT e.name FROM employees_1nf e JOIN employee_skills_1nf s ON e.emp_id = s.emp_id WHERE s.skill_name = 'SQL';`
+- **Performance Optimization:** By creating a B-Tree Index on the `skill_name` column, employee search speed drops from `O(N)` (Full Table Scan) to `O(log N)`.
 
-## Tổng kết & Khuyến nghị
+## Conclusion & Recommendations
 
-1NF là viên gạch đầu tiên của mọi hệ thống ERP. Tuyệt đối không dùng Comma-separated strings cho các trường dữ liệu cần dùng để phân tích hay lọc (Filter). Ở bài tiếp theo, chúng ta sẽ xem xét cách hệ thống ERP xử lý bài toán Phân công dự án và tiến lên chuẩn 2NF.
+1NF is the first building block of any ERP system. Absolutely never use comma-separated strings for data fields that need to be used for analysis or filtering. In the next article, we will look at how the ERP system handles the Project Allocation problem and advances to the 2NF standard.

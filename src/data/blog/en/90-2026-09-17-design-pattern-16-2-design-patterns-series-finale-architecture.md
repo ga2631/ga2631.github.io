@@ -1,12 +1,12 @@
 ---
 id: 90
 slug: design-pattern-16-2-design-patterns-series-finale-workflow
-title: "Design Pattern #16.2: Tổng hợp Series - Luồng phối hợp thực thi Checkout"
-summary: "Phân tích chi tiết một request Checkout sẽ đi qua các Design Patterns như thế nào theo thời gian thực (Runtime)."
+title: "Design Pattern #16.2: Series Finale - Checkout Execution Coordination Flow"
+summary: "Detailed analysis of how a Checkout request will travel through Design Patterns in real-time (Runtime)."
 category: "code-craftsmanship-languages"
 publishedAt: "2026-09-17"
 date: "2026-09-17"
-readTime: "6 phút đọc"
+readTime: "6 min read"
 tags:
   - "Design Patterns"
   - "System Architecture"
@@ -14,9 +14,9 @@ tags:
   - "Best Practices"
 ---
 
-Kiến trúc tĩnh thì đẹp, nhưng khi hệ thống chạy (Runtime) thì các Pattern giao tiếp với nhau ra sao? Hãy theo chân một Request "Đặt hàng" (Place Order) để xem sự phối hợp nhịp nhàng của hệ thống.
+Static architecture is beautiful, but how do Patterns communicate with each other when the system is running (Runtime)? Let's follow a "Place Order" Request to see the rhythmic coordination of the system.
 
-## Sequence Diagram: Hành trình của một Đơn hàng
+## Sequence Diagram: The Journey of an Order
 
 ```mermaid
 sequenceDiagram
@@ -34,39 +34,39 @@ sequenceDiagram
     Facade->>Adapter: checkStock(cart)
     Adapter-->>Facade: return OK
 
-    note over Facade,Strategy: 2. Tính toán (Structural & Behavioral)
+    note over Facade,Strategy: 2. Calculation (Structural & Behavioral)
     Facade->>Decorator: calculateTotal(cart, vouchers)
     Decorator-->>Facade: total_price
     Facade->>Strategy: calculateShipping(distance, mode)
     Strategy-->>Facade: shipping_fee
 
-    note over Facade,UoW: 3. Lưu trữ (Data Access)
+    note over Facade,UoW: 3. Storage (Data Access)
     Facade->>UoW: startTransaction()
     Facade->>UoW: orderRepo.save(order)
     Facade->>UoW: inventoryRepo.deduct(cart)
 
-    alt Lỗi Database
+    alt Database Error
         UoW-->>Facade: Exception
         Facade->>UoW: rollback()
         Facade-->>User: return 500 Error
-    else Thành công
+    else Success
         UoW->>UoW: commit()
     end
 
-    note over Facade,Observer: 4. Thông báo (Behavioral)
+    note over Facade,Observer: 4. Notification (Behavioral)
     Facade->>Observer: changeStatus("PAID")
-    Observer-->>EmailService: update() (Bất đồng bộ)
-    Observer-->>SMSService: update() (Bất đồng bộ)
+    Observer-->>EmailService: update() (Asynchronous)
+    Observer-->>SMSService: update() (Asynchronous)
 
     Facade-->>User: return 200 OK
 ```
 
-## Phân tích điểm chạm (Touchpoints)
+## Touchpoints Analysis
 
-1. **Vào cửa qua Facade:** Controller không cần biết bên trong có bao nhiêu bước, nó chỉ gọi `Facade.placeOrder()`.
-2. **Kiểm tra với Adapter:** Facade hỏi Adapter xem kho còn hàng không. Adapter âm thầm dịch request sang XML gửi cho hệ thống kho cũ.
-3. **Tính toán chồng chéo:** Các voucher giảm giá xếp chồng lên nhau nhờ `Decorator`. Phí ship được tính bằng 1 `Strategy` cụ thể (Ví dụ: Giao Hỏa tốc).
-4. **Cam kết dữ liệu:** Ghi Order và trừ Stock phải diễn ra trong cùng một `Unit of Work` để đảm bảo ACID.
-5. **Lan truyền sự kiện:** Đơn hàng lưu xong, trạng thái đổi thành PAID. `Observer` tự động đánh thức các dịch vụ Email/SMS mà luồng chính không cần chờ đợi.
+1. **Entering through the Facade:** The Controller doesn't need to know how many steps are inside; it just calls `Facade.placeOrder()`.
+2. **Checking with Adapter:** The Facade asks the Adapter if the warehouse has stock. The Adapter silently translates the request into XML and sends it to the old inventory system.
+3. **Overlapping Calculations:** Discount vouchers stack on top of each other thanks to the `Decorator`. Shipping fees are calculated using a specific `Strategy` (e.g., Express Delivery).
+4. **Data Commitment:** Saving the Order and deducting Stock must occur within the same `Unit of Work` to ensure ACID compliance.
+5. **Event Propagation:** Once the order is saved, the status changes to PAID. The `Observer` automatically wakes up the Email/SMS services without the main thread having to wait.
 
-Đây chính là sự khác biệt giữa "Code chạy được" và "Code chuẩn Software Engineering".
+This is exactly the difference between "Code that works" and "Standard Software Engineering Code".
