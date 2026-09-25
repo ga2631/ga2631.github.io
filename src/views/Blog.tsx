@@ -90,6 +90,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
       setFullCatalog(posts);
       setDisplayedPosts(posts.slice(0, 20));
       setHasMoreMonths(posts.length > 20);
+      setActivePost((prev) => {
+        if (!prev) return null;
+        return posts.find((p) => p.slug === prev.slug || p.id === prev.id) || prev;
+      });
     }
   }, [posts]);
 
@@ -107,6 +111,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
       if (isMounted) {
         setFullCatalog(all);
         setHasMoreMonths(all.length > 20);
+        setActivePost((prev) => {
+          if (!prev) return null;
+          return all.find((p) => p.slug === prev.slug || p.id === prev.id) || prev;
+        });
       }
     });
     return () => {

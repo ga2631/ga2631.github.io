@@ -48,7 +48,7 @@ export function getPostContentHtml(post: BlogPost): string {
   if (post.contentHtml && post.contentHtml.length > 0) {
     return post.contentHtml;
   }
-  const cacheKey = post.slug || post.id || post.title;
+  const cacheKey = `${post.slug || post.id || ''}_${post.title || ''}_${post.content?.length || 0}`;
   if (htmlCache.has(cacheKey)) {
     return htmlCache.get(cacheKey)!;
   }
