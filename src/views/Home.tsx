@@ -1,17 +1,17 @@
 'use client';
 
 import React from 'react';
-import { CVData } from '../types/index.ts';
-import { UITranslation } from '../data/cvData.ts';
-import { Hero } from '../components/Hero.tsx';
-import { About } from '../components/About.tsx';
-import { Experience } from '../components/Experience.tsx';
-import { Projects } from '../components/Projects.tsx';
-import { Skills } from '../components/Skills.tsx';
-import { Footer } from '../components/Footer.tsx';
-import { EducationCertifications } from '../components/EducationCertifications.tsx';
-import { Contact } from '../components/Contact.tsx';
-import { ButtonFloatingScrollTop, ButtonPrint } from '../components/composite';
+import { CVData } from '../types';
+import { UITranslation } from '../data/cvData';
+import { Hero } from '../components/Hero';
+import { About } from '../components/About';
+import { Experience } from '../components/Experience';
+import { Projects } from '../components/Projects';
+import { Skills } from '../components/Skills';
+import { Footer } from '../components/Footer';
+import { EducationCertifications } from '../components/EducationCertifications';
+import { Contact } from '../components/Contact';
+import { FloatingActions } from '../components/composite';
 
 export interface HomeProps {
   data: CVData;
@@ -41,17 +41,12 @@ export const Home: React.FC<HomeProps> = ({ data, t }) => {
       />
       <Contact data={data.personalInfo} t={t.contact} />
       <Footer t={t.footer} fullName={data.personalInfo.fullName} />
-      <div className="floating-actions-container" role="region" aria-label="Floating quick actions">
-        <ButtonFloatingScrollTop tCommon={t.common} />
-        <ButtonPrint
-          variant="floating"
-          data={data}
-          tPrintCv={t.printCv}
-          onPrint={() => window.print()}
-          label={t.nav.saveCv}
-          tCommon={t.common}
-        />
-      </div>
+      <FloatingActions
+        data={data}
+        tPrintCv={t.printCv}
+        saveCvLabel={t.nav.saveCv}
+        tCommon={t.common}
+      />
     </>
   );
 };
