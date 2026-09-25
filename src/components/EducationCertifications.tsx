@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { EducationItem, CertificationItem } from '../types/index.ts';
 import { GraduationCapIcon, AwardIcon, ExternalLinkIcon } from './Icons.tsx';

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { PersonalInfo, PrincipleItem } from '../types/index.ts';
 import { CodeIcon, AwardIcon, LayersIcon, RefreshCwIcon, ZapIcon } from './Icons.tsx';

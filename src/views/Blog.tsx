@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { BlogPost } from '../types/index.ts';
@@ -229,15 +231,17 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     return counts;
   }, [fullCatalog]);
 
-  // Sync with URL hash for deep linking (e.g. #/blog/post-slug)
+  // Sync with URL hash for deep linking (e.g. #post-slug or #/blog/post-slug for legacy links)
   useEffect(() => {
     const checkHashForPost = () => {
       const hash = window.location.hash;
-      if (hash.startsWith('#/blog/') && hash.length > 7) {
-        const slug = hash.replace('#/blog/', '');
-        const matchedPost = fullCatalog.find((p) => p.slug === slug || p.id === slug);
-        if (matchedPost) {
-          setActivePost(matchedPost);
+      if (hash && hash.length > 1) {
+        const slug = hash.replace(/^#\/?(blog\/)?/, '');
+        if (slug) {
+          const matchedPost = fullCatalog.find((p) => p.slug === slug || p.id === slug);
+          if (matchedPost) {
+            setActivePost(matchedPost);
+          }
         }
       }
     };
@@ -262,20 +266,29 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   const handleOpenPost = (post: BlogPost) => {
     setActivePost(post);
     setIsModalHeaderTitleShown(false);
-    window.location.hash = `#/blog/${post.slug}`;
-    trackBlogPostView({
-      id: post.id,
-      slug: post.slug,
-      title: post.title,
-      category: post.category,
-      tags: post.tags,
-    });
+    window.location.hash = `#${post.slug}`;
+    trackBlogPostView(
+      {
+        id: post.id,
+        slug: post.slug,
+        title: post.title,
+        category: post.category,
+        tags: post.tags,
+      },
+      langKey
+    );
   };
 
   const handleClosePost = () => {
     setActivePost(null);
     setIsModalHeaderTitleShown(false);
-    window.location.hash = '#/blog';
+    if (typeof window !== 'undefined') {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      } else {
+        window.location.hash = '';
+      }
+    }
   };
 
   const isFiltering = selectedCategory !== 'all' || selectedTag !== 'all' || !!searchQuery.trim();

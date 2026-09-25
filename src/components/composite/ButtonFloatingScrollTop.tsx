@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { ArrowUpIcon } from '../Icons.tsx';
 import { UITranslation } from '../../data/cvData.ts';

@@ -1,9 +1,11 @@
+'use client';
+
 import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
 import { MailIcon, MapPinIcon, LinkedinIcon, ExternalLinkIcon, PhoneIcon, ZaloIcon } from './Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
-import { SecureEmail, SecurePhone, getSecureMailtoUrl, getSecureTelUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
-import { Card, Button, Badge } from './common';
+import { UITranslation } from '../data/cvData';
+import { getSecureMailtoUrl, getSecureTelUrl, getSecureZaloUrl } from '../utils/obfuscation';
+import { Card, Button, Badge, SecureEmail, SecurePhone } from './common';
 import { Section } from './ui';
 
 interface ContactProps {

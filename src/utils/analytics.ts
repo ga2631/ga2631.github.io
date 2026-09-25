@@ -1,7 +1,7 @@
 /**
  * Google Analytics 4 (GA4) & Google Tag Manager (GTM) Analytics Engine
  * Provides dual-dispatch to window.dataLayer (GTM) and window.gtag (GA4)
- * with full TypeScript type-safety and development debugging logs.
+ * with full TypeScript type-safety, multi-language tracking (vi/en), and development logs.
  */
 
 declare global {
@@ -21,14 +21,36 @@ export interface BaseEventParams {
 }
 
 /**
+ * Resolves the currently active language ('vi' | 'en') from pathname, HTML lang, or storage.
+ */
+export function getCurrentLanguage(): 'vi' | 'en' {
+  if (typeof window === 'undefined') return 'vi';
+  if (window.location.pathname.startsWith('/en')) return 'en';
+  if (window.location.pathname.startsWith('/vi')) return 'vi';
+  const htmlLang = document.documentElement.getAttribute('lang');
+  if (htmlLang === 'en' || htmlLang === 'vi') return htmlLang;
+  try {
+    const saved = localStorage.getItem('app-lang');
+    if (saved === 'en' || saved === 'vi') return saved;
+  } catch {
+    // ignore
+  }
+  return 'vi';
+}
+
+/**
  * Core event dispatcher that sends telemetry to both GTM dataLayer and GA4 gtag.
  */
 export function trackEvent(eventName: string, params: BaseEventParams = {}): void {
   if (typeof window === 'undefined') return;
 
+  const currentLang = (params.language as 'vi' | 'en') || getCurrentLanguage();
+
   const eventPayload = {
     event: eventName,
     app_env: APP_ENV,
+    language: currentLang,
+    content_language: currentLang,
     timestamp: new Date().toISOString(),
     ...params,
   };
@@ -39,13 +61,17 @@ export function trackEvent(eventName: string, params: BaseEventParams = {}): voi
 
   // 2. Direct GA4 gtag event dispatch (if gtag initialized)
   if (typeof window.gtag === 'function') {
-    window.gtag('event', eventName, params);
+    window.gtag('event', eventName, {
+      ...params,
+      language: currentLang,
+      content_language: currentLang,
+    });
   }
 
   // 3. Verbose debug logging during development
   if (process.env.NODE_ENV === 'development' || APP_ENV === 'development') {
     // eslint-disable-next-line no-console
-    console.debug(`[Analytics Engine] 📊 Event: "${eventName}"`, eventPayload);
+    console.debug(`[Analytics Engine] 📊 Event: "${eventName}" [${currentLang}]`, eventPayload);
   }
 }
 
@@ -54,22 +80,40 @@ export function trackEvent(eventName: string, params: BaseEventParams = {}): voi
    ========================================================================== */
 
 /**
- * Tracks virtual pageviews on route/hash changes.
+ * Tracks virtual pageviews on route/hash changes with language dimension.
  */
-export function trackPageView(pagePath: string, pageTitle: string): void {
+export function trackPageView(
+  pagePath: string,
+  pageTitle: string,
+  language?: 'vi' | 'en'
+): void {
+  const currentLang = language || getCurrentLanguage();
+
+  // Set user property in GA4 for language segmentation
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    window.gtag('set', 'user_properties', {
+      preferred_language: currentLang,
+    });
+  }
+
   trackEvent('page_view', {
     page_path: pagePath,
     page_title: pageTitle,
     page_location: typeof window !== 'undefined' ? window.location.href : '',
+    language: currentLang,
+    content_language: currentLang,
   });
 }
 
 /**
  * Tracks multi-language localization switches (vi <-> en).
  */
-export function trackLanguageChange(language: 'vi' | 'en'): void {
+export function trackLanguageChange(newLang: 'vi' | 'en', fromLang?: 'vi' | 'en'): void {
   trackEvent('language_change', {
-    selected_language: language,
+    selected_language: newLang,
+    previous_language: fromLang,
+    language: newLang,
+    content_language: newLang,
   });
 }
 
@@ -100,19 +144,25 @@ export function trackNavigation(
 /**
  * Tracks opening and reading a technical blog post.
  */
-export function trackBlogPostView(post: {
-  id?: string | number;
-  slug: string;
-  title: string;
-  category?: string;
-  tags?: string[];
-}): void {
+export function trackBlogPostView(
+  post: {
+    id?: string | number;
+    slug: string;
+    title: string;
+    category?: string;
+    tags?: string[];
+  },
+  language?: 'vi' | 'en'
+): void {
+  const currentLang = language || getCurrentLanguage();
   trackEvent('blog_post_view', {
     post_id: String(post.id || post.slug),
     post_slug: post.slug,
     post_title: post.title,
     post_category: post.category || 'general',
     post_tags: (post.tags || []).join(', '),
+    language: currentLang,
+    content_language: currentLang,
   });
 }
 

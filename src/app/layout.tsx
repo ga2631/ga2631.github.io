@@ -91,7 +91,12 @@ export const metadata: Metadata = {
     images: ['https://ga2631.github.io/og-image.png'],
   },
   alternates: {
-    canonical: 'https://ga2631.github.io/',
+    canonical: 'https://ga2631.github.io/vi/',
+    languages: {
+      vi: 'https://ga2631.github.io/vi/',
+      en: 'https://ga2631.github.io/en/',
+      'x-default': 'https://ga2631.github.io/vi/',
+    },
   },
 };
 
@@ -106,7 +111,7 @@ export default function RootLayout({
     name: 'Tan Huynh Nhat',
     alternateName: 'ga2631',
     jobTitle: 'Software Engineer',
-    url: 'https://ga2631.github.io/',
+    url: 'https://ga2631.github.io/vi/',
     sameAs: [
       'https://github.com/ga2631',
       'https://linkedin.com/in/tanhn',
@@ -131,7 +136,7 @@ export default function RootLayout({
 
   return (
     <html
-      lang="en"
+      lang="vi"
       className={`${inter.variable} ${outfit.variable} ${sourceCodePro.variable}`}
       suppressHydrationWarning
     >

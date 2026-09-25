@@ -1,8 +1,10 @@
+'use client';
+
 import React from 'react';
-import { PersonalInfo } from '../types/index.ts';
-import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, ExternalLinkIcon, CheckIcon } from './Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
-import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
+import { PersonalInfo } from '../types';
+import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, ExternalLinkIcon, CheckIcon } from './Icons';
+import { UITranslation } from '../data/cvData';
+import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation';
 import { Card, Button } from './common';
 import { ButtonPrint } from './composite';
 import { trackSocialClick, trackNavigation, trackContactReveal } from '../utils/analytics';

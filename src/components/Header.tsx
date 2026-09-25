@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
-import { PersonalInfo } from '../types/index.ts';
+import { useRouter } from 'next/navigation';
+import { MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons';
+import { UITranslation } from '../data/cvData';
+import { PersonalInfo } from '../types';
 import { DrawerMenu, NavItem } from './composite';
 import { Button } from './common';
 import { trackNavigation } from '../utils/analytics';
@@ -21,6 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   personalInfo,
   currentRoute = 'home',
 }) => {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -39,12 +41,13 @@ export const Header: React.FC<HeaderProps> = ({
   const navItems: NavItem[] =
     currentRoute === 'blog'
       ? [
-          { label: t.nav.about, href: '#about' },
-          { label: t.nav.experience, href: '#experience' },
-          { label: t.nav.projects, href: '#projects' },
-          { label: t.nav.skills, href: '#skills' },
-          { label: t.nav.education, href: '#education' },
-          { label: t.nav.blog, href: '#/blog', isActive: true },
+          { label: t.nav.about, href: `/${lang}/#about` },
+          { label: t.nav.experience, href: `/${lang}/#experience` },
+          { label: t.nav.projects, href: `/${lang}/#projects` },
+          { label: t.nav.skills, href: `/${lang}/#skills` },
+          { label: t.nav.education, href: `/${lang}/#education` },
+          { label: t.nav.contact, href: `/${lang}/#contact` },
+          { label: t.nav.blog, href: `/${lang}/blog/`, isActive: true },
         ]
       : [
           { label: t.nav.about, href: '#about' },
@@ -53,39 +56,33 @@ export const Header: React.FC<HeaderProps> = ({
           { label: t.nav.skills, href: '#skills' },
           { label: t.nav.education, href: '#education' },
           { label: t.nav.contact, href: '#contact' },
-          { label: t.nav.blog, href: '#/blog' },
+          { label: t.nav.blog, href: `/${lang}/blog/` },
         ];
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
     trackNavigation(href, href, 'desktop_header');
 
-    // Navigate to Blog Page
-    if (href === '#/blog' || href.startsWith('#/blog')) {
-      window.location.hash = '#/blog';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // If navigating to Blog page
+    if (href.includes('/blog')) {
+      router.push(`/${lang}/blog/`);
       return;
     }
 
-    // Navigate to Home / Top
-    if (href === '#/' || href === '#hero' || href === '#') {
-      if (currentRoute === 'blog') {
-        window.location.hash = '#/';
+    // If on blog page and navigating to Home or section in Home
+    if (currentRoute === 'blog') {
+      if (href.includes('#')) {
+        const hash = href.substring(href.indexOf('#'));
+        router.push(`/${lang}/${hash}`);
+      } else {
+        router.push(`/${lang}/`);
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    // If on blog page and navigating to a home section (#about, #experience, etc.)
-    if (currentRoute === 'blog' && href.startsWith('#')) {
-      window.location.hash = '#/';
-      setTimeout(() => {
-        const targetId = href.replace('#', '');
-        const elem = document.getElementById(targetId);
-        if (elem) {
-          elem.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 150);
+    // If on home page and clicking Home / Top
+    if (href === `/${lang}/` || href === '#hero' || href === '#' || href === '#/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -104,11 +101,15 @@ export const Header: React.FC<HeaderProps> = ({
       <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="container header-container">
           <a
-            href="#/"
+            href={`/${lang}/`}
             className="logo"
             onClick={(e) => {
               e.preventDefault();
-              handleNavClick('#/');
+              if (currentRoute === 'home') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                router.push(`/${lang}/`);
+              }
             }}
           >
             <div className="logo-badge">T</div>
@@ -138,7 +139,7 @@ export const Header: React.FC<HeaderProps> = ({
               variant="unstyled"
               className="lang-toggle-btn header-lang-btn"
               onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}
-              title={lang === 'vi' ? 'English' : 'Tiếng Việt'}
+              title={lang === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
               aria-label="Toggle Language"
               icon={lang === 'vi' ? <VietnamFlagIcon size={16} /> : <UKFlagIcon size={16} />}
             >
@@ -175,5 +176,3 @@ export const Header: React.FC<HeaderProps> = ({
     </>
   );
 };
-
-

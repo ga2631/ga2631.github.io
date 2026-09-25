@@ -14,12 +14,12 @@ import {
   ZaloIcon,
   VietnamFlagIcon,
   UKFlagIcon,
-} from '../Icons.tsx';
-import { UITranslation } from '../../data/cvData.ts';
-import { PersonalInfo } from '../../types/index.ts';
-import { getSecureZaloUrl } from '../../utils/obfuscation.tsx';
-import { ButtonPrint } from './ButtonPrint.tsx';
-import { trackNavigation, trackLanguageChange } from '../../utils/analytics';
+} from '../Icons';
+import { UITranslation } from '../../data/cvData';
+import { PersonalInfo } from '../../types';
+import { getSecureZaloUrl } from '../../utils/obfuscation';
+import { ButtonPrint } from './ButtonPrint';
+import { trackNavigation } from '../../utils/analytics';
 
 export interface NavItem {
   label: string;
@@ -177,7 +177,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                   className={`drawer-lang-pill ${lang === 'vi' ? 'active' : ''}`}
                   onClick={() => {
                     setLang('vi');
-                    trackLanguageChange('vi');
+                    onClose();
                   }}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
@@ -188,7 +188,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                   className={`drawer-lang-pill ${lang === 'en' ? 'active' : ''}`}
                   onClick={() => {
                     setLang('en');
-                    trackLanguageChange('en');
+                    onClose();
                   }}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
