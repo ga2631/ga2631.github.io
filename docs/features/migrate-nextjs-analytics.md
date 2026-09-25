@@ -107,7 +107,7 @@ While this application operates as a static site without a persistent relational
 6. **Lighthouse Performance Optimizations (LCP & TBT):**
    - **Next.js Google Fonts Self-Hosting (`next/font/google`):** Replaced render-blocking `@import url('https://fonts.googleapis.com/...')` in CSS with zero-layout-shift `next/font/google` (`Inter`, `Outfit`, `Source_Code_Pro`) preloaded with CSS variables.
    - **Lazy Markdown-to-HTML & Memoization:** Deferred heavy Markdown body parsing (`markdownToHtml`, code syntax highlighting, and table parsing) to on-demand execution when opening an article, reducing initial JS evaluation time from >500ms to <2ms.
-   - **Dynamic Mermaid.js Chunking:** Converted static `import mermaid` into dynamic on-demand `import('mermaid')` inside `ModalArticle`, eliminating ~1.5MB of parser JS from the critical path bundle.
+   - **Mermaid.js Diagram Rendering:** Restored synchronous Mermaid client-side rendering with multi-pass mount resilience and `.mermaid-rendered` duplicate protection.
    - **Telemetry Script Lazy Loading:** Configured Google Tag Manager and GA4 scripts with `strategy="lazyOnload"` and preconnect resource hints, eliminating main-thread contention during initial page render.
 
 ---

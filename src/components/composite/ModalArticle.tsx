@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import mermaid from 'mermaid';
 import { Modal } from '../common/Modal';
 import { Badge } from '../common/Badge';
 import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
@@ -164,6 +165,115 @@ export interface ModalArticleProps {
 export interface ModalArticleComponent extends React.FC<ModalArticleProps> {
   TocSidebar: typeof ArticleTocSidebar;
 }
+export interface ArticleBodyProps {
+  processedHtml: string;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
+}
+
+export const ArticleBody: React.FC<ArticleBodyProps> = React.memo(
+  ({ processedHtml, onClick, onKeyDown }) => {
+    const bodyRef = React.useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const container = bodyRef.current;
+      if (!container || !processedHtml) return;
+
+      // 1. Directly inject HTML into DOM container
+      container.innerHTML = processedHtml;
+
+      // 2. Query Mermaid blocks
+      const mermaidBlocks = container.querySelectorAll<HTMLElement>('pre.mermaid, .mermaid');
+      if (mermaidBlocks.length === 0) return;
+
+      let isCancelled = false;
+
+      const renderDiagrams = async () => {
+        try {
+          mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: 'strict',
+            theme: 'base',
+            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+            themeVariables: {
+              darkMode: false,
+              background: '#ffffff',
+              mainBkg: '#ffffff',
+              primaryColor: '#ffffff',
+              textColor: '#0f172a',
+              nodeTextColor: '#0f172a',
+              primaryTextColor: '#0f172a',
+              noteBorderColor: '#dc2626',
+              primaryBorderColor: '#dc2626',
+              nodeBorder: '#dc2626',
+              lineColor: '#dc2626',
+              labelBackgroundColor: '#dc2626',
+              labelTextColor: '#f8fafc',
+              tertiaryTextColor: '#f8fafc',
+              transitionLabelColor: '#f8fafc',
+            },
+            themeCSS: `
+              .edgeLabel .labelBkg,
+              .edgeLabel, .edgeLabel span p {
+                background-color: #ffffff80 !important;
+              }
+              `,
+          });
+
+          for (let i = 0; i < mermaidBlocks.length; i++) {
+            if (isCancelled) return;
+            const el = mermaidBlocks[i];
+            const rawCode = el.textContent || '';
+            const cleanCode = rawCode
+              .replace(/&amp;/g, '&')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&quot;/g, '"')
+              .trim();
+
+            if (!cleanCode) continue;
+
+            const uniqueId = `mermaid-svg-${Date.now()}-${i}`;
+            try {
+              const { svg } = await mermaid.render(uniqueId, cleanCode);
+              if (!isCancelled) {
+                el.innerHTML =
+                  svg +
+                  '<span class="mermaid-fit-hint"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg> Fit View</span>';
+                el.classList.add('mermaid-rendered');
+                el.setAttribute('tabindex', '0');
+                el.setAttribute('role', 'button');
+                el.setAttribute('aria-label', 'Phóng to sơ đồ (Fit View)');
+                el.setAttribute('title', 'Nhấn để phóng to toàn màn hình (Fit View)');
+              }
+            } catch (renderErr) {
+              console.error('Failed to render Mermaid diagram:', renderErr);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to initialize mermaid:', err);
+        }
+      };
+
+      renderDiagrams();
+
+      return () => {
+        isCancelled = true;
+      };
+    }, [processedHtml]);
+
+    return (
+      <div
+        ref={bodyRef}
+        className="article-body"
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+      />
+    );
+  },
+  (prev, next) => prev.processedHtml === next.processedHtml
+);
+ArticleBody.displayName = 'ArticleBody';
 
 export const ModalArticle: ModalArticleComponent = ({
   post,
@@ -179,122 +289,6 @@ export const ModalArticle: ModalArticleComponent = ({
   closeAriaLabel = 'Close article popup',
 }) => {
   const [fitViewSvg, setFitViewSvg] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!isOpen || !post || !processedHtml) return;
-
-    let isCancelled = false;
-
-    const renderMermaidDiagrams = async () => {
-      const container = modalContentRef?.current || document.querySelector('.blog-article-modal');
-      if (!container) return;
-
-      const mermaidBlocks = container.querySelectorAll<HTMLElement>('pre.mermaid, .mermaid');
-      if (mermaidBlocks.length === 0) return;
-
-      try {
-        const { default: mermaid } = await import('mermaid');
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: 'base',
-          securityLevel: 'loose',
-          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          themeVariables: {
-            darkMode: false,
-            background: 'transparent',
-            mainBkg: '#ffffff',
-            primaryColor: '#ffffff',
-            primaryTextColor: '#0f172a',
-            primaryBorderColor: '#dc2626',
-            secondaryColor: '#f8fafc',
-            secondaryTextColor: '#0f172a',
-            secondaryBorderColor: '#dc2626',
-            tertiaryColor: '#f1f5f9',
-            tertiaryTextColor: '#0f172a',
-            tertiaryBorderColor: '#dc2626',
-            textColor: '#0f172a',
-            lineColor: '#ef4444',
-            nodeBorder: '#dc2626',
-            nodeTextColor: '#0f172a',
-            clusterBkg: '#f8fafc',
-            clusterBorder: '#cbd5e1',
-            titleColor: '#0f172a',
-            edgeLabelBackground: '#ffffff',
-            actorBkg: '#f8fafc',
-            actorBorder: '#dc2626',
-            actorTextColor: '#0f172a',
-            actorLineColor: '#ef4444',
-            signalColor: '#ef4444',
-            signalTextColor: '#0f172a',
-            labelBoxBkgColor: '#f8fafc',
-            labelBoxBorderColor: '#dc2626',
-            labelTextColor: '#0f172a',
-            loopTextColor: '#0f172a',
-            noteBorderColor: '#dc2626',
-            noteBkgColor: '#fef2f2',
-            noteTextColor: '#0f172a',
-            activationBorderColor: '#dc2626',
-            activationBkgColor: '#fee2e2',
-            sequenceNumberColor: '#ffffff',
-            git0: '#dc2626',
-            git1: '#0284c7',
-            git2: '#9333ea',
-            git3: '#16a34a',
-            git4: '#ca8a04',
-            gitBranchLabel0: '#ffffff',
-            gitBranchLabel1: '#ffffff',
-            gitBranchLabel2: '#ffffff',
-            gitBranchLabel3: '#ffffff',
-            gitBranchLabel4: '#ffffff',
-          },
-        });
-
-
-        for (let i = 0; i < mermaidBlocks.length; i++) {
-          if (isCancelled) return;
-          const el = mermaidBlocks[i];
-          let rawCode = el.getAttribute('data-raw-mermaid');
-          if (!rawCode) {
-            rawCode = el.textContent || '';
-            el.setAttribute('data-raw-mermaid', rawCode);
-          }
-
-          const cleanCode = rawCode
-            .replace(/&amp;/g, '&')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&quot;/g, '"')
-            .trim();
-
-          if (!cleanCode) continue;
-
-          const uniqueId = `mermaid-svg-${Date.now()}-${i}`;
-          try {
-            const { svg } = await mermaid.render(uniqueId, cleanCode);
-            if (!isCancelled) {
-              el.innerHTML = svg + '<span class="mermaid-fit-hint"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg> Fit View</span>';
-              el.classList.add('mermaid-rendered');
-              el.setAttribute('tabindex', '0');
-              el.setAttribute('role', 'button');
-              el.setAttribute('aria-label', 'Phóng to sơ đồ (Fit View)');
-              el.setAttribute('title', 'Nhấn để phóng to toàn màn hình (Fit View)');
-            }
-          } catch (renderErr) {
-            console.error('Failed to render Mermaid diagram:', renderErr);
-          }
-        }
-      } catch (err) {
-        console.error('Failed to initialize mermaid:', err);
-      }
-    };
-
-    const timer = setTimeout(renderMermaidDiagrams, 50);
-    return () => {
-      isCancelled = true;
-      clearTimeout(timer);
-    };
-  }, [isOpen, post, processedHtml, modalContentRef]);
-
 
   const handleArticleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
@@ -373,12 +367,11 @@ export const ModalArticle: ModalArticleComponent = ({
                 </div>
               )}
 
-              {/* Full Article Content */}
-              <div
-                className="article-body"
+              {/* Full Article Content with Protected Mermaid DOM */}
+              <ArticleBody
+                processedHtml={processedHtml}
                 onClick={handleArticleClick}
                 onKeyDown={handleArticleKeyDown}
-                dangerouslySetInnerHTML={{ __html: processedHtml }}
               />
             </div>
 
