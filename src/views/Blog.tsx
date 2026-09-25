@@ -13,6 +13,7 @@ import {
   loadNextMonthBatch,
   loadAllArchivePosts,
   getEagerPosts,
+  getPostContentHtml,
 } from '../services/blogService.ts';
 import { Button, Badge } from '../components/common';
 import { SectionHeader } from '../components/ui';
@@ -132,7 +133,8 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   // Process article content to extract TOC items (up to 2 levels) and inject unique IDs
   const { processedHtml, tocItems } = useMemo(() => {
     if (!activePost) return { processedHtml: '', tocItems: [] };
-    return processArticleToc(activePost.contentHtml);
+    const rawHtml = getPostContentHtml(activePost);
+    return processArticleToc(rawHtml);
   }, [activePost]);
 
   // Scrollspy to highlight active TOC heading and toggle header title when scrolling inside modal

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import mermaid from 'mermaid';
 import { Modal } from '../common/Modal';
 import { Badge } from '../common/Badge';
 import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
@@ -194,6 +193,7 @@ export const ModalArticle: ModalArticleComponent = ({
       if (mermaidBlocks.length === 0) return;
 
       try {
+        const { default: mermaid } = await import('mermaid');
         mermaid.initialize({
           startOnLoad: false,
           theme: 'base',

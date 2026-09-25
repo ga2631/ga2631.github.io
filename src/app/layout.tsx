@@ -1,7 +1,29 @@
 import type { Metadata, Viewport } from 'next';
 import React from 'react';
 import Script from 'next/script';
+import { Inter, Outfit, Source_Code_Pro } from 'next/font/google';
 import '@/styles/index.scss';
+
+const inter = Inter({
+  subsets: ['latin', 'vietnamese'],
+  display: 'swap',
+  variable: '--font-sans',
+  preload: true,
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-heading',
+  preload: true,
+});
+
+const sourceCodePro = Source_Code_Pro({
+  subsets: ['latin', 'vietnamese'],
+  display: 'swap',
+  variable: '--font-mono',
+  preload: true,
+});
 
 const GA_MEASUREMENT_ID =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-XXXXXXXXXX';
@@ -108,7 +130,18 @@ export default function RootLayout({
     GA_MEASUREMENT_ID !== 'G-DEV0000000';
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${outfit.variable} ${sourceCodePro.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <link
+          rel="preconnect"
+          href="https://www.googletagmanager.com"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <script
           type="application/ld+json"
@@ -133,7 +166,7 @@ export default function RootLayout({
         {isGtmActive && (
           <Script
             id="gtm-container-loader"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -149,11 +182,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
             <Script
               id="ga4-direct-loader"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
               dangerouslySetInnerHTML={{
                 __html: `
 window.dataLayer = window.dataLayer || [];

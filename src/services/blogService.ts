@@ -39,12 +39,30 @@ export interface MonthArchiveInfo {
   path: string;
 }
 
+const htmlCache = new Map<string, string>();
+
 /**
- * Converts a raw Markdown file text + path into a hydrated BlogPost object.
+ * Returns the rendered HTML of a blog post, computing and caching it on demand.
+ */
+export function getPostContentHtml(post: BlogPost): string {
+  if (post.contentHtml && post.contentHtml.length > 0) {
+    return post.contentHtml;
+  }
+  const cacheKey = post.slug || post.id || post.title;
+  if (htmlCache.has(cacheKey)) {
+    return htmlCache.get(cacheKey)!;
+  }
+  const html = markdownToHtml(post.content || '');
+  htmlCache.set(cacheKey, html);
+  return html;
+}
+
+/**
+ * Converts a raw Markdown file text + path into a lightweight BlogPost object.
+ * HTML parsing is deferred on demand to minimize initial main-thread blocking time.
  */
 export function parseMarkdownToBlogPost(rawMd: string, path: string): BlogPost {
   const { metadata, content } = parseFrontmatter<any>(rawMd);
-  const contentHtml = markdownToHtml(content);
   const fallbackSlug = path.replace(/.*\/([^/]+)\.md$/, '$1');
 
   return {
@@ -58,7 +76,7 @@ export function parseMarkdownToBlogPost(rawMd: string, path: string): BlogPost {
     readTime: metadata.readTime || '5 phút đọc',
     tags: Array.isArray(metadata.tags) ? metadata.tags : [],
     author: metadata.author || 'Huỳnh Nhật Tân',
-    contentHtml,
+    contentHtml: '',
     content,
   };
 }
