@@ -11,9 +11,9 @@ RUN npm install
 # Copy project files
 COPY . .
 
-# Expose Vite dev server port
+# Expose Next.js dev server port
 EXPOSE 3000
 
-# Run Vite dev server with automatic dependency sync and host flag for Docker networking
-CMD ["sh", "-c", "npm install && npm run dev -- --host 0.0.0.0"]
+# Run Next.js dev server with automatic dependency sync and host flag for Docker networking
+CMD ["sh", "-c", "npm install && npm run dev -- -H 0.0.0.0 -p 3000"]
 

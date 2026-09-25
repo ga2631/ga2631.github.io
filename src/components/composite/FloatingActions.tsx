@@ -1,9 +1,12 @@
 import React from 'react';
-import { UITranslation } from '../../data/cvData.ts';
-import { ButtonFloatingScrollTop } from './ButtonFloatingScrollTop.tsx';
-import { ButtonPrint } from './ButtonPrint.tsx';
+import { CVData } from '../../types';
+import { UITranslation } from '../../data/cvData';
+import { ButtonFloatingScrollTop } from './ButtonFloatingScrollTop';
+import { ButtonPrint } from './ButtonPrint';
 
 export interface FloatingActionsProps {
+  data?: CVData;
+  tPrintCv?: UITranslation['printCv'];
   onPrint?: () => void;
   saveCvLabel: string;
   tCommon: UITranslation['common'];
@@ -11,6 +14,8 @@ export interface FloatingActionsProps {
 }
 
 export const FloatingActions: React.FC<FloatingActionsProps> = ({
+  data,
+  tPrintCv,
   onPrint,
   saveCvLabel,
   tCommon,
@@ -21,7 +26,9 @@ export const FloatingActions: React.FC<FloatingActionsProps> = ({
       <ButtonFloatingScrollTop threshold={threshold} tCommon={tCommon} />
       <ButtonPrint
         variant="floating"
-        onPrint={onPrint}
+        data={data}
+        tPrintCv={tPrintCv}
+        onPrint={onPrint || (() => window.print())}
         label={saveCvLabel}
         tCommon={tCommon}
       />

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { SkillCategory } from '../types/index.ts';
 import {

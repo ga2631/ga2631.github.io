@@ -2,18 +2,35 @@ import { BlogPost } from '../types/index.ts';
 import { parseFrontmatter, markdownToHtml } from '../utils/markdownParser.ts';
 import { BLOG_CATEGORY_DEFINITIONS } from '../data/blog/blogCategories.ts';
 
-// Vite glob importers for all markdown articles
-const viMarkdownEager = import.meta.glob<string>('/src/data/blog/vi/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-});
+declare const require: {
+  context: (
+    directory: string,
+    useSubdirectories?: boolean,
+    regExp?: RegExp
+  ) => {
+    keys: () => string[];
+    (id: string): any;
+  };
+};
 
-const enMarkdownEager = import.meta.glob<string>('/src/data/blog/en/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-});
+function loadMarkdownFiles(lang: 'vi' | 'en'): Record<string, string> {
+  const map: Record<string, string> = {};
+  try {
+    const ctx =
+      lang === 'vi'
+        ? require.context('../data/blog/vi', false, /\.md$/)
+        : require.context('../data/blog/en', false, /\.md$/);
+
+    ctx.keys().forEach((key: string) => {
+      const res = ctx(key);
+      map[key] = typeof res === 'string' ? res : res?.default || '';
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn(`[blogService] Failed loading markdown for ${lang}`, err);
+  }
+  return map;
+}
 
 export interface MonthArchiveInfo {
   key: string; // e.g. "2026-09"
@@ -22,12 +39,30 @@ export interface MonthArchiveInfo {
   path: string;
 }
 
+const htmlCache = new Map<string, string>();
+
 /**
- * Converts a raw Markdown file text + path into a hydrated BlogPost object.
+ * Returns the rendered HTML of a blog post, computing and caching it on demand.
+ */
+export function getPostContentHtml(post: BlogPost): string {
+  if (post.contentHtml && post.contentHtml.length > 0) {
+    return post.contentHtml;
+  }
+  const cacheKey = `${post.slug || post.id || ''}_${post.title || ''}_${post.content?.length || 0}`;
+  if (htmlCache.has(cacheKey)) {
+    return htmlCache.get(cacheKey)!;
+  }
+  const html = markdownToHtml(post.content || '');
+  htmlCache.set(cacheKey, html);
+  return html;
+}
+
+/**
+ * Converts a raw Markdown file text + path into a lightweight BlogPost object.
+ * HTML parsing is deferred on demand to minimize initial main-thread blocking time.
  */
 export function parseMarkdownToBlogPost(rawMd: string, path: string): BlogPost {
   const { metadata, content } = parseFrontmatter<any>(rawMd);
-  const contentHtml = markdownToHtml(content);
   const fallbackSlug = path.replace(/.*\/([^/]+)\.md$/, '$1');
 
   return {
@@ -41,7 +76,7 @@ export function parseMarkdownToBlogPost(rawMd: string, path: string): BlogPost {
     readTime: metadata.readTime || '5 phút đọc',
     tags: Array.isArray(metadata.tags) ? metadata.tags : [],
     author: metadata.author || 'Huỳnh Nhật Tân',
-    contentHtml,
+    contentHtml: '',
     content,
   };
 }
@@ -93,11 +128,11 @@ export function isPostPublished(post: BlogPost, referenceDate: Date = new Date()
  * filtering out any articles scheduled for future dates.
  */
 export function getEagerPosts(lang: 'vi' | 'en', referenceDate: Date = new Date()): BlogPost[] {
-  const modules = lang === 'vi' ? viMarkdownEager : enMarkdownEager;
+  const modules = loadMarkdownFiles(lang);
   const posts: BlogPost[] = [];
 
   Object.entries(modules).forEach(([path, rawMd]) => {
-    if (typeof rawMd === 'string') {
+    if (typeof rawMd === 'string' && rawMd.trim().length > 0) {
       const post = parseMarkdownToBlogPost(rawMd, path);
       if (isPostPublished(post, referenceDate)) {
         posts.push(post);

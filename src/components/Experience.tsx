@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { ExperienceItem } from '../types/index.ts';
 import { BriefcaseIcon } from './Icons.tsx';

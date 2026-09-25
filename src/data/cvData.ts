@@ -1,5 +1,5 @@
-import { CVData, PersonalInfo } from '../types/index.ts';
-import { getSecureEmail, getSecurePhone, getSecureZaloUrl, decodeBase64Safe } from '../utils/obfuscation.tsx';
+import { CVData, PersonalInfo } from '../types';
+import { getSecureEmail, getSecurePhone, getSecureZaloUrl, decodeBase64Safe } from '../utils/obfuscation';
 
 import enUi from './locales/en/ui.json';
 import enCv from './locales/en/cv.json';

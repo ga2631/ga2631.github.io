@@ -14,11 +14,12 @@ import {
   ZaloIcon,
   VietnamFlagIcon,
   UKFlagIcon,
-} from '../Icons.tsx';
-import { UITranslation } from '../../data/cvData.ts';
-import { PersonalInfo } from '../../types/index.ts';
-import { getSecureZaloUrl } from '../../utils/obfuscation.tsx';
-import { ButtonPrint } from './ButtonPrint.tsx';
+} from '../Icons';
+import { UITranslation } from '../../data/cvData';
+import { PersonalInfo } from '../../types';
+import { getSecureZaloUrl } from '../../utils/obfuscation';
+import { ButtonPrint } from './ButtonPrint';
+import { trackNavigation } from '../../utils/analytics';
 
 export interface NavItem {
   label: string;
@@ -134,6 +135,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                 className={`drawer-nav-item ${item.isActive ? 'active' : ''}`}
                 onClick={(e) => {
                   e.preventDefault();
+                  trackNavigation(item.href, item.href, 'mobile_drawer');
                   onNavClick(item.href);
                 }}
               >
@@ -173,7 +175,10 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
               <div className="drawer-lang-pills">
                 <button
                   className={`drawer-lang-pill ${lang === 'vi' ? 'active' : ''}`}
-                  onClick={() => setLang('vi')}
+                  onClick={() => {
+                    setLang('vi');
+                    onClose();
+                  }}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
                   <VietnamFlagIcon size={18} />
@@ -181,7 +186,10 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
                 </button>
                 <button
                   className={`drawer-lang-pill ${lang === 'en' ? 'active' : ''}`}
-                  onClick={() => setLang('en')}
+                  onClick={() => {
+                    setLang('en');
+                    onClose();
+                  }}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
                   <UKFlagIcon size={18} />

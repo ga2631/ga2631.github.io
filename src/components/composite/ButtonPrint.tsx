@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Button, ButtonVariant, ButtonSize } from '../common/Button';
 import { ButtonFloating } from '../ui/ButtonFloating';
@@ -10,9 +12,10 @@ import {
   LinkedinIcon,
   GlobeIcon,
 } from '../Icons.tsx';
-import { SecureEmail, SecurePhone } from '../../utils/obfuscation.tsx';
-import { CVData } from '../../types/index.ts';
+import { SecureEmail, SecurePhone } from '../common';
+import { CVData } from '../../types';
 import { UITranslation } from '../../data/cvData.ts';
+import { trackPrintCV } from '../../utils/analytics';
 
 export interface ButtonPrintProps {
   data?: CVData;
@@ -47,6 +50,7 @@ export const ButtonPrint: React.FC<ButtonPrintProps> = ({
   ...restProps
 }) => {
   const handlePrint = () => {
+    trackPrintCV('trigger_print');
     if (onPrint) {
       onPrint();
     } else if (typeof window !== 'undefined') {

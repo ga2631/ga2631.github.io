@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { BlogPost } from '../types/index.ts';
@@ -13,6 +15,7 @@ import {
   loadNextMonthBatch,
   loadAllArchivePosts,
   getEagerPosts,
+  getPostContentHtml,
 } from '../services/blogService.ts';
 import { Button, Badge } from '../components/common';
 import { SectionHeader } from '../components/ui';
@@ -22,9 +25,17 @@ import {
   BlogItem,
   EmptyState,
   BadgeSchedule,
+  BlogTopic,
   ModalArticle,
   processArticleToc,
 } from '../components/composite';
+import {
+  trackBlogPostView,
+  trackBlogSearch,
+  trackBlogCategoryFilter,
+  trackBlogTagClick,
+  trackEvent,
+} from '../utils/analytics';
 
 export interface BlogProps {
   posts: BlogPost[];
@@ -79,6 +90,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
       setFullCatalog(posts);
       setDisplayedPosts(posts.slice(0, 20));
       setHasMoreMonths(posts.length > 20);
+      setActivePost((prev) => {
+        if (!prev) return null;
+        return posts.find((p) => p.slug === prev.slug || p.id === prev.id) || prev;
+      });
     }
   }, [posts]);
 
@@ -96,6 +111,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
       if (isMounted) {
         setFullCatalog(all);
         setHasMoreMonths(all.length > 20);
+        setActivePost((prev) => {
+          if (!prev) return null;
+          return all.find((p) => p.slug === prev.slug || p.id === prev.id) || prev;
+        });
       }
     });
     return () => {
@@ -124,7 +143,8 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   // Process article content to extract TOC items (up to 2 levels) and inject unique IDs
   const { processedHtml, tocItems } = useMemo(() => {
     if (!activePost) return { processedHtml: '', tocItems: [] };
-    return processArticleToc(activePost.contentHtml);
+    const rawHtml = getPostContentHtml(activePost);
+    return processArticleToc(rawHtml);
   }, [activePost]);
 
   // Scrollspy to highlight active TOC heading and toggle header title when scrolling inside modal
@@ -219,15 +239,17 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     return counts;
   }, [fullCatalog]);
 
-  // Sync with URL hash for deep linking (e.g. #/blog/post-slug)
+  // Sync with URL hash for deep linking (e.g. #post-slug or #/blog/post-slug for legacy links)
   useEffect(() => {
     const checkHashForPost = () => {
       const hash = window.location.hash;
-      if (hash.startsWith('#/blog/') && hash.length > 7) {
-        const slug = hash.replace('#/blog/', '');
-        const matchedPost = fullCatalog.find((p) => p.slug === slug || p.id === slug);
-        if (matchedPost) {
-          setActivePost(matchedPost);
+      if (hash && hash.length > 1) {
+        const slug = hash.replace(/^#\/?(blog\/)?/, '');
+        if (slug) {
+          const matchedPost = fullCatalog.find((p) => p.slug === slug || p.id === slug);
+          if (matchedPost) {
+            setActivePost(matchedPost);
+          }
         }
       }
     };
@@ -252,13 +274,29 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   const handleOpenPost = (post: BlogPost) => {
     setActivePost(post);
     setIsModalHeaderTitleShown(false);
-    window.location.hash = `#/blog/${post.slug}`;
+    window.location.hash = `#${post.slug}`;
+    trackBlogPostView(
+      {
+        id: post.id,
+        slug: post.slug,
+        title: post.title,
+        category: post.category,
+        tags: post.tags,
+      },
+      langKey
+    );
   };
 
   const handleClosePost = () => {
     setActivePost(null);
     setIsModalHeaderTitleShown(false);
-    window.location.hash = '#/blog';
+    if (typeof window !== 'undefined') {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      } else {
+        window.location.hash = '';
+      }
+    }
   };
 
   const isFiltering = selectedCategory !== 'all' || selectedTag !== 'all' || !!searchQuery.trim();
@@ -338,7 +376,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
           selectedCategory={selectedCategory}
           categoryCounts={categoryCounts}
           categoriesTitle={t.categoriesTitle}
-          onSelectCategory={(catId) => setSelectedCategory(catId)}
+          onSelectCategory={(catId) => {
+            setSelectedCategory(catId);
+            trackBlogCategoryFilter(catId);
+          }}
           onHoverCategory={setHoveredCategory}
           tags={allTags}
           selectedTag={selectedTag}
@@ -346,7 +387,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
           totalPostsCount={fullCatalog.length}
           allTopicsLabel={t.allTopics}
           tagsTitle={t.tagsTitle}
-          onSelectTag={(tag) => setSelectedTag(tag)}
+          onSelectTag={(tag) => {
+            setSelectedTag(tag);
+            trackBlogTagClick(tag);
+          }}
           langKey={langKey}
         />
 
@@ -369,7 +413,12 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
               {/* Search & Active Filters via BlogInputFilter */}
               <BlogInputFilter
                 searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
+                onSearchChange={(q) => {
+                  setSearchQuery(q);
+                  if (q.trim().length > 2) {
+                    trackBlogSearch(q, filteredPosts.length);
+                  }
+                }}
                 searchPlaceholder={t.searchPlaceholder}
                 selectedCategory={selectedCategory}
                 selectedCategoryTitle={currentCategoryDef.title[langKey]}
