@@ -138,6 +138,7 @@ export default function RootLayout({
     <html
       lang="vi"
       className={`${inter.variable} ${outfit.variable} ${sourceCodePro.variable}`}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <head>
