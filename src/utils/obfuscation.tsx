@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { trackContactReveal } from './analytics';
 
 /**
  * Obfuscation utility for sensitive contact information (Email, Phone, Zalo)
@@ -76,6 +77,7 @@ export const SecureEmail: React.FC<SecureContactProps> = ({ asLink = false, clas
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    trackContactReveal('email');
     window.location.href = getSecureMailtoUrl();
   };
 
@@ -140,6 +142,7 @@ export const SecurePhone: React.FC<SecureContactProps> = ({ asLink = false, clas
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    trackContactReveal('phone');
     window.location.href = getSecureTelUrl();
   };
 

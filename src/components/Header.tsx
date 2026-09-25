@@ -4,6 +4,7 @@ import { UITranslation } from '../data/cvData.ts';
 import { PersonalInfo } from '../types/index.ts';
 import { DrawerMenu, NavItem } from './composite';
 import { Button } from './common';
+import { trackNavigation } from '../utils/analytics';
 
 interface HeaderProps {
   lang: 'vi' | 'en';
@@ -57,6 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
+    trackNavigation(href, href, 'desktop_header');
 
     // Navigate to Blog Page
     if (href === '#/blog' || href.startsWith('#/blog')) {

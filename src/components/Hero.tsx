@@ -5,6 +5,7 @@ import { UITranslation } from '../data/cvData.ts';
 import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation.tsx';
 import { Card, Button } from './common';
 import { ButtonPrint } from './composite';
+import { trackSocialClick, trackNavigation, trackContactReveal } from '../utils/analytics';
 
 interface HeroProps {
   data: PersonalInfo;
@@ -14,11 +15,13 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ data, t }) => {
   const handleZaloClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    trackSocialClick('Zalo', 'https://zalo.me');
     window.open(getSecureZaloUrl(), '_blank', 'noopener,noreferrer');
   };
 
   const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    trackContactReveal('email');
     window.location.href = getSecureMailtoUrl();
   };
   return (
@@ -78,6 +81,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                   variant="social-icon"
                   aria-label="GitHub Profile"
                   title="GitHub @ga2631"
+                  onClick={() => trackSocialClick('GitHub', data.githubUrl)}
                   icon={<GithubIcon size={20} />}
                 />
 
@@ -90,6 +94,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                     variant="social-icon"
                     aria-label="LinkedIn Profile"
                     title="LinkedIn"
+                    onClick={() => trackSocialClick('LinkedIn', data.linkedinUrl!)}
                     icon={<LinkedinIcon size={20} />}
                   />
                 )}
@@ -143,6 +148,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 as="a"
                 href="#projects"
                 variant="primary"
+                onClick={() => trackNavigation('View Projects', '#projects', 'hero_cta')}
                 icon={<ExternalLinkIcon size={16} />}
                 iconPosition="right"
               >
@@ -153,6 +159,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 as="a"
                 href="#contact"
                 variant="secondary"
+                onClick={() => trackNavigation('Get in Touch', '#contact', 'hero_cta')}
                 icon={<MailIcon size={16} />}
               >
                 <span>{t.getInTouch}</span>

@@ -13,6 +13,7 @@ import {
 import { SecureEmail, SecurePhone } from '../../utils/obfuscation.tsx';
 import { CVData } from '../../types/index.ts';
 import { UITranslation } from '../../data/cvData.ts';
+import { trackPrintCV } from '../../utils/analytics';
 
 export interface ButtonPrintProps {
   data?: CVData;
@@ -47,6 +48,7 @@ export const ButtonPrint: React.FC<ButtonPrintProps> = ({
   ...restProps
 }) => {
   const handlePrint = () => {
+    trackPrintCV('trigger_print');
     if (onPrint) {
       onPrint();
     } else if (typeof window !== 'undefined') {

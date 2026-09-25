@@ -5,6 +5,7 @@ import { Badge } from '../common/Badge';
 import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
 import { ModalDiagramViewer } from './ModalDiagramViewer.tsx';
 import { BlogPost } from '../../types/index.ts';
+import { trackTocHeadingClick } from '../../utils/analytics';
 
 export interface TocItem {
   id: string;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowUpIcon } from '../Icons.tsx';
 import { UITranslation } from '../../data/cvData.ts';
 import { ButtonFloating } from '../ui';
+import { trackScrollToTop } from '../../utils/analytics';
 
 export interface ButtonFloatingScrollTopProps {
   threshold?: number;
@@ -30,6 +31,7 @@ export const ButtonFloatingScrollTop: React.FC<ButtonFloatingScrollTopProps> = (
   }, [threshold]);
 
   const scrollToTop = () => {
+    trackScrollToTop();
     if (onClick) {
       onClick();
     } else if (typeof window !== 'undefined') {

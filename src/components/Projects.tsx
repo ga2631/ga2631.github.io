@@ -13,6 +13,7 @@ import { UITranslation } from '../data/cvData.ts';
 import { Card, Button, Badge } from './common';
 import { Section } from './ui';
 import { ModalCaseStudy } from './composite';
+import { trackProjectModalOpen, trackProjectLinkClick, trackEvent } from '../utils/analytics';
 
 interface ProjectsProps {
   projects: ProjectItem[];
@@ -168,7 +169,10 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
         <Button
           variant="unstyled"
           className={`project-view-tab ${activeTab === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveTab('all')}
+          onClick={() => {
+            setActiveTab('all');
+            trackEvent('project_tab_switch', { tab: 'all' });
+          }}
         >
           <span>{t.allWorks}</span>
           <span className="view-tab-count">{projects.length + (repos.length || 3)}</span>
@@ -176,7 +180,10 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
         <Button
           variant="unstyled"
           className={`project-view-tab ${activeTab === 'case-studies' ? 'active' : ''}`}
-          onClick={() => setActiveTab('case-studies')}
+          onClick={() => {
+            setActiveTab('case-studies');
+            trackEvent('project_tab_switch', { tab: 'case-studies' });
+          }}
           icon={<SparklesIcon size={15} />}
         >
           <span>{t.caseStudies}</span>
@@ -185,7 +192,10 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
         <Button
           variant="unstyled"
           className={`project-view-tab ${activeTab === 'github' ? 'active' : ''}`}
-          onClick={() => setActiveTab('github')}
+          onClick={() => {
+            setActiveTab('github');
+            trackEvent('project_tab_switch', { tab: 'github' });
+          }}
           icon={<GitRepoIcon size={15} />}
         >
           <span>{t.githubRepos}</span>
@@ -201,7 +211,14 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
             <Card
               key={project.id}
               className="project-card-compact"
-              onClick={() => setActiveProject(project)}
+              onClick={() => {
+                setActiveProject(project);
+                trackProjectModalOpen({
+                  id: project.id,
+                  title: project.title,
+                  category: project.category,
+                });
+              }}
             >
               <Card.Header className="project-card-header">
                 <div className="project-meta-row">
@@ -402,6 +419,9 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                       rel="noopener noreferrer"
                       variant="outline"
                       size="sm"
+                      onClick={() =>
+                        trackProjectLinkClick(repo.name, repo.html_url, 'github_repo')
+                      }
                       icon={<GithubIcon size={15} />}
                     >
                       <span>{t.sourceCode}</span>
@@ -416,6 +436,9 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                         variant="secondary"
                         size="sm"
                         title="Live Preview"
+                        onClick={() =>
+                          trackProjectLinkClick(repo.name, repo.homepage, 'live_demo')
+                        }
                         icon={<ExternalLinkIcon size={14} />}
                       >
                         <span>{t.demo}</span>

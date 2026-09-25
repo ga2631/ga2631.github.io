@@ -22,9 +22,17 @@ import {
   BlogItem,
   EmptyState,
   BadgeSchedule,
+  BlogTopic,
   ModalArticle,
   processArticleToc,
 } from '../components/composite';
+import {
+  trackBlogPostView,
+  trackBlogSearch,
+  trackBlogCategoryFilter,
+  trackBlogTagClick,
+  trackEvent,
+} from '../utils/analytics';
 
 export interface BlogProps {
   posts: BlogPost[];
@@ -253,6 +261,13 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
     setActivePost(post);
     setIsModalHeaderTitleShown(false);
     window.location.hash = `#/blog/${post.slug}`;
+    trackBlogPostView({
+      id: post.id,
+      slug: post.slug,
+      title: post.title,
+      category: post.category,
+      tags: post.tags,
+    });
   };
 
   const handleClosePost = () => {
@@ -338,7 +353,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
           selectedCategory={selectedCategory}
           categoryCounts={categoryCounts}
           categoriesTitle={t.categoriesTitle}
-          onSelectCategory={(catId) => setSelectedCategory(catId)}
+          onSelectCategory={(catId) => {
+            setSelectedCategory(catId);
+            trackBlogCategoryFilter(catId);
+          }}
           onHoverCategory={setHoveredCategory}
           tags={allTags}
           selectedTag={selectedTag}
@@ -346,7 +364,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
           totalPostsCount={fullCatalog.length}
           allTopicsLabel={t.allTopics}
           tagsTitle={t.tagsTitle}
-          onSelectTag={(tag) => setSelectedTag(tag)}
+          onSelectTag={(tag) => {
+            setSelectedTag(tag);
+            trackBlogTagClick(tag);
+          }}
           langKey={langKey}
         />
 
@@ -369,7 +390,12 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
               {/* Search & Active Filters via BlogInputFilter */}
               <BlogInputFilter
                 searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
+                onSearchChange={(q) => {
+                  setSearchQuery(q);
+                  if (q.trim().length > 2) {
+                    trackBlogSearch(q, filteredPosts.length);
+                  }
+                }}
                 searchPlaceholder={t.searchPlaceholder}
                 selectedCategory={selectedCategory}
                 selectedCategoryTitle={currentCategoryDef.title[langKey]}
