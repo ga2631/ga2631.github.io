@@ -8,7 +8,7 @@ publishedAt: "2026-10-05"
 date: "2026-10-05"
 readTime: "4 phút đọc"
 tags:
-  - "System design"
+  - "System Design"
   - "Migration"
   - "Scale"
   - "Data engineering"

@@ -8,7 +8,7 @@ publishedAt: "2026-09-21"
 date: "2026-09-21"
 readTime: "3 phút đọc"
 tags:
-  - "System design"
+  - "System Design"
   - "Monolithic"
   - "PostgreSQL"
   - "Architecture"

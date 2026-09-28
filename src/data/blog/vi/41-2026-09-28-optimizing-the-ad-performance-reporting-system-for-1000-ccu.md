@@ -8,7 +8,7 @@ publishedAt: "2026-09-28"
 date: "2026-09-28"
 readTime: "5 phút đọc"
 tags:
-  - "System design"
+  - "System Design"
   - "Data architecture"
   - "BigQuery"
   - "Redis"
