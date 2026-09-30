@@ -47,6 +47,7 @@ export async function getCvData(lang: 'vi' | 'en'): Promise<CVData> {
         throw new Error('[cvService] Failed to initialize Supabase client.');
       }
 
+      console.log(`\x1b[35m[Supabase 📄 CV]\x1b[0m Querying table "cv_documents" WHERE lang_code = "${lang}"`);
       const { data, error } = await supabase
         .from('cv_documents')
         .select('*')

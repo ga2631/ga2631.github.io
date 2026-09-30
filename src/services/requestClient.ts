@@ -1,5 +1,5 @@
 /**
- * Centralized Request Client with intelligent retry mechanism:
+ * Centralized Request Client with intelligent retry mechanism and Dev logging:
  * - GET requests: Retry up to 3 times on failure
  * - Non-GET requests (POST, PUT, PATCH, DELETE): Retry up to 1 time on failure
  */
@@ -13,6 +13,8 @@ export interface RequestOptions extends RequestInit {
   retries?: number;
   retryDelayMs?: number;
 }
+
+const isDev = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV !== 'production';
 
 export class RequestClient {
   private baseUrl: string;
@@ -40,7 +42,7 @@ export class RequestClient {
   }
 
   /**
-   * Executes any asynchronous operation (Supabase query, API call, etc.) with automatic retry policy
+   * Executes any asynchronous operation (Supabase query, API call, etc.) with automatic retry policy and dev logging
    */
   public async executeWithRetry<T>(
     operationName: string,
@@ -53,19 +55,35 @@ export class RequestClient {
     let attempt = 0;
     let lastError: unknown = null;
 
+    if (isDev) {
+      console.log(`\x1b[36m[Supabase ⚡ DEV]\x1b[0m 🚀 Executing [${method}] "${operationName}"...`);
+    }
+
+    const overallStart = Date.now();
+
     while (attempt <= maxRetries) {
+      const attemptStart = Date.now();
       try {
         if (attempt > 0) {
-          console.log(`[RequestClient] 🔄 [Retry ${attempt}/${maxRetries}] Executing ${method} "${operationName}"...`);
+          console.log(`\x1b[33m[RequestClient]\x1b[0m 🔄 [Retry ${attempt}/${maxRetries}] Retrying [${method}] "${operationName}"...`);
         }
-        return await task();
+        const result = await task();
+        const duration = Date.now() - attemptStart;
+
+        if (isDev) {
+          const countInfo = Array.isArray(result) ? ` (${result.length} items)` : '';
+          console.log(`\x1b[32m[Supabase ⚡ DEV]\x1b[0m ✅ [${method}] "${operationName}" completed in \x1b[33m${duration}ms\x1b[0m${countInfo}`);
+        }
+
+        return result;
       } catch (error) {
         attempt++;
         lastError = error;
+        const duration = Date.now() - attemptStart;
         const errorMessage = error instanceof Error ? error.message : String(error);
 
         console.warn(
-          `[RequestClient] ⚠️ [Attempt ${attempt}/${maxRetries + 1} Failed] ${method} "${operationName}": ${errorMessage}`
+          `\x1b[31m[Supabase ⚡ DEV]\x1b[0m ⚠️ [Attempt ${attempt}/${maxRetries + 1} Failed] [${method}] "${operationName}" (${duration}ms): ${errorMessage}`
         );
 
         if (attempt <= maxRetries) {
@@ -75,7 +93,8 @@ export class RequestClient {
       }
     }
 
-    console.error(`[RequestClient] ❌ All ${maxRetries + 1} attempts failed for ${method} "${operationName}".`);
+    const totalDuration = Date.now() - overallStart;
+    console.error(`\x1b[41m[Supabase ⚡ DEV]\x1b[0m ❌ All ${maxRetries + 1} attempts failed for [${method}] "${operationName}" (${totalDuration}ms).`);
     throw lastError instanceof Error ? lastError : new Error(String(lastError));
   }
 

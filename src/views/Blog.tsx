@@ -9,14 +9,14 @@ import {
   FilterIcon,
 } from '../components/Icons.tsx';
 import { UITranslation } from '../data/cvData.ts';
-import { BLOG_CATEGORY_DEFINITIONS, BlogCategoryDef } from '../data/blog/blogCategories.ts';
 import {
   loadInitialBlogPosts,
   loadNextMonthBatch,
   loadAllArchivePosts,
-  getEagerPosts,
   getPostContentHtml,
-} from '../services/blogService.ts';
+  getBlogCategories,
+  BlogCategoryDef,
+} from '../services/blogService';
 import { Button, Badge } from '../components/common';
 import { SectionHeader } from '../components/ui';
 import {
@@ -39,34 +39,43 @@ import {
 
 export interface BlogProps {
   posts: BlogPost[];
+  categories?: BlogCategoryDef[];
   t: UITranslation['blog'];
   tCommon: UITranslation['common'];
 }
 
-export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
+export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => {
   // Detect language: VI or EN based on translation string
   const langKey = useMemo<'vi' | 'en'>(() => {
     return t.allTopics === 'Tất cả chủ đề' || !t.allTopics.toLowerCase().includes('all') ? 'vi' : 'en';
   }, [t.allTopics]);
 
+  // Dynamic Categories list from Supabase
+  const [categoriesList, setCategoriesList] = useState<BlogCategoryDef[]>(() => categories || []);
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      setCategoriesList(categories);
+    } else {
+      getBlogCategories().then((cats) => {
+        setCategoriesList(cats);
+      });
+    }
+  }, [categories]);
+
   // Full catalog of all published articles for accurate global statistics and search filtering
   const [fullCatalog, setFullCatalog] = useState<BlogPost[]>(() => {
-    if (posts && posts.length > 0) return posts;
-    return getEagerPosts(langKey);
+    return posts || [];
   });
 
   // Paginated slice rendered into the HTML DOM (starts with initial 20 articles max)
   const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>(() => {
-    if (posts && posts.length > 0) {
-      return posts.slice(0, 20);
-    }
-    return getEagerPosts(langKey).slice(0, 20);
+    return (posts || []).slice(0, 20);
   });
 
   const [, setLoadedMonthKeys] = useState<string[]>([]);
   const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(() => {
-    const total = posts && posts.length > 0 ? posts.length : getEagerPosts(langKey).length;
-    return total > 20;
+    return (posts || []).length > 20;
   });
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -220,13 +229,13 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   // Count articles per category across ALL published posts in the catalog
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { all: fullCatalog.length };
-    BLOG_CATEGORY_DEFINITIONS.forEach((cat) => {
+    categoriesList.forEach((cat) => {
       if (cat.id !== 'all') {
         counts[cat.id] = fullCatalog.filter((p) => p.category === cat.id).length;
       }
     });
     return counts;
-  }, [fullCatalog]);
+  }, [fullCatalog, categoriesList]);
 
   // Count articles per tag across ALL published posts in the catalog
   const tagCounts = useMemo(() => {
@@ -302,8 +311,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
   const isFiltering = selectedCategory !== 'all' || selectedTag !== 'all' || !!searchQuery.trim();
 
   // Filter posts based on category, search query, and selected tag:
-  // When active filters/search are set, query from fullCatalog.
-  // When on default unfiltered view, render ONLY displayedPosts (initial 20, paginated) to keep DOM lightweight!
   const filteredPosts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     const sourcePosts = isFiltering ? fullCatalog : displayedPosts;
@@ -332,11 +339,18 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
 
   // Active Category Object
   const currentCategoryDef = useMemo(() => {
-    return (
-      BLOG_CATEGORY_DEFINITIONS.find((c) => c.id === selectedCategory) ||
-      BLOG_CATEGORY_DEFINITIONS[0]
-    );
-  }, [selectedCategory]);
+    const found = categoriesList.find((c) => c.id === selectedCategory);
+    if (found) return found;
+    return categoriesList[0] || {
+      id: 'all',
+      dayCode: 'ALL',
+      scheduleDay: { vi: 'T2 - T6', en: 'Mon - Fri' },
+      scheduleFull: { vi: 'Thứ 2 – Thứ 6', en: 'Mon - Fri' },
+      title: { vi: 'Tất cả chuyên đề', en: 'All Topics' },
+      description: { vi: '', en: '' },
+      iconName: 'BookOpenIcon',
+    };
+  }, [categoriesList, selectedCategory]);
 
   return (
     <div className="blog-page-root">
@@ -372,7 +386,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
         <BlogSidebar
           isMobileOpen={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
-          categories={BLOG_CATEGORY_DEFINITIONS}
+          categories={categoriesList}
           selectedCategory={selectedCategory}
           categoryCounts={categoryCounts}
           categoriesTitle={t.categoriesTitle}
@@ -421,7 +435,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
                 }}
                 searchPlaceholder={t.searchPlaceholder}
                 selectedCategory={selectedCategory}
-                selectedCategoryTitle={currentCategoryDef.title[langKey]}
+                selectedCategoryTitle={currentCategoryDef.title ? currentCategoryDef.title[langKey] : ''}
                 onClearCategory={() => setSelectedCategory('all')}
                 selectedTag={selectedTag}
                 onClearTag={() => setSelectedTag('all')}
@@ -436,7 +450,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, t, tCommon }) => {
               {/* Cards or Empty State */}
               {filteredPosts.length > 0 ? (
                 filteredPosts.map((post) => {
-                  const postCatDef = BLOG_CATEGORY_DEFINITIONS.find((c) => c.id === post.category);
+                  const postCatDef = categoriesList.find((c) => c.id === post.category);
 
                   return (
                     <BlogItem

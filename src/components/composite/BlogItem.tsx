@@ -4,7 +4,7 @@ import { Card, Badge, Button } from '../common';
 import { SparklesIcon, ExternalLinkIcon } from '../Icons.tsx';
 import { TechTagList } from './TechTagList.tsx';
 import { BadgeSchedule } from './BadgeSchedule.tsx';
-import { BlogCategoryDef } from '../../data/blog/blogCategories.ts';
+import { BlogCategoryDef } from '@/services/blogService';
 
 export interface BlogItemProps {
   post: BlogPost;

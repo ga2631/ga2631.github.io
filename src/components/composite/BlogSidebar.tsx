@@ -3,7 +3,7 @@ import { FilterIcon, CloseIcon } from '../Icons.tsx';
 import { Button } from '../common/Button.tsx';
 import { BlogTopic } from './BlogTopic.tsx';
 import { BlogTagsKeyword } from './BlogTagsKeyword.tsx';
-import { BlogCategoryDef } from '../../data/blog/blogCategories.ts';
+import { BlogCategoryDef } from '@/services/blogService';
 
 export interface BlogSidebarProps {
   isMobileOpen: boolean;

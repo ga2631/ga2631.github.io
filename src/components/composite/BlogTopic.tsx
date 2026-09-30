@@ -8,7 +8,7 @@ import {
   CodeIcon,
   SparklesIcon,
 } from '../Icons.tsx';
-import { BLOG_CATEGORY_DEFINITIONS, BlogCategoryDef } from '../../data/blog/blogCategories.ts';
+import { BlogCategoryDef } from '@/services/blogService';
 
 export interface BlogTopicProps {
   categories?: BlogCategoryDef[];
@@ -39,7 +39,7 @@ export const renderCategoryIcon = (iconName: string, size = 15) => {
 };
 
 export const BlogTopic: React.FC<BlogTopicProps> = ({
-  categories = BLOG_CATEGORY_DEFINITIONS,
+  categories = [],
   selectedCategory,
   categoryCounts,
   langKey = 'vi',
