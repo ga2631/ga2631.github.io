@@ -56,7 +56,7 @@ export class RequestClient {
     let lastError: unknown = null;
 
     if (isDev) {
-      console.log(`\x1b[36m[Supabase ⚡ DEV]\x1b[0m 🚀 Executing [${method}] "${operationName}"...`);
+      console.log(`[Supabase ⚡ DEV] 🚀 Executing [${method}] "${operationName}"...`);
     }
 
     const overallStart = Date.now();
@@ -65,14 +65,14 @@ export class RequestClient {
       const attemptStart = Date.now();
       try {
         if (attempt > 0) {
-          console.log(`\x1b[33m[RequestClient]\x1b[0m 🔄 [Retry ${attempt}/${maxRetries}] Retrying [${method}] "${operationName}"...`);
+          console.log(`[RequestClient] 🔄 [Retry ${attempt}/${maxRetries}] Retrying [${method}] "${operationName}"...`);
         }
         const result = await task();
         const duration = Date.now() - attemptStart;
 
         if (isDev) {
           const countInfo = Array.isArray(result) ? ` (${result.length} items)` : '';
-          console.log(`\x1b[32m[Supabase ⚡ DEV]\x1b[0m ✅ [${method}] "${operationName}" completed in \x1b[33m${duration}ms\x1b[0m${countInfo}`);
+          console.log(`[Supabase ⚡ DEV] ✅ [${method}] "${operationName}" completed in [${duration}ms${countInfo}]`);
         }
 
         return result;
@@ -83,7 +83,7 @@ export class RequestClient {
         const errorMessage = error instanceof Error ? error.message : String(error);
 
         console.warn(
-          `\x1b[31m[Supabase ⚡ DEV]\x1b[0m ⚠️ [Attempt ${attempt}/${maxRetries + 1} Failed] [${method}] "${operationName}" (${duration}ms): ${errorMessage}`
+          `[31m[Supabase ⚡ DEV] ⚠️ [Attempt ${attempt}/${maxRetries + 1} Failed] [${method}] "${operationName}" (${duration}ms): ${errorMessage}`
         );
 
         if (attempt <= maxRetries) {
@@ -94,7 +94,7 @@ export class RequestClient {
     }
 
     const totalDuration = Date.now() - overallStart;
-    console.error(`\x1b[41m[Supabase ⚡ DEV]\x1b[0m ❌ All ${maxRetries + 1} attempts failed for [${method}] "${operationName}" (${totalDuration}ms).`);
+    console.error(`[41m[Supabase ⚡ DEV] ❌ All ${maxRetries + 1} attempts failed for [${method}] "${operationName}" (${totalDuration}ms).`);
     throw lastError instanceof Error ? lastError : new Error(String(lastError));
   }
 

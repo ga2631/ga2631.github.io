@@ -140,7 +140,7 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
       const supabase = getSupabaseClient();
       if (!supabase) throw new Error('[blogService] Supabase client unavailable.');
 
-      console.log(`\x1b[34m[Supabase 🗂️ Categories]\x1b[0m Querying table "categories" JOIN "category_translations"`);
+      console.log(`[Supabase 🗂️ Categories] Querying table "categories" JOIN "category_translations"`);
       const { data, error } = await supabase
         .from('categories')
         .select(`
@@ -240,7 +240,7 @@ export async function getBlogTags(lang: string): Promise<TagWithTranslation[]> {
       const supabase = getSupabaseClient();
       if (!supabase) throw new Error('[blogService] Supabase client unavailable.');
 
-      console.log(`\x1b[36m[Supabase 🏷️ Tags]\x1b[0m Querying table "tags" JOIN "tag_translations" (lang: ${lang})`);
+      console.log(`[Supabase 🏷️ Tags] Querying table "tags" JOIN "tag_translations" (lang: ${lang})`);
       const { data, error } = await supabase
         .from('tags')
         .select(`
@@ -297,7 +297,7 @@ export async function getBlogPosts(
         throw new Error('[blogService] Failed to initialize Supabase client.');
       }
 
-      console.log(`\x1b[32m[Supabase 📰 Posts]\x1b[0m Querying table "posts" with relations (lang: ${lang}, limit: ${options.limit || 'all'})`);
+      console.log(`[Supabase 📰 Posts] Querying table "posts" with relations (lang: ${lang}, limit: ${options.limit || 'all'})`);
       let query = supabase
         .from('posts')
         .select(`
@@ -386,7 +386,7 @@ export async function getBlogPostBySlug(slug: string, lang: string): Promise<Blo
       const supabase = getSupabaseClient();
       if (!supabase) throw new Error('[blogService] Supabase client unavailable.');
 
-      console.log(`\x1b[33m[Supabase 📖 Post Detail]\x1b[0m Querying table "posts" WHERE slug = "${slug}" (lang: ${lang})`);
+      console.log(`[Supabase 📖 Post Detail] Querying table "posts" WHERE slug = "${slug}" (lang: ${lang})`);
       const { data, error } = await supabase
         .from('posts')
         .select(`

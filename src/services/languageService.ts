@@ -36,7 +36,7 @@ export async function getActiveLanguages(): Promise<Language[]> {
       const supabase = getSupabaseClient();
       if (!supabase) return DEFAULT_LANGUAGES;
 
-      console.log('\x1b[34m[Supabase 🌐 Languages]\x1b[0m Querying active languages from table "languages"');
+      console.log('[Supabase 🌐 Languages] Querying active languages from table "languages"');
       const { data, error } = await supabase
         .from('languages')
         .select('code, name, is_active')
