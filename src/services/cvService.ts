@@ -114,6 +114,7 @@ export async function saveCvData(lang: string, cvData: CVData): Promise<{ succes
         throw new Error(error.message);
       }
 
+      requestClient.invalidateCache('getCvData');
       return { success: true };
     },
     'POST' // Triggers 1 retry on failure

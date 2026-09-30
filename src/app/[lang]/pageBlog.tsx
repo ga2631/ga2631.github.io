@@ -31,13 +31,15 @@ export async function generateBlogMetadata(locale: Locale): Promise<Metadata> {
 }
 
 export async function PageBlog({ lang }: { lang: Locale }) {
-  const currentCvData = await getCvData(lang);
-  const currentBlogPosts = await getBlogPosts(lang);
-  const categories = await getBlogCategories();
-  const t = uiTranslations[lang];
+  const [currentCvData, currentBlogPosts, categories] = await Promise.all([
+    getCvData(lang),
+    getBlogPosts(lang),
+    getBlogCategories(),
+  ]);
+  const t = uiTranslations[lang] || uiTranslations.vi;
 
   return (
-    <AppShell lang={lang} currentRoute="blog" personalInfo={currentCvData.personalInfo}>
+    <AppShell lang={lang as any} currentRoute="blog" personalInfo={currentCvData.personalInfo}>
       <Blog posts={currentBlogPosts} categories={categories} t={t.blog} tCommon={t.common} />
     </AppShell>
   );

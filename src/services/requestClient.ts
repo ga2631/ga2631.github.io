@@ -16,13 +16,36 @@ export interface RequestOptions extends RequestInit {
 
 const isDev = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_APP_ENV !== 'production';
 
+interface CacheEntry<T> {
+  data: T;
+  expiresAt: number;
+}
+
 export class RequestClient {
   private baseUrl: string;
   private defaultHeaders: Record<string, string>;
+  private cache = new Map<string, CacheEntry<any>>();
+  private inFlight = new Map<string, Promise<any>>();
+  private defaultCacheTtlMs = 5 * 60 * 1000; // 5 minutes default TTL for GET requests
 
   constructor(baseUrl = '', defaultHeaders: Record<string, string> = {}) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = defaultHeaders;
+  }
+
+  /**
+   * Clears or invalidates cache entries matching a key or substring
+   */
+  public invalidateCache(keyOrPrefix?: string): void {
+    if (!keyOrPrefix) {
+      this.cache.clear();
+      return;
+    }
+    for (const key of this.cache.keys()) {
+      if (key.includes(keyOrPrefix)) {
+        this.cache.delete(key);
+      }
+    }
   }
 
   /**
@@ -42,60 +65,108 @@ export class RequestClient {
   }
 
   /**
-   * Executes any asynchronous operation (Supabase query, API call, etc.) with automatic retry policy and dev logging
+   * Executes any asynchronous operation (Supabase query, API call, etc.) with automatic retry policy,
+   * high-performance in-memory caching, in-flight deduplication, and dev logging.
    */
   public async executeWithRetry<T>(
     operationName: string,
     task: () => Promise<T>,
     method: HttpMethod = 'GET',
     customRetries?: number,
-    baseDelayMs = 400
+    baseDelayMs = 400,
+    options: { cacheTtlMs?: number; skipCache?: boolean } = {}
   ): Promise<T> {
-    const maxRetries = customRetries !== undefined ? customRetries : this.getMaxRetries(method);
-    let attempt = 0;
-    let lastError: unknown = null;
+    const isGet = method === 'GET';
+    const cacheTtlMs = options.cacheTtlMs ?? this.defaultCacheTtlMs;
+    const useCache = isGet && !options.skipCache && cacheTtlMs > 0;
 
-    if (isDev) {
-      console.log(`[Supabase ⚡ DEV] 🚀 Executing [${method}] "${operationName}"...`);
+    // 1. Fast path: check in-memory cache for GET requests
+    if (useCache && this.cache.has(operationName)) {
+      const entry = this.cache.get(operationName)!;
+      if (Date.now() < entry.expiresAt) {
+        if (isDev) {
+          console.log(`[Supabase ⚡ CACHE] ⚡ Serving "${operationName}" from cache (0ms)`);
+        }
+        return entry.data as T;
+      }
+      this.cache.delete(operationName);
     }
 
-    const overallStart = Date.now();
+    // 2. Concurrency path: deduplicate in-flight promises to avoid duplicate network queries
+    if (isGet && this.inFlight.has(operationName)) {
+      if (isDev) {
+        console.log(`[Supabase ⚡ DEDUP] 🔗 Deduplicating concurrent request "${operationName}"`);
+      }
+      return this.inFlight.get(operationName)! as Promise<T>;
+    }
 
-    while (attempt <= maxRetries) {
-      const attemptStart = Date.now();
+    const maxRetries = customRetries !== undefined ? customRetries : this.getMaxRetries(method);
+
+    const executionPromise = (async () => {
+      let attempt = 0;
+      let lastError: unknown = null;
+
+      if (isDev) {
+        console.log(`[Supabase ⚡ DEV] 🚀 Executing [${method}] "${operationName}"...`);
+      }
+
+      const overallStart = Date.now();
+
+      while (attempt <= maxRetries) {
+        const attemptStart = Date.now();
+        try {
+          if (attempt > 0) {
+            console.log(`[RequestClient] 🔄 [Retry ${attempt}/${maxRetries}] Retrying [${method}] "${operationName}"...`);
+          }
+          const result = await task();
+          const duration = Date.now() - attemptStart;
+
+          if (isDev) {
+            const countInfo = Array.isArray(result) ? ` (${result.length} items)` : '';
+            console.log(`[Supabase ⚡ DEV] ✅ [${method}] "${operationName}" completed in [${duration}ms${countInfo}]`);
+          }
+
+          // Cache result if GET
+          if (useCache) {
+            this.cache.set(operationName, {
+              data: result,
+              expiresAt: Date.now() + cacheTtlMs,
+            });
+          }
+
+          return result;
+        } catch (error) {
+          attempt++;
+          lastError = error;
+          const duration = Date.now() - attemptStart;
+          const errorMessage = error instanceof Error ? error.message : String(error);
+
+          console.warn(
+            `[Supabase ⚡ DEV] ⚠️ [Attempt ${attempt}/${maxRetries + 1} Failed] [${method}] "${operationName}" (${duration}ms): ${errorMessage}`
+          );
+
+          if (attempt <= maxRetries) {
+            const backoff = baseDelayMs * Math.pow(2, attempt - 1);
+            await this.delay(backoff);
+          }
+        }
+      }
+
+      const totalDuration = Date.now() - overallStart;
+      console.error(`[Supabase ⚡ DEV] ❌ All ${maxRetries + 1} attempts failed for [${method}] "${operationName}" (${totalDuration}ms).`);
+      throw lastError instanceof Error ? lastError : new Error(String(lastError));
+    })();
+
+    if (isGet) {
+      this.inFlight.set(operationName, executionPromise);
       try {
-        if (attempt > 0) {
-          console.log(`[RequestClient] 🔄 [Retry ${attempt}/${maxRetries}] Retrying [${method}] "${operationName}"...`);
-        }
-        const result = await task();
-        const duration = Date.now() - attemptStart;
-
-        if (isDev) {
-          const countInfo = Array.isArray(result) ? ` (${result.length} items)` : '';
-          console.log(`[Supabase ⚡ DEV] ✅ [${method}] "${operationName}" completed in [${duration}ms${countInfo}]`);
-        }
-
-        return result;
-      } catch (error) {
-        attempt++;
-        lastError = error;
-        const duration = Date.now() - attemptStart;
-        const errorMessage = error instanceof Error ? error.message : String(error);
-
-        console.warn(
-          `[Supabase ⚡ DEV] ⚠️ [Attempt ${attempt}/${maxRetries + 1} Failed] [${method}] "${operationName}" (${duration}ms): ${errorMessage}`
-        );
-
-        if (attempt <= maxRetries) {
-          const backoff = baseDelayMs * Math.pow(2, attempt - 1);
-          await this.delay(backoff);
-        }
+        return await executionPromise;
+      } finally {
+        this.inFlight.delete(operationName);
       }
     }
 
-    const totalDuration = Date.now() - overallStart;
-    console.error(`[Supabase ⚡ DEV] ❌ All ${maxRetries + 1} attempts failed for [${method}] "${operationName}" (${totalDuration}ms).`);
-    throw lastError instanceof Error ? lastError : new Error(String(lastError));
+    return executionPromise;
   }
 
   /**

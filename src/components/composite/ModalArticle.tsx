@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import mermaid from 'mermaid';
 import { Modal } from '../common/Modal';
 import { Badge } from '../common/Badge';
 import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
@@ -192,6 +191,10 @@ export const ArticleBody: React.FC<ArticleBodyProps> = React.memo(
 
       const renderDiagrams = async () => {
         try {
+          const mermaidModule = await import('mermaid');
+          const mermaid = mermaidModule.default;
+          if (isCancelled) return;
+
           mermaid.initialize({
             startOnLoad: false,
             securityLevel: 'strict',
