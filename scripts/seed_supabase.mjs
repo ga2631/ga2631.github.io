@@ -109,7 +109,10 @@ async function seedLanguages() {
 async function seedCvDocuments() {
   console.log('\n📄 2. Seeding CV Documents (CV_DOCUMENTS)...');
   for (const lang of ['vi', 'en']) {
-    const cvPath = path.join(rootDir, 'src', 'data', 'locales', lang, 'cv.json');
+    let cvPath = path.join(rootDir, 'scripts', 'seeds', `${lang}_cv.json`);
+    if (!fs.existsSync(cvPath)) {
+      cvPath = path.join(rootDir, 'src', 'data', 'locales', lang, 'cv.json');
+    }
     if (!fs.existsSync(cvPath)) {
       console.warn(`  ⚠️ File not found: ${cvPath}`);
       continue;
