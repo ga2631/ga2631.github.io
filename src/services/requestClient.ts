@@ -83,7 +83,7 @@ export class RequestClient {
         const errorMessage = error instanceof Error ? error.message : String(error);
 
         console.warn(
-          `[31m[Supabase ⚡ DEV] ⚠️ [Attempt ${attempt}/${maxRetries + 1} Failed] [${method}] "${operationName}" (${duration}ms): ${errorMessage}`
+          `[Supabase ⚡ DEV] ⚠️ [Attempt ${attempt}/${maxRetries + 1} Failed] [${method}] "${operationName}" (${duration}ms): ${errorMessage}`
         );
 
         if (attempt <= maxRetries) {
@@ -94,7 +94,7 @@ export class RequestClient {
     }
 
     const totalDuration = Date.now() - overallStart;
-    console.error(`[41m[Supabase ⚡ DEV] ❌ All ${maxRetries + 1} attempts failed for [${method}] "${operationName}" (${totalDuration}ms).`);
+    console.error(`[Supabase ⚡ DEV] ❌ All ${maxRetries + 1} attempts failed for [${method}] "${operationName}" (${totalDuration}ms).`);
     throw lastError instanceof Error ? lastError : new Error(String(lastError));
   }
 

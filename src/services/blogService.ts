@@ -357,12 +357,12 @@ export async function getBlogPosts(
 
       // Optional category filter
       if (options.categorySlug && options.categorySlug !== 'all') {
-        posts = posts.filter((p) => p.category === options.categorySlug);
+        posts = posts.filter((p: any) => p.category === options.categorySlug);
       }
 
       // Optional tag filter
       if (options.tagSlug && options.tagSlug !== 'all') {
-        posts = posts.filter((p) => p.tags.includes(options.tagSlug!));
+        posts = posts.filter((p: any) => p.tags.includes(options.tagSlug!));
       }
 
       return posts;
