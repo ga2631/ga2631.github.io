@@ -3,18 +3,21 @@
 import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Header } from '@/components/Header';
-import { cvDataVi, cvDataEn, uiTranslations } from '@/data/cvData';
+import { uiTranslations } from '@/data/cvData';
 import { trackPageView, trackLanguageChange } from '@/utils/analytics';
+import { PersonalInfo } from '@/types';
 
 interface AppShellProps {
   lang: 'vi' | 'en';
   currentRoute?: 'home' | 'blog';
+  personalInfo?: PersonalInfo;
   children: React.ReactNode;
 }
 
 export const AppShell: React.FC<AppShellProps> = ({
   lang,
   currentRoute = 'home',
+  personalInfo,
   children,
 }) => {
   const router = useRouter();
@@ -63,7 +66,19 @@ export const AppShell: React.FC<AppShellProps> = ({
     router.push(`${targetPath}${hash}`);
   };
 
-  const currentCvData = lang === 'vi' ? cvDataVi : cvDataEn;
+  const defaultPersonalInfo: PersonalInfo = {
+    fullName: 'Huỳnh Nhật Tân',
+    jobTitle: 'Software Engineer',
+    tagline: '',
+    bio: '',
+    email: '',
+    location: '',
+    availability: 'Available',
+    githubUrl: 'https://github.com/ga2631',
+    stats: [],
+  };
+
+  const currentPersonalInfo = personalInfo || defaultPersonalInfo;
   const t = uiTranslations[lang];
 
   return (
@@ -73,7 +88,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           lang={lang}
           setLang={handleSetLang}
           t={t}
-          personalInfo={currentCvData.personalInfo}
+          personalInfo={currentPersonalInfo}
           currentRoute={currentRoute}
         />
         <main>{children}</main>

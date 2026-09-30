@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { cvDataVi, cvDataEn, uiTranslations } from '@/data/cvData';
+import { uiTranslations } from '@/data/cvData';
+import { getCvData } from '@/services/cvService';
 import { Home } from '@/views/Home';
 import { AppShell } from '@/components/layout/AppShell';
 import { hasLocale, locales, Locale } from './dictionaries';
@@ -22,12 +23,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const isVi = lang === 'vi';
+  const cvData = await getCvData(lang as Locale);
+  const info = cvData.personalInfo;
+
   const title = isVi
-    ? 'Huỳnh Nhật Tân | Kỹ sư phần mềm - Portfolio & CV'
-    : 'Tan Huynh Nhat | Software Engineer - Portfolio & CV';
-  const description = isVi
+    ? `${info.fullName} | ${info.jobTitle} - Portfolio & CV`
+    : `${info.fullName} | ${info.jobTitle} - Portfolio & CV`;
+  const description = info.bio || (isVi
     ? 'Hồ sơ năng lực và CV của Huỳnh Nhật Tân (ga2631) - Kỹ sư phần mềm chuyên về Full-stack web applications, distributed systems, React, Next.js, TypeScript, Rust, Docker và Cloud DevOps.'
-    : 'Professional portfolio and CV of Tan Huynh Nhat (ga2631) - Software Engineer specializing in scalable full-stack web applications, distributed systems, modern React, Next.js, TypeScript, Rust, and Cloud DevOps.';
+    : 'Professional portfolio and CV of Tan Huynh Nhat (ga2631) - Software Engineer specializing in scalable full-stack web applications, distributed systems, modern React, Next.js, TypeScript, Rust, and Cloud DevOps.');
 
   return {
     title,
@@ -49,7 +53,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'website',
       images: [
         {
-          url: 'https://ga2631.github.io/og-image.png',
+          url: info.avatarUrl || 'https://ga2631.github.io/og-image.png',
           width: 1200,
           height: 630,
           alt: title,
@@ -60,7 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: 'summary_large_image',
       title,
       description,
-      images: ['https://ga2631.github.io/og-image.png'],
+      images: [info.avatarUrl || 'https://ga2631.github.io/og-image.png'],
     },
   };
 }
@@ -73,11 +77,11 @@ export default async function LocalizedHomePage({ params }: PageProps) {
   }
 
   const locale = lang as Locale;
-  const currentCvData = locale === 'vi' ? cvDataVi : cvDataEn;
+  const currentCvData = await getCvData(locale);
   const t = uiTranslations[locale];
 
   return (
-    <AppShell lang={locale} currentRoute="home">
+    <AppShell lang={locale} currentRoute="home" personalInfo={currentCvData.personalInfo}>
       <Home data={currentCvData} t={t} />
     </AppShell>
   );

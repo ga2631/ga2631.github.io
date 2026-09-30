@@ -3,6 +3,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { uiTranslations } from '@/data/cvData';
 import { blogPostsVi, blogPostsEn } from '@/data/blogData';
+import { getCvData } from '@/services/cvService';
 import { Blog } from '@/views/Blog';
 import { AppShell } from '@/components/layout/AppShell';
 import { hasLocale, locales, Locale } from '../dictionaries';
@@ -74,11 +75,12 @@ export default async function LocalizedBlogPage({ params }: PageProps) {
   }
 
   const locale = lang as Locale;
+  const currentCvData = await getCvData(locale);
   const currentBlogPosts = locale === 'vi' ? blogPostsVi : blogPostsEn;
   const t = uiTranslations[locale];
 
   return (
-    <AppShell lang={locale} currentRoute="blog">
+    <AppShell lang={locale} currentRoute="blog" personalInfo={currentCvData.personalInfo}>
       <Blog posts={currentBlogPosts} t={t.blog} tCommon={t.common} />
     </AppShell>
   );
