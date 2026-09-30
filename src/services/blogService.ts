@@ -74,7 +74,7 @@ export function getPostContentHtml(post: BlogPost): string {
 /**
  * Maps a raw Supabase Post row with joins into the standard BlogPost interface.
  */
-function mapDbPostToBlogPost(row: any, lang: 'vi' | 'en'): BlogPost {
+function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
   const translations = Array.isArray(row.post_translations) ? row.post_translations : [];
   const translation =
     translations.find((t: any) => t.lang_code === lang) ||
@@ -230,7 +230,7 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
  * Fetches all blog tags with translations from Supabase.
  * Retries up to 3 times (GET).
  */
-export async function getBlogTags(lang: 'vi' | 'en'): Promise<TagWithTranslation[]> {
+export async function getBlogTags(lang: string): Promise<TagWithTranslation[]> {
   return requestClient.executeWithRetry<TagWithTranslation[]>(
     `getBlogTags[${lang.toUpperCase()}]`,
     async () => {
@@ -275,7 +275,7 @@ export async function getBlogTags(lang: 'vi' | 'en'): Promise<TagWithTranslation
  * Retries up to 3 times (GET).
  */
 export async function getBlogPosts(
-  lang: 'vi' | 'en',
+  lang: string,
   options: {
     limit?: number;
     offset?: number;
@@ -375,7 +375,7 @@ export async function getBlogPosts(
  * Fetches a single blog post by its slug from Supabase (Post Detail).
  * Retries up to 3 times (GET).
  */
-export async function getBlogPostBySlug(slug: string, lang: 'vi' | 'en'): Promise<BlogPost | null> {
+export async function getBlogPostBySlug(slug: string, lang: string): Promise<BlogPost | null> {
   return requestClient.executeWithRetry<BlogPost | null>(
     `getBlogPostBySlug[${slug}:${lang.toUpperCase()}]`,
     async () => {
@@ -444,7 +444,7 @@ export async function getBlogPostBySlug(slug: string, lang: 'vi' | 'en'): Promis
 /**
  * Extracts all month archive keys represented in the posts collection.
  */
-export function getAvailableMonthArchives(posts: BlogPost[], lang: 'vi' | 'en'): MonthArchiveInfo[] {
+export function getAvailableMonthArchives(posts: BlogPost[], lang: string): MonthArchiveInfo[] {
   const monthMap = new Map<string, { year: number; month: number }>();
 
   posts.forEach((post) => {
@@ -508,7 +508,7 @@ export function getBlogStatistics(posts: BlogPost[], categories: BlogCategoryDef
  * Initial load: loads initial batch of posts (e.g. 20) from Supabase.
  */
 export async function loadInitialBlogPosts(
-  lang: 'vi' | 'en',
+  lang: string,
   initialBatchCount = 20
 ): Promise<BlogLoadResult> {
   const allPosts = await getBlogPosts(lang);
@@ -539,7 +539,7 @@ export async function loadInitialBlogPosts(
  * Loads next batch of posts for client-side pagination from Supabase.
  */
 export async function loadNextMonthBatch(
-  lang: 'vi' | 'en',
+  lang: string,
   currentLoaded: string[] | number,
   targetBatchCount = 20
 ): Promise<BlogLoadResult> {
@@ -583,6 +583,6 @@ export async function loadNextMonthBatch(
 /**
  * Loads all archive posts for instant client search and filtering.
  */
-export async function loadAllArchivePosts(lang: 'vi' | 'en'): Promise<BlogPost[]> {
+export async function loadAllArchivePosts(lang: string): Promise<BlogPost[]> {
   return getBlogPosts(lang);
 }

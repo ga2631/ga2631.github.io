@@ -32,7 +32,7 @@ function sanitizePersonalInfo(raw: PersonalInfo): PersonalInfo {
  * Applies automatic 3-retry policy for GET operations.
  * Throws error if Supabase is unconfigured or data is not found.
  */
-export async function getCvData(lang: 'vi' | 'en'): Promise<CVData> {
+export async function getCvData(lang: string): Promise<CVData> {
   return requestClient.executeWithRetry<CVData>(
     `getCvData[${lang.toUpperCase()}]`,
     async () => {
@@ -82,7 +82,7 @@ export async function getCvData(lang: 'vi' | 'en'): Promise<CVData> {
  * Saves/Updates CV data on Supabase using RequestClient.
  * Applies 1-retry policy for write (POST) operations.
  */
-export async function saveCvData(lang: 'vi' | 'en', cvData: CVData): Promise<{ success: boolean; error?: string }> {
+export async function saveCvData(lang: string, cvData: CVData): Promise<{ success: boolean; error?: string }> {
   return requestClient.executeWithRetry<{ success: boolean; error?: string }>(
     `saveCvData[${lang.toUpperCase()}]`,
     async () => {

@@ -1,8 +1,8 @@
-import React from 'react';
-import { locales } from './dictionaries';
+import { getActiveLanguageCodes } from '@/services/languageService';
 
-export function generateStaticParams() {
-  return locales.map((lang) => ({ lang }));
+export async function generateStaticParams() {
+  const langCodes = await getActiveLanguageCodes();
+  return langCodes.map((lang) => ({ lang }));
 }
 
 export default function LocaleLayout({
