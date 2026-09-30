@@ -3,7 +3,7 @@
 import React from 'react';
 import { ExperienceItem } from '../types/index.ts';
 import { BriefcaseIcon } from './Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
+import { UITranslation } from '../i18n';
 import { Card, Badge } from './common';
 import { Section } from './ui';
 import { TechTagList } from './composite';

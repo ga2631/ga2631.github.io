@@ -3,7 +3,7 @@
 import React from 'react';
 import { PersonalInfo, PrincipleItem } from '../types/index.ts';
 import { CodeIcon, AwardIcon, LayersIcon, RefreshCwIcon, ZapIcon } from './Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
+import { UITranslation } from '../i18n';
 import { Card } from './common';
 import { Section } from './ui';
 

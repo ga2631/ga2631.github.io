@@ -1,6 +1,6 @@
 import React from 'react';
 import { CVData } from '../../types';
-import { UITranslation } from '../../data/cvData';
+import { UITranslation } from '@/i18n';
 import { ButtonFloatingScrollTop } from './ButtonFloatingScrollTop';
 import { ButtonPrint } from './ButtonPrint';
 

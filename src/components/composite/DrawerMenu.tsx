@@ -15,7 +15,7 @@ import {
   VietnamFlagIcon,
   UKFlagIcon,
 } from '../Icons';
-import { UITranslation } from '../../data/cvData';
+import { UITranslation } from '@/i18n';
 import { PersonalInfo } from '../../types';
 import { getSecureZaloUrl } from '../../utils/obfuscation';
 import { ButtonPrint } from './ButtonPrint';

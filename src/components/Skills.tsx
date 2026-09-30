@@ -9,7 +9,7 @@ import {
   ShieldIcon,
   LayersIcon,
 } from './Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
+import { UITranslation } from '../i18n';
 import { Card, Button } from './common';
 import { Section } from './ui';
 

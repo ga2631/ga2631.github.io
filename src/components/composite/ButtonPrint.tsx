@@ -14,7 +14,7 @@ import {
 } from '../Icons.tsx';
 import { SecureEmail, SecurePhone } from '../common';
 import { CVData } from '../../types';
-import { UITranslation } from '../../data/cvData.ts';
+import { UITranslation } from '@/i18n';
 import { trackPrintCV } from '../../utils/analytics';
 
 export interface ButtonPrintProps {

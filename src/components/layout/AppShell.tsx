@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Header } from '@/components/Header';
-import { uiTranslations } from '@/data/cvData';
+import { uiTranslations } from '@/i18n';
 import { trackPageView, trackLanguageChange } from '@/utils/analytics';
 import { PersonalInfo } from '@/types';
 

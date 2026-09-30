@@ -1,4 +1,4 @@
-import { uiTranslations, UITranslation } from '@/data/uiTranslations';
+import { uiTranslations, UITranslation } from '@/i18n';
 
 export type Locale = 'vi' | 'en';
 

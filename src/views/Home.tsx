@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { CVData } from '../types';
-import { UITranslation } from '../data/cvData';
+import { UITranslation } from '../i18n';
 import { Hero } from '../components/Hero';
 import { About } from '../components/About';
 import { Experience } from '../components/Experience';

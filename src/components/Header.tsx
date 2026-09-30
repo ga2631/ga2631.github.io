@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons';
-import { UITranslation } from '../data/cvData';
+import { UITranslation } from '../i18n';
 import { PersonalInfo } from '../types';
 import { DrawerMenu, NavItem } from './composite';
 import { Button } from './common';

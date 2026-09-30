@@ -8,7 +8,7 @@ import {
   CalendarIcon,
   FilterIcon,
 } from '../components/Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
+import { UITranslation } from '../i18n';
 import {
   loadInitialBlogPosts,
   loadNextMonthBatch,

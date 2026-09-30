@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { uiTranslations } from '@/data/cvData';
+import { uiTranslations } from '@/i18n';
 import { getCvData } from '@/services/cvService';
 import { Home } from '@/views/Home';
 import { AppShell } from '@/components/layout/AppShell';

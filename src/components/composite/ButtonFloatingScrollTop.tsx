@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowUpIcon } from '../Icons.tsx';
-import { UITranslation } from '../../data/cvData.ts';
+import { UITranslation } from '@/i18n';
 import { ButtonFloating } from '../ui';
 import { trackScrollToTop } from '../../utils/analytics';
 

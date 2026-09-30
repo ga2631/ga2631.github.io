@@ -3,7 +3,7 @@
 import React from 'react';
 import { PersonalInfo } from '../types/index.ts';
 import { MailIcon, MapPinIcon, LinkedinIcon, ExternalLinkIcon, PhoneIcon, ZaloIcon } from './Icons.tsx';
-import { UITranslation } from '../data/cvData';
+import { UITranslation } from '../i18n';
 import { getSecureMailtoUrl, getSecureTelUrl, getSecureZaloUrl } from '../utils/obfuscation';
 import { Card, Button, Badge, SecureEmail, SecurePhone } from './common';
 import { Section } from './ui';

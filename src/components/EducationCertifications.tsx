@@ -3,7 +3,7 @@
 import React from 'react';
 import { EducationItem, CertificationItem } from '../types/index.ts';
 import { GraduationCapIcon, AwardIcon, ExternalLinkIcon } from './Icons.tsx';
-import { UITranslation } from '../data/cvData.ts';
+import { UITranslation } from '../i18n';
 import { Card, Badge, Button } from './common';
 import { Section } from './ui';
 

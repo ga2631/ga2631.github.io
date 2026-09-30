@@ -1,5 +1,5 @@
 import React from 'react';
-import { UITranslation } from '../data/cvData.ts';
+import { UITranslation } from '../i18n';
 
 interface FooterProps {
   t: UITranslation['footer'];

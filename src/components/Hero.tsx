@@ -3,7 +3,7 @@
 import React from 'react';
 import { PersonalInfo } from '../types';
 import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, ExternalLinkIcon, CheckIcon } from './Icons';
-import { UITranslation } from '../data/cvData';
+import { UITranslation } from '../i18n';
 import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation';
 import { Card, Button } from './common';
 import { ButtonPrint } from './composite';
