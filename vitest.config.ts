@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitest/config';
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
 import path from 'path';
 
 export default defineConfig({
@@ -6,6 +8,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
   },
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

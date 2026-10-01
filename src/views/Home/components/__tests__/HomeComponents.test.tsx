@@ -176,14 +176,49 @@ describe('CV Home Components', () => {
     expect(getByText('Tăng tốc truy vấn 70%')).toBeDefined();
   });
 
-  it('renders SkillsSection correctly', () => {
+  it('renders SkillsSection correctly and maps levels 1-5 to respective color styles', () => {
+    const mockCategories = [
+      {
+        title: 'Lập trình',
+        description: 'Backend & Frontend',
+        skills: [
+          { name: 'HTML/CSS', level: 1 },
+          { name: 'Rust', level: 2 },
+          { name: 'Go', level: 3 },
+          { name: 'Python', level: 4 },
+          { name: 'TypeScript', level: 5 },
+        ],
+      },
+    ];
+
     const { getByText } = render(
       <LanguageProvider>
-        <SkillsSection />
+        <SkillsSection skillCategories={mockCategories} />
       </LanguageProvider>
     );
+
     expect(getByText('Tech Stack & Tools')).toBeDefined();
-    expect(getByText('Lập trình & Cốt lõi')).toBeDefined();
+    expect(getByText('Lập trình')).toBeDefined();
+
+    // Level 1 => Basic => blue (bg-basic)
+    const skill1 = getByText('HTML/CSS');
+    expect(skill1.className).toContain('bg-basic');
+
+    // Level 2 => Familiar => emerald (bg-familiar)
+    const skill2 = getByText('Rust');
+    expect(skill2.className).toContain('bg-familiar');
+
+    // Level 3 => Proficient => amber (bg-proficient)
+    const skill3 = getByText('Go');
+    expect(skill3.className).toContain('bg-proficient');
+
+    // Level 4 => Advanced => orange (bg-advanced)
+    const skill4 = getByText('Python');
+    expect(skill4.className).toContain('bg-advanced');
+
+    // Level 5 => Expert => red (bg-expert)
+    const skill5 = getByText('TypeScript');
+    expect(skill5.className).toContain('bg-expert');
   });
 
   it('renders EducationSection correctly', () => {
