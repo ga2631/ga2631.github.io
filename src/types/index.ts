@@ -32,28 +32,37 @@ export interface ExperienceItem {
   achievements: string[];
   technologies: string[];
 }
+export type ProjectCategory = 'Enterprise' | 'Public';
+
+export interface ProjectChallengeSolution {
+  challenge: string;
+  solution: string;
+}
 
 export interface ProjectItem {
   id: string;
   title: string;
+  category?: ProjectCategory | string;
   company?: string;
   role?: string;
   teamSize?: string;
-  shortDescription?: string;
-  description: string;
-  category: 'Fullstack' | 'Frontend' | 'Backend / Cloud' | 'Data / AI' | 'All';
-  image?: string;
-  demoUrl?: string;
-  githubUrl?: string;
-  tags: string[];
-  keyImpacts?: string[];
-  highlights: string[];
-  responsibilities?: string[];
-  challengesSolutions?: { challenge: string; solution: string }[];
-  achievements?: string[];
+  period?: string;
   featured?: boolean;
+  description: string;
+  shortDescription?: string;
+  highlights?: string[];
+  achievements?: string[];
+  responsibilities?: string[];
+  keyImpacts?: string[];
+  challengesSolutions?: ProjectChallengeSolution[];
+  tags: string[];
+  githubUrl?: string;
+  demoUrl?: string;
+  stars?: number;
+  forks?: number;
+  isPrivate?: boolean;
+  projectType?: 'enterprise' | 'public';
 }
-
 export interface SkillItem {
   name: string;
   level: string | number;

@@ -66,7 +66,14 @@ export async function getCvData(lang: string): Promise<CVData> {
         personalInfo: sanitizePersonalInfo(data.personal_info),
         principles: Array.isArray(data.principles) ? data.principles : [],
         experiences: Array.isArray(data.experiences) ? data.experiences : [],
-        projects: Array.isArray(data.projects) ? data.projects : [],
+        projects: Array.isArray(data.projects)
+          ? data.projects.map((p) => ({
+              ...p,
+              category: 'Enterprise',
+              projectType: 'enterprise' as const,
+              isPrivate: true,
+            }))
+          : [],
         skillCategories: Array.isArray(data.skill_categories) ? data.skill_categories : [],
         educations: Array.isArray(data.educations) ? data.educations : [],
         certifications: Array.isArray(data.certifications) ? data.certifications : [],
