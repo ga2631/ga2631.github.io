@@ -90,11 +90,18 @@ export function SkillsSection({ skillCategories }: SkillsSectionProps) {
 
   const categories =
     skillCategories && skillCategories.length > 0
-      ? skillCategories.map((c, i) => ({
+      ? skillCategories.map((c) => ({
           title: c.title,
-          skills: c.skills || [],
+          skills: [...(c.skills || [])].sort(
+            (a, b) => Number(b.level || 0) - Number(a.level || 0)
+          ),
         }))
-      : DEFAULT_CATEGORIES;
+      : DEFAULT_CATEGORIES.map((c) => ({
+          ...c,
+          skills: [...c.skills].sort(
+            (a, b) => Number(b.level || 0) - Number(a.level || 0)
+          ),
+        }));
 
   return (
     <section id="skills" className="mb-16 scroll-mt-28">

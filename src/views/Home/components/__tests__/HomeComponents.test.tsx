@@ -200,25 +200,25 @@ describe('CV Home Components', () => {
     expect(getByText('Tech Stack & Tools')).toBeDefined();
     expect(getByText('Lập trình')).toBeDefined();
 
-    // Level 1 => Basic => blue (bg-basic)
+    // Level 1 => Basic => blue (bg-blue-100)
     const skill1 = getByText('HTML/CSS');
-    expect(skill1.className).toContain('bg-basic');
+    expect(skill1.className).toContain('bg-blue-100');
 
-    // Level 2 => Familiar => emerald (bg-familiar)
+    // Level 2 => Familiar => emerald (bg-emerald-100)
     const skill2 = getByText('Rust');
-    expect(skill2.className).toContain('bg-familiar');
+    expect(skill2.className).toContain('bg-emerald-100');
 
-    // Level 3 => Proficient => amber (bg-proficient)
+    // Level 3 => Proficient => amber (bg-amber-100)
     const skill3 = getByText('Go');
-    expect(skill3.className).toContain('bg-proficient');
+    expect(skill3.className).toContain('bg-amber-100');
 
-    // Level 4 => Advanced => orange (bg-advanced)
+    // Level 4 => Advanced => orange (bg-orange-100)
     const skill4 = getByText('Python');
-    expect(skill4.className).toContain('bg-advanced');
+    expect(skill4.className).toContain('bg-orange-100');
 
-    // Level 5 => Expert => red (bg-expert)
+    // Level 5 => Expert => red (bg-red-100)
     const skill5 = getByText('TypeScript');
-    expect(skill5.className).toContain('bg-expert');
+    expect(skill5.className).toContain('bg-red-100');
   });
 
   it('renders EducationSection correctly', () => {
