@@ -28,41 +28,41 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
   };
 
   return (
-    <section className="pt-28 pb-16 md:pt-36 md:pb-24 hero-section" id="hero">
+    <section className="pt-28 pb-16 md:pt-36 md:pb-24" id="hero">
       <div className="container mx-auto max-w-[1200px] px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 lg:gap-14 items-center hero-grid">
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 lg:gap-14 items-center">
           {/* Left Column: Visual Developer Profile Card */}
-          <div className="flex justify-center lg:justify-start hero-visual">
+          <div className="flex justify-center lg:justify-start">
             <Card className="avatar-card w-full max-w-[360px] p-6 text-center">
-              <div className="relative w-36 h-36 mx-auto mb-4 avatar-wrapper">
+              <div className="relative w-36 h-36 mx-auto mb-4">
                 {data.avatarUrl ? (
                   <img
                     src={data.avatarUrl}
                     alt={data.fullName}
-                    className="w-full h-full object-cover rounded-full border-2 border-white shadow-md avatar-img"
+                    className="w-full h-full object-cover rounded-full border-2 border-white shadow-md"
                     onError={(e) => {
                       (e.currentTarget as HTMLElement).style.display = 'none';
                     }}
                   />
                 ) : (
-                  <div className="w-full h-full rounded-full bg-brand-gradient text-white font-extrabold text-4xl flex items-center justify-center avatar-inner">
+                  <div className="w-full h-full rounded-full bg-brand-gradient text-white font-extrabold text-4xl flex items-center justify-center">
                     T
                   </div>
                 )}
               </div>
 
-              <h3 className="text-2xl font-bold text-slate-900 font-heading mb-1 avatar-name">
+              <h3 className="text-2xl font-bold text-slate-900 font-heading mb-1">
                 {data.fullName}
               </h3>
 
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mx-auto my-2 hero-status-pill avatar-status-pill mobile-only-status">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 status-dot animate-pulse"></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mx-auto my-2 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>{data.availability}</span>
               </div>
 
-              <p className="text-sm text-slate-500 mb-4 avatar-location">{data.location}</p>
+              <p className="text-sm text-slate-500 mb-4">{data.location}</p>
 
-              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-left text-xs font-mono text-slate-700 mb-5 avatar-info-box">
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-left text-xs font-mono text-slate-700 mb-5">
                 <div className="flex items-start gap-1.5">
                   <span className="text-slate-400">$</span>
                   <span>git status</span>
@@ -73,11 +73,11 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 </div>
                 <div className="text-slate-500 mt-1.5 text-[0.8rem]">
                   {t.focusPrompt}
-                  <span className="inline-block w-1.5 h-3.5 bg-slate-400 ml-1 animate-pulse cursor-blink" />
+                  <span className="inline-block w-1.5 h-3.5 bg-slate-400 ml-1 animate-pulse" />
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-3 social-links">
+              <div className="flex items-center justify-center gap-3">
                 <Button
                   as="a"
                   href={data.githubUrl}
@@ -136,26 +136,26 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
           </div>
 
           {/* Right Column: Hero Headline & Summary */}
-          <div className="hero-content text-center lg:text-left">
-            <div className="hidden lg:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 mb-5 hero-status-pill desktop-only-status">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse status-dot"></span>
+          <div className="text-center lg:text-left">
+            <div className="hidden lg:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 mb-5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span>{data.availability}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 font-heading mb-4 leading-tight hero-title">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 font-heading mb-4 leading-tight">
               {t.greeting} <span className="text-brand-gradient">{data.fullName}</span>
             </h1>
 
-            <h2 className="text-xl sm:text-2xl font-semibold text-slate-700 mb-6 font-heading hero-subtitle">
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-700 mb-6 font-heading">
               {data.jobTitle}
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-8 hero-bio">
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-8">
               {data.bio}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-center lg:justify-start gap-4 hero-actions">
+            <div className="flex items-center justify-center lg:justify-start gap-4">
               <Button
                 as="a"
                 href="#projects"
@@ -199,11 +199,11 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
         {data.stats && data.stats.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8">
             {data.stats.map((stat, index) => (
-              <div key={index} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-center stat-item">
-                <div className="text-2xl lg:text-3xl font-extrabold text-red-600 font-heading stat-value">
+              <div key={index} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
+                <div className="text-2xl lg:text-3xl font-extrabold text-red-600 font-heading">
                   {stat.value}
                 </div>
-                <div className="text-xs font-medium text-slate-500 mt-1 stat-label">
+                <div className="text-xs font-medium text-slate-500 mt-1">
                   {stat.label}
                 </div>
               </div>

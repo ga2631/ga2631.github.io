@@ -99,14 +99,14 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 h-[72px] bg-white/85 backdrop-blur-xl border-b border-black/[0.08] z-[1100] transition-all duration-200 header ${
-          isScrolled ? 'scrolled shadow-sm bg-white/95' : ''
+        className={`fixed top-0 left-0 right-0 h-[72px] bg-white/85 backdrop-blur-xl border-b border-black/[0.08] z-[1100] transition-all duration-200 ${
+          isScrolled ? 'shadow-sm bg-white/95' : ''
         }`}
       >
-        <div className="container mx-auto max-w-[1200px] px-6 h-full flex items-center justify-between header-container">
+        <div className="container mx-auto max-w-[1200px] px-6 h-full flex items-center justify-between">
           <a
             href={`/${lang}/`}
-            className="flex items-center gap-3 font-heading text-xl font-extrabold tracking-tight whitespace-nowrap select-none logo"
+            className="flex items-center gap-3 font-heading text-xl font-extrabold tracking-tight whitespace-nowrap select-none"
             onClick={(e) => {
               e.preventDefault();
               if (currentRoute === 'home') {
@@ -116,20 +116,20 @@ export const Header: React.FC<HeaderProps> = ({
               }
             }}
           >
-            <div className="w-[38px] h-[38px] rounded-lg flex items-center justify-center text-white font-extrabold text-base flex-shrink-0 bg-brand-gradient logo-badge">
+            <div className="w-[38px] h-[38px] rounded-lg flex items-center justify-center text-white font-extrabold text-base flex-shrink-0 bg-brand-gradient">
               T
             </div>
-            <span className="text-slate-900 logo-text">{personalInfo.fullName}</span>
+            <span className="text-slate-900">{personalInfo.fullName}</span>
           </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 nav-links desktop-nav">
+          <nav className="hidden lg:flex items-center gap-7">
             {navItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className={`text-slate-600 hover:text-red-600 text-[0.95rem] font-medium transition-colors duration-150 nav-link ${
-                  item.isActive ? 'active !text-red-600 font-semibold' : ''
+                className={`text-slate-600 hover:text-red-600 text-[0.95rem] font-medium transition-colors duration-150 ${
+                  item.isActive ? '!text-red-600 font-semibold' : ''
                 }`}
                 onClick={(e) => {
                   e.preventDefault();
@@ -141,11 +141,11 @@ export const Header: React.FC<HeaderProps> = ({
             ))}
           </nav>
 
-          <div className="flex items-center gap-3 flex-shrink-0 header-actions">
+          <div className="flex items-center gap-3 flex-shrink-0">
             {/* Desktop Language Switcher Toggle */}
             <Button
               variant="unstyled"
-              className="h-10 min-w-[62px] px-3 rounded-xl bg-slate-100 text-slate-800 border border-slate-200 inline-flex items-center justify-center gap-1.5 text-xs font-bold hover:border-red-400 hover:text-red-600 hover:bg-white transition-all lang-toggle-btn header-lang-btn"
+              className="h-10 min-w-[62px] px-3 rounded-xl bg-slate-100 text-slate-800 border border-slate-200 inline-flex items-center justify-center gap-1.5 text-xs font-bold hover:border-red-400 hover:text-red-600 hover:bg-white transition-all cursor-pointer"
               onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}
               title={lang === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
               aria-label="Toggle Language"
@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile & Tablet Drawer Trigger Button */}
             <Button
               variant="unstyled"
-              className="lg:hidden w-10 h-10 bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-center text-slate-800 hover:border-red-400 hover:text-red-600 hover:bg-white transition-all mobile-menu-btn"
+              className="lg:hidden w-10 h-10 bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-center text-slate-800 hover:border-red-400 hover:text-red-600 hover:bg-white transition-all cursor-pointer"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open Navigation Drawer Menu"
               aria-expanded={mobileMenuOpen}

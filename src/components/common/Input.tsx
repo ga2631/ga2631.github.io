@@ -47,11 +47,24 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       }
     };
 
+    const sizeClasses =
+      size === 'sm'
+        ? 'px-3 py-1.5 text-xs'
+        : size === 'lg'
+        ? 'px-5 py-3.5 text-base'
+        : 'px-4 py-2.5 text-sm';
+
+    const paddingWithAdornment = startAdornment ? 'pl-10' : '';
+    const paddingWithClearable = clearable && hasValue ? 'pr-10' : '';
+
+    const defaultInputClasses =
+      `w-full bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all outline-none ${sizeClasses} ${paddingWithAdornment} ${paddingWithClearable} ${className}`.trim();
+
     const inputNode = (
       <input
         ref={ref}
         type={type}
-        className={className}
+        className={defaultInputClasses}
         value={value}
         onChange={handleChange}
         {...restProps}
@@ -61,20 +74,28 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     // If adornments or clearable are needed, wrap in container
     if (startAdornment || endAdornment || clearable) {
       return (
-        <div className={`input-wrapper ${wrapperClassName}`.trim()} style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}>
-          {startAdornment}
+        <div className={`relative flex items-center w-full ${wrapperClassName}`.trim()}>
+          {startAdornment && (
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none flex items-center justify-center">
+              {startAdornment}
+            </div>
+          )}
           {inputNode}
           {clearable && hasValue && (
             <button
               type="button"
-              className="search-clear-btn"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
               onClick={handleClear}
               aria-label={clearAriaLabel}
             >
-              <CloseIcon size={14} />
+              <CloseIcon size={12} />
             </button>
           )}
-          {endAdornment}
+          {endAdornment && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 flex items-center justify-center">
+              {endAdornment}
+            </div>
+          )}
         </div>
       );
     }

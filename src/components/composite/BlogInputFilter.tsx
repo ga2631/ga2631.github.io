@@ -42,7 +42,11 @@ export const BlogInputFilter: React.FC<BlogInputFilterProps> = ({
   const hasActiveFilters = selectedCategory !== 'all' || selectedTag !== 'all' || Boolean(searchQuery.trim());
 
   return (
-    <div className={`blog-controls-panel ${isStuck ? 'is-stuck' : ''} ${className}`.trim()}>
+    <div
+      className={`sticky top-0 z-20 mb-8 p-4 bg-white/90 backdrop-blur-md rounded-2xl border transition-all ${
+        isStuck ? 'border-red-200/80 shadow-md' : 'border-slate-200/80 shadow-sm'
+      } ${className}`.trim()}
+    >
       <InputSearch
         placeholder={searchPlaceholder}
         value={searchQuery}
@@ -51,9 +55,9 @@ export const BlogInputFilter: React.FC<BlogInputFilterProps> = ({
 
       {/* Active Filter Chips Bar */}
       {hasActiveFilters && (
-        <div className="blog-active-chips-bar">
-          <span className="active-chips-label">
-            <FilterIcon size={13} /> {activeFiltersLabel}
+        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 flex-wrap text-xs">
+          <span className="inline-flex items-center gap-1.5 font-bold text-slate-500 uppercase tracking-wider text-xs mr-1">
+            <FilterIcon size={13} className="text-red-600" /> {activeFiltersLabel}
           </span>
 
           {selectedCategory !== 'all' && selectedCategoryTitle && (
@@ -86,7 +90,7 @@ export const BlogInputFilter: React.FC<BlogInputFilterProps> = ({
           <Button
             variant="text-reset"
             onClick={onResetAll}
-            style={{ marginLeft: 'auto' }}
+            className="ml-auto text-xs text-red-600 hover:text-red-700 font-semibold cursor-pointer"
           >
             {resetLabel}
           </Button>

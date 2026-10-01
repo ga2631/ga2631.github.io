@@ -86,70 +86,68 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
       stickyHeader={true}
       isStickyTitleShown={activeStickyTitleShown}
       closeAriaLabel={closeAriaLabel}
-      backdropClassName="blog-modal-backdrop"
-      contentClassName="blog-modal-content blog-article-modal project-modal-dialog"
       contentRef={activeContentRef}
       ariaLabelledBy="case-study-modal-title"
     >
-      <Modal.Body className="article-modal-body project-modal-body">
-        <div className="article-modal-layout">
-          <div className="article-main-column">
+      <Modal.Body>
+        <div className="flex flex-col gap-6">
+          <div className="flex-1 min-w-0">
             {/* 1. Category & Featured Tag Badges */}
-            <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
-              {project.category && <Badge variant="cyan">{project.category}</Badge>}
-              {project.featured && t.featuredProject && <Badge variant="emerald">{t.featuredProject}</Badge>}
+            <div className="flex flex-wrap gap-1.5 mt-1 mb-3">
+              {project.category && <Badge variant="cyan" size="sm">{project.category}</Badge>}
+              {project.featured && t.featuredProject && <Badge variant="emerald" size="sm">{t.featuredProject}</Badge>}
             </div>
 
             {/* 2. Main Title */}
-            <h1 id="case-study-modal-title" className="article-full-title">
+            <h1 id="case-study-modal-title" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
               {project.title}
             </h1>
 
             {/* 3. Meta Info Bar (Top-aligned icons) */}
-            <div className="article-meta-bar">
+            <div className="flex items-center gap-3 text-xs text-slate-500 font-medium mb-5 pb-4 border-b border-slate-100 flex-wrap">
               {project.company && (
-                <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: '5px' }}>
-                  <BriefcaseIcon size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> <span>{project.company}</span>
+                <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700">
+                  <BriefcaseIcon size={14} className="text-slate-400 flex-shrink-0" /> <span>{project.company}</span>
                 </span>
               )}
               {project.company && project.role && <span>•</span>}
               {project.role && (
-                <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: '5px' }}>
-                  <UserIcon size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> <span>{project.role}</span>
+                <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700">
+                  <UserIcon size={14} className="text-slate-400 flex-shrink-0" /> <span>{project.role}</span>
                 </span>
               )}
               {(project.company || project.role) && project.teamSize && <span>•</span>}
               {project.teamSize && (
-                <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: '5px' }}>
-                  <UsersIcon size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> <span>{t.team ? `${t.team}: ` : ''}{project.teamSize}</span>
+                <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700">
+                  <UsersIcon size={14} className="text-slate-400 flex-shrink-0" /> <span>{t.team ? `${t.team}: ` : ''}{project.teamSize}</span>
                 </span>
               )}
               {(project.company || project.role || project.teamSize) && (project as any).period && <span>•</span>}
               {(project as any).period && (
-                <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: '5px' }}>
-                  <CalendarIcon size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> <span>{(project as any).period}</span>
+                <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700">
+                  <CalendarIcon size={14} className="text-slate-400 flex-shrink-0" /> <span>{(project as any).period}</span>
                 </span>
               )}
             </div>
 
             {/* 4. Overview / Summary Callout */}
             {(project.shortDescription || project.description) && (
-              <div className="article-summary-callout">
-                <strong>{t.objective || 'Overview'}: </strong>
+              <div className="p-4 mb-6 bg-red-50/60 border border-red-200/80 rounded-xl text-slate-700 text-sm leading-relaxed">
+                <strong className="text-red-700 font-bold">{t.objective || 'Overview'}: </strong>
                 <span>{project.shortDescription || project.description}</span>
               </div>
             )}
 
             {/* 5. Full Architecture & Implementation Sections */}
-            <div className="article-body" style={{ marginTop: 0 }}>
+            <div className="flex flex-col gap-6 text-sm text-slate-700 leading-relaxed">
               {/* Objective (if detailed description is distinct from shortDescription) */}
               {project.description && project.shortDescription && project.description !== project.shortDescription && (
-                <div style={{ marginBottom: '24px' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '10px' }}>
-                    <TargetIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <h3 className="flex items-center gap-2 text-base font-bold text-slate-900 mb-2">
+                    <TargetIcon size={18} className="text-red-600 flex-shrink-0" />
                     <span>{t.objective}</span>
                   </h3>
-                  <p style={{ lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0 }}>
+                  <p className="text-slate-600 leading-relaxed">
                     {project.description}
                   </p>
                 </div>
@@ -157,16 +155,16 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
 
               {/* Key Responsibilities */}
               {project.responsibilities && project.responsibilities.length > 0 && (
-                <div style={{ marginBottom: '24px' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                    <ShieldIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <h3 className="flex items-center gap-2 text-base font-bold text-slate-900 mb-2.5">
+                    <ShieldIcon size={18} className="text-red-600 flex-shrink-0" />
                     <span>{t.responsibilities}</span>
                   </h3>
-                  <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                  <ul className="pl-5 list-disc space-y-2 text-slate-600">
                     {project.responsibilities.map((resp, idx) => (
                       <li
                         key={idx}
-                        style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                        className="leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: resp }}
                       />
                     ))}
@@ -176,30 +174,25 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
 
               {/* Challenges & Solutions / Highlights */}
               {project.challengesSolutions && project.challengesSolutions.length > 0 ? (
-                <div style={{ marginBottom: '24px' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                    <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <h3 className="flex items-center gap-2 text-base font-bold text-slate-900 mb-3">
+                    <ZapIcon size={18} className="text-red-600 flex-shrink-0" />
                     <span>{t.challengesSolutions}</span>
                   </h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div className="flex flex-col gap-3">
                     {project.challengesSolutions.map((item, idx) => (
                       <div
                         key={idx}
-                        className="glass-panel"
-                        style={{
-                          padding: '12px 16px',
-                          borderRadius: 'var(--radius-md)',
-                          borderLeft: '3px solid var(--accent-primary)',
-                        }}
+                        className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/60 border-l-4 border-l-red-500"
                       >
-                        <div style={{ marginBottom: '6px', fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
-                          <span style={{ color: 'var(--accent-red, #ef4444)', marginRight: '6px' }}>
+                        <div className="font-semibold text-slate-900 text-sm mb-1.5">
+                          <span className="text-red-600 font-bold mr-1.5">
                             [{t.challengeLabel}]:
                           </span>
                           <span dangerouslySetInnerHTML={{ __html: item.challenge }} />
                         </div>
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
-                          <span style={{ color: 'var(--accent-emerald, #10b981)', marginRight: '6px', fontWeight: 600 }}>
+                        <div className="text-slate-600 text-sm leading-relaxed">
+                          <span className="text-emerald-600 font-bold mr-1.5">
                             → [{t.solutionLabel}]:
                           </span>
                           <span dangerouslySetInnerHTML={{ __html: item.solution }} />
@@ -210,16 +203,16 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
                 </div>
               ) : (
                 project.highlights && project.highlights.length > 0 && (
-                  <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                      <ZapIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
+                  <div>
+                    <h3 className="flex items-center gap-2 text-base font-bold text-slate-900 mb-2.5">
+                      <ZapIcon size={18} className="text-red-600 flex-shrink-0" />
                       <span>{t.challenges}</span>
                     </h3>
-                    <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                    <ul className="pl-5 list-disc space-y-2 text-slate-600">
                       {project.highlights.map((item, idx) => (
                         <li
                           key={idx}
-                          style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                          className="leading-relaxed"
                           dangerouslySetInnerHTML={{ __html: item }}
                         />
                       ))}
@@ -230,16 +223,16 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
 
               {/* Achievements */}
               {project.achievements && project.achievements.length > 0 && (
-                <div style={{ marginBottom: '24px' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                    <RocketIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <h3 className="flex items-center gap-2 text-base font-bold text-slate-900 mb-2.5">
+                    <RocketIcon size={18} className="text-red-600 flex-shrink-0" />
                     <span>{t.achievements}</span>
                   </h3>
-                  <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                  <ul className="pl-5 list-disc space-y-2 text-slate-600">
                     {project.achievements.map((ach, idx) => (
                       <li
                         key={idx}
-                        style={{ marginBottom: '8px', color: 'var(--text-secondary)', lineHeight: 1.55 }}
+                        className="leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: ach }}
                       />
                     ))}
@@ -249,20 +242,20 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
 
               {/* Tech Stack */}
               {project.tags && project.tags.length > 0 && (
-                <div style={{ marginBottom: '8px' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: 'var(--text-primary)', fontSize: '1.15rem', marginBottom: '12px' }}>
-                    <ToolsIcon size={18} style={{ color: 'var(--accent-primary)', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <h3 className="flex items-center gap-2 text-base font-bold text-slate-900 mb-3">
+                    <ToolsIcon size={18} className="text-red-600 flex-shrink-0" />
                     <span>{t.techStack}</span>
                   </h3>
-                  <div className="tech-tags-list" style={{ marginTop: '8px' }}>
+                  <div className="flex flex-wrap gap-1.5">
                     {project.tags.map((tag: string) => {
                       const info = getTechColorInfo
                         ? getTechColorInfo(tag)
-                        : { color: 'var(--text-accent)', bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.25)' };
+                        : { color: '#dc2626', bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.25)' };
                       return (
                         <span
                           key={tag}
-                          className="badge badge-tech-tag"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border"
                           style={{
                             color: info.color,
                             backgroundColor: info.bg,
@@ -270,12 +263,9 @@ export const ModalCaseStudy: React.FC<ModalCaseStudyProps> = ({
                           }}
                         >
                           <span
-                            className="lang-color-dot"
+                            className="w-1.5 h-1.5 rounded-full"
                             style={{
-                              width: '6px',
-                              height: '6px',
                               backgroundColor: info.color,
-                              marginRight: '2px',
                             }}
                           />
                           {tag}

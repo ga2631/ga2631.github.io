@@ -28,35 +28,35 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     if (lower.includes('backend') || lower.includes('distributed') || lower.includes('hệ thống') || index === 0) {
       return {
         icon: <ServerIcon size={18} />,
-        color: 'var(--accent-red)',
-        bg: 'rgba(255, 56, 92, 0.12)',
-        border: 'rgba(255, 56, 92, 0.25)',
+        textColor: 'text-red-600',
+        bgColor: 'bg-red-50',
+        borderColor: 'border-red-200',
       };
     }
     // 2. Data Engineering & Analytics / Dữ liệu
     if (lower.includes('data') || lower.includes('dữ liệu') || index === 1) {
       return {
         icon: <DatabaseIcon size={18} />,
-        color: 'var(--accent-purple)',
-        bg: 'rgba(225, 29, 72, 0.12)',
-        border: 'rgba(225, 29, 72, 0.25)',
+        textColor: 'text-purple-600',
+        bgColor: 'bg-purple-50',
+        borderColor: 'border-purple-200',
       };
     }
     // 3. DevOps, Cloud & Infra / DevOps
     if (lower.includes('devops') || lower.includes('cloud') || lower.includes('infra') || index === 2) {
       return {
         icon: <ShieldIcon size={18} />,
-        color: 'var(--accent-emerald)',
-        bg: 'rgba(251, 113, 133, 0.12)',
-        border: 'rgba(251, 113, 133, 0.25)',
+        textColor: 'text-emerald-600',
+        bgColor: 'bg-emerald-50',
+        borderColor: 'border-emerald-200',
       };
     }
     // 4. Frontend & Architecture / Architecture & Leadership
     return {
       icon: <LayersIcon size={18} />,
-      color: 'var(--accent-cyan)',
-      bg: 'rgba(255, 77, 109, 0.12)',
-      border: 'rgba(255, 77, 109, 0.25)',
+      textColor: 'text-sky-600',
+      bgColor: 'bg-sky-50',
+      borderColor: 'border-sky-200',
     };
   };
 
@@ -77,31 +77,31 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     switch (score) {
       case 5:
         return {
-          tagClass: 'level-mastery skill-tag-5 skill-tag-expert',
+          tagClass: 'bg-purple-50 text-purple-700 border-purple-200/80 hover:bg-purple-100/70',
           label: `${t.level5} (5/5)`,
           dotCount: 5,
         };
       case 4:
         return {
-          tagClass: 'level-advanced skill-tag-4 skill-tag-advanced',
+          tagClass: 'bg-sky-50 text-sky-700 border-sky-200/80 hover:bg-sky-100/70',
           label: `${t.level4} (4/5)`,
           dotCount: 4,
         };
       case 3:
         return {
-          tagClass: 'level-proficient skill-tag-3 skill-tag-proficient',
+          tagClass: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 hover:bg-emerald-100/70',
           label: `${t.level3} (3/5)`,
           dotCount: 3,
         };
       case 2:
         return {
-          tagClass: 'level-intermediate skill-tag-2 skill-tag-familiar',
+          tagClass: 'bg-amber-50 text-amber-700 border-amber-200/80 hover:bg-amber-100/70',
           label: `${t.level2} (2/5)`,
           dotCount: 2,
         };
       default:
         return {
-          tagClass: 'level-foundational skill-tag-1 skill-tag-fundamental',
+          tagClass: 'bg-slate-100 text-slate-700 border-slate-200/80 hover:bg-slate-200/70',
           label: `${t.level1} (1/5)`,
           dotCount: 1,
         };
@@ -117,14 +117,14 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
       subtitle={t.subtitle}
     >
       {/* Standardized 1-5 Scale Proficiency Legend & Interactive Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10 p-3 bg-slate-50 border border-slate-200/80 rounded-2xl skills-legend-bar">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider skills-legend-title">{t.legendTitle}:</span>
-        <div className="flex items-center gap-1.5 flex-wrap justify-center skills-legend-items">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10 p-3 bg-slate-50 border border-slate-200/80 rounded-2xl">
+        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.legendTitle}:</span>
+        <div className="flex items-center gap-1.5 flex-wrap justify-center">
           <Button
             variant="unstyled"
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer skills-legend-item legend-all ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
               selectedLevel === null
-                ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm active'
+                ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm'
                 : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
             }`}
             onClick={() => setSelectedLevel(null)}
@@ -135,9 +135,9 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           </Button>
           <Button
             variant="unstyled"
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer skills-legend-item legend-level-5 ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
               selectedLevel === 5
-                ? 'bg-purple-50 text-purple-700 border border-purple-300 shadow-sm active'
+                ? 'bg-purple-50 text-purple-700 border border-purple-300 shadow-sm'
                 : 'bg-white text-slate-600 border border-slate-200 hover:border-purple-300 hover:text-purple-700'
             }`}
             onClick={() => setSelectedLevel(selectedLevel === 5 ? null : 5)}
@@ -148,9 +148,9 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           </Button>
           <Button
             variant="unstyled"
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer skills-legend-item legend-level-4 ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
               selectedLevel === 4
-                ? 'bg-sky-50 text-sky-700 border border-sky-300 shadow-sm active'
+                ? 'bg-sky-50 text-sky-700 border border-sky-300 shadow-sm'
                 : 'bg-white text-slate-600 border border-slate-200 hover:border-sky-300 hover:text-sky-700'
             }`}
             onClick={() => setSelectedLevel(selectedLevel === 4 ? null : 4)}
@@ -161,9 +161,9 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           </Button>
           <Button
             variant="unstyled"
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer skills-legend-item legend-level-3 ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
               selectedLevel === 3
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-sm active'
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-sm'
                 : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300 hover:text-emerald-700'
             }`}
             onClick={() => setSelectedLevel(selectedLevel === 3 ? null : 3)}
@@ -174,9 +174,9 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           </Button>
           <Button
             variant="unstyled"
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer skills-legend-item legend-level-2 ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
               selectedLevel === 2
-                ? 'bg-amber-50 text-amber-700 border border-amber-300 shadow-sm active'
+                ? 'bg-amber-50 text-amber-700 border border-amber-300 shadow-sm'
                 : 'bg-white text-slate-600 border border-slate-200 hover:border-amber-300 hover:text-amber-700'
             }`}
             onClick={() => setSelectedLevel(selectedLevel === 2 ? null : 2)}
@@ -187,9 +187,9 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
           </Button>
           <Button
             variant="unstyled"
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer skills-legend-item legend-level-1 ${
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
               selectedLevel === 1
-                ? 'bg-slate-200 text-slate-800 border border-slate-300 shadow-sm active'
+                ? 'bg-slate-200 text-slate-800 border border-slate-300 shadow-sm'
                 : 'bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
             }`}
             onClick={() => setSelectedLevel(selectedLevel === 1 ? null : 1)}
@@ -202,7 +202,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
       </div>
 
       {/* Optimized Compact Skills Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 skills-compact-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {categories.map((category, idx) => {
           const config = getCategoryConfig(category.title, idx);
           // Sort skills in descending order from highest level (5) to lowest level (1)
@@ -216,34 +216,31 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
             : sortedSkills;
 
           return (
-            <Card key={category.title} className="skill-card-compact">
-              <Card.Header className="skill-card-header">
-                <div
-                  className="skill-icon-badge"
-                  style={{
-                    color: config.color,
-                    backgroundColor: config.bg,
-                    borderColor: config.border,
-                  }}
-                >
-                  {config.icon}
-                </div>
-                <div>
-                  <h3 className="skill-card-title">{category.title}</h3>
-                  <p className="skill-card-desc">{category.description}</p>
+            <Card key={category.title} className="p-6 transition-all duration-300 hover:-translate-y-1">
+              <Card.Header className="mb-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center border flex-shrink-0 ${config.bgColor} ${config.borderColor} ${config.textColor}`}
+                  >
+                    {config.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 leading-tight">{category.title}</h3>
+                    <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{category.description}</p>
+                  </div>
                 </div>
               </Card.Header>
 
               <Card.Body>
                 {/* Wrapping Skill Badges Cluster Sorted High-to-Low or Empty State */}
                 {displayedSkills.length > 0 ? (
-                  <div className="skills-pill-cluster">
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {displayedSkills.map((skill) => {
                       const levelCfg = getLevelConfig(skill.level);
                       return (
                         <span
                           key={skill.name}
-                          className={`skill-pill-tag ${levelCfg.tagClass}`}
+                          className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-default ${levelCfg.tagClass}`}
                         >
                           {skill.name}
                         </span>
@@ -251,7 +248,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                     })}
                   </div>
                 ) : (
-                  <div className="skills-empty-state">
+                  <div className="text-center py-6 text-xs text-slate-400">
                     <span>{t.noSkills || 'No skills at this level.'}</span>
                   </div>
                 )}

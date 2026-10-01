@@ -114,21 +114,25 @@ export const ArticleTocSidebar: React.FC<ArticleTocSidebarProps> = ({
   if (tocItems.length === 0) return null;
 
   return (
-    <aside className="article-toc-sidebar" aria-label="Table of Contents">
-      <div className="article-toc-header">
-        <ListIcon size={16} />
+    <aside className="w-64 flex-shrink-0 hidden lg:block sticky top-4 self-start pl-6 border-l border-slate-200/80" aria-label="Table of Contents">
+      <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+        <ListIcon size={15} />
         <span>{tocTitle}</span>
       </div>
-      <nav className="article-toc-nav">
-        <ul className="article-toc-list">
+      <nav>
+        <ul className="flex flex-col gap-1 text-xs">
           {tocItems.map((item) => (
             <li
               key={item.id}
-              className={`article-toc-item level-${item.level} ${activeHeadingId === item.id ? 'active' : ''}`}
+              className={`transition-colors ${item.level === 2 ? 'pl-3' : ''}`}
             >
               <a
                 href={`#${item.id}`}
-                className="article-toc-link"
+                className={`block py-1 leading-snug truncate transition-colors ${
+                  activeHeadingId === item.id
+                    ? 'text-red-600 font-bold'
+                    : 'text-slate-600 hover:text-red-600 font-medium'
+                }`}
                 onClick={(e) => {
                   e.preventDefault();
                   onSelectHeading(item.id);
@@ -270,7 +274,7 @@ export const ArticleBody: React.FC<ArticleBodyProps> = React.memo(
     return (
       <div
         ref={bodyRef}
-        className="article-body"
+        className="article-prose"
         onClick={onClick}
         onKeyDown={onKeyDown}
       />
@@ -331,43 +335,41 @@ export const ModalArticle: ModalArticleComponent = ({
         stickyHeader={true}
         isStickyTitleShown={isStickyTitleShown}
         closeAriaLabel={closeAriaLabel}
-        backdropClassName="blog-modal-backdrop"
-        contentClassName="blog-modal-content blog-article-modal"
         contentRef={modalContentRef}
         ariaLabelledBy="article-modal-title"
       >
-        <Modal.Body className="article-modal-body">
-          <div className={`article-modal-layout ${tocItems.length > 0 ? 'has-toc' : ''}`}>
-            <div className="article-main-column">
+        <Modal.Body>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex-1 min-w-0">
               {/* Tag Badges */}
-              <div className="tech-tags-list" style={{ marginTop: '4px', marginBottom: '12px' }}>
+              <div className="flex flex-wrap gap-1.5 mt-1 mb-3">
                 {post.tags.map((tag) => (
-                  <Badge key={tag} variant="cyan">
+                  <Badge key={tag} variant="cyan" size="sm">
                     {tag}
                   </Badge>
                 ))}
               </div>
 
               {/* Article Title */}
-              <h1 id="article-modal-title" className="article-full-title">
+              <h1 id="article-modal-title" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
                 {post.title}
               </h1>
 
               {/* Meta info bar */}
-              <div className="article-meta-bar">
-                <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: '5px' }}>
-                  <CalendarIcon size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> <span>{post.publishedAt}</span>
+              <div className="flex items-center gap-3 text-xs text-slate-400 font-medium mb-5 pb-4 border-b border-slate-100">
+                <span className="inline-flex items-center gap-1.5">
+                  <CalendarIcon size={14} /> <span>{post.publishedAt}</span>
                 </span>
                 <span>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: '5px' }}>
-                  <ClockIcon size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> <span>{post.readTime}</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <ClockIcon size={14} /> <span>{post.readTime}</span>
                 </span>
               </div>
 
               {/* Summary Callout */}
               {post.summary && (
-                <div className="article-summary-callout">
-                  <strong>{tCommon.overview}: </strong>
+                <div className="p-4 mb-6 bg-red-50/60 border border-red-200/80 rounded-xl text-slate-700 text-sm leading-relaxed">
+                  <strong className="text-red-700 font-bold">{tCommon.overview}: </strong>
                   <span>{post.summary}</span>
                 </div>
               )}

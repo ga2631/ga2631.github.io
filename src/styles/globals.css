@@ -45,64 +45,18 @@
 }
 
 /* ==========================================================================
-   CSS Custom Properties for Legacy Compatibility & Theme Tokens
-   ========================================================================== */
-:root {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f1f5f9;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --bg-card-hover: rgba(255, 255, 255, 0.98);
-  --bg-glass: rgba(255, 255, 255, 0.85);
-
-  --border-color: rgba(0, 0, 0, 0.08);
-  --border-color-hover: rgba(220, 38, 38, 0.4);
-  --border-glow: 0 0 20px rgba(220, 38, 38, 0.12);
-
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --text-accent: #dc2626;
-
-  --accent-red: #dc2626;
-  --accent-crimson: #b91c1c;
-  --accent-rose: #ef4444;
-  --accent-cyan: #0284c7;
-  --accent-indigo: #4f46e5;
-  --accent-purple: #9333ea;
-  --accent-emerald: #16a34a;
-  --accent-amber: #d97706;
-
-  --font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-heading: var(--font-sans);
-  --font-mono: 'Source Code Pro', 'Fira Code', 'JetBrains Mono', monospace;
-
-  --max-width: 1200px;
-  --navbar-height: 72px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
-  --radius-full: 9999px;
-
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s ease;
-  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ==========================================================================
-   Base Global Resets & Typography
+   Base Global Resets & Ambient Glow
    ========================================================================== */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--navbar-height) + 20px);
+  scroll-padding-top: 92px;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: #f8fafc;
+  color: #0f172a;
   line-height: 1.6;
   overflow-x: hidden;
   position: relative;
@@ -163,13 +117,13 @@ button, input, textarea, select {
 .glass-panel {
   display: flex;
   flex-direction: column;
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
 }
@@ -186,9 +140,9 @@ button, input, textarea, select {
   pointer-events: none;
   z-index: 2;
   box-sizing: border-box;
-  border-top: 3px solid var(--accent-red);
-  border-right: 1px solid var(--accent-red);
-  clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(var(--radius-lg) + 2px), -2px calc(var(--radius-lg) + 2px));
+  border-top: 3px solid #dc2626;
+  border-right: 1px solid #dc2626;
+  clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) 20px, -2px 20px);
   transition: clip-path 0.15s ease 0.28s, border-top-width 0.14s ease 0.42s;
 }
 
@@ -203,7 +157,7 @@ button, input, textarea, select {
   pointer-events: none;
   z-index: 2;
   box-sizing: border-box;
-  border-bottom: 1px solid var(--accent-red);
+  border-bottom: 1px solid #dc2626;
   border-left: 1px solid transparent;
   transition: height 0.14s linear 0s, border-left-color 0s linear 0.14s, width 0.14s linear 0.14s;
 }
@@ -217,7 +171,7 @@ button, input, textarea, select {
 .glass-panel:not(.avatar-card):hover::after {
   width: 100%;
   height: 100%;
-  border-left-color: var(--accent-red);
+  border-left-color: #dc2626;
   transition: width 0.14s linear 0.28s, border-left-color 0s linear 0.42s, height 0.14s linear 0.42s;
 }
 
@@ -236,17 +190,17 @@ button, input, textarea, select {
   padding: 1.5px;
   background: conic-gradient(
     from var(--profile-border-angle, 0deg),
-    var(--accent-red) 0deg,
+    #dc2626 0deg,
     rgba(239, 68, 68, 0.4) 35deg,
     transparent 85deg,
     transparent 95deg,
     rgba(239, 68, 68, 0.4) 145deg,
-    var(--accent-red) 180deg,
+    #dc2626 180deg,
     rgba(239, 68, 68, 0.4) 215deg,
     transparent 265deg,
     transparent 275deg,
     rgba(239, 68, 68, 0.4) 325deg,
-    var(--accent-red) 360deg
+    #dc2626 360deg
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;

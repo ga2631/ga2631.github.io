@@ -31,12 +31,17 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   if (sticky) {
     return (
       <div
-        className={`modal-sticky-header ${isStickyTitleShown ? 'has-title' : ''} ${className}`.trim()}
+        className={`sticky top-0 z-20 flex items-center justify-between px-6 py-3.5 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex-shrink-0 transition-all ${className}`.trim()}
         {...restProps}
       >
-        <div className="modal-header-title-wrapper">
+        <div className="flex-1 min-w-0 pr-4">
           {title && (
-            <span className="modal-header-article-title" title={typeof title === 'string' ? title : undefined}>
+            <span
+              className={`block font-bold text-slate-900 text-sm sm:text-base truncate transition-opacity duration-200 ${
+                isStickyTitleShown ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'
+              }`}
+              title={typeof title === 'string' ? title : undefined}
+            >
               {title}
             </span>
           )}
@@ -44,7 +49,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         {showCloseButton && onClose && (
           <button
             type="button"
-            className="modal-close-btn"
+            className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer flex-shrink-0 ml-auto"
             onClick={onClose}
             aria-label={closeAriaLabel}
           >
@@ -56,28 +61,28 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   }
 
   return (
-    <div className={`modal-header ${className}`.trim()} {...restProps}>
+    <div className={`flex items-start justify-between p-6 border-b border-slate-200/80 flex-shrink-0 ${className}`.trim()} {...restProps}>
       {children ? (
         children
       ) : (
         <>
-          <div className="modal-title-wrapper">
+          <div className="flex-1 min-w-0 pr-4">
             {(badge || icon) && (
-              <div className="modal-meta-row" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <div className="flex items-center gap-2 mb-2">
                 {icon}
                 {badge}
               </div>
             )}
             {title && (
               typeof title === 'string' ? (
-                <h2 className="modal-title" style={{ margin: 0 }}>{title}</h2>
+                <h2 className="text-xl font-bold text-slate-900 leading-snug">{title}</h2>
               ) : (
                 title
               )
             )}
             {subtitle && (
               typeof subtitle === 'string' ? (
-                <div className="modal-subtitle" style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>{subtitle}</div>
+                <div className="text-sm text-slate-500 mt-1">{subtitle}</div>
               ) : (
                 subtitle
               )
@@ -86,7 +91,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
           {showCloseButton && onClose && (
             <button
               type="button"
-              className="modal-close-btn"
+              className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer flex-shrink-0 ml-auto"
               onClick={onClose}
               aria-label={closeAriaLabel}
             >
@@ -108,7 +113,7 @@ export const ModalBody: React.FC<ModalBodyProps> = ({
   ...restProps
 }) => {
   return (
-    <div className={`modal-body ${className}`.trim()} {...restProps}>
+    <div className={`flex-1 overflow-y-auto p-6 text-slate-700 text-sm leading-relaxed ${className}`.trim()} {...restProps}>
       {children}
     </div>
   );
@@ -127,20 +132,11 @@ export const ModalFooter: React.FC<ModalFooterProps> = ({
 }) => {
   return (
     <div
-      className={`modal-footer ${className}`.trim()}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        gap: '12px',
-        padding: '16px 24px',
-        borderTop: '1px solid var(--border-color)',
-        ...restProps.style,
-      }}
+      className={`flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200/80 bg-slate-50/50 flex-shrink-0 ${className}`.trim()}
       {...restProps}
     >
       {children}
-      {actions && <div className="modal-footer-actions">{actions}</div>}
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
   );
 };
@@ -181,8 +177,8 @@ export const Modal: ModalComponent = ({
   isStickyTitleShown = false,
   showCloseButton,
   closeAriaLabel = 'Close modal',
-  backdropClassName = 'blog-modal-backdrop',
-  contentClassName = 'blog-modal-content',
+  backdropClassName = 'fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 bg-slate-950/70 backdrop-blur-sm',
+  contentClassName = 'relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden',
   headerClassName = '',
   bodyClassName = '',
   contentRef,
@@ -263,7 +259,7 @@ export const Modal: ModalComponent = ({
         ) : isCloseButtonVisible ? (
           <button
             type="button"
-            className="modal-close-btn"
+            className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer absolute top-4 right-4 z-10"
             onClick={onClose}
             aria-label={closeAriaLabel}
           >

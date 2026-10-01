@@ -60,23 +60,23 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
       title={t.title}
       subtitle={data.tagline}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 principles-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {principles.map((item, index) => {
           const config = getPrincipleConfig(item.title, index);
           return (
-            <Card key={index} className="p-6 transition-all duration-300 principle-card">
-              <Card.Header className="mb-4 principle-card-header">
+            <Card key={index} className="p-6 transition-all duration-300 hover:-translate-y-1">
+              <Card.Header className="mb-4">
                 <div
-                  className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 border ${config.bgColor} ${config.borderColor} ${config.textColor} principle-icon-badge`}
+                  className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 border ${config.bgColor} ${config.borderColor} ${config.textColor}`}
                 >
                   {config.icon}
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 leading-snug principle-card-title">
+                <h3 className="text-lg font-bold text-slate-900 leading-snug">
                   {item.title}
                 </h3>
               </Card.Header>
               <Card.Body>
-                <p className="text-sm text-slate-600 leading-relaxed principle-card-desc">
+                <p className="text-sm text-slate-600 leading-relaxed">
                   {item.description}
                 </p>
               </Card.Body>

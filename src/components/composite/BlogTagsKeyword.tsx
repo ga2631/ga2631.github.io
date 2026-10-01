@@ -24,15 +24,13 @@ export const BlogTagsKeyword: React.FC<BlogTagsKeywordProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`blog-sidebar-section blog-sidebar-tags-section ${className}`.trim()}>
-      <div className="sidebar-section-header">
-        <span className="sidebar-section-title">
-          <TagIcon size={16} />
-          {title}
-        </span>
+    <div className={className}>
+      <div className="flex items-center gap-2 mb-3 px-1 text-xs font-bold uppercase tracking-wider text-slate-400">
+        <TagIcon size={15} />
+        <span>{title}</span>
       </div>
 
-      <div className="sidebar-tags-cloud">
+      <div className="flex flex-wrap gap-1.5">
         <Badge
           variant="tag-pill"
           isActive={selectedTag === 'all'}

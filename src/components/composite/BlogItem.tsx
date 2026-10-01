@@ -29,57 +29,57 @@ export const BlogItem: React.FC<BlogItemProps> = ({
   onSelect,
   className = '',
 }) => {
-  const dayCode = categoryDef ? categoryDef.dayCode.toLowerCase() : 'all';
-
   return (
     <Card
-      className={`blog-card card-day-${dayCode} ${className}`.trim()}
+      className={`p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 flex flex-col h-full ${className}`.trim()}
       onClick={() => onSelect(post)}
     >
-      <Card.Header>
+      <Card.Header className="mb-2">
         {/* Top Category Badge & Publishing Schedule Meta */}
-        <div style={{ marginBottom: '12px' }}>
+        <div className="flex items-center justify-between gap-2 mb-2.5">
           {categoryDef && categoryDef.id !== 'all' ? (
-            <BadgeSchedule
-              dayCode={categoryDef.dayCode}
-              style={{ fontSize: '0.72rem', padding: '3px 8px' }}
-            >
+            <BadgeSchedule dayCode={categoryDef.dayCode}>
               {categoryDef.title[langKey]}
             </BadgeSchedule>
           ) : (
-            <Badge variant="purple" style={{ fontSize: '0.72rem' }} icon={<SparklesIcon size={11} />}>
+            <Badge variant="purple" size="sm" icon={<SparklesIcon size={11} />}>
               {langKey === 'vi' ? 'Bài viết' : 'Article'}
             </Badge>
           )}
+
+          <span className="text-xs text-slate-400 font-medium">
+            {post.publishedAt}
+          </span>
         </div>
 
-        <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-          {post.publishedAt} • {post.readTime}
+        <p className="text-xs text-slate-400 font-medium mb-1.5">
+          {post.readTime}
         </p>
 
-        <h2 className="blog-title" style={{ fontSize: '1.22rem', marginTop: '4px' }}>
+        <h2 className="text-lg font-bold text-slate-900 leading-snug line-clamp-2 hover:text-red-600 transition-colors">
           {post.title}
         </h2>
       </Card.Header>
 
-      <Card.Body>
-        <p className="blog-summary">{post.summary}</p>
+      <Card.Body className="mb-4">
+        <p className="text-sm text-slate-600 leading-relaxed line-clamp-3">
+          {post.summary}
+        </p>
       </Card.Body>
 
-      <Card.Footer>
+      <Card.Footer className="mt-auto pt-3 border-t border-slate-100 flex flex-col gap-3">
         <TechTagList
           tags={post.tags}
           prefix={tagPrefix}
           selectedTag={selectedTag}
           onTagClick={onTagClick}
-          style={{ marginTop: 'auto', paddingTop: '10px' }}
         />
 
         {readArticleLabel && (
           <Button
             variant="outline"
             size="sm"
-            style={{ width: '100%', marginTop: '14px' }}
+            className="w-full mt-2"
             onClick={(e) => {
               e.stopPropagation();
               onSelect(post);

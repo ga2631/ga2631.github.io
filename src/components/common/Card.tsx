@@ -19,13 +19,13 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
   ...restProps
 }) => {
   return (
-    <div className={`card-header ${className}`.trim()} {...restProps}>
+    <div className={`mb-3 ${className}`.trim()} {...restProps}>
       {children ? (
         children
       ) : (
         <>
           {(badge || icon || action) && (
-            <div className="flex items-center justify-between gap-2 mb-2 card-header-top">
+            <div className="flex items-center justify-between gap-2 mb-2">
               <div className="flex items-center gap-2">
                 {icon}
                 {badge}
@@ -35,14 +35,14 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
           )}
           {title && (
             typeof title === 'string' ? (
-              <h3 className="text-xl font-bold text-slate-900 mb-1 card-title">{title}</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">{title}</h3>
             ) : (
               title
             )
           )}
           {subtitle && (
             typeof subtitle === 'string' ? (
-              <div className="text-sm text-slate-500 card-subtitle">{subtitle}</div>
+              <div className="text-sm text-slate-500">{subtitle}</div>
             ) : (
               subtitle
             )
@@ -64,7 +64,7 @@ export const CardBody: React.FC<CardBodyProps> = ({
 }) => {
   return (
     <div
-      className={`flex-1 card-body ${className}`.trim()}
+      className={`flex-1 ${className}`.trim()}
       style={style}
       {...restProps}
     >
@@ -89,13 +89,13 @@ export const CardFooter: React.FC<CardFooterProps> = ({
 }) => {
   return (
     <div
-      className={`mt-auto card-footer ${className}`.trim()}
+      className={`mt-auto pt-3 ${className}`.trim()}
       style={style}
       {...restProps}
     >
       {tags}
       {children}
-      {actions && <div className="card-footer-actions mt-3 flex items-center justify-end gap-2">{actions}</div>}
+      {actions && <div className="mt-3 flex items-center justify-end gap-2">{actions}</div>}
     </div>
   );
 };
@@ -138,7 +138,7 @@ export const Card = React.forwardRef<HTMLElement, CardProps>(
       classList.push('glass-panel');
     }
     if (onClick || variant === 'interactive') {
-      classList.push('cursor-pointer interactive-card');
+      classList.push('cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300');
     }
     if (className) {
       classList.push(className);

@@ -26,7 +26,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
       title={t.title}
       subtitle={t.subtitle}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 edu-cert-grid">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Education Column */}
         <div className="flex flex-col gap-6">
           <h3 className="flex items-center gap-2.5 text-xl font-bold text-slate-900 mb-2">
@@ -35,10 +35,10 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
           </h3>
 
           {educations.map((edu) => (
-            <Card key={edu.id} className="p-6 edu-card">
+            <Card key={edu.id} className="p-6 transition-all duration-300 hover:-translate-y-1">
               <Card.Header className="mb-3">
-                <h4 className="text-lg font-bold text-slate-900 mb-1 edu-degree">{edu.degree}</h4>
-                <div className="text-sm font-semibold text-red-600 edu-institution">{edu.institution}</div>
+                <h4 className="text-lg font-bold text-slate-900 mb-1 leading-snug">{edu.degree}</h4>
+                <div className="text-sm font-semibold text-red-600">{edu.institution}</div>
                 <div className="text-xs text-slate-400 mt-1 mb-3">
                   {edu.period} • {edu.location}
                 </div>
@@ -77,11 +77,11 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
           </h3>
 
           {certifications.map((cert) => (
-            <Card key={cert.id} className="p-6 cert-card">
+            <Card key={cert.id} className="p-6 transition-all duration-300 hover:-translate-y-1">
               <Card.Header className="mb-4">
                 <div className="flex justify-between items-start gap-3">
                   <div>
-                    <h4 className="text-lg font-bold text-slate-900 mb-1 cert-title">
+                    <h4 className="text-lg font-bold text-slate-900 mb-1 leading-snug">
                       {cert.name}
                     </h4>
                     <div className="text-sm font-medium text-slate-600">

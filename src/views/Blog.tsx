@@ -353,30 +353,29 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
   }, [categoriesList, selectedCategory]);
 
   return (
-    <div className="blog-page-root">
+    <div className="w-full min-h-screen bg-slate-50 relative">
       {/* Mobile Top Filter Trigger Bar (Visible on <= 1024px) */}
-      <div className="blog-mobile-toggle-bar">
+      <div className="lg:hidden sticky top-[72px] z-30 px-4 py-2.5 bg-white/90 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between shadow-sm">
         <Button
           variant="secondary"
           size="sm"
-          className="blog-mobile-filter-btn"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
           aria-expanded={isMobileSidebarOpen}
           icon={<FilterIcon size={16} />}
         >
           <span>{t.categoriesTitle || 'Chuyên đề'}</span>
-          <Badge variant="cyan" style={{ marginLeft: '4px', fontSize: '0.75rem' }}>
+          <Badge variant="cyan" size="sm" className="ml-1">
             {filteredPosts.length}
           </Badge>
         </Button>
       </div>
 
       {/* Full-Height App Layout */}
-      <div className="blog-app-layout">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
         {/* Mobile Backdrop for Sidebar Drawer */}
         {isMobileSidebarOpen && (
           <div
-            className="blog-sidebar-backdrop"
+            className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden transition-opacity"
             onClick={() => setIsMobileSidebarOpen(false)}
             aria-hidden="true"
           />
@@ -410,20 +409,20 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
 
         {/* ================= RIGHT MAIN CONTENT ================= */}
         <main
-          className="blog-main-scroll-area"
+          className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8"
           onScroll={(e) => setIsFilterStuck(e.currentTarget.scrollTop > 40)}
         >
-          <div className="blog-main-inner-content">
+          <div className="max-w-4xl mx-auto">
             {/* Header Hero using SectionHeader */}
             <SectionHeader
               align="left"
-              className="blog-hero-header"
-              title={<h1 className="section-title">{t.title}</h1>}
+              className="mb-8"
+              title={<h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{t.title}</h1>}
               subtitle={t.subtitle}
             />
 
-            {/* Articles Grid (Wraps Sticky Filter Controls & Article Cards) */}
-            <div className="blog-grid">
+            {/* Articles Container (Wraps Sticky Filter Controls & Article Cards) */}
+            <div className="flex flex-col">
               {/* Search & Active Filters via BlogInputFilter */}
               <BlogInputFilter
                 searchQuery={searchQuery}
@@ -447,24 +446,26 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
                 resetLabel={t.resetFilters}
               />
 
-              {/* Cards or Empty State */}
+              {/* Cards Grid or Empty State */}
               {filteredPosts.length > 0 ? (
-                filteredPosts.map((post) => {
-                  const postCatDef = categoriesList.find((c) => c.id === post.category);
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filteredPosts.map((post) => {
+                    const postCatDef = categoriesList.find((c) => c.id === post.category);
 
-                  return (
-                    <BlogItem
-                      key={post.slug || post.id}
-                      post={post}
-                      categoryDef={postCatDef}
-                      langKey={langKey}
-                      selectedTag={selectedTag}
-                      tagPrefix="#"
-                      onTagClick={(tag) => setSelectedTag(tag)}
-                      onSelect={handleOpenPost}
-                    />
-                  );
-                })
+                    return (
+                      <BlogItem
+                        key={post.slug || post.id}
+                        post={post}
+                        categoryDef={postCatDef}
+                        langKey={langKey}
+                        selectedTag={selectedTag}
+                        tagPrefix="#"
+                        onTagClick={(tag) => setSelectedTag(tag)}
+                        onSelect={handleOpenPost}
+                      />
+                    );
+                  })}
+                </div>
               ) : (
                 <EmptyState
                   icon={<BookOpenIcon size={40} />}
@@ -484,13 +485,13 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
 
             {/* Load More Button if more articles exist in unfiltered paginated view */}
             {!isFiltering && hasMoreMonths && filteredPosts.length > 0 && (
-              <div className="blog-load-more-container">
+              <div className="flex justify-center mt-10 mb-6">
                 <Button
                   variant="secondary"
                   onClick={handleLoadMore}
                   isLoading={isLoadingMore}
                   loadingText={t.loadingMore || 'Đang tải dữ liệu...'}
-                  style={{ minWidth: '180px' }}
+                  className="min-w-[180px]"
                 >
                   <span>{t.loadMoreArticles || 'Tải thêm bài viết'}</span>
                 </Button>
@@ -504,26 +505,23 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
       {hoveredCategory &&
         createPortal(
           <div
-            className={`category-rich-tooltip tooltip-day-${hoveredCategory.cat.dayCode.toLowerCase()}`}
+            className="fixed z-50 p-4 bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-2xl max-w-xs pointer-events-none text-left flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-150"
             style={{
-              position: 'fixed',
               top: `${hoveredCategory.top}px`,
               left: `${hoveredCategory.left}px`,
               transform: 'translateY(-50%)',
-              zIndex: 9999,
-              pointerEvents: 'none',
             }}
           >
-            <div className="tooltip-top-row">
+            <div>
               <BadgeSchedule dayCode={hoveredCategory.cat.dayCode} icon={<CalendarIcon size={12} />}>
                 {hoveredCategory.cat.scheduleFull[langKey]}
               </BadgeSchedule>
             </div>
-            <div className="tooltip-title">
+            <div className="font-bold text-sm text-slate-900 leading-snug">
               {hoveredCategory.cat.title[langKey]}
             </div>
-            <div className="tooltip-desc">
-              <strong style={{ color: 'var(--text-accent)', marginRight: '4px' }}>
+            <div className="text-xs text-slate-600 leading-relaxed">
+              <strong className="text-red-600 font-semibold mr-1">
                 {t.trackObjective || 'Mục tiêu'}:
               </strong>
               <span>{hoveredCategory.cat.description[langKey]}</span>

@@ -27,7 +27,7 @@ export const TechTagList: React.FC<TechTagListProps> = ({
   if (!tags || tags.length === 0) return null;
 
   return (
-    <div className={`tech-tags-list ${className}`.trim()} style={style}>
+    <div className={`flex flex-wrap gap-1.5 ${className}`.trim()} style={style}>
       {tags.map((tag) => {
         const isSelected = selectedTag === tag;
         const customStyle = getItemStyle ? getItemStyle(tag) : undefined;
@@ -35,10 +35,10 @@ export const TechTagList: React.FC<TechTagListProps> = ({
         return (
           <Badge
             key={tag}
-            variant={badgeVariant}
+            variant={isSelected ? 'cyan' : badgeVariant}
             isActive={isSelected}
             interactive={Boolean(onTagClick)}
-            className={`${itemClassName} ${isSelected ? 'badge-cyan' : ''}`.trim()}
+            className={itemClassName}
             style={customStyle}
             onClick={
               onTagClick

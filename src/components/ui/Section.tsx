@@ -28,7 +28,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
 
   return (
     <div
-      className={`mb-14 ${alignmentClass} section-header ${className}`.trim()}
+      className={`mb-14 ${alignmentClass} ${className}`.trim()}
       {...restProps}
     >
       {children ? (
@@ -45,7 +45,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
 
           {title && (
             typeof title === 'string' ? (
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3 font-heading section-title">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3 font-heading">
                 {title}
               </h2>
             ) : (
@@ -54,13 +54,13 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           )}
 
           {subtitle && (
-            <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto section-subtitle">
+            <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
               {subtitle}
             </p>
           )}
 
           {extra && (
-            <div className="mt-5 section-header-extra">
+            <div className="mt-5">
               {extra}
             </div>
           )}
@@ -99,7 +99,7 @@ export const Section: SectionComponent = ({
   extra,
   headerClassName = '',
   containerClassName = 'container mx-auto max-w-[1200px] px-6',
-  className = 'py-20 md:py-24 section',
+  className = 'py-20 md:py-24',
   children,
   ...restProps
 }) => {

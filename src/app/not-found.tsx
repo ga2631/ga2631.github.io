@@ -2,59 +2,21 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem',
-        textAlign: 'center',
-        background: 'var(--color-bg-primary, #0f172a)',
-        color: 'var(--color-text-primary, #f8fafc)',
-      }}
-    >
-      <h1
-        style={{
-          fontSize: '4rem',
-          fontWeight: '800',
-          marginBottom: '1rem',
-          color: 'var(--color-primary-500, #3b82f6)',
-        }}
-      >
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-slate-50 text-slate-900">
+      <h1 className="text-6xl font-extrabold text-red-600 mb-4 font-heading">
         404
       </h1>
-      <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem' }}>
-        Page Not Found
+      <h2 className="text-2xl font-bold text-slate-800 mb-4">
+        Page Not Found / Trang không tồn tại
       </h2>
-      <p
-        style={{
-          maxWidth: '480px',
-          marginBottom: '2rem',
-          color: 'var(--color-text-secondary, #94a3b8)',
-          lineHeight: 1.6,
-        }}
-      >
-        The page you are looking for might have been moved or doesn't exist.
+      <p className="max-w-md text-slate-600 mb-8 leading-relaxed">
+        The page you are looking for might have been moved, renamed, or doesn't exist.
       </p>
       <Link
-        href="/"
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          padding: '0.75rem 1.5rem',
-          borderRadius: '0.5rem',
-          background: 'var(--color-primary-600, #2563eb)',
-          color: '#ffffff',
-          textDecoration: 'none',
-          fontWeight: '600',
-          fontSize: '0.95rem',
-          transition: 'all 0.2s ease',
-        }}
+        href="/vi/"
+        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white font-semibold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
       >
-        Return to Home
+        <span>Quay về trang chủ / Return Home</span>
       </Link>
     </div>
   );

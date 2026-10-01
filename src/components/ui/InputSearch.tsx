@@ -10,8 +10,8 @@ export const InputSearch = React.forwardRef<HTMLInputElement, InputSearchProps>(
   (
     {
       iconSize = 18,
-      className = 'blog-search-input',
-      wrapperClassName = 'blog-search-wrapper',
+      className = '',
+      wrapperClassName = '',
       clearAriaLabel = 'Clear search',
       placeholder = 'Search...',
       ...restProps
@@ -27,7 +27,7 @@ export const InputSearch = React.forwardRef<HTMLInputElement, InputSearchProps>(
         clearable={true}
         clearAriaLabel={clearAriaLabel}
         placeholder={placeholder}
-        startAdornment={<SearchIcon size={iconSize} className="search-input-icon" />}
+        startAdornment={<SearchIcon size={iconSize} />}
         {...restProps}
       />
     );
