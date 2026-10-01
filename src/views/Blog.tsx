@@ -1,13 +1,20 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { Button, Badge, Spinner } from 'flowbite-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Button, Badge, Card, TextInput, Spinner, Drawer, DrawerHeader, DrawerItems } from 'flowbite-react';
 import { BlogPost } from '../types/index.ts';
 import {
   BookOpenIcon,
   CalendarIcon,
   FilterIcon,
+  TagIcon,
+  SearchIcon,
+  CloseIcon,
+  LayersIcon,
+  DatabaseIcon,
+  ServerIcon,
+  CodeIcon,
+  SparklesIcon,
 } from '../components/Icons.tsx';
 import { UITranslation } from '../i18n';
 import {
@@ -18,16 +25,7 @@ import {
   getBlogCategories,
   BlogCategoryDef,
 } from '../services/blogService';
-import { SectionHeader } from '../components/ui';
-import {
-  BlogSidebar,
-  BlogInputFilter,
-  BlogItem,
-  EmptyState,
-  BadgeSchedule,
-  ModalArticle,
-  processArticleToc,
-} from '../components/composite';
+import { BlogModal, processArticleToc } from '../components/BlogModal';
 import {
   trackBlogPostView,
   trackBlogSearch,
@@ -42,13 +40,38 @@ export interface BlogProps {
   tCommon: UITranslation['common'];
 }
 
+export const renderCategoryIcon = (iconName: string, size = 15) => {
+  switch (iconName) {
+    case 'LayersIcon':
+      return <LayersIcon size={size} />;
+    case 'DatabaseIcon':
+      return <DatabaseIcon size={size} />;
+    case 'ServerIcon':
+      return <ServerIcon size={size} />;
+    case 'CodeIcon':
+      return <CodeIcon size={size} />;
+    case 'SparklesIcon':
+      return <SparklesIcon size={size} />;
+    default:
+      return <BookOpenIcon size={size} />;
+  }
+};
+
+export const getDayColor = (code: string): 'warning' | 'purple' | 'info' | 'success' | 'failure' | 'gray' => {
+  const c = code.toLowerCase();
+  if (c === 't2' || c === 'mon') return 'warning';
+  if (c === 't3' || c === 'tue') return 'purple';
+  if (c === 't4' || c === 'wed') return 'info';
+  if (c === 't5' || c === 'thu') return 'success';
+  if (c === 't6' || c === 'fri') return 'failure';
+  return 'gray';
+};
+
 export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => {
-  // Detect language: VI or EN based on translation string
   const langKey = useMemo<'vi' | 'en'>(() => {
     return t.allTopics === 'Tất cả chủ đề' || !t.allTopics.toLowerCase().includes('all') ? 'vi' : 'en';
   }, [t.allTopics]);
 
-  // Dynamic Categories list from Supabase
   const [categoriesList, setCategoriesList] = useState<BlogCategoryDef[]>(() => categories || []);
 
   useEffect(() => {
@@ -61,37 +84,16 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     }
   }, [categories]);
 
-  // Full catalog of all published articles for accurate global statistics and search filtering
-  const [fullCatalog, setFullCatalog] = useState<BlogPost[]>(() => {
-    return posts || [];
-  });
-
-  // Paginated slice rendered into the HTML DOM (starts with initial 20 articles max)
-  const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>(() => {
-    return (posts || []).slice(0, 20);
-  });
-
-  const [, setLoadedMonthKeys] = useState<string[]>([]);
-  const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(() => {
-    return (posts || []).length > 20;
-  });
+  const [fullCatalog, setFullCatalog] = useState<BlogPost[]>(() => posts || []);
+  const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>(() => (posts || []).slice(0, 20));
+  const [hasMoreMonths, setHasMoreMonths] = useState<boolean>(() => (posts || []).length > 20);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTag, setSelectedTag] = useState<string>('all');
   const [activePost, setActivePost] = useState<BlogPost | null>(null);
-  const [isModalHeaderTitleShown, setIsModalHeaderTitleShown] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [hoveredCategory, setHoveredCategory] = useState<{
-    cat: BlogCategoryDef;
-    top: number;
-    left: number;
-  } | null>(null);
-  const modalContentRef = useRef<HTMLDivElement>(null);
-  const [activeHeadingId, setActiveHeadingId] = useState<string>('');
-  const [isFilterStuck, setIsFilterStuck] = useState(false);
 
-  // Sync with incoming posts prop (e.g. language toggle)
   useEffect(() => {
     if (posts && posts.length > 0) {
       setFullCatalog(posts);
@@ -104,13 +106,11 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     }
   }, [posts]);
 
-  // Initial load: 20 latest articles by default + fetch full catalog for global stats
   useEffect(() => {
     let isMounted = true;
     loadInitialBlogPosts(langKey, 20).then((res) => {
       if (isMounted) {
         setDisplayedPosts(res.posts);
-        setLoadedMonthKeys(res.loadedMonthKeys);
         setHasMoreMonths(res.hasMore);
       }
     });
@@ -118,10 +118,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
       if (isMounted) {
         setFullCatalog(all);
         setHasMoreMonths(all.length > 20);
-        setActivePost((prev) => {
-          if (!prev) return null;
-          return all.find((p) => p.slug === prev.slug || p.id === prev.id) || prev;
-        });
       }
     });
     return () => {
@@ -141,80 +137,17 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
         setHasMoreMonths(updated.length < fullCatalog.length);
         return updated;
       });
-      setLoadedMonthKeys((prev) => Array.from(new Set([...prev, ...res.loadedMonthKeys])));
     } finally {
       setIsLoadingMore(false);
     }
   };
 
-  // Process article content to extract TOC items (up to 2 levels) and inject unique IDs
   const { processedHtml, tocItems } = useMemo(() => {
     if (!activePost) return { processedHtml: '', tocItems: [] };
     const rawHtml = getPostContentHtml(activePost);
     return processArticleToc(rawHtml);
   }, [activePost]);
 
-  // Scrollspy to highlight active TOC heading and toggle header title when scrolling inside modal
-  useEffect(() => {
-    if (!activePost) return;
-
-    const container = modalContentRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      const containerRect = container.getBoundingClientRect();
-      const offsetThreshold = 140;
-
-      const titleEl = document.getElementById('article-modal-title');
-      if (titleEl) {
-        const titleRect = titleEl.getBoundingClientRect();
-        setIsModalHeaderTitleShown(titleRect.bottom <= containerRect.top + 60);
-      } else {
-        setIsModalHeaderTitleShown(container.scrollTop > 80);
-      }
-
-      if (tocItems.length > 0) {
-        let currentActiveId = tocItems[0]?.id || '';
-
-        for (const item of tocItems) {
-          const el = document.getElementById(item.id);
-          if (el) {
-            const rect = el.getBoundingClientRect();
-            if (rect.top - containerRect.top <= offsetThreshold) {
-              currentActiveId = item.id;
-            }
-          }
-        }
-
-        setActiveHeadingId(currentActiveId);
-      }
-    };
-
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, [activePost, tocItems]);
-
-  const handleSelectHeading = (id: string) => {
-    const container = modalContentRef.current;
-    if (!container) return;
-
-    const targetEl = document.getElementById(id);
-    if (targetEl) {
-      const containerTop = container.getBoundingClientRect().top;
-      const targetTop = targetEl.getBoundingClientRect().top;
-      const currentScroll = container.scrollTop;
-      const targetScroll = currentScroll + (targetTop - containerTop) - 20;
-
-      container.scrollTo({
-        top: Math.max(0, targetScroll),
-        behavior: 'smooth',
-      });
-      setActiveHeadingId(id);
-    }
-  };
-
-  // Extract all unique tags across ALL published posts in the catalog
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
     fullCatalog.forEach((post) => {
@@ -223,7 +156,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     return Array.from(tagSet);
   }, [fullCatalog]);
 
-  // Count articles per category across ALL published posts in the catalog
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { all: fullCatalog.length };
     categoriesList.forEach((cat) => {
@@ -234,7 +166,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     return counts;
   }, [fullCatalog, categoriesList]);
 
-  // Count articles per tag across ALL published posts in the catalog
   const tagCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     fullCatalog.forEach((post) => {
@@ -245,7 +176,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     return counts;
   }, [fullCatalog]);
 
-  // Sync with URL hash for deep linking
   useEffect(() => {
     const checkHashForPost = () => {
       const hash = window.location.hash;
@@ -265,20 +195,8 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     return () => window.removeEventListener('hashchange', checkHashForPost);
   }, [fullCatalog]);
 
-  // Handle escape key to close mobile drawer when modal is not open
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMobileSidebarOpen && !activePost) {
-        setIsMobileSidebarOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isMobileSidebarOpen, activePost]);
-
   const handleOpenPost = (post: BlogPost) => {
     setActivePost(post);
-    setIsModalHeaderTitleShown(false);
     window.location.hash = `#${post.slug}`;
     trackBlogPostView(
       {
@@ -294,7 +212,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
 
   const handleClosePost = () => {
     setActivePost(null);
-    setIsModalHeaderTitleShown(false);
     if (typeof window !== 'undefined') {
       if (window.history && window.history.replaceState) {
         window.history.replaceState(null, '', window.location.pathname);
@@ -304,19 +221,15 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     }
   };
 
-  const isFiltering = selectedCategory !== 'all' || selectedTag !== 'all' || !!searchQuery.trim();
+  const isFiltering = selectedCategory !== 'all' || selectedTag !== 'all' || Boolean(searchQuery.trim());
 
-  // Filter posts based on category, search query, and selected tag
   const filteredPosts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     const sourcePosts = isFiltering ? fullCatalog : displayedPosts;
 
     return sourcePosts.filter((post) => {
-      const matchesCategory =
-        selectedCategory === 'all' || post.category === selectedCategory;
-
+      const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
       const matchesTag = selectedTag === 'all' || post.tags.includes(selectedTag);
-
       const matchesQuery =
         !query ||
         post.title.toLowerCase().includes(query) ||
@@ -348,13 +261,13 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
   }, [categoriesList, selectedCategory]);
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 relative">
-      {/* Mobile Top Filter Trigger Bar */}
+    <div className="w-full min-h-screen bg-gray-50 relative pt-20">
+      {/* Mobile Top Filter Bar */}
       <div className="lg:hidden sticky top-[72px] z-30 px-4 py-2.5 bg-white/90 backdrop-blur-md border-b border-gray-200 flex items-center justify-between shadow-xs">
         <Button
           color="light"
           size="xs"
-          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          onClick={() => setIsMobileSidebarOpen(true)}
           aria-expanded={isMobileSidebarOpen}
         >
           <span className="flex items-center gap-2">
@@ -367,118 +280,333 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
         </Button>
       </div>
 
-      {/* Full-Height App Layout */}
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
-        {/* Mobile Backdrop for Sidebar Drawer */}
-        {isMobileSidebarOpen && (
-          <div
-            className="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-xs lg:hidden transition-opacity"
-            onClick={() => setIsMobileSidebarOpen(false)}
-            aria-hidden="true"
-          />
-        )}
+        {/* Desktop Left Sidebar */}
+        <aside className="hidden lg:block w-72 p-6 border-e border-gray-200 flex-shrink-0">
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <CalendarIcon size={15} />
+              <span>{t.categoriesTitle || 'Chuyên đề'}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              {categoriesList.map((cat) => {
+                const isActive = selectedCategory === cat.id;
+                const count = categoryCounts[cat.id] || 0;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-all text-sm cursor-pointer border ${
+                      isActive
+                        ? 'bg-red-50 text-red-600 border-red-200 font-semibold'
+                        : 'bg-transparent text-gray-700 border-transparent hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                    onClick={() => {
+                      setSelectedCategory(cat.id);
+                      trackBlogCategoryFilter(cat.id);
+                    }}
+                  >
+                    <div className="flex items-center min-w-0 pr-2">
+                      <span className="mr-2 text-red-600 flex-shrink-0">
+                        {renderCategoryIcon(cat.iconName, 15)}
+                      </span>
+                      <span className="truncate">{cat.title[langKey]}</span>
+                    </div>
+                    <Badge color={isActive ? 'failure' : 'gray'} size="xs">
+                      {count}
+                    </Badge>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-        {/* ================= LEFT SIDEBAR ================= */}
-        <BlogSidebar
-          isMobileOpen={isMobileSidebarOpen}
-          onCloseMobile={() => setIsMobileSidebarOpen(false)}
-          categories={categoriesList}
-          selectedCategory={selectedCategory}
-          categoryCounts={categoryCounts}
-          categoriesTitle={t.categoriesTitle}
-          onSelectCategory={(catId) => {
-            setSelectedCategory(catId);
-            trackBlogCategoryFilter(catId);
-          }}
-          onHoverCategory={setHoveredCategory}
-          tags={allTags}
-          selectedTag={selectedTag}
-          tagCounts={tagCounts}
-          totalPostsCount={fullCatalog.length}
-          allTopicsLabel={t.allTopics}
-          tagsTitle={t.tagsTitle}
-          onSelectTag={(tag) => {
-            setSelectedTag(tag);
-            trackBlogTagClick(tag);
-          }}
-          langKey={langKey}
-        />
-
-        {/* ================= RIGHT MAIN CONTENT ================= */}
-        <main
-          className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8"
-          onScroll={(e) => setIsFilterStuck(e.currentTarget.scrollTop > 40)}
-        >
-          <div className="max-w-4xl mx-auto">
-            {/* Header Hero using SectionHeader */}
-            <SectionHeader
-              align="left"
-              className="mb-8"
-              title={<h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">{t.title}</h1>}
-              subtitle={t.subtitle}
-            />
-
-            {/* Articles Container */}
-            <div className="flex flex-col">
-              {/* Search & Active Filters via BlogInputFilter */}
-              <BlogInputFilter
-                searchQuery={searchQuery}
-                onSearchChange={(q) => {
-                  setSearchQuery(q);
-                  if (q.trim().length > 2) {
-                    trackBlogSearch(q, filteredPosts.length);
-                  }
+          <div>
+            <div className="flex items-center gap-2 mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <TagIcon size={15} />
+              <span>{t.tagsTitle || 'Thẻ công nghệ'}</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <Badge
+                color={selectedTag === 'all' ? 'failure' : 'gray'}
+                size="xs"
+                className="cursor-pointer hover:bg-gray-200"
+                onClick={() => {
+                  setSelectedTag('all');
+                  trackBlogTagClick('all');
                 }}
-                searchPlaceholder={t.searchPlaceholder}
-                selectedCategory={selectedCategory}
-                selectedCategoryTitle={currentCategoryDef.title ? currentCategoryDef.title[langKey] : ''}
-                onClearCategory={() => setSelectedCategory('all')}
-                selectedTag={selectedTag}
-                onClearTag={() => setSelectedTag('all')}
-                onResetAll={handleResetFilters}
-                isStuck={isFilterStuck}
-                activeFiltersLabel={t.activeFilters}
-                categoryFilterLabel={t.filterByCategory}
-                tagFilterLabel={t.filterByTag}
-                resetLabel={t.resetFilters}
-              />
+              >
+                <span>{t.allTopics || 'Tất cả'}</span>
+                <span className="ml-1 opacity-75">({fullCatalog.length})</span>
+              </Badge>
+              {allTags.map((tag) => {
+                const isTagActive = selectedTag === tag;
+                const count = tagCounts[tag] || 0;
+                return (
+                  <Badge
+                    key={tag}
+                    color={isTagActive ? 'failure' : 'gray'}
+                    size="xs"
+                    className="cursor-pointer hover:bg-gray-200"
+                    onClick={() => {
+                      setSelectedTag(isTagActive ? 'all' : tag);
+                      trackBlogTagClick(tag);
+                    }}
+                  >
+                    <span>#{tag}</span>
+                    <span className="ml-1 opacity-75">({count})</span>
+                  </Badge>
+                );
+              })}
+            </div>
+          </div>
+        </aside>
 
-              {/* Cards Grid or Empty State */}
-              {filteredPosts.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {filteredPosts.map((post) => {
-                    const postCatDef = categoriesList.find((c) => c.id === post.category);
+        {/* Mobile Left Drawer */}
+        <Drawer
+          open={isMobileSidebarOpen}
+          onClose={() => setIsMobileSidebarOpen(false)}
+          position="left"
+          className="w-72 p-0 lg:hidden"
+        >
+          <DrawerHeader title={t.categoriesTitle || 'Chuyên đề'} className="p-4 border-b border-gray-200" />
+          <DrawerItems className="p-4 flex flex-col gap-6 overflow-y-auto">
+            <div>
+              <div className="flex flex-col gap-1">
+                {categoriesList.map((cat) => {
+                  const isActive = selectedCategory === cat.id;
+                  const count = categoryCounts[cat.id] || 0;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-all text-sm cursor-pointer border ${
+                        isActive
+                          ? 'bg-red-50 text-red-600 border-red-200 font-semibold'
+                          : 'bg-transparent text-gray-700 border-transparent hover:bg-gray-100 hover:text-gray-900'
+                      }`}
+                      onClick={() => {
+                        setSelectedCategory(cat.id);
+                        setIsMobileSidebarOpen(false);
+                      }}
+                    >
+                      <div className="flex items-center min-w-0 pr-2">
+                        <span className="mr-2 text-red-600 flex-shrink-0">
+                          {renderCategoryIcon(cat.iconName, 15)}
+                        </span>
+                        <span className="truncate">{cat.title[langKey]}</span>
+                      </div>
+                      <Badge color={isActive ? 'failure' : 'gray'} size="xs">
+                        {count}
+                      </Badge>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-                    return (
-                      <BlogItem
-                        key={post.slug || post.id}
-                        post={post}
-                        categoryDef={postCatDef}
-                        langKey={langKey}
-                        selectedTag={selectedTag}
-                        tagPrefix="#"
-                        onTagClick={(tag) => setSelectedTag(tag)}
-                        onSelect={handleOpenPost}
-                      />
-                    );
-                  })}
-                </div>
-              ) : (
-                <EmptyState
-                  icon={<BookOpenIcon size={40} />}
-                  title={t.noArticlesFound}
-                  description={
-                    selectedCategory !== 'all' ? (
-                      <>
-                        {t.filterByCategory || 'Chuyên đề'}: <strong>{currentCategoryDef.title[langKey]}</strong> ({currentCategoryDef.scheduleFull[langKey]})
-                      </>
-                    ) : null
-                  }
-                  actionText={t.resetFilters}
-                  onAction={handleResetFilters}
-                />
+            <div>
+              <div className="flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <TagIcon size={15} />
+                <span>{t.tagsTitle || 'Thẻ công nghệ'}</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                <Badge
+                  color={selectedTag === 'all' ? 'failure' : 'gray'}
+                  size="xs"
+                  className="cursor-pointer hover:bg-gray-200"
+                  onClick={() => {
+                    setSelectedTag('all');
+                    setIsMobileSidebarOpen(false);
+                  }}
+                >
+                  <span>{t.allTopics || 'Tất cả'}</span>
+                  <span className="ml-1 opacity-75">({fullCatalog.length})</span>
+                </Badge>
+                {allTags.map((tag) => {
+                  const isTagActive = selectedTag === tag;
+                  const count = tagCounts[tag] || 0;
+                  return (
+                    <Badge
+                      key={tag}
+                      color={isTagActive ? 'failure' : 'gray'}
+                      size="xs"
+                      className="cursor-pointer hover:bg-gray-200"
+                      onClick={() => {
+                        setSelectedTag(isTagActive ? 'all' : tag);
+                        setIsMobileSidebarOpen(false);
+                      }}
+                    >
+                      <span>#{tag}</span>
+                      <span className="ml-1 opacity-75">({count})</span>
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          </DrawerItems>
+        </Drawer>
+
+        {/* Right Main Content */}
+        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+                {t.title}
+              </h1>
+              {t.subtitle && (
+                <p className="text-base text-gray-600">
+                  {t.subtitle}
+                </p>
               )}
             </div>
+
+            {/* Sticky Search & Filter Bar */}
+            <div className="sticky top-0 z-20 mb-8 p-4 bg-white/95 backdrop-blur-md rounded-lg border border-gray-200 shadow-xs">
+              <TextInput
+                type="text"
+                placeholder={t.searchPlaceholder || 'Tìm kiếm bài viết...'}
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (e.target.value.trim().length > 2) {
+                    trackBlogSearch(e.target.value, filteredPosts.length);
+                  }
+                }}
+                icon={() => <SearchIcon size={18} className="text-gray-400" />}
+                sizing="md"
+              />
+
+              {isFiltering && (
+                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 flex-wrap text-xs">
+                  <span className="inline-flex items-center gap-1.5 font-semibold text-gray-500 uppercase tracking-wider text-xs mr-1">
+                    <FilterIcon size={13} className="text-red-600" /> {t.activeFilters || 'Đang lọc:'}
+                  </span>
+
+                  {selectedCategory !== 'all' && (
+                    <Badge color="failure" size="xs" className="inline-flex items-center gap-1">
+                      <span>{t.filterByCategory || 'Chuyên đề'}: <strong>{currentCategoryDef.title[langKey]}</strong></span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedCategory('all')}
+                        className="ml-1 hover:text-red-900 cursor-pointer"
+                      >
+                        <CloseIcon size={12} />
+                      </button>
+                    </Badge>
+                  )}
+
+                  {selectedTag !== 'all' && (
+                    <Badge color="failure" size="xs" className="inline-flex items-center gap-1">
+                      <span>{t.filterByTag || 'Thẻ'}: <strong>#{selectedTag}</strong></span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTag('all')}
+                        className="ml-1 hover:text-red-900 cursor-pointer"
+                      >
+                        <CloseIcon size={12} />
+                      </button>
+                    </Badge>
+                  )}
+
+                  {searchQuery.trim() && (
+                    <Badge color="failure" size="xs" className="inline-flex items-center gap-1">
+                      <span>Search: <strong>"{searchQuery}"</strong></span>
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery('')}
+                        className="ml-1 hover:text-red-900 cursor-pointer"
+                      >
+                        <CloseIcon size={12} />
+                      </button>
+                    </Badge>
+                  )}
+
+                  <Button
+                    color="light"
+                    size="xs"
+                    onClick={handleResetFilters}
+                    className="ml-auto text-red-600 hover:text-red-700 font-semibold cursor-pointer"
+                  >
+                    {t.resetFilters || 'Xóa bộ lọc'}
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Articles Grid */}
+            {filteredPosts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredPosts.map((post) => {
+                  const postCatDef = categoriesList.find((c) => c.id === post.category);
+                  const dayColor = postCatDef ? getDayColor(postCatDef.dayCode) : 'gray';
+
+                  return (
+                    <Card
+                      key={post.slug || post.id}
+                      className="p-6 cursor-pointer hover:shadow-md transition-shadow flex flex-col h-full"
+                      onClick={() => handleOpenPost(post)}
+                    >
+                      <div className="flex flex-col h-full">
+                        <div className="flex items-center justify-between gap-2 mb-2.5">
+                          {postCatDef && postCatDef.id !== 'all' ? (
+                            <Badge color={dayColor} size="xs">
+                              {postCatDef.title[langKey]}
+                            </Badge>
+                          ) : (
+                            <Badge color="purple" size="xs">
+                              {langKey === 'vi' ? 'Bài viết' : 'Article'}
+                            </Badge>
+                          )}
+                          <span className="text-xs text-gray-500 font-medium">
+                            {post.publishedAt}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-gray-500 font-medium mb-1.5">
+                          {post.readTime}
+                        </p>
+
+                        <h2 className="text-lg font-bold text-gray-900 leading-snug line-clamp-2 hover:text-red-600 transition-colors mb-2">
+                          {post.title}
+                        </h2>
+
+                        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4">
+                          {post.summary}
+                        </p>
+
+                        <div className="mt-auto pt-3 border-t border-gray-100 flex flex-wrap gap-1.5">
+                          {post.tags.map((tag) => (
+                            <Badge
+                              key={tag}
+                              color={selectedTag === tag ? 'failure' : 'gray'}
+                              size="xs"
+                              className="cursor-pointer hover:bg-gray-200"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTag(tag);
+                              }}
+                            >
+                              #{tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <Card className="col-span-full py-12 px-6 text-center bg-white border border-gray-200 rounded-lg">
+                <div className="flex flex-col items-center">
+                  <BookOpenIcon size={40} className="text-gray-400 mb-4" />
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t.noArticlesFound}</h3>
+                  <Button color="light" size="sm" onClick={handleResetFilters} className="mt-3">
+                    {t.resetFilters || 'Xóa bộ lọc'}
+                  </Button>
+                </div>
+              </Card>
+            )}
 
             {/* Load More Button */}
             {!isFiltering && hasMoreMonths && filteredPosts.length > 0 && (
@@ -505,48 +633,14 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
         </main>
       </div>
 
-      {/* ================= Category Hover Rich Tooltip (Portal) ================= */}
-      {hoveredCategory &&
-        createPortal(
-          <div
-            className="fixed z-50 p-4 bg-white border border-gray-200 rounded-lg shadow-xl max-w-xs pointer-events-none text-left flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-150"
-            style={{
-              top: `${hoveredCategory.top}px`,
-              left: `${hoveredCategory.left}px`,
-              transform: 'translateY(-50%)',
-            }}
-          >
-            <div>
-              <BadgeSchedule dayCode={hoveredCategory.cat.dayCode} icon={<CalendarIcon size={12} />}>
-                {hoveredCategory.cat.scheduleFull[langKey]}
-              </BadgeSchedule>
-            </div>
-            <div className="font-bold text-sm text-gray-900 leading-snug">
-              {hoveredCategory.cat.title[langKey]}
-            </div>
-            <div className="text-xs text-gray-600 leading-relaxed">
-              <strong className="text-red-600 font-semibold mr-1">
-                {t.trackObjective || 'Mục tiêu'}:
-              </strong>
-              <span>{hoveredCategory.cat.description[langKey]}</span>
-            </div>
-          </div>,
-          document.body
-        )}
-
-      {/* ================= Blog Article Popup / Modal ================= */}
-      <ModalArticle
+      {/* Blog Article Modal */}
+      <BlogModal
         post={activePost}
         isOpen={Boolean(activePost)}
         onClose={handleClosePost}
         processedHtml={processedHtml}
         tocItems={tocItems}
-        activeHeadingId={activeHeadingId}
-        onSelectHeading={handleSelectHeading}
-        isStickyTitleShown={isModalHeaderTitleShown}
-        modalContentRef={modalContentRef}
         tCommon={tCommon}
-        closeAriaLabel="Close article popup"
       />
     </div>
   );

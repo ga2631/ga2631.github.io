@@ -11,7 +11,6 @@ import {
   LayersIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../i18n';
-import { Section } from './ui';
 
 interface SkillsProps {
   categories: SkillCategory[];
@@ -19,12 +18,10 @@ interface SkillsProps {
 }
 
 export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
-  // Interactive proficiency level filter: null (All), 5 (Mastery), 4 (Advanced), 3 (Proficient), 2 (Intermediate), 1 (Foundational)
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
 
   const getCategoryConfig = (title: string, index: number) => {
     const lower = title.toLowerCase();
-    // 1. Backend & Systems / Backend & Distributed Systems
     if (lower.includes('backend') || lower.includes('distributed') || lower.includes('hệ thống') || index === 0) {
       return {
         icon: <ServerIcon size={18} />,
@@ -33,7 +30,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
         borderColor: 'border-red-200',
       };
     }
-    // 2. Data Engineering & Analytics / Dữ liệu
     if (lower.includes('data') || lower.includes('dữ liệu') || index === 1) {
       return {
         icon: <DatabaseIcon size={18} />,
@@ -42,7 +38,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
         borderColor: 'border-purple-200',
       };
     }
-    // 3. DevOps, Cloud & Infra / DevOps
     if (lower.includes('devops') || lower.includes('cloud') || lower.includes('infra') || index === 2) {
       return {
         icon: <ShieldIcon size={18} />,
@@ -51,7 +46,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
         borderColor: 'border-green-200',
       };
     }
-    // 4. Frontend & Architecture / Architecture & Leadership
     return {
       icon: <LayersIcon size={18} />,
       textColor: 'text-cyan-700',
@@ -87,116 +81,128 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
   };
 
   return (
-    <Section
-      id="skills"
-      badge={t.badge}
-      badgeIcon={<CodeIcon size={14} />}
-      title={t.title}
-      subtitle={t.subtitle}
-    >
-      {/* Proficiency Filter Bar using Flowbite Buttons */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t.legendTitle}:</span>
-        <div className="flex items-center gap-2 flex-wrap justify-center">
-          <Button
-            color={selectedLevel === null ? 'failure' : 'light'}
-            size="xs"
-            onClick={() => setSelectedLevel(null)}
-          >
-            {t.all || 'All'}
-          </Button>
-          <Button
-            color={selectedLevel === 5 ? 'purple' : 'light'}
-            size="xs"
-            onClick={() => setSelectedLevel(selectedLevel === 5 ? null : 5)}
-          >
-            {t.level5} (5/5)
-          </Button>
-          <Button
-            color={selectedLevel === 4 ? 'info' : 'light'}
-            size="xs"
-            onClick={() => setSelectedLevel(selectedLevel === 4 ? null : 4)}
-          >
-            {t.level4} (4/5)
-          </Button>
-          <Button
-            color={selectedLevel === 3 ? 'success' : 'light'}
-            size="xs"
-            onClick={() => setSelectedLevel(selectedLevel === 3 ? null : 3)}
-          >
-            {t.level3} (3/5)
-          </Button>
-          <Button
-            color={selectedLevel === 2 ? 'warning' : 'light'}
-            size="xs"
-            onClick={() => setSelectedLevel(selectedLevel === 2 ? null : 2)}
-          >
-            {t.level2} (2/5)
-          </Button>
-          <Button
-            color={selectedLevel === 1 ? 'gray' : 'light'}
-            size="xs"
-            onClick={() => setSelectedLevel(selectedLevel === 1 ? null : 1)}
-          >
-            {t.level1} (1/5)
-          </Button>
+    <section id="skills" className="py-20 md:py-24">
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <div className="mb-14 text-center">
+          <div className="mb-3 inline-flex justify-center">
+            <Badge color="failure" size="sm" icon={() => <CodeIcon size={14} className="mr-1" />}>
+              {t.badge}
+            </Badge>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-3 font-heading">
+            {t.title}
+          </h2>
+          {t.subtitle && (
+            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+              {t.subtitle}
+            </p>
+          )}
+        </div>
+
+        {/* Proficiency Filter Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t.legendTitle}:</span>
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            <Button
+              color={selectedLevel === null ? 'failure' : 'light'}
+              size="xs"
+              onClick={() => setSelectedLevel(null)}
+            >
+              {t.all || 'All'}
+            </Button>
+            <Button
+              color={selectedLevel === 5 ? 'purple' : 'light'}
+              size="xs"
+              onClick={() => setSelectedLevel(selectedLevel === 5 ? null : 5)}
+            >
+              {t.level5} (5/5)
+            </Button>
+            <Button
+              color={selectedLevel === 4 ? 'info' : 'light'}
+              size="xs"
+              onClick={() => setSelectedLevel(selectedLevel === 4 ? null : 4)}
+            >
+              {t.level4} (4/5)
+            </Button>
+            <Button
+              color={selectedLevel === 3 ? 'success' : 'light'}
+              size="xs"
+              onClick={() => setSelectedLevel(selectedLevel === 3 ? null : 3)}
+            >
+              {t.level3} (3/5)
+            </Button>
+            <Button
+              color={selectedLevel === 2 ? 'warning' : 'light'}
+              size="xs"
+              onClick={() => setSelectedLevel(selectedLevel === 2 ? null : 2)}
+            >
+              {t.level2} (2/5)
+            </Button>
+            <Button
+              color={selectedLevel === 1 ? 'gray' : 'light'}
+              size="xs"
+              onClick={() => setSelectedLevel(selectedLevel === 1 ? null : 1)}
+            >
+              {t.level1} (1/5)
+            </Button>
+          </div>
+        </div>
+
+        {/* Grid of Skill Categories */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {categories.map((category, idx) => {
+            const config = getCategoryConfig(category.title, idx);
+            const sortedSkills = [...category.skills].sort(
+              (a, b) => getLevelScore(b.level) - getLevelScore(a.level)
+            );
+
+            const displayedSkills = selectedLevel !== null
+              ? sortedSkills.filter((s) => getLevelScore(s.level) === selectedLevel)
+              : sortedSkills;
+
+            return (
+              <Card key={category.title} className="p-5 hover:shadow-md transition-shadow">
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center border flex-shrink-0 ${config.bgColor} ${config.borderColor} ${config.textColor}`}
+                    >
+                      {config.icon}
+                    </div>
+                    <div>
+                      <h5 className="text-base font-bold text-gray-900 leading-tight">{category.title}</h5>
+                      <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{category.description}</p>
+                    </div>
+                  </div>
+
+                  {displayedSkills.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {displayedSkills.map((skill) => {
+                        const color = getLevelColor(skill.level);
+                        return (
+                          <Badge
+                            key={skill.name}
+                            color={color}
+                            size="xs"
+                            className="cursor-default"
+                          >
+                            {skill.name}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-xs text-gray-400">
+                      <span>{t.noSkills || 'No skills at this level.'}</span>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            );
+          })}
         </div>
       </div>
-
-      {/* Grid of Skill Categories */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {categories.map((category, idx) => {
-          const config = getCategoryConfig(category.title, idx);
-          const sortedSkills = [...category.skills].sort(
-            (a, b) => getLevelScore(b.level) - getLevelScore(a.level)
-          );
-
-          const displayedSkills = selectedLevel !== null
-            ? sortedSkills.filter((s) => getLevelScore(s.level) === selectedLevel)
-            : sortedSkills;
-
-          return (
-            <Card key={category.title} className="p-5 hover:shadow-md transition-shadow">
-              <div className="flex flex-col h-full">
-                <div className="flex items-center gap-3 mb-3">
-                  <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center border flex-shrink-0 ${config.bgColor} ${config.borderColor} ${config.textColor}`}
-                  >
-                    {config.icon}
-                  </div>
-                  <div>
-                    <h5 className="text-base font-bold text-gray-900 leading-tight">{category.title}</h5>
-                    <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{category.description}</p>
-                  </div>
-                </div>
-
-                {displayedSkills.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {displayedSkills.map((skill) => {
-                      const color = getLevelColor(skill.level);
-                      return (
-                        <Badge
-                          key={skill.name}
-                          color={color}
-                          size="xs"
-                          className="cursor-default"
-                        >
-                          {skill.name}
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="text-center py-6 text-xs text-gray-400">
-                    <span>{t.noSkills || 'No skills at this level.'}</span>
-                  </div>
-                )}
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-    </Section>
+    </section>
   );
 };
 

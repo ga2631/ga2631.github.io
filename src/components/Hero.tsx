@@ -3,11 +3,10 @@
 import React from 'react';
 import { Card, Button, Badge } from 'flowbite-react';
 import { PersonalInfo } from '../types';
-import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, ExternalLinkIcon, CheckIcon } from './Icons';
+import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, ExternalLinkIcon, CheckIcon, DownloadIcon } from './Icons';
 import { UITranslation } from '../i18n';
 import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation';
-import { ButtonPrint } from './composite';
-import { trackSocialClick, trackNavigation, trackContactReveal } from '../utils/analytics';
+import { trackSocialClick, trackNavigation, trackContactReveal, trackPrintCV } from '../utils/analytics';
 
 interface HeroProps {
   data: PersonalInfo;
@@ -25,6 +24,13 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
     e.preventDefault();
     trackContactReveal('email');
     window.location.href = getSecureMailtoUrl();
+  };
+
+  const handlePrint = () => {
+    trackPrintCV('trigger_print');
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
   };
 
   return (
@@ -91,7 +97,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                   aria-label="GitHub Profile"
                   title="GitHub @ga2631"
                   onClick={() => trackSocialClick('GitHub', data.githubUrl)}
-                  className="p-2"
+                  className="p-2 border-gray-300"
                 >
                   <GithubIcon size={18} />
                 </Button>
@@ -108,7 +114,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                     aria-label="LinkedIn Profile"
                     title="LinkedIn"
                     onClick={() => trackSocialClick('LinkedIn', data.linkedinUrl!)}
-                    className="p-2"
+                    className="p-2 border-gray-300"
                   >
                     <LinkedinIcon size={18} />
                   </Button>
@@ -127,7 +133,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                     onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.currentTarget.href = getSecureZaloUrl();
                     }}
-                    className="p-2"
+                    className="p-2 border-gray-300"
                   >
                     <ZaloIcon size={18} />
                   </Button>
@@ -145,7 +151,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                   onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.currentTarget.href = getSecureMailtoUrl();
                   }}
-                  className="p-2"
+                  className="p-2 border-gray-300"
                 >
                   <MailIcon size={18} />
                 </Button>
@@ -209,11 +215,17 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 <span>{t.getInTouch}</span>
               </Button>
 
-              <ButtonPrint
-                label={t.saveCv || 'Print ATS CV'}
-                title={t.saveCv || 'Print ATS CV'}
+              <Button
+                color="light"
                 size="md"
-              />
+                onClick={handlePrint}
+                title={t.saveCv || 'Print ATS CV'}
+              >
+                <span className="flex items-center gap-2">
+                  <DownloadIcon size={16} />
+                  <span>{t.saveCv || 'Print ATS CV'}</span>
+                </span>
+              </Button>
             </div>
           </div>
         </div>

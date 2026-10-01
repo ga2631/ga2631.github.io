@@ -1,10 +1,17 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Modal, ModalHeader, ModalBody, Badge } from 'flowbite-react';
-import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
-import { ModalDiagramViewer } from './ModalDiagramViewer.tsx';
-import { BlogPost } from '../../types/index.ts';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Badge, Button } from 'flowbite-react';
+import { BlogPost } from '../types';
+import {
+  CalendarIcon,
+  ClockIcon,
+  ListIcon,
+  Maximize2Icon,
+  ZoomInIcon,
+  ZoomOutIcon,
+  RotateCcwIcon,
+} from './Icons';
 
 export interface TocItem {
   id: string;
@@ -18,10 +25,6 @@ export interface ProcessedContent {
   tocItems: TocItem[];
 }
 
-/**
- * Extracts headings from HTML string, limits to at most 2 distinct levels,
- * generates unique URL-safe slug IDs, and injects IDs onto the headings.
- */
 export const processArticleToc = (html: string): ProcessedContent => {
   if (typeof window === 'undefined' || !html) {
     return { processedHtml: html, tocItems: [] };
@@ -92,88 +95,13 @@ export const processArticleToc = (html: string): ProcessedContent => {
   };
 };
 
-export interface ArticleTocSidebarProps {
-  tocItems: TocItem[];
-  activeHeadingId: string;
-  onSelectHeading: (id: string) => void;
-  tocTitle?: string;
-}
-
-export const ArticleTocSidebar: React.FC<ArticleTocSidebarProps> = ({
-  tocItems,
-  activeHeadingId,
-  onSelectHeading,
-  tocTitle = 'Table of Contents',
-}) => {
-  if (tocItems.length === 0) return null;
-
-  return (
-    <aside className="w-64 flex-shrink-0 hidden lg:block sticky top-4 self-start pl-5 border-s border-gray-200" aria-label="Table of Contents">
-      <div className="flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-        <ListIcon size={15} />
-        <span>{tocTitle}</span>
-      </div>
-      <nav>
-        <ul className="flex flex-col gap-1 text-xs">
-          {tocItems.map((item) => (
-            <li
-              key={item.id}
-              className={`transition-colors ${item.level === 2 ? 'pl-3' : ''}`}
-            >
-              <a
-                href={`#${item.id}`}
-                className={`block py-1 leading-snug truncate transition-colors ${
-                  activeHeadingId === item.id
-                    ? 'text-red-600 font-bold'
-                    : 'text-gray-600 hover:text-red-600 font-medium'
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSelectHeading(item.id);
-                }}
-                title={item.text}
-              >
-                {item.text}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </aside>
-  );
-};
-ArticleTocSidebar.displayName = 'ArticleTocSidebar';
-
-export interface ModalArticleProps {
-  post: BlogPost | null;
-  isOpen: boolean;
-  onClose: () => void;
-  processedHtml: string;
-  tocItems: TocItem[];
-  activeHeadingId: string;
-  onSelectHeading: (id: string) => void;
-  isStickyTitleShown?: boolean;
-  modalContentRef?: React.RefObject<HTMLDivElement | null>;
-  tCommon: {
-    overview: string;
-    tableOfContents: string;
-  };
-  closeAriaLabel?: string;
-}
-
-export interface ModalArticleComponent extends React.FC<ModalArticleProps> {
-  TocSidebar: typeof ArticleTocSidebar;
-}
-
-export interface ArticleBodyProps {
+export const ArticleBody: React.FC<{
   processedHtml: string;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
-}
-
-export const ArticleBody: React.FC<ArticleBodyProps> = React.memo(
+}> = React.memo(
   ({ processedHtml, onClick, onKeyDown }) => {
-    const bodyRef = React.useRef<HTMLDivElement>(null);
+    const bodyRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       const container = bodyRef.current;
@@ -277,18 +205,101 @@ export const ArticleBody: React.FC<ArticleBodyProps> = React.memo(
 );
 ArticleBody.displayName = 'ArticleBody';
 
-export const ModalArticle: ModalArticleComponent = ({
+export interface BlogModalProps {
+  post: BlogPost | null;
+  isOpen: boolean;
+  onClose: () => void;
+  processedHtml: string;
+  tocItems: TocItem[];
+  tCommon: {
+    overview: string;
+    tableOfContents: string;
+  };
+}
+
+export const BlogModal: React.FC<BlogModalProps> = ({
   post,
   isOpen,
   onClose,
   processedHtml,
   tocItems,
-  activeHeadingId,
-  onSelectHeading,
-  modalContentRef,
   tCommon,
 }) => {
+  const [activeHeadingId, setActiveHeadingId] = useState<string>('');
   const [fitViewSvg, setFitViewSvg] = useState<string | null>(null);
+  const [zoom, setZoom] = useState<number>(1);
+  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const dragStartRef = useRef<{ startX: number; startY: number; initialPanX: number; initialPanY: number }>({
+    startX: 0,
+    startY: 0,
+    initialPanX: 0,
+    initialPanY: 0,
+  });
+
+  const modalBodyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (fitViewSvg) {
+      setZoom(1);
+      setPan({ x: 0, y: 0 });
+    }
+  }, [fitViewSvg]);
+
+  const handleZoomIn = useCallback(() => setZoom((prev) => Math.min(prev + 0.25, 3.5)), []);
+  const handleZoomOut = useCallback(() => setZoom((prev) => Math.max(prev - 0.25, 0.4)), []);
+  const handleResetZoom = useCallback(() => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  }, []);
+
+  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.15 : 0.15;
+    setZoom((prev) => Math.min(Math.max(prev + delta, 0.4), 3.5));
+  }, []);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    setIsDragging(true);
+    dragStartRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initialPanX: pan.x,
+      initialPanY: pan.y,
+    };
+  }, [pan]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartRef.current.startX;
+    const dy = e.clientY - dragStartRef.current.startY;
+    setPan({
+      x: dragStartRef.current.initialPanX + dx,
+      y: dragStartRef.current.initialPanY + dy,
+    });
+  }, [isDragging]);
+
+  const handleMouseUp = useCallback(() => setIsDragging(false), []);
+
+  const handleSelectHeading = (id: string) => {
+    const container = modalBodyRef.current;
+    if (!container) return;
+
+    const targetEl = document.getElementById(id);
+    if (targetEl) {
+      const containerTop = container.getBoundingClientRect().top;
+      const targetTop = targetEl.getBoundingClientRect().top;
+      const currentScroll = container.scrollTop;
+      const targetScroll = currentScroll + (targetTop - containerTop) - 20;
+
+      container.scrollTo({
+        top: Math.max(0, targetScroll),
+        behavior: 'smooth',
+      });
+      setActiveHeadingId(id);
+    }
+  };
 
   const handleArticleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
@@ -339,10 +350,9 @@ export const ModalArticle: ModalArticleComponent = ({
             </span>
           </div>
         </ModalHeader>
-        <ModalBody ref={modalContentRef as any}>
+        <ModalBody ref={modalBodyRef}>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-1 min-w-0">
-              {/* Meta info bar */}
               <div className="flex items-center gap-3 text-xs text-gray-500 font-medium mb-5 pb-4 border-b border-gray-200">
                 <span className="inline-flex items-center gap-1.5">
                   <CalendarIcon size={14} /> <span>{post.publishedAt}</span>
@@ -353,7 +363,6 @@ export const ModalArticle: ModalArticleComponent = ({
                 </span>
               </div>
 
-              {/* Summary Callout */}
               {post.summary && (
                 <div className="p-4 mb-6 bg-red-50 border border-red-200 rounded-lg text-gray-700 text-sm leading-relaxed">
                   <strong className="text-red-700 font-bold">{tCommon.overview}: </strong>
@@ -361,7 +370,6 @@ export const ModalArticle: ModalArticleComponent = ({
                 </div>
               )}
 
-              {/* Full Article Content */}
               <ArticleBody
                 processedHtml={processedHtml}
                 onClick={handleArticleClick}
@@ -369,29 +377,105 @@ export const ModalArticle: ModalArticleComponent = ({
               />
             </div>
 
-            {/* Right Sticky Table of Contents Sidebar */}
             {tocItems.length > 0 && (
-              <ArticleTocSidebar
-                tocItems={tocItems}
-                activeHeadingId={activeHeadingId}
-                onSelectHeading={onSelectHeading}
-                tocTitle={tCommon.tableOfContents}
-              />
+              <aside className="w-64 flex-shrink-0 hidden lg:block sticky top-4 self-start pl-5 border-s border-gray-200" aria-label="Table of Contents">
+                <div className="flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  <ListIcon size={15} />
+                  <span>{tCommon.tableOfContents}</span>
+                </div>
+                <nav>
+                  <ul className="flex flex-col gap-1 text-xs">
+                    {tocItems.map((item) => (
+                      <li
+                        key={item.id}
+                        className={`transition-colors ${item.level === 2 ? 'pl-3' : ''}`}
+                      >
+                        <a
+                          href={`#${item.id}`}
+                          className={`block py-1 leading-snug truncate transition-colors ${
+                            activeHeadingId === item.id
+                              ? 'text-red-600 font-bold'
+                              : 'text-gray-600 hover:text-red-600 font-medium'
+                          }`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleSelectHeading(item.id);
+                          }}
+                          title={item.text}
+                        >
+                          {item.text}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </aside>
             )}
           </div>
         </ModalBody>
       </Modal>
 
-      {/* Fullscreen Diagram Fit View Overlay */}
-      <ModalDiagramViewer
-        isOpen={Boolean(fitViewSvg)}
-        svgContent={fitViewSvg}
-        onClose={() => setFitViewSvg(null)}
-        title={post.title}
-      />
+      {/* Diagram Fullscreen Zoom Modal */}
+      {fitViewSvg && (
+        <Modal
+          show={Boolean(fitViewSvg)}
+          onClose={() => setFitViewSvg(null)}
+          size="7xl"
+          dismissible
+        >
+          <ModalHeader>
+            <div className="flex items-center justify-between gap-4 w-full pr-6">
+              <div className="flex items-center gap-2">
+                <Maximize2Icon size={16} className="text-red-600 flex-shrink-0" />
+                <span className="font-bold text-gray-900 text-sm sm:text-base truncate max-w-md">
+                  {post.title}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg border border-gray-200 text-xs">
+                <Button color="light" size="xs" onClick={handleZoomOut} title="Zoom out (-)" className="p-1">
+                  <ZoomOutIcon size={14} />
+                </Button>
+                <span className="font-mono font-bold px-2 text-center min-w-[45px]">
+                  {Math.round(zoom * 100)}%
+                </span>
+                <Button color="light" size="xs" onClick={handleZoomIn} title="Zoom in (+)" className="p-1">
+                  <ZoomInIcon size={14} />
+                </Button>
+                <Button color="light" size="xs" onClick={handleResetZoom} title="Reset" className="ml-1">
+                  <span className="flex items-center gap-1">
+                    <RotateCcwIcon size={12} />
+                    <span>Reset</span>
+                  </span>
+                </Button>
+              </div>
+            </div>
+          </ModalHeader>
+          <ModalBody className="p-0 overflow-hidden bg-gray-50 h-[70vh]">
+            <div
+              className={`w-full h-full relative p-0 select-none overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+              onWheel={handleWheel}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            >
+              <div
+                className="w-full h-full flex items-center justify-center p-8 origin-center transition-transform duration-75"
+                style={{
+                  transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                }}
+                dangerouslySetInnerHTML={{ __html: fitViewSvg }}
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter className="py-2 px-4 text-center text-xs text-gray-500 justify-center">
+            <span>💡 Nhấp &amp; kéo để di chuyển • Cuộn chuột để phóng to/thu nhỏ • Nhấn <strong>Esc</strong> để đóng</span>
+          </ModalFooter>
+        </Modal>
+      )}
     </>
   );
 };
 
-ModalArticle.displayName = 'ModalArticle';
-ModalArticle.TocSidebar = ArticleTocSidebar;
+export default BlogModal;

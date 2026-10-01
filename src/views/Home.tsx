@@ -11,7 +11,7 @@ import { Skills } from '../components/Skills';
 import { Footer } from '../components/Footer';
 import { EducationCertifications } from '../components/EducationCertifications';
 import { Contact } from '../components/Contact';
-import { FloatingActions } from '../components/composite';
+import { FloatingActions } from '../components/FloatingActions';
 
 export interface HomeProps {
   data: CVData;
@@ -51,5 +51,4 @@ export const Home: React.FC<HomeProps> = ({ data, t }) => {
   );
 };
 
-Home.displayName = 'Home';
 export default Home;
