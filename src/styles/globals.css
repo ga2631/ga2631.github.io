@@ -1,12 +1,33 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Tailwind CSS v4 Theme & Design Tokens (Roboto Font & Red Theme)
+   ========================================================================== */
+
 @theme {
+  --font-sans: var(--font-sans, 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  --font-heading: var(--font-sans, 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  --font-mono: var(--font-mono, 'Source Code Pro', 'Fira Code', 'JetBrains Mono', monospace);
+
+  --color-brand-red: #dc2626;
+  --color-brand-crimson: #b91c1c;
+  --color-brand-rose: #ef4444;
+  --color-brand-darkred: #991b1b;
+  --color-brand-light: #fef2f2;
+  --color-brand-subtle: rgba(220, 38, 38, 0.08);
+  --color-brand-border: rgba(220, 38, 38, 0.25);
+
   --color-bg-primary: #f8fafc;
   --color-bg-secondary: #ffffff;
   --color-bg-tertiary: #f1f5f9;
+  --color-bg-card: rgba(255, 255, 255, 0.88);
+  --color-bg-glass: rgba(255, 255, 255, 0.85);
+
   --color-text-primary: #0f172a;
   --color-text-secondary: #475569;
   --color-text-muted: #94a3b8;
+  --color-text-accent: #dc2626;
+
   --color-accent-red: #dc2626;
   --color-accent-crimson: #b91c1c;
   --color-accent-rose: #ef4444;
@@ -16,12 +37,344 @@
   --color-accent-emerald: #16a34a;
   --color-accent-amber: #d97706;
 
-  --font-sans: var(--font-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
-  --font-heading: var(--font-heading, 'Outfit', var(--font-sans));
-  --font-mono: var(--font-mono, 'Source Code Pro', 'Fira Code', 'JetBrains Mono', monospace);
-
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-xl: 24px;
+  --radius-full: 9999px;
+}
+
+/* ==========================================================================
+   CSS Custom Properties for Legacy Compatibility & Theme Tokens
+   ========================================================================== */
+:root {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-card-hover: rgba(255, 255, 255, 0.98);
+  --bg-glass: rgba(255, 255, 255, 0.85);
+
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-color-hover: rgba(220, 38, 38, 0.4);
+  --border-glow: 0 0 20px rgba(220, 38, 38, 0.12);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-accent: #dc2626;
+
+  --accent-red: #dc2626;
+  --accent-crimson: #b91c1c;
+  --accent-rose: #ef4444;
+  --accent-cyan: #0284c7;
+  --accent-indigo: #4f46e5;
+  --accent-purple: #9333ea;
+  --accent-emerald: #16a34a;
+  --accent-amber: #d97706;
+
+  --font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: 'Source Code Pro', 'Fira Code', 'JetBrains Mono', monospace;
+
+  --max-width: 1200px;
+  --navbar-height: 72px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Base Global Resets & Typography
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--navbar-height) + 20px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.12) 0%, rgba(225, 29, 72, 0.06) 40%, transparent 70%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientFloat 12s ease-in-out infinite alternate;
+}
+
+@keyframes ambientFloat {
+  0% { transform: translateX(-50%) translateY(0) scale(1); }
+  100% { transform: translateX(-47%) translateY(30px) scale(1.15); }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+  outline: none;
+}
+
+/* ==========================================================================
+   Tailwind Utility Classes & Brand Animations
+   ========================================================================== */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
+}
+
+.text-brand-gradient {
+  background: linear-gradient(135deg, #ff4d6d 0%, #ef4444 35%, #fb7185 70%, #ff4d6d 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShimmer 6s linear infinite;
+}
+
+@keyframes gradientShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Glass Panel Component & Hover Clockwise Borders */
+.glass-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel:hover {
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.12);
+}
+
+.glass-panel:not(.avatar-card)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  box-sizing: border-box;
+  border-top: 3px solid var(--accent-red);
+  border-right: 1px solid var(--accent-red);
+  clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(var(--radius-lg) + 2px), -2px calc(var(--radius-lg) + 2px));
+  transition: clip-path 0.15s ease 0.28s, border-top-width 0.14s ease 0.42s;
+}
+
+.glass-panel:not(.avatar-card)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--accent-red);
+  border-left: 1px solid transparent;
+  transition: height 0.14s linear 0s, border-left-color 0s linear 0.14s, width 0.14s linear 0.14s;
+}
+
+.glass-panel:not(.avatar-card):hover::before {
+  border-top-width: 1px;
+  clip-path: polygon(-2px -2px, calc(100% + 2px) -2px, calc(100% + 2px) calc(100% + 2px), -2px calc(100% + 2px));
+  transition: border-top-width 0.14s ease 0s, clip-path 0.14s ease 0.14s;
+}
+
+.glass-panel:not(.avatar-card):hover::after {
+  width: 100%;
+  height: 100%;
+  border-left-color: var(--accent-red);
+  transition: width 0.14s linear 0.28s, border-left-color 0s linear 0.42s, height 0.14s linear 0.42s;
+}
+
+/* Avatar Continuous Rotating Border */
+@property --profile-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.glass-panel.avatar-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--profile-border-angle, 0deg),
+    var(--accent-red) 0deg,
+    rgba(239, 68, 68, 0.4) 35deg,
+    transparent 85deg,
+    transparent 95deg,
+    rgba(239, 68, 68, 0.4) 145deg,
+    var(--accent-red) 180deg,
+    rgba(239, 68, 68, 0.4) 215deg,
+    transparent 265deg,
+    transparent 275deg,
+    rgba(239, 68, 68, 0.4) 325deg,
+    var(--accent-red) 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+  box-sizing: border-box;
+  animation: rotateProfileDualBorder 5s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.45));
+}
+
+@keyframes rotateProfileDualBorder {
+  to { --profile-border-angle: 360deg; }
+}
+
+/* ==========================================================================
+   Markdown Article Prose Formatting (Blog Reader Modal)
+   ========================================================================== */
+.article-prose {
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.article-prose h1, .article-prose h2, .article-prose h3, .article-prose h4 {
+  color: #0f172a;
+  font-weight: 700;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.35;
+}
+
+.article-prose h1 { font-size: 1.85rem; }
+.article-prose h2 { font-size: 1.45rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.4rem; }
+.article-prose h3 { font-size: 1.2rem; }
+
+.article-prose p {
+  margin-bottom: 1rem;
+}
+
+.article-prose code {
+  background: #f1f5f9;
+  color: #dc2626;
+  font-family: var(--font-mono);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.35rem;
+  font-size: 0.88em;
+}
+
+.article-prose pre {
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.article-prose pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.article-prose blockquote {
+  border-left: 4px solid #dc2626;
+  padding-left: 1rem;
+  color: #64748b;
+  font-style: italic;
+  margin: 1.25rem 0;
+}
+
+.article-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+}
+
+.article-prose th, .article-prose td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.article-prose th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Print Stylesheet (@media print) for ATS CV
+   ========================================================================== */
+.print-cv-document {
+  display: none !important;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 6mm 10mm;
+  }
+
+  html, body {
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+    font-size: 8pt !important;
+    line-height: 1.26 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  header, footer, #hero, #about, #experience, #projects, #skills, #education, #contact,
+  .floating-actions-container, .drawer-wrapper, .modal-backdrop, .hero-section,
+  .section, .btn, body::before {
+    display: none !important;
+  }
+
+  .print-cv-document {
+    display: block !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
 }

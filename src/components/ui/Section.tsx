@@ -23,10 +23,12 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   children,
   ...restProps
 }) => {
+  const alignmentClass =
+    align === 'left' ? 'text-left' : align === 'right' ? 'text-right' : 'text-center';
+
   return (
     <div
-      className={`section-header ${className}`.trim()}
-      style={align !== 'center' ? { textAlign: align } : undefined}
+      className={`mb-14 ${alignmentClass} section-header ${className}`.trim()}
       {...restProps}
     >
       {children ? (
@@ -43,20 +45,22 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
 
           {title && (
             typeof title === 'string' ? (
-              <h2 className="section-title">{title}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3 font-heading section-title">
+                {title}
+              </h2>
             ) : (
               title
             )
           )}
 
           {subtitle && (
-            <p className="section-subtitle">
+            <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto section-subtitle">
               {subtitle}
             </p>
           )}
 
           {extra && (
-            <div className="section-header-extra" style={{ marginTop: '20px' }}>
+            <div className="mt-5 section-header-extra">
               {extra}
             </div>
           )}
@@ -94,8 +98,8 @@ export const Section: SectionComponent = ({
   align = 'center',
   extra,
   headerClassName = '',
-  containerClassName = 'container',
-  className = 'section',
+  containerClassName = 'container mx-auto max-w-[1200px] px-6',
+  className = 'py-20 md:py-24 section',
   children,
   ...restProps
 }) => {
@@ -124,3 +128,5 @@ export const Section: SectionComponent = ({
 
 Section.displayName = 'Section';
 Section.Header = SectionHeader;
+
+export default Section;

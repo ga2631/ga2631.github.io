@@ -167,21 +167,31 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
       subtitle={t.subtitle}
     >
       {/* Primary View Switcher Tabs */}
-      <div className="project-view-tabs">
+      <div className="flex items-center justify-center gap-3 mb-10 flex-wrap project-view-tabs">
         <Button
           variant="unstyled"
-          className={`project-view-tab ${activeTab === 'all' ? 'active' : ''}`}
+          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 inline-flex items-center gap-2 cursor-pointer project-view-tab ${
+            activeTab === 'all'
+              ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm active'
+              : 'bg-slate-100 text-slate-600 border border-slate-200/80 hover:bg-white hover:text-slate-900'
+          }`}
           onClick={() => {
             setActiveTab('all');
             trackEvent('project_tab_switch', { tab: 'all' });
           }}
         >
           <span>{t.allWorks}</span>
-          <span className="view-tab-count">{projects.length + (repos.length || 3)}</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 font-bold view-tab-count">
+            {projects.length + (repos.length || 3)}
+          </span>
         </Button>
         <Button
           variant="unstyled"
-          className={`project-view-tab ${activeTab === 'case-studies' ? 'active' : ''}`}
+          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 inline-flex items-center gap-2 cursor-pointer project-view-tab ${
+            activeTab === 'case-studies'
+              ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm active'
+              : 'bg-slate-100 text-slate-600 border border-slate-200/80 hover:bg-white hover:text-slate-900'
+          }`}
           onClick={() => {
             setActiveTab('case-studies');
             trackEvent('project_tab_switch', { tab: 'case-studies' });
@@ -189,11 +199,17 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
           icon={<SparklesIcon size={15} />}
         >
           <span>{t.caseStudies}</span>
-          <span className="view-tab-count">{projects.length}</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 font-bold view-tab-count">
+            {projects.length}
+          </span>
         </Button>
         <Button
           variant="unstyled"
-          className={`project-view-tab ${activeTab === 'github' ? 'active' : ''}`}
+          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 inline-flex items-center gap-2 cursor-pointer project-view-tab ${
+            activeTab === 'github'
+              ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm active'
+              : 'bg-slate-100 text-slate-600 border border-slate-200/80 hover:bg-white hover:text-slate-900'
+          }`}
           onClick={() => {
             setActiveTab('github');
             trackEvent('project_tab_switch', { tab: 'github' });
@@ -201,18 +217,20 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
           icon={<GitRepoIcon size={15} />}
         >
           <span>{t.githubRepos}</span>
-          <span className="view-tab-count">{repos.length || 'Live'}</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 font-bold view-tab-count">
+            {repos.length || 'Live'}
+          </span>
         </Button>
       </div>
 
       {/* Unified Projects Grid */}
-      <div className="projects-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 projects-grid">
         {/* 1. Enterprise Architecture Case Studies */}
         {showCaseStudies &&
           projects.map((project: ProjectItem) => (
             <Card
               key={project.id}
-              className="project-card-compact"
+              className="p-6 cursor-pointer transition-all duration-200 hover:-translate-y-1 project-card-compact"
               onClick={() => {
                 setActiveProject(project);
                 trackProjectModalOpen({

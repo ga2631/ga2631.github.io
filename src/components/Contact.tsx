@@ -14,7 +14,6 @@ interface ContactProps {
 }
 
 export const Contact: React.FC<ContactProps> = ({ data, t }) => {
-
   const handleEmailCompose = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     window.location.href = getSecureMailtoUrl();
@@ -37,31 +36,35 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
       title={t.title}
       subtitle={t.subtitle}
     >
-      <div className="contact-cards-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 contact-cards-grid">
         {/* Email Card */}
-        <Card className="contact-card">
-          <Card.Header>
-            <div className="contact-card-icon" style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--accent-rose)' }}>
+        <Card className="p-6 contact-card">
+          <Card.Header className="mb-4">
+            <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center mb-2 contact-card-icon">
               <MailIcon size={26} />
             </div>
           </Card.Header>
 
-          <Card.Body className="contact-card-body">
-            <div className="contact-card-label">{t.emailLabel}</div>
-            <SecureEmail asLink className="contact-card-value" />
-            <p className="contact-card-hint">
+          <Card.Body className="mb-4 contact-card-body">
+            <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-1 contact-card-label">
+              {t.emailLabel}
+            </div>
+            <SecureEmail asLink className="text-base font-semibold text-slate-900 contact-card-value hover:text-red-600 transition-colors" />
+            <p className="text-xs text-slate-500 mt-2 contact-card-hint">
               {t.emailHint}
             </p>
           </Card.Body>
 
-          <Card.Footer className="contact-card-actions">
+          <Card.Footer className="pt-3 border-t border-slate-100 contact-card-actions">
             <Button
               as="a"
               href="#"
               variant="primary"
               size="sm"
               onClick={handleEmailCompose}
-              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureMailtoUrl(); }}
+              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                e.currentTarget.href = getSecureMailtoUrl();
+              }}
               icon={<MailIcon size={14} />}
               title="Open default email client"
             >
@@ -72,29 +75,33 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
 
         {/* Phone Card */}
         {data.phone && (
-          <Card className="contact-card">
-            <Card.Header>
-              <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: 'var(--accent-purple)' }}>
+          <Card className="p-6 contact-card">
+            <Card.Header className="mb-4">
+              <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-2 contact-card-icon">
                 <PhoneIcon size={26} />
               </div>
             </Card.Header>
 
-            <Card.Body className="contact-card-body">
-              <div className="contact-card-label">{t.phoneLabel}</div>
-              <SecurePhone asLink className="contact-card-value" />
-              <p className="contact-card-hint">
+            <Card.Body className="mb-4 contact-card-body">
+              <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-1 contact-card-label">
+                {t.phoneLabel}
+              </div>
+              <SecurePhone asLink className="text-base font-semibold text-slate-900 contact-card-value hover:text-red-600 transition-colors" />
+              <p className="text-xs text-slate-500 mt-2 contact-card-hint">
                 {t.phoneHint}
               </p>
             </Card.Body>
 
-            <Card.Footer className="contact-card-actions">
+            <Card.Footer className="pt-3 border-t border-slate-100 flex items-center gap-2 contact-card-actions">
               <Button
                 as="a"
                 href="#"
                 variant="primary"
                 size="sm"
                 onClick={handlePhoneCall}
-                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureTelUrl(); }}
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.currentTarget.href = getSecureTelUrl();
+                }}
                 icon={<PhoneIcon size={14} />}
                 title="Direct Phone Call"
               >
@@ -106,7 +113,9 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
                 variant="secondary"
                 size="sm"
                 onClick={handleZaloChat}
-                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureZaloUrl(); }}
+                onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.currentTarget.href = getSecureZaloUrl();
+                }}
                 icon={<ZaloIcon size={14} />}
                 title="Chat via Zalo"
               >
@@ -117,57 +126,61 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
         )}
 
         {/* Location & Personal Card */}
-        <Card className="contact-card">
-          <Card.Header>
-            <div className="contact-card-icon" style={{ background: 'rgba(168, 85, 247, 0.1)', color: 'var(--accent-emerald)' }}>
+        <Card className="p-6 contact-card">
+          <Card.Header className="mb-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 contact-card-icon">
               <MapPinIcon size={26} />
             </div>
           </Card.Header>
 
-          <Card.Body className="contact-card-body">
-            <div className="contact-card-label">{t.locationLabel}</div>
-            <div className="contact-card-value" style={{ fontSize: '1.05rem' }}>
+          <Card.Body className="mb-4 contact-card-body">
+            <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-1 contact-card-label">
+              {t.locationLabel}
+            </div>
+            <div className="text-base font-semibold text-slate-900 contact-card-value">
               {data.location}
             </div>
             {data.birthday && (
-              <p className="contact-card-hint" style={{ marginTop: '4px' }}>
+              <p className="text-xs text-slate-500 mt-2 contact-card-hint">
                 {t.locationHint}
               </p>
             )}
           </Card.Body>
 
-          <Card.Footer className="contact-card-actions">
+          <Card.Footer className="pt-3 border-t border-slate-100 contact-card-actions">
             <Badge variant="emerald">
               {t.locationCta}
             </Badge>
           </Card.Footer>
         </Card>
 
-        {/* LinkedIn Profile Card (if available) */}
+        {/* LinkedIn Profile Card */}
         {data.linkedinUrl && (
-          <Card className="contact-card">
-            <Card.Header>
-              <div className="contact-card-icon" style={{ background: 'rgba(14, 118, 168, 0.15)', color: 'var(--accent-cyan)' }}>
+          <Card className="p-6 contact-card">
+            <Card.Header className="mb-4">
+              <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2 contact-card-icon">
                 <LinkedinIcon size={26} />
               </div>
             </Card.Header>
 
-            <Card.Body className="contact-card-body">
-              <div className="contact-card-label">{t.linkedinLabel}</div>
+            <Card.Body className="mb-4 contact-card-body">
+              <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-1 contact-card-label">
+                {t.linkedinLabel}
+              </div>
               <a
                 href={data.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="contact-card-value"
+                className="text-sm font-semibold text-slate-900 truncate block hover:text-red-600 transition-colors contact-card-value"
               >
                 {data.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
               </a>
-              <p className="contact-card-hint">
+              <p className="text-xs text-slate-500 mt-2 contact-card-hint">
                 {t.linkedinHint}
               </p>
             </Card.Body>
 
-            <Card.Footer className="contact-card-actions">
+            <Card.Footer className="pt-3 border-t border-slate-100 contact-card-actions">
               <Button
                 as="a"
                 href={data.linkedinUrl}
@@ -187,3 +200,5 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
     </Section>
   );
 };
+
+export default Contact;

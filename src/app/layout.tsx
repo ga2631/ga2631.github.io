@@ -1,21 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 import React from 'react';
 import Script from 'next/script';
-import { Inter, Outfit, Source_Code_Pro } from 'next/font/google';
+import { Roboto, Source_Code_Pro } from 'next/font/google';
 import '@/styles/globals.css';
-import '@/styles/index.scss';
 
-const inter = Inter({
+const roboto = Roboto({
   subsets: ['latin', 'vietnamese'],
+  weight: ['300', '400', '500', '700', '900'],
   display: 'swap',
   variable: '--font-sans',
-  preload: true,
-});
-
-const outfit = Outfit({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-heading',
   preload: true,
 });
 
@@ -138,7 +131,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${inter.variable} ${outfit.variable} ${sourceCodePro.variable}`}
+      className={`${roboto.variable} ${sourceCodePro.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

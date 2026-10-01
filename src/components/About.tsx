@@ -16,39 +16,39 @@ interface AboutProps {
 export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
   const getPrincipleConfig = (title: string, index: number) => {
     const lower = title.toLowerCase();
-    // 1. Architectural Resilience / Kiến trúc Bền bỉ & Chịu tải
+    // 1. Architectural Resilience
     if (lower.includes('architect') || lower.includes('kiến trúc') || lower.includes('resilience') || index === 0) {
       return {
-        icon: <LayersIcon size={18} />,
-        color: 'var(--accent-red)',
-        bg: 'rgba(255, 56, 92, 0.12)',
-        border: 'rgba(255, 56, 92, 0.25)',
+        icon: <LayersIcon size={20} />,
+        textColor: 'text-red-600',
+        bgColor: 'bg-red-50',
+        borderColor: 'border-red-200',
       };
     }
-    // 2. Type Safety & Clean Code / An toàn Kiểu dữ liệu & Clean Code
+    // 2. Type Safety & Clean Code
     if (lower.includes('type') || lower.includes('clean code') || lower.includes('kiểu dữ liệu') || index === 1) {
       return {
-        icon: <CodeIcon size={18} />,
-        color: 'var(--accent-purple)',
-        bg: 'rgba(225, 29, 72, 0.12)',
-        border: 'rgba(225, 29, 72, 0.25)',
+        icon: <CodeIcon size={20} />,
+        textColor: 'text-purple-600',
+        bgColor: 'bg-purple-50',
+        borderColor: 'border-purple-200',
       };
     }
-    // 3. DevOps & Automation / Tự động hóa & DevOps
+    // 3. DevOps & Automation
     if (lower.includes('devops') || lower.includes('automation') || lower.includes('tự động hóa') || index === 2) {
       return {
-        icon: <RefreshCwIcon size={18} />,
-        color: 'var(--accent-emerald)',
-        bg: 'rgba(251, 113, 133, 0.12)',
-        border: 'rgba(251, 113, 133, 0.25)',
+        icon: <RefreshCwIcon size={20} />,
+        textColor: 'text-emerald-600',
+        bgColor: 'bg-emerald-50',
+        borderColor: 'border-emerald-200',
       };
     }
-    // 4. Data & Performance Driven / Tối ưu hóa Hiệu năng & Dữ liệu
+    // 4. Data & Performance Driven
     return {
-      icon: <ZapIcon size={18} />,
-      color: 'var(--accent-cyan)',
-      bg: 'rgba(255, 77, 109, 0.12)',
-      border: 'rgba(255, 77, 109, 0.25)',
+      icon: <ZapIcon size={20} />,
+      textColor: 'text-sky-600',
+      bgColor: 'bg-sky-50',
+      borderColor: 'border-sky-200',
     };
   };
 
@@ -60,28 +60,23 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
       title={t.title}
       subtitle={data.tagline}
     >
-      <div className="principles-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 principles-grid">
         {principles.map((item, index) => {
           const config = getPrincipleConfig(item.title, index);
           return (
-            <Card key={index} className="principle-card">
-              <Card.Header className="principle-card-header">
+            <Card key={index} className="p-6 transition-all duration-300 principle-card">
+              <Card.Header className="mb-4 principle-card-header">
                 <div
-                  className="principle-icon-badge"
-                  style={{
-                    color: config.color,
-                    backgroundColor: config.bg,
-                    borderColor: config.border,
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                  }}
+                  className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 border ${config.bgColor} ${config.borderColor} ${config.textColor} principle-icon-badge`}
                 >
                   {config.icon}
                 </div>
-                <h3 className="principle-card-title">{item.title}</h3>
+                <h3 className="text-lg font-bold text-slate-900 leading-snug principle-card-title">
+                  {item.title}
+                </h3>
               </Card.Header>
               <Card.Body>
-                <p className="principle-card-desc">
+                <p className="text-sm text-slate-600 leading-relaxed principle-card-desc">
                   {item.description}
                 </p>
               </Card.Body>
@@ -92,3 +87,5 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
     </Section>
   );
 };
+
+export default About;

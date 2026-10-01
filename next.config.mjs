@@ -5,9 +5,6 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
-  sassOptions: {
-    includePaths: ['./src/styles'],
-  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.md$/,

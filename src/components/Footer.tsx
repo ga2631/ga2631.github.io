@@ -10,13 +10,12 @@ export const Footer: React.FC<FooterProps> = ({ t, fullName }) => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="footer">
-      <div className="container footer-content">
-        <div style={{ width: '100%', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-          © {currentYear} {fullName}. {t.allRightsReserved}. {t.hostedOn}.
-        </div>
+    <footer className="py-8 bg-slate-100/60 border-t border-slate-200/80 mt-16 footer">
+      <div className="container mx-auto max-w-[1200px] px-6 text-center text-xs text-slate-500 font-medium footer-content">
+        © {currentYear} {fullName}. {t.allRightsReserved}. {t.hostedOn}.
       </div>
     </footer>
   );
 };
 
+export default Footer;

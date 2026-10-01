@@ -25,8 +25,8 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
       ) : (
         <>
           {(badge || icon || action) && (
-            <div className="card-header-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="flex items-center justify-between gap-2 mb-2 card-header-top">
+              <div className="flex items-center gap-2">
                 {icon}
                 {badge}
               </div>
@@ -35,14 +35,14 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
           )}
           {title && (
             typeof title === 'string' ? (
-              <h3 className="card-title" style={{ margin: '0 0 4px 0' }}>{title}</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-1 card-title">{title}</h3>
             ) : (
               title
             )
           )}
           {subtitle && (
             typeof subtitle === 'string' ? (
-              <div className="card-subtitle" style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>{subtitle}</div>
+              <div className="text-sm text-slate-500 card-subtitle">{subtitle}</div>
             ) : (
               subtitle
             )
@@ -64,8 +64,8 @@ export const CardBody: React.FC<CardBodyProps> = ({
 }) => {
   return (
     <div
-      className={`card-body ${className}`.trim()}
-      style={{ flex: 1, ...style }}
+      className={`flex-1 card-body ${className}`.trim()}
+      style={style}
       {...restProps}
     >
       {children}
@@ -89,13 +89,13 @@ export const CardFooter: React.FC<CardFooterProps> = ({
 }) => {
   return (
     <div
-      className={`card-footer ${className}`.trim()}
-      style={{ marginTop: 'auto', ...style }}
+      className={`mt-auto card-footer ${className}`.trim()}
+      style={style}
       {...restProps}
     >
       {tags}
       {children}
-      {actions && <div className="card-footer-actions">{actions}</div>}
+      {actions && <div className="card-footer-actions mt-3 flex items-center justify-end gap-2">{actions}</div>}
     </div>
   );
 };
@@ -132,13 +132,13 @@ export const Card = React.forwardRef<HTMLElement, CardProps>(
     ref
   ) => {
     const Component = as;
-    const classList: string[] = [];
+    const classList: string[] = ['flex flex-col'];
 
     if (variant === 'glass') {
       classList.push('glass-panel');
     }
     if (onClick || variant === 'interactive') {
-      classList.push('interactive-card');
+      classList.push('cursor-pointer interactive-card');
     }
     if (className) {
       classList.push(className);
@@ -166,3 +166,5 @@ Card.displayName = 'Card';
 Card.Header = CardHeader;
 Card.Body = CardBody;
 Card.Footer = CardFooter;
+
+export default Card;

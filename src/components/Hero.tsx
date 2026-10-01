@@ -26,55 +26,58 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
     trackContactReveal('email');
     window.location.href = getSecureMailtoUrl();
   };
+
   return (
-    <section className="hero-section" id="hero">
-      <div className="container">
-        <div className="hero-grid">
+    <section className="pt-28 pb-16 md:pt-36 md:pb-24 hero-section" id="hero">
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 lg:gap-14 items-center hero-grid">
           {/* Left Column: Visual Developer Profile Card */}
-          <div className="hero-visual">
-            <Card className="avatar-card">
-              <div className="avatar-wrapper">
+          <div className="flex justify-center lg:justify-start hero-visual">
+            <Card className="avatar-card w-full max-w-[360px] p-6 text-center">
+              <div className="relative w-36 h-36 mx-auto mb-4 avatar-wrapper">
                 {data.avatarUrl ? (
                   <img
                     src={data.avatarUrl}
                     alt={data.fullName}
-                    className="avatar-img"
+                    className="w-full h-full object-cover rounded-full border-2 border-white shadow-md avatar-img"
                     onError={(e) => {
                       (e.currentTarget as HTMLElement).style.display = 'none';
                     }}
                   />
                 ) : (
-                  <div className="avatar-inner">T</div>
+                  <div className="w-full h-full rounded-full bg-brand-gradient text-white font-extrabold text-4xl flex items-center justify-center avatar-inner">
+                    T
+                  </div>
                 )}
               </div>
 
-              <h3 className="avatar-name">
+              <h3 className="text-2xl font-bold text-slate-900 font-heading mb-1 avatar-name">
                 {data.fullName}
               </h3>
 
-              <div className="hero-status-pill avatar-status-pill mobile-only-status">
-                <span className="status-dot"></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mx-auto my-2 hero-status-pill avatar-status-pill mobile-only-status">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 status-dot animate-pulse"></span>
                 <span>{data.availability}</span>
               </div>
 
-              <p className="avatar-location">{data.location}</p>
+              <p className="text-sm text-slate-500 mb-4 avatar-location">{data.location}</p>
 
-              <div className="avatar-info-box">
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>$</span>
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-left text-xs font-mono text-slate-700 mb-5 avatar-info-box">
+                <div className="flex items-start gap-1.5">
+                  <span className="text-slate-400">$</span>
                   <span>git status</span>
                 </div>
-                <div style={{ color: 'var(--accent-emerald)', marginTop: '4px', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                  <CheckIcon size={14} style={{ flexShrink: 0, marginTop: '3px' }} />
+                <div className="text-emerald-600 mt-1 flex items-start gap-1.5">
+                  <CheckIcon size={14} className="flex-shrink-0 mt-0.5" />
                   <span>{t.workingTreeClean}</span>
                 </div>
-                <div style={{ color: 'var(--text-secondary)', marginTop: '6px', fontSize: '0.82rem' }}>
+                <div className="text-slate-500 mt-1.5 text-[0.8rem]">
                   {t.focusPrompt}
-                  <span className="cursor-blink" />
+                  <span className="inline-block w-1.5 h-3.5 bg-slate-400 ml-1 animate-pulse cursor-blink" />
                 </div>
               </div>
 
-              <div className="social-links">
+              <div className="flex items-center justify-center gap-3 social-links">
                 <Button
                   as="a"
                   href={data.githubUrl}
@@ -105,13 +108,13 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                   <Button
                     as="a"
                     href="#"
-                    onClick={handleZaloClick}
-                    onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureZaloUrl(); }}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     variant="social-icon"
-                    aria-label="Zalo Profile"
-                    title="Zalo"
+                    aria-label="Zalo Chat"
+                    title="Chat via Zalo"
+                    onClick={handleZaloClick}
+                    onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                      e.currentTarget.href = getSecureZaloUrl();
+                    }}
                     icon={<ZaloIcon size={20} />}
                   />
                 )}
@@ -119,38 +122,50 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 <Button
                   as="a"
                   href="#"
-                  onClick={handleEmailClick}
-                  onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureMailtoUrl(); }}
                   variant="social-icon"
                   aria-label="Send Email"
                   title="Email"
+                  onClick={handleEmailClick}
+                  onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.currentTarget.href = getSecureMailtoUrl();
+                  }}
                   icon={<MailIcon size={20} />}
                 />
               </div>
             </Card>
           </div>
 
-          {/* Right Column: Introduction & CTA */}
-          <div className="hero-content">
-            <div className="hero-status-pill desktop-only-status">
-              <span className="status-dot"></span>
+          {/* Right Column: Hero Headline & Summary */}
+          <div className="hero-content text-center lg:text-left">
+            <div className="hidden lg:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 mb-5 hero-status-pill desktop-only-status">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse status-dot"></span>
               <span>{data.availability}</span>
             </div>
 
-            <h1 className="hero-name">
-              {t.greeting} <span className="gradient-text">{data.fullName}</span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 font-heading mb-4 leading-tight hero-title">
+              {t.greeting} <span className="text-brand-gradient">{data.fullName}</span>
             </h1>
 
-            <h2 className="hero-title">{data.jobTitle}</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-700 mb-6 font-heading hero-subtitle">
+              {data.jobTitle}
+            </h2>
 
-            <p className="hero-bio">{data.bio}</p>
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-8 hero-bio">
+              {data.bio}
+            </p>
 
-            <div className="hero-cta-group">
+            {/* Action Buttons */}
+            <div className="flex items-center justify-center lg:justify-start gap-4 hero-actions">
               <Button
                 as="a"
                 href="#projects"
                 variant="primary"
-                onClick={() => trackNavigation('View Projects', '#projects', 'hero_cta')}
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  trackNavigation('#projects', 'Hero Projects CTA', 'hero');
+                  const elem = document.getElementById('projects');
+                  if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+                }}
                 icon={<ExternalLinkIcon size={16} />}
                 iconPosition="right"
               >
@@ -161,35 +176,43 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 as="a"
                 href="#contact"
                 variant="secondary"
-                onClick={() => trackNavigation('Get in Touch', '#contact', 'hero_cta')}
-                icon={<MailIcon size={16} />}
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  trackNavigation('#contact', 'Hero Contact CTA', 'hero');
+                  const elem = document.getElementById('contact');
+                  if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
-                <span>{t.getInTouch}</span>
+                <span>{t.contactMe}</span>
               </Button>
 
               <ButtonPrint
-                variant="default"
-                buttonVariant="secondary"
-                label={t.saveCv}
-                title="Save CV as PDF"
-                iconSize={16}
+                label={t.downloadCv || 'Print ATS CV'}
+                title={t.downloadCv || 'Print ATS CV'}
+                size="md"
               />
             </div>
           </div>
         </div>
 
-        {/* Full-width Standalone Hero Stats Banner */}
-        <Card className="hero-stats-banner">
-          {data.stats.map((stat, idx) => (
-            <div key={idx} className="hero-stat-card">
-              <div className="hero-stat-value gradient-text">{stat.value}</div>
-              <div className="hero-stat-label">{stat.label}</div>
-              {stat.subtext && <div className="hero-stat-subtext">{stat.subtext}</div>}
-            </div>
-          ))}
-        </Card>
+        {/* Quick Stats Grid */}
+        {data.stats && data.stats.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8">
+            {data.stats.map((stat, index) => (
+              <div key={index} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-center stat-item">
+                <div className="text-2xl lg:text-3xl font-extrabold text-red-600 font-heading stat-value">
+                  {stat.value}
+                </div>
+                <div className="text-xs font-medium text-slate-500 mt-1 stat-label">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 };
 
+export default Hero;
