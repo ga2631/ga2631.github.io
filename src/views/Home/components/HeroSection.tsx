@@ -217,74 +217,34 @@ export function HeroSection({ personalInfo }: HeroSectionProps) {
       </div>
 
       {/* 4 Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-white backdrop-blur-sm rounded-3xl shadow-sm border border-gray-100 border-t-4 border-t-red-500 hover:shadow-lg transition-all ease-in-out">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 bg-white backdrop-blur-sm rounded-3xl shadow-sm border border-gray-100 border-t-4 border-t-red-500 hover:shadow-lg hover:border-red-500 transition-all ease-in-out">
         {/* 5 Năm kinh nghiệm */}
-        <div className="p-6 text-center flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center mb-4">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
-          <dt className="mb-1 text-4xl font-bold text-red-500">{stats[0]?.value || '5 Năm'}</dt>
+        <div className="p-8 pt-10 pb-10 text-center flex flex-col items-center justify-center">
+          <dt className="mb-1 text-5xl font-bold text-red-500">{stats[0]?.value || '5 Năm'}</dt>
           <dd className="text-gray-500 font-medium text-sm">
             {stats[0]?.label || 'Kinh Nghiệm Thực Chiến'}
           </dd>
         </div>
 
         {/* 96% khớp nối dữ liệu */}
-        <div className="p-6 text-center flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-4">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-              />
-            </svg>
-          </div>
-          <dt className="mb-1 text-4xl font-bold text-blue-500">{stats[1]?.value || '96%'}</dt>
+        <div className="p-8 pt-10 pb-10 text-center flex flex-col items-center justify-center">
+          <dt className="mb-1 text-5xl font-bold text-blue-500">{stats[1]?.value || '96%'}</dt>
           <dd className="text-gray-500 font-medium text-sm">
             {stats[1]?.label || 'Tỷ Lệ Khớp Nối Dữ Liệu'}
           </dd>
         </div>
 
         {/* 70%+ hiệu năng truy vấn */}
-        <div className="p-6 text-center flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-4">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-          </div>
-          <dt className="mb-1 text-4xl font-bold text-emerald-500">{stats[2]?.value || '70%+'}</dt>
+        <div className="p-8 pt-10 pb-10 text-center flex flex-col items-center justify-center">
+          <dt className="mb-1 text-5xl font-bold text-emerald-500">{stats[2]?.value || '70%+'}</dt>
           <dd className="text-gray-500 font-medium text-sm">
             {stats[2]?.label || 'Tăng Hiệu Năng Truy Vấn'}
           </dd>
         </div>
 
         {/* 1,000+ người dùng đồng thời */}
-        <div className="p-6 text-center flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mb-4">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-          </div>
-          <dt className="mb-1 text-4xl font-bold text-amber-500">{stats[3]?.value || '1,000+'}</dt>
+        <div className="p-8 pt-10 pb-10 text-center flex flex-col items-center justify-center">
+          <dt className="mb-1 text-5xl font-bold text-amber-500">{stats[3]?.value || '1,000+'}</dt>
           <dd className="text-gray-500 font-medium text-sm">
             {stats[3]?.label || 'Users Đồng Thời Xử Lý'}
           </dd>

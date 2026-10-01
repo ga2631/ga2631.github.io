@@ -8,17 +8,6 @@ interface ExperienceSectionProps {
   experiences?: ExperienceItem[];
 }
 
-const TECH_TAG_STYLES: Record<string, string> = {
-  Rust: 'bg-red-50 text-red-700 border-red-100',
-  DuckDB: 'bg-orange-50 text-orange-700 border-orange-100',
-  PostgreSQL: 'bg-rose-50 text-rose-700 border-rose-100',
-  'Looker Studio': 'bg-amber-50 text-amber-700 border-amber-100',
-  'Node.js': 'bg-green-50 text-green-700 border-green-100',
-  'Go (Golang)': 'bg-cyan-50 text-cyan-700 border-cyan-100',
-  Redis: 'bg-rose-50 text-rose-700 border-rose-100',
-  Docker: 'bg-red-50 text-red-700 border-red-100',
-};
-
 export function ExperienceSection({ experiences = [] }: ExperienceSectionProps) {
   const { currentLang } = useLanguage();
   const isEn = currentLang === 'en';
@@ -60,20 +49,40 @@ export function ExperienceSection({ experiences = [] }: ExperienceSectionProps) 
               <p className="text-gray-600 leading-relaxed mt-4 text-justify">
                 {exp.summary}
               </p>
+              {exp.achievements && exp.achievements.length > 0 && (
+                <ul className="space-y-2.5 mt-4">
+                  {exp.achievements.map((achievement, idx) => (
+                    <li key={idx} className="text-gray-600 text-sm leading-relaxed text-justify flex items-start">
+                      <svg
+                        className="w-4 h-4 text-red-500 mr-2.5 mt-1 flex-shrink-0"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2.5"
+                          d="m9 5 7 7-7 7"
+                        />
+                      </svg>
+                      <span dangerouslySetInnerHTML={{ __html: achievement }} />
+                    </li>
+                  ))}
+                </ul>
+              )}
               {exp.technologies && exp.technologies.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {exp.technologies.map((t, idx) => {
-                    const tagStyle =
-                      TECH_TAG_STYLES[t] || 'bg-gray-50 text-gray-700 border-gray-100';
-                    return (
+                  {exp.technologies.map((t, idx) => (
                       <span
                         key={idx}
-                        className={`${tagStyle} text-xs font-medium rounded-full px-2.5 py-1 border`}
+                        className='bg-gray-50 text-gray-700 border-gray-100 text-xs font-medium rounded-full px-2.5 py-1 border'
                       >
                         {t}
                       </span>
-                    );
-                  })}
+                  ))}
                 </div>
               )}
             </div>
