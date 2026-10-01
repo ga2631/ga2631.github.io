@@ -1,11 +1,14 @@
 import React from 'react';
-import { Badge, BadgeProps } from '../common/Badge';
+import { Badge } from 'flowbite-react';
+import { CloseIcon } from '../Icons.tsx';
 
-export interface BadgeFilterChipProps extends Omit<BadgeProps, 'variant'> {
+export interface BadgeFilterChipProps {
   chipKey?: string;
   chipValue?: React.ReactNode;
   onRemove: () => void;
   removeAriaLabel?: string;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export const BadgeFilterChip: React.FC<BadgeFilterChipProps> = ({
@@ -15,24 +18,30 @@ export const BadgeFilterChip: React.FC<BadgeFilterChipProps> = ({
   removeAriaLabel = 'Remove filter',
   className = '',
   children,
-  ...restProps
 }) => {
   const displayValue = chipValue !== undefined ? chipValue : children;
 
   return (
     <Badge
-      variant="filter-chip"
-      chipKey={chipKey}
-      removable={true}
-      onRemove={onRemove}
-      removeAriaLabel={removeAriaLabel}
-      className={className}
-      {...restProps}
+      color="failure"
+      size="xs"
+      className={`inline-flex items-center gap-1 py-1 px-2.5 ${className}`.trim()}
     >
-      {displayValue}
+      {chipKey && <span className="font-semibold text-gray-500 mr-1">{chipKey}:</span>}
+      <span className="font-bold">{displayValue}</span>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove();
+        }}
+        aria-label={removeAriaLabel}
+        className="ml-1 p-0.5 rounded-full hover:bg-red-200 text-red-700 cursor-pointer transition-colors"
+      >
+        <CloseIcon size={12} />
+      </button>
     </Badge>
   );
 };
 
 BadgeFilterChip.displayName = 'BadgeFilterChip';
-

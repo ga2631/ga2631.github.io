@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
+import { Timeline, TimelineItem, TimelinePoint, TimelineContent, Card, Badge } from 'flowbite-react';
 import { ExperienceItem } from '../types/index.ts';
 import { BriefcaseIcon } from './Icons.tsx';
 import { UITranslation } from '../i18n';
-import { Card, Badge } from './common';
 import { Section } from './ui';
 import { TechTagList } from './composite';
 
@@ -22,18 +22,12 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
       title={t.title}
       subtitle={t.subtitle}
     >
-      {/* Flowbite Timeline */}
-      <ol className="relative border-s border-gray-200 ms-3 md:ms-6 flex flex-col gap-8">
+      <Timeline>
         {experiences.map((item) => (
-          <li key={item.id} className="ms-6">
-            {/* Flowbite Timeline Point */}
-            <span className="absolute flex items-center justify-center w-6 h-6 bg-red-100 rounded-full -start-3 ring-8 ring-white text-red-600">
-              <BriefcaseIcon size={12} />
-            </span>
-
-            {/* Flowbite Timeline Card Content */}
-            <Card className="p-6 hover:shadow-md transition-shadow">
-              <Card.Header className="mb-3">
+          <TimelineItem key={item.id}>
+            <TimelinePoint icon={() => <BriefcaseIcon size={14} className="text-red-600" />} />
+            <TimelineContent className="mb-8">
+              <Card className="p-6 hover:shadow-md transition-shadow">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                   <h4 className="text-xl font-bold text-gray-900 leading-snug">
                     {item.role}
@@ -42,22 +36,24 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
                     <time className="text-xs font-normal text-gray-400">
                       {item.period}
                     </time>
-                    {item.current && <Badge variant="emerald">{t.currentPosition}</Badge>}
+                    {item.current && (
+                      <Badge color="success" size="xs">
+                        {t.currentPosition}
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm font-semibold text-red-600">
+                <div className="flex items-center gap-2 text-sm font-semibold text-red-600 mb-3">
                   <span>{item.company}</span>
                   <span className="text-gray-400 font-normal">• {item.location}</span>
                 </div>
                 {item.companySubtitle && (
-                  <p className="text-xs text-gray-400 italic mt-1">
+                  <p className="text-xs text-gray-400 italic mb-3">
                     {item.companySubtitle}
                   </p>
                 )}
-              </Card.Header>
 
-              <Card.Body>
                 <p className="text-sm text-gray-600 leading-relaxed mb-4">
                   {item.summary}
                 </p>
@@ -71,15 +67,15 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
                     />
                   ))}
                 </div>
-              </Card.Body>
 
-              <Card.Footer className="pt-4 border-t border-gray-100">
-                <TechTagList tags={item.technologies} />
-              </Card.Footer>
-            </Card>
-          </li>
+                <div className="pt-4 border-t border-gray-100">
+                  <TechTagList tags={item.technologies} />
+                </div>
+              </Card>
+            </TimelineContent>
+          </TimelineItem>
         ))}
-      </ol>
+      </Timeline>
     </Section>
   );
 };

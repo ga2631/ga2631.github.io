@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Card, Button, Badge } from 'flowbite-react';
 import { ProjectItem } from '../types/index.ts';
 import {
   CodeIcon,
@@ -12,7 +13,6 @@ import {
   ExternalLinkIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../i18n';
-import { Card, Button, Badge } from './common';
 import { Section } from './ui';
 import { ModalCaseStudy } from './composite';
 import { trackProjectModalOpen, trackProjectLinkClick, trackEvent } from '../utils/analytics';
@@ -57,7 +57,6 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
         if (response.ok) {
           const data: GitHubRepo[] = await response.json();
           if (isMounted) {
-            // Filter out forks or keep all non-forks
             const ownRepos = data.filter((r: any) => !r.fork);
             setRepos(ownRepos.length > 0 ? ownRepos : data);
           }
@@ -75,7 +74,6 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
     };
   }, []);
 
-  // Distinct language / tech tag badge colors
   const getTechColorInfo = (name: string = ''): { color: string; bg: string; border: string } => {
     const n = name.toLowerCase().trim();
 
@@ -143,7 +141,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
       return { color: '#fb7185', bg: 'rgba(251, 113, 133, 0.12)', border: 'rgba(251, 113, 133, 0.35)' };
     }
 
-    return { color: 'var(--text-accent)', bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.25)' };
+    return { color: '#dc2626', bg: 'rgba(239, 68, 68, 0.08)', border: 'rgba(239, 68, 68, 0.25)' };
   };
 
   const formatDate = (dateStr: string): string => {
@@ -166,59 +164,53 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
       title={t.title}
       subtitle={t.subtitle}
     >
-      {/* Primary View Switcher Tabs (Flowbite Button Group / Pills) */}
+      {/* Primary View Switcher Tabs using Flowbite Buttons */}
       <div className="flex items-center justify-center gap-2 mb-10 flex-wrap">
         <Button
-          variant="unstyled"
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-2 cursor-pointer border ${
-            activeTab === 'all'
-              ? 'bg-red-600 text-white border-red-600 shadow-xs'
-              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 hover:text-gray-900'
-          }`}
+          color={activeTab === 'all' ? 'failure' : 'light'}
+          size="sm"
           onClick={() => {
             setActiveTab('all');
             trackEvent('project_tab_switch', { tab: 'all' });
           }}
         >
-          <span>{t.allWorks}</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${activeTab === 'all' ? 'bg-red-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
-            {projects.length + (repos.length || 3)}
+          <span className="flex items-center gap-2">
+            <span>{t.allWorks}</span>
+            <Badge color={activeTab === 'all' ? 'failure' : 'gray'} size="xs">
+              {projects.length + (repos.length || 3)}
+            </Badge>
           </span>
         </Button>
         <Button
-          variant="unstyled"
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-2 cursor-pointer border ${
-            activeTab === 'case-studies'
-              ? 'bg-red-600 text-white border-red-600 shadow-xs'
-              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 hover:text-gray-900'
-          }`}
+          color={activeTab === 'case-studies' ? 'failure' : 'light'}
+          size="sm"
           onClick={() => {
             setActiveTab('case-studies');
             trackEvent('project_tab_switch', { tab: 'case-studies' });
           }}
-          icon={<SparklesIcon size={15} />}
         >
-          <span>{t.caseStudies}</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${activeTab === 'case-studies' ? 'bg-red-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
-            {projects.length}
+          <span className="flex items-center gap-2">
+            <SparklesIcon size={15} />
+            <span>{t.caseStudies}</span>
+            <Badge color={activeTab === 'case-studies' ? 'failure' : 'gray'} size="xs">
+              {projects.length}
+            </Badge>
           </span>
         </Button>
         <Button
-          variant="unstyled"
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-2 cursor-pointer border ${
-            activeTab === 'github'
-              ? 'bg-red-600 text-white border-red-600 shadow-xs'
-              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 hover:text-gray-900'
-          }`}
+          color={activeTab === 'github' ? 'failure' : 'light'}
+          size="sm"
           onClick={() => {
             setActiveTab('github');
             trackEvent('project_tab_switch', { tab: 'github' });
           }}
-          icon={<GitRepoIcon size={15} />}
         >
-          <span>{t.githubRepos}</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${activeTab === 'github' ? 'bg-red-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
-            {repos.length || 'Live'}
+          <span className="flex items-center gap-2">
+            <GitRepoIcon size={15} />
+            <span>{t.githubRepos}</span>
+            <Badge color={activeTab === 'github' ? 'failure' : 'gray'} size="xs">
+              {repos.length || 'Live'}
+            </Badge>
           </span>
         </Button>
       </div>
@@ -240,74 +232,76 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                 });
               }}
             >
-              <Card.Header className="mb-3">
+              <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <Badge variant="cyan">{project.category}</Badge>
-                  <Badge variant="purple" size="sm">
+                  <Badge color="info" size="xs">{project.category}</Badge>
+                  <Badge color="purple" size="xs">
                     {t.enterpriseSystem}
                   </Badge>
                 </div>
 
-                <h5 className="text-lg font-bold text-gray-900 mb-1 leading-snug line-clamp-2">{project.title}</h5>
+                <h5 className="text-lg font-bold text-gray-900 mb-1 leading-snug line-clamp-2">
+                  {project.title}
+                </h5>
 
                 {project.company && (
                   <div className="text-xs font-semibold text-red-600 mb-2">
                     {project.company} {project.role ? `• ${project.role}` : ''}
                   </div>
                 )}
-              </Card.Header>
 
-              <Card.Body className="mb-4">
-                <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
+                <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed mb-4">
                   {project.shortDescription || project.description}
                 </p>
-              </Card.Body>
 
-              <Card.Footer className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-3">
-                <div className="flex flex-wrap gap-1.5">
-                  {project.tags.slice(0, 4).map((tech: string) => {
-                    const info = getTechColorInfo(tech);
-                    return (
-                      <span
-                        key={tech}
-                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-medium border"
-                        style={{
-                          color: info.color,
-                          backgroundColor: info.bg,
-                          borderColor: info.border,
-                        }}
-                      >
+                <div className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {project.tags.slice(0, 4).map((tech: string) => {
+                      const info = getTechColorInfo(tech);
+                      return (
                         <span
-                          className="w-1.5 h-1.5 rounded-full"
+                          key={tech}
+                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-medium border"
                           style={{
-                            backgroundColor: info.color,
+                            color: info.color,
+                            backgroundColor: info.bg,
+                            borderColor: info.border,
                           }}
-                        />
-                        {tech}
-                      </span>
-                    );
-                  })}
-                  {project.tags.length > 4 && (
-                    <Badge variant="rose">
-                      +{project.tags.length - 4} {tCommon.more}
-                    </Badge>
-                  )}
-                </div>
+                        >
+                          <span
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{
+                              backgroundColor: info.color,
+                            }}
+                          />
+                          {tech}
+                        </span>
+                      );
+                    })}
+                    {project.tags.length > 4 && (
+                      <Badge color="pink" size="xs">
+                        +{project.tags.length - 4} {tCommon.more}
+                      </Badge>
+                    )}
+                  </div>
 
-                <div className="flex items-center justify-end w-full pt-1">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveProject(project);
-                    }}
-                    icon={<ExternalLinkIcon size={15} />}
-                  >
-                    <span>{t.viewArchitecture}</span>
-                  </Button>
+                  <div className="flex items-center justify-end w-full pt-1">
+                    <Button
+                      color="failure"
+                      size="xs"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveProject(project);
+                      }}
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <span>{t.viewArchitecture}</span>
+                        <ExternalLinkIcon size={14} />
+                      </span>
+                    </Button>
+                  </div>
                 </div>
-              </Card.Footer>
+              </div>
             </Card>
           ))}
 
@@ -316,12 +310,10 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
           <>
             {[1, 2, 3].map((i) => (
               <Card key={`skeleton-${i}`} className="p-6 animate-pulse">
-                <Card.Body>
-                  <div className="w-3/5 h-5 bg-gray-200 rounded mb-3" />
-                  <div className="w-full h-3.5 bg-gray-100 rounded mb-2" />
-                  <div className="w-4/5 h-3.5 bg-gray-100 rounded mb-5" />
-                  <div className="w-2/5 h-4 bg-gray-200 rounded" />
-                </Card.Body>
+                <div className="w-3/5 h-5 bg-gray-200 rounded mb-3" />
+                <div className="w-full h-3.5 bg-gray-100 rounded mb-2" />
+                <div className="w-4/5 h-3.5 bg-gray-100 rounded mb-5" />
+                <div className="w-2/5 h-4 bg-gray-200 rounded" />
               </Card>
             ))}
           </>
@@ -338,12 +330,12 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
 
             return (
               <Card key={repo.id} className="p-6 flex flex-col h-full hover:shadow-md transition-shadow">
-                <Card.Header className="mb-3">
+                <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <Badge variant="cyan" icon={<GitRepoIcon size={13} />}>
+                    <Badge color="info" size="xs" icon={() => <GitRepoIcon size={12} className="mr-1" />}>
                       {t.publicRepo}
                     </Badge>
-                    <Badge size="sm">
+                    <Badge color="gray" size="xs">
                       {formatDate(repo.updated_at)}
                     </Badge>
                   </div>
@@ -358,108 +350,110 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                       {repo.name}
                     </a>
                   </h5>
-                </Card.Header>
 
-                <Card.Body className="mb-4">
-                  <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
+                  <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed mb-4">
                     {repo.description || 'Public GitHub repository by @ga2631 with active source code and configuration.'}
                   </p>
-                </Card.Body>
 
-                <Card.Footer className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-3">
-                  <div className="flex items-center justify-between gap-2 text-xs text-gray-500 w-full">
-                    {repo.language && (
-                      <div className="inline-flex items-center gap-1.5 font-bold" style={{ color: mainLangInfo.color }}>
-                        <span
-                          className="w-2 h-2 rounded-full"
-                          style={{
-                            backgroundColor: mainLangInfo.color,
-                            boxShadow: `0 0 8px ${mainLangInfo.color}`,
-                          }}
-                        />
-                        <span>{repo.language}</span>
+                  <div className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-3">
+                    <div className="flex items-center justify-between gap-2 text-xs text-gray-500 w-full">
+                      {repo.language && (
+                        <div className="inline-flex items-center gap-1.5 font-bold" style={{ color: mainLangInfo.color }}>
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{
+                              backgroundColor: mainLangInfo.color,
+                              boxShadow: `0 0 8px ${mainLangInfo.color}`,
+                            }}
+                          />
+                          <span>{repo.language}</span>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-3 ml-auto">
+                        <span className="inline-flex items-center gap-1 text-gray-600 font-medium" title="Stars">
+                          <StarIcon size={14} className="text-yellow-400" />
+                          <span>{repo.stargazers_count}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-gray-600 font-medium" title="Forks">
+                          <GitForkIcon size={14} className="text-gray-400" />
+                          <span>{repo.forks_count}</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    {repoTags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {repoTags.slice(0, 4).map((tag: string) => {
+                          const info = getTechColorInfo(tag);
+                          return (
+                            <span
+                              key={tag}
+                              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-medium border"
+                              style={{
+                                color: info.color,
+                                backgroundColor: info.bg,
+                                borderColor: info.border,
+                              }}
+                            >
+                              <span
+                                className="w-1.5 h-1.5 rounded-full"
+                                style={{
+                                  backgroundColor: info.color,
+                                }}
+                              />
+                              {tag}
+                            </span>
+                          );
+                        })}
+                        {repoTags.length > 4 && (
+                          <Badge color="pink" size="xs">
+                            +{repoTags.length - 4} {tCommon.more}
+                          </Badge>
+                        )}
                       </div>
                     )}
 
-                    <div className="flex items-center gap-3 ml-auto">
-                      <span className="inline-flex items-center gap-1 text-gray-600 font-medium" title="Stars">
-                        <StarIcon size={14} className="text-yellow-400" />
-                        <span>{repo.stargazers_count}</span>
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-gray-600 font-medium" title="Forks">
-                        <GitForkIcon size={14} className="text-gray-400" />
-                        <span>{repo.forks_count}</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {repoTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {repoTags.slice(0, 4).map((tag: string) => {
-                        const info = getTechColorInfo(tag);
-                        return (
-                          <span
-                            key={tag}
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-medium border"
-                            style={{
-                              color: info.color,
-                              backgroundColor: info.bg,
-                              borderColor: info.border,
-                            }}
-                          >
-                            <span
-                              className="w-1.5 h-1.5 rounded-full"
-                              style={{
-                                backgroundColor: info.color,
-                              }}
-                            />
-                            {tag}
-                          </span>
-                        );
-                      })}
-                      {repoTags.length > 4 && (
-                        <Badge variant="rose">
-                          +{repoTags.length - 4} {tCommon.more}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-2 pt-1">
-                    <Button
-                      as="a"
-                      href={repo.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        trackProjectLinkClick(repo.name, repo.html_url, 'github_repo')
-                      }
-                      icon={<GithubIcon size={15} />}
-                    >
-                      <span>{t.sourceCode}</span>
-                    </Button>
-
-                    {repo.homepage && (
+                    <div className="flex items-center gap-2 pt-1">
                       <Button
                         as="a"
-                        href={repo.homepage}
+                        href={repo.html_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        variant="secondary"
-                        size="sm"
-                        title="Live Preview"
+                        color="light"
+                        size="xs"
                         onClick={() =>
-                          trackProjectLinkClick(repo.name, repo.homepage, 'live_demo')
+                          trackProjectLinkClick(repo.name, repo.html_url, 'github_repo')
                         }
-                        icon={<ExternalLinkIcon size={14} />}
                       >
-                        <span>{t.demo}</span>
+                        <span className="flex items-center gap-1.5">
+                          <GithubIcon size={14} />
+                          <span>{t.sourceCode}</span>
+                        </span>
                       </Button>
-                    )}
+
+                      {repo.homepage && (
+                        <Button
+                          as="a"
+                          href={repo.homepage}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          color="light"
+                          size="xs"
+                          title="Live Preview"
+                          onClick={() =>
+                            trackProjectLinkClick(repo.name, repo.homepage, 'live_demo')
+                          }
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <ExternalLinkIcon size={14} />
+                            <span>{t.demo}</span>
+                          </span>
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </Card.Footer>
+                </div>
               </Card>
             );
           })}
@@ -477,3 +471,5 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
     </Section>
   );
 };
+
+export default Projects;

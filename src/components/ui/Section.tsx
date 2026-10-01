@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge } from '../common/Badge';
+import { Badge } from 'flowbite-react';
 
 export interface SectionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   badge?: React.ReactNode;
@@ -38,9 +38,11 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           {badgeWrapper ? (
             badgeWrapper
           ) : badge ? (
-            <Badge variant="section" icon={badgeIcon}>
-              {badge}
-            </Badge>
+            <div className={`mb-3 inline-flex ${align === 'center' ? 'justify-center' : ''}`}>
+              <Badge color="failure" size="sm" icon={badgeIcon ? () => <>{badgeIcon}</> : undefined}>
+                {badge}
+              </Badge>
+            </div>
           ) : null}
 
           {title && (

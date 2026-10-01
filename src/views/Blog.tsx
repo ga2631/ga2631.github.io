@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { Button, Badge, Spinner } from 'flowbite-react';
 import { BlogPost } from '../types/index.ts';
 import {
   BookOpenIcon,
@@ -17,7 +18,6 @@ import {
   getBlogCategories,
   BlogCategoryDef,
 } from '../services/blogService';
-import { Button, Badge } from '../components/common';
 import { SectionHeader } from '../components/ui';
 import {
   BlogSidebar,
@@ -25,7 +25,6 @@ import {
   BlogItem,
   EmptyState,
   BadgeSchedule,
-  BlogTopic,
   ModalArticle,
   processArticleToc,
 } from '../components/composite';
@@ -34,7 +33,6 @@ import {
   trackBlogSearch,
   trackBlogCategoryFilter,
   trackBlogTagClick,
-  trackEvent,
 } from '../utils/analytics';
 
 export interface BlogProps {
@@ -167,7 +165,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
       const containerRect = container.getBoundingClientRect();
       const offsetThreshold = 140;
 
-      // Detect when main article title scrolls past the pinned modal header
       const titleEl = document.getElementById('article-modal-title');
       if (titleEl) {
         const titleRect = titleEl.getBoundingClientRect();
@@ -248,7 +245,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     return counts;
   }, [fullCatalog]);
 
-  // Sync with URL hash for deep linking (e.g. #post-slug or #/blog/post-slug for legacy links)
+  // Sync with URL hash for deep linking
   useEffect(() => {
     const checkHashForPost = () => {
       const hash = window.location.hash;
@@ -279,7 +276,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isMobileSidebarOpen, activePost]);
 
-  // Open / Close Post helper
   const handleOpenPost = (post: BlogPost) => {
     setActivePost(post);
     setIsModalHeaderTitleShown(false);
@@ -310,7 +306,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
 
   const isFiltering = selectedCategory !== 'all' || selectedTag !== 'all' || !!searchQuery.trim();
 
-  // Filter posts based on category, search query, and selected tag:
+  // Filter posts based on category, search query, and selected tag
   const filteredPosts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     const sourcePosts = isFiltering ? fullCatalog : displayedPosts;
@@ -337,7 +333,6 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
     setSelectedTag('all');
   };
 
-  // Active Category Object
   const currentCategoryDef = useMemo(() => {
     const found = categoriesList.find((c) => c.id === selectedCategory);
     if (found) return found;
@@ -354,19 +349,21 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
 
   return (
     <div className="w-full min-h-screen bg-gray-50 relative">
-      {/* Mobile Top Filter Trigger Bar (Visible on <= 1024px) */}
+      {/* Mobile Top Filter Trigger Bar */}
       <div className="lg:hidden sticky top-[72px] z-30 px-4 py-2.5 bg-white/90 backdrop-blur-md border-b border-gray-200 flex items-center justify-between shadow-xs">
         <Button
-          variant="secondary"
-          size="sm"
+          color="light"
+          size="xs"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
           aria-expanded={isMobileSidebarOpen}
-          icon={<FilterIcon size={16} />}
         >
-          <span>{t.categoriesTitle || 'Chuyên đề'}</span>
-          <Badge variant="cyan" size="sm" className="ml-1">
-            {filteredPosts.length}
-          </Badge>
+          <span className="flex items-center gap-2">
+            <FilterIcon size={14} />
+            <span>{t.categoriesTitle || 'Chuyên đề'}</span>
+            <Badge color="info" size="xs">
+              {filteredPosts.length}
+            </Badge>
+          </span>
         </Button>
       </div>
 
@@ -381,7 +378,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
           />
         )}
 
-        {/* ================= LEFT SIDEBAR (Composed via BlogSidebar: BlogTopic + BlogTagsKeyword) ================= */}
+        {/* ================= LEFT SIDEBAR ================= */}
         <BlogSidebar
           isMobileOpen={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -421,7 +418,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
               subtitle={t.subtitle}
             />
 
-            {/* Articles Container (Wraps Sticky Filter Controls & Article Cards) */}
+            {/* Articles Container */}
             <div className="flex flex-col">
               {/* Search & Active Filters via BlogInputFilter */}
               <BlogInputFilter
@@ -483,17 +480,24 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
               )}
             </div>
 
-            {/* Load More Button if more articles exist in unfiltered paginated view */}
+            {/* Load More Button */}
             {!isFiltering && hasMoreMonths && filteredPosts.length > 0 && (
               <div className="flex justify-center mt-10 mb-6">
                 <Button
-                  variant="secondary"
+                  color="light"
+                  size="md"
                   onClick={handleLoadMore}
-                  isLoading={isLoadingMore}
-                  loadingText={t.loadingMore || 'Đang tải dữ liệu...'}
+                  disabled={isLoadingMore}
                   className="min-w-[180px]"
                 >
-                  <span>{t.loadMoreArticles || 'Tải thêm bài viết'}</span>
+                  {isLoadingMore ? (
+                    <span className="flex items-center gap-2">
+                      <Spinner size="sm" />
+                      <span>{t.loadingMore || 'Đang tải dữ liệu...'}</span>
+                    </span>
+                  ) : (
+                    <span>{t.loadMoreArticles || 'Tải thêm bài viết'}</span>
+                  )}
                 </Button>
               </div>
             )}
@@ -548,5 +552,4 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
   );
 };
 
-Blog.displayName = 'Blog';
 export default Blog;

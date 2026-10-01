@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
+import { Card, Badge, Button } from 'flowbite-react';
 import { EducationItem, CertificationItem } from '../types/index.ts';
 import { GraduationCapIcon, AwardIcon, ExternalLinkIcon } from './Icons.tsx';
 import { UITranslation } from '../i18n';
-import { Card, Badge, Button } from './common';
 import { Section } from './ui';
 
 interface EducationCertificationsProps {
@@ -36,7 +36,7 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
 
           {educations.map((edu) => (
             <Card key={edu.id} className="p-5 hover:shadow-md transition-shadow">
-              <Card.Header className="mb-3">
+              <div className="flex flex-col h-full">
                 <h5 className="text-lg font-bold text-gray-900 mb-1 leading-snug">{edu.degree}</h5>
                 <div className="text-sm font-semibold text-red-600">{edu.institution}</div>
                 <div className="text-xs text-gray-400 mt-1 mb-3">
@@ -45,14 +45,14 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
 
                 {edu.gpaOrHonors && (
                   <div className="mb-3">
-                    <Badge variant="emerald">{edu.gpaOrHonors}</Badge>
+                    <Badge color="success" size="xs">
+                      {edu.gpaOrHonors}
+                    </Badge>
                   </div>
                 )}
-              </Card.Header>
 
-              {edu.details && (
-                <Card.Body>
-                  <div className="flex flex-col gap-2 mt-2">
+                {edu.details && (
+                  <div className="flex flex-col gap-2 mt-2 pt-3 border-t border-gray-100">
                     {edu.details.map((detail, idx) => {
                       const [title, ...rest] = detail.split(': ');
                       return (
@@ -63,8 +63,8 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                       );
                     })}
                   </div>
-                </Card.Body>
-              )}
+                )}
+              </div>
             </Card>
           ))}
         </div>
@@ -78,8 +78,8 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
 
           {certifications.map((cert) => (
             <Card key={cert.id} className="p-5 hover:shadow-md transition-shadow">
-              <Card.Header className="mb-3">
-                <div className="flex justify-between items-start gap-3">
+              <div className="flex flex-col h-full">
+                <div className="flex justify-between items-start gap-3 mb-3">
                   <div>
                     <h5 className="text-lg font-bold text-gray-900 mb-1 leading-snug">
                       {cert.name}
@@ -88,16 +88,12 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                       {cert.issuer}
                     </div>
                   </div>
-                  <Badge 
-                    variant={cert.isCompleted ? "emerald" : "amber"}
-                  >
+                  <Badge color={cert.isCompleted ? 'success' : 'warning'} size="xs">
                     {cert.issueDate}
                   </Badge>
                 </div>
-              </Card.Header>
 
-              <Card.Footer className="pt-3 border-t border-gray-100">
-                <div className="flex justify-between items-center w-full">
+                <div className="pt-3 border-t border-gray-100 flex justify-between items-center w-full mt-auto">
                   {cert.badgeCode ? (
                     <span className="font-mono text-xs text-gray-400">
                       {t.credentialId}: {cert.badgeCode}
@@ -110,16 +106,17 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                       href={cert.credentialUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      variant="primary"
-                      size="sm"
-                      icon={<ExternalLinkIcon size={14} />}
-                      iconPosition="right"
+                      color="failure"
+                      size="xs"
                     >
-                      <span>{t.viewCredential}</span>
+                      <span className="flex items-center gap-1.5">
+                        <span>{t.viewCredential}</span>
+                        <ExternalLinkIcon size={14} />
+                      </span>
                     </Button>
                   )}
                 </div>
-              </Card.Footer>
+              </div>
             </Card>
           ))}
         </div>

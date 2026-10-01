@@ -1,12 +1,11 @@
 import React from 'react';
-import { Badge, BadgeVariant } from '../common/Badge';
+import { Badge } from 'flowbite-react';
 
 export interface TechTagListProps {
   tags: string[];
   selectedTag?: string;
   onTagClick?: (tag: string) => void;
   prefix?: string;
-  badgeVariant?: BadgeVariant;
   className?: string;
   itemClassName?: string;
   getItemStyle?: (tag: string) => React.CSSProperties | undefined;
@@ -18,7 +17,6 @@ export const TechTagList: React.FC<TechTagListProps> = ({
   selectedTag,
   onTagClick,
   prefix = '',
-  badgeVariant = 'default',
   className = '',
   itemClassName = '',
   getItemStyle,
@@ -35,10 +33,9 @@ export const TechTagList: React.FC<TechTagListProps> = ({
         return (
           <Badge
             key={tag}
-            variant={isSelected ? 'cyan' : badgeVariant}
-            isActive={isSelected}
-            interactive={Boolean(onTagClick)}
-            className={itemClassName}
+            color={isSelected ? 'failure' : 'gray'}
+            size="xs"
+            className={`${onTagClick ? 'cursor-pointer hover:bg-gray-200' : ''} ${itemClassName}`.trim()}
             style={customStyle}
             onClick={
               onTagClick
@@ -56,3 +53,5 @@ export const TechTagList: React.FC<TechTagListProps> = ({
     </div>
   );
 };
+
+export default TechTagList;

@@ -1,10 +1,12 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from 'flowbite-react';
 import { MenuIcon, VietnamFlagIcon, UKFlagIcon } from './Icons';
 import { UITranslation } from '../i18n';
 import { PersonalInfo } from '../types';
 import { DrawerMenu, NavItem } from './composite';
-import { Button } from './common';
 import { trackNavigation } from '../utils/analytics';
 
 interface HeaderProps {
@@ -63,13 +65,11 @@ export const Header: React.FC<HeaderProps> = ({
     setMobileMenuOpen(false);
     trackNavigation(href, href, 'desktop_header');
 
-    // If navigating to Blog page
     if (href.includes('/blog')) {
       router.push(`/${lang}/blog/`);
       return;
     }
 
-    // If on blog page and navigating to Home or section in Home
     if (currentRoute === 'blog') {
       if (href.includes('#')) {
         const hash = href.substring(href.indexOf('#'));
@@ -80,13 +80,11 @@ export const Header: React.FC<HeaderProps> = ({
       return;
     }
 
-    // If on home page and clicking Home / Top
     if (href === `/${lang}/` || href === '#hero' || href === '#' || href === '#/') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    // If on home page, scroll directly to section
     if (href.startsWith('#')) {
       const targetId = href.replace('#', '');
       const elem = document.getElementById(targetId);
@@ -144,25 +142,30 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-3 flex-shrink-0">
             {/* Desktop Language Switcher Toggle */}
             <Button
-              variant="unstyled"
-              className="h-9 min-w-[60px] px-3 rounded-lg bg-gray-100 text-gray-800 border border-gray-200 inline-flex items-center justify-center gap-1.5 text-xs font-semibold hover:bg-gray-200 hover:text-red-600 transition-all cursor-pointer focus:ring-2 focus:ring-gray-300"
+              color="light"
+              size="xs"
               onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}
               title={lang === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
               aria-label="Toggle Language"
-              icon={lang === 'vi' ? <VietnamFlagIcon size={16} /> : <UKFlagIcon size={16} />}
+              className="h-9 px-2"
             >
-              <span>{lang === 'vi' ? 'VI' : 'EN'}</span>
+              <span className="flex items-center gap-1.5 font-semibold">
+                {lang === 'vi' ? <VietnamFlagIcon size={16} /> : <UKFlagIcon size={16} />}
+                <span>{lang === 'vi' ? 'VI' : 'EN'}</span>
+              </span>
             </Button>
 
             {/* Mobile & Tablet Drawer Trigger Button */}
             <Button
-              variant="unstyled"
-              className="lg:hidden w-9 h-9 bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center text-gray-800 hover:bg-gray-200 hover:text-red-600 transition-all cursor-pointer focus:ring-2 focus:ring-gray-300"
+              color="light"
+              size="xs"
+              className="lg:hidden w-9 h-9 p-0 flex items-center justify-center"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open Navigation Drawer Menu"
               aria-expanded={mobileMenuOpen}
-              icon={<MenuIcon size={20} />}
-            />
+            >
+              <MenuIcon size={20} />
+            </Button>
           </div>
         </div>
       </header>

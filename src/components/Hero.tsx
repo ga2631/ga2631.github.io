@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
+import { Card, Button, Badge } from 'flowbite-react';
 import { PersonalInfo } from '../types';
 import { GithubIcon, LinkedinIcon, ZaloIcon, MailIcon, ExternalLinkIcon, CheckIcon } from './Icons';
 import { UITranslation } from '../i18n';
 import { getSecureMailtoUrl, getSecureZaloUrl } from '../utils/obfuscation';
-import { Card, Button } from './common';
 import { ButtonPrint } from './composite';
 import { trackSocialClick, trackNavigation, trackContactReveal } from '../utils/analytics';
 
@@ -33,7 +33,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 lg:gap-14 items-center">
           {/* Left Column: Visual Developer Profile Card */}
           <div className="flex justify-center lg:justify-start">
-            <Card className="avatar-card w-full max-w-[360px] p-6 text-center bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
+            <Card className="w-full max-w-[360px] p-6 text-center bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
               <div className="relative w-36 h-36 mx-auto mb-4">
                 {data.avatarUrl ? (
                   <img
@@ -55,9 +55,11 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 {data.fullName}
               </h3>
 
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200 mx-auto my-2 lg:hidden">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span>{data.availability}</span>
+              <div className="inline-flex justify-center mx-auto my-2 lg:hidden">
+                <Badge color="success" size="sm" className="inline-flex items-center gap-1.5 px-3 py-1">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-1.5"></span>
+                  <span>{data.availability}</span>
+                </Badge>
               </div>
 
               <p className="text-sm text-gray-500 mb-4">{data.location}</p>
@@ -83,12 +85,16 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                   href={data.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  variant="social-icon"
+                  color="light"
+                  size="sm"
+                  pill
                   aria-label="GitHub Profile"
                   title="GitHub @ga2631"
                   onClick={() => trackSocialClick('GitHub', data.githubUrl)}
-                  icon={<GithubIcon size={20} />}
-                />
+                  className="p-2"
+                >
+                  <GithubIcon size={18} />
+                </Button>
 
                 {data.linkedinUrl && (
                   <Button
@@ -96,50 +102,64 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                     href={data.linkedinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    variant="social-icon"
+                    color="light"
+                    size="sm"
+                    pill
                     aria-label="LinkedIn Profile"
                     title="LinkedIn"
                     onClick={() => trackSocialClick('LinkedIn', data.linkedinUrl!)}
-                    icon={<LinkedinIcon size={20} />}
-                  />
+                    className="p-2"
+                  >
+                    <LinkedinIcon size={18} />
+                  </Button>
                 )}
 
                 {data.zaloUrl && (
                   <Button
                     as="a"
                     href="#"
-                    variant="social-icon"
+                    color="light"
+                    size="sm"
+                    pill
                     aria-label="Zalo Chat"
                     title="Chat via Zalo"
                     onClick={handleZaloClick}
                     onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.currentTarget.href = getSecureZaloUrl();
                     }}
-                    icon={<ZaloIcon size={20} />}
-                  />
+                    className="p-2"
+                  >
+                    <ZaloIcon size={18} />
+                  </Button>
                 )}
 
                 <Button
                   as="a"
                   href="#"
-                  variant="social-icon"
+                  color="light"
+                  size="sm"
+                  pill
                   aria-label="Send Email"
                   title="Email"
                   onClick={handleEmailClick}
                   onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.currentTarget.href = getSecureMailtoUrl();
                   }}
-                  icon={<MailIcon size={20} />}
-                />
+                  className="p-2"
+                >
+                  <MailIcon size={18} />
+                </Button>
               </div>
             </Card>
           </div>
 
           {/* Right Column: Hero Headline & Summary */}
           <div className="text-center lg:text-left">
-            <div className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200 mb-5">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              <span>{data.availability}</span>
+            <div className="hidden lg:inline-flex mb-5">
+              <Badge color="success" size="sm" className="inline-flex items-center gap-1.5 px-3 py-1.5">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-1.5"></span>
+                <span>{data.availability}</span>
+              </Badge>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 font-heading mb-4 leading-tight">
@@ -155,27 +175,30 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
             </p>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-center lg:justify-start gap-4">
+            <div className="flex items-center justify-center lg:justify-start gap-4 flex-wrap">
               <Button
                 as="a"
                 href="#projects"
-                variant="primary"
+                color="failure"
+                size="md"
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   trackNavigation('#projects', 'Hero Projects CTA', 'hero_cta');
                   const elem = document.getElementById('projects');
                   if (elem) elem.scrollIntoView({ behavior: 'smooth' });
                 }}
-                icon={<ExternalLinkIcon size={16} />}
-                iconPosition="right"
               >
-                <span>{t.viewProjects}</span>
+                <span className="flex items-center gap-2">
+                  <span>{t.viewProjects}</span>
+                  <ExternalLinkIcon size={16} />
+                </span>
               </Button>
 
               <Button
                 as="a"
                 href="#contact"
-                variant="secondary"
+                color="light"
+                size="md"
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   trackNavigation('#contact', 'Hero Contact CTA', 'hero_cta');

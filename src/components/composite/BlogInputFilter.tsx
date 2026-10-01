@@ -1,8 +1,7 @@
 import React from 'react';
-import { FilterIcon } from '../Icons.tsx';
-import { InputSearch } from '../ui/InputSearch.tsx';
+import { TextInput, Button } from 'flowbite-react';
+import { FilterIcon, SearchIcon } from '../Icons.tsx';
 import { BadgeFilterChip } from './BadgeFilterChip.tsx';
-import { Button } from '../common/Button.tsx';
 
 export interface BlogInputFilterProps {
   searchQuery: string;
@@ -47,10 +46,13 @@ export const BlogInputFilter: React.FC<BlogInputFilterProps> = ({
         isStuck ? 'border-red-300 shadow-sm' : 'border-gray-200 shadow-xs'
       } ${className}`.trim()}
     >
-      <InputSearch
+      <TextInput
+        type="text"
         placeholder={searchPlaceholder}
         value={searchQuery}
-        onValueChange={onSearchChange}
+        onChange={(e) => onSearchChange(e.target.value)}
+        icon={() => <SearchIcon size={18} className="text-gray-400" />}
+        sizing="md"
       />
 
       {/* Active Filter Chips Bar */}
@@ -88,9 +90,10 @@ export const BlogInputFilter: React.FC<BlogInputFilterProps> = ({
           )}
 
           <Button
-            variant="text-reset"
+            color="light"
+            size="xs"
             onClick={onResetAll}
-            className="ml-auto text-xs text-red-600 hover:text-red-700 font-semibold cursor-pointer"
+            className="ml-auto text-red-600 hover:text-red-700 font-semibold cursor-pointer"
           >
             {resetLabel}
           </Button>

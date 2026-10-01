@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card } from '../common/Card';
-import { Button } from '../common/Button';
+import { Card, Button } from 'flowbite-react';
 
 export interface EmptyStateProps {
   icon?: React.ReactNode;
@@ -28,7 +27,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       className={`col-span-full py-12 px-6 text-center mt-3 bg-white border border-gray-200 rounded-lg shadow-xs ${className}`.trim()}
       style={style}
     >
-      <Card.Body>
+      <div className="flex flex-col items-center">
         {icon && (
           <div className="text-gray-400 mx-auto mb-4 flex justify-center">
             {icon}
@@ -44,24 +43,23 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             {description}
           </div>
         )}
-      </Card.Body>
 
-      {(action || (actionText && onAction)) && (
-        <Card.Footer className="flex justify-center border-t-0 p-0">
-          {action ? (
-            action
-          ) : actionText && onAction ? (
-            <Button
-              variant="secondary"
-              size="sm"
-              className="mt-2"
-              onClick={onAction}
-            >
-              {actionText}
-            </Button>
-          ) : null}
-        </Card.Footer>
-      )}
+        {(action || (actionText && onAction)) && (
+          <div className="flex justify-center mt-2">
+            {action ? (
+              action
+            ) : actionText && onAction ? (
+              <Button
+                color="light"
+                size="sm"
+                onClick={onAction}
+              >
+                {actionText}
+              </Button>
+            ) : null}
+          </div>
+        )}
+      </div>
     </Card>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
+import { Badge } from 'flowbite-react';
 import { TagIcon } from '../Icons.tsx';
-import { Badge } from '../common/Badge.tsx';
 
 export interface BlogTagsKeywordProps {
   tags: string[];
@@ -32,12 +32,13 @@ export const BlogTagsKeyword: React.FC<BlogTagsKeywordProps> = ({
 
       <div className="flex flex-wrap gap-1.5">
         <Badge
-          variant="tag-pill"
-          isActive={selectedTag === 'all'}
-          count={totalPostsCount}
+          color={selectedTag === 'all' ? 'failure' : 'gray'}
+          size="xs"
+          className="cursor-pointer hover:bg-gray-200"
           onClick={() => onSelectTag('all')}
         >
-          {allTopicsLabel}
+          <span>{allTopicsLabel}</span>
+          <span className="ml-1 opacity-75">({totalPostsCount})</span>
         </Badge>
         {tags.map((tag) => {
           const count = tagCounts[tag] || 0;
@@ -45,12 +46,13 @@ export const BlogTagsKeyword: React.FC<BlogTagsKeywordProps> = ({
           return (
             <Badge
               key={tag}
-              variant="tag-pill"
-              isActive={isTagActive}
-              count={count}
+              color={isTagActive ? 'failure' : 'gray'}
+              size="xs"
+              className="cursor-pointer hover:bg-gray-200"
               onClick={() => onSelectTag(isTagActive ? 'all' : tag)}
             >
-              #{tag}
+              <span>#{tag}</span>
+              <span className="ml-1 opacity-75">({count})</span>
             </Badge>
           );
         })}

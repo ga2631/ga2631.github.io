@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button, ButtonVariant, ButtonSize } from '../common/Button';
-import { ButtonFloating } from '../ui/ButtonFloating';
+import { Button } from 'flowbite-react';
 import {
   DownloadIcon,
   MailIcon,
@@ -22,8 +21,7 @@ export interface ButtonPrintProps {
   tPrintCv?: UITranslation['printCv'];
   onPrint?: () => void;
   variant?: 'floating' | 'default';
-  buttonVariant?: ButtonVariant;
-  size?: ButtonSize;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   label?: React.ReactNode;
   title?: string;
   className?: string;
@@ -38,16 +36,14 @@ export const ButtonPrint: React.FC<ButtonPrintProps> = ({
   tPrintCv,
   onPrint,
   variant = 'default',
-  buttonVariant = 'primary',
   size = 'md',
   label,
   title,
   className = '',
   id,
-  iconSize,
+  iconSize = 16,
   tCommon,
   children,
-  ...restProps
 }) => {
   const handlePrint = () => {
     trackPrintCV('trigger_print');
@@ -63,30 +59,34 @@ export const ButtonPrint: React.FC<ButtonPrintProps> = ({
 
   const buttonElement =
     variant === 'floating' ? (
-      <ButtonFloating
+      <Button
         id={id || 'floating-save-cv-btn'}
-        floatingVariant="primary"
+        color="failure"
+        pill
         onClick={handlePrint}
         title={displayTitle}
         aria-label={typeof displayLabel === 'string' ? displayLabel : displayTitle}
-        icon={<DownloadIcon size={iconSize || 18} />}
-        label={displayLabel}
-        className={className}
-        {...restProps}
-      />
+        className={`shadow-lg h-11 ${className}`.trim()}
+      >
+        <span className="flex items-center gap-2">
+          <DownloadIcon size={iconSize || 18} />
+          {displayLabel && <span className="text-sm font-semibold">{displayLabel}</span>}
+        </span>
+      </Button>
     ) : (
       <Button
         id={id}
-        variant={buttonVariant}
+        color="light"
         size={size}
         onClick={handlePrint}
         title={displayTitle}
         aria-label={typeof displayLabel === 'string' ? displayLabel : displayTitle}
-        icon={<DownloadIcon size={iconSize || 16} />}
         className={className}
-        {...restProps}
       >
-        <span>{displayLabel}</span>
+        <span className="flex items-center gap-2">
+          <DownloadIcon size={iconSize || 16} />
+          <span>{displayLabel}</span>
+        </span>
       </Button>
     );
 

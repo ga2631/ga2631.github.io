@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Modal } from '../common/Modal';
-import { CloseIcon, ZoomInIcon, ZoomOutIcon, Maximize2Icon, RotateCcwIcon } from '../Icons';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'flowbite-react';
+import { ZoomInIcon, ZoomOutIcon, Maximize2Icon, RotateCcwIcon } from '../Icons';
 
 export interface ModalDiagramViewerProps {
   isOpen: boolean;
@@ -17,7 +17,6 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
   onClose,
   svgContent,
   title = 'Diagram Fit View',
-  closeAriaLabel = 'Close diagram view',
 }) => {
   const [zoom, setZoom] = useState<number>(1);
   const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -29,7 +28,6 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
     initialPanY: 0,
   });
 
-  // Reset zoom and pan when opening a new diagram
   useEffect(() => {
     if (isOpen) {
       setZoom(1);
@@ -58,7 +56,6 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      // Only drag with left mouse click
       if (e.button !== 0) return;
       setIsDragging(true);
       dragStartRef.current = {
@@ -100,96 +97,78 @@ export const ModalDiagramViewer: React.FC<ModalDiagramViewerProps> = ({
 
   return (
     <Modal
-      isOpen={isOpen}
+      show={isOpen}
       onClose={onClose}
-      showCloseButton={false}
-      closeAriaLabel={closeAriaLabel}
-      ariaLabel={title}
-      backdropClassName="fixed inset-0 z-[1100] flex items-center justify-center p-2 sm:p-4 bg-gray-900/60 backdrop-blur-xs"
-      contentClassName="relative w-[96vw] max-w-7xl h-[92vh] bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col overflow-hidden"
-      header={
-        <div
-          className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-white/95 backdrop-blur-md flex-shrink-0 gap-3"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="flex items-center min-w-0 pr-2">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-50 text-red-600 border border-red-200 rounded-lg text-xs font-semibold max-w-[200px] sm:max-w-xs truncate" title={title}>
-              <Maximize2Icon size={14} className="flex-shrink-0" />
-              <span className="truncate">{title}</span>
+      size="7xl"
+      dismissible
+    >
+      <ModalHeader>
+        <div className="flex items-center justify-between gap-4 w-full pr-6">
+          <div className="flex items-center gap-2">
+            <Maximize2Icon size={16} className="text-red-600 flex-shrink-0" />
+            <span className="font-bold text-gray-900 text-sm sm:text-base truncate max-w-md">
+              {title}
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-lg border border-gray-200 text-xs text-gray-700">
-            <button
-              type="button"
-              className="w-7 h-7 rounded-md flex items-center justify-center text-gray-600 hover:bg-white hover:text-red-600 transition-colors cursor-pointer"
+          <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg border border-gray-200 text-xs">
+            <Button
+              color="light"
+              size="xs"
               onClick={handleZoomOut}
               title="Zoom out (-)"
-              aria-label="Zoom out"
+              className="p-1"
             >
               <ZoomOutIcon size={14} />
-            </button>
-            <span className="font-mono font-bold px-1 min-w-[42px] text-center" title="Current zoom level">
+            </Button>
+            <span className="font-mono font-bold px-2 text-center min-w-[45px]">
               {Math.round(zoom * 100)}%
             </span>
-            <button
-              type="button"
-              className="w-7 h-7 rounded-md flex items-center justify-center text-gray-600 hover:bg-white hover:text-red-600 transition-colors cursor-pointer"
+            <Button
+              color="light"
+              size="xs"
               onClick={handleZoomIn}
               title="Zoom in (+)"
-              aria-label="Zoom in"
+              className="p-1"
             >
               <ZoomInIcon size={14} />
-            </button>
-            <div className="w-px h-4 bg-gray-300 mx-1" />
-            <button
-              type="button"
-              className="px-2.5 py-1 rounded-md flex items-center gap-1.5 text-gray-600 hover:bg-white hover:text-red-600 transition-colors cursor-pointer font-semibold"
+            </Button>
+            <Button
+              color="light"
+              size="xs"
               onClick={handleResetZoom}
               title="Reset view (100%)"
-              aria-label="Reset zoom and position"
+              className="ml-1"
             >
-              <RotateCcwIcon size={13} />
-              <span>Reset</span>
-            </button>
-          </div>
-
-          <div className="flex items-center">
-            <button
-              type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center cursor-pointer transition-colors"
-              onClick={onClose}
-              aria-label={closeAriaLabel}
-              title={`${closeAriaLabel} (Esc)`}
-            >
-              <CloseIcon size={18} />
-            </button>
+              <span className="flex items-center gap-1">
+                <RotateCcwIcon size={12} />
+                <span>Reset</span>
+              </span>
+            </Button>
           </div>
         </div>
-      }
-      footer={
-        <div className="px-4 py-2 border-t border-gray-200 bg-gray-50 text-center text-xs text-gray-500 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-          <span>💡 Nhấp &amp; kéo để di chuyển • Cuộn chuột để phóng to/thu nhỏ • Nhấn <strong>Esc</strong> để đóng</span>
-        </div>
-      }
-    >
-      <div
-        className={`flex-1 overflow-hidden relative bg-gray-50/50 p-0 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-        onWheel={handleWheel}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onClick={(e) => e.stopPropagation()}
-      >
+      </ModalHeader>
+      <ModalBody className="p-0 overflow-hidden bg-gray-50 h-[70vh]">
         <div
-          className="w-full h-full flex items-center justify-center p-8 origin-center transition-transform duration-75"
-          style={{
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-          }}
-          dangerouslySetInnerHTML={{ __html: processedSvg }}
-        />
-      </div>
+          className={`w-full h-full relative p-0 select-none overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+          onWheel={handleWheel}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <div
+            className="w-full h-full flex items-center justify-center p-8 origin-center transition-transform duration-75"
+            style={{
+              transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+            }}
+            dangerouslySetInnerHTML={{ __html: processedSvg }}
+          />
+        </div>
+      </ModalBody>
+      <ModalFooter className="py-2 px-4 text-center text-xs text-gray-500 justify-center">
+        <span>💡 Nhấp &amp; kéo để di chuyển • Cuộn chuột để phóng to/thu nhỏ • Nhấn <strong>Esc</strong> để đóng</span>
+      </ModalFooter>
     </Modal>
   );
 };

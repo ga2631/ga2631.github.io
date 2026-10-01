@@ -1,6 +1,5 @@
 import React from 'react';
 import { FilterIcon, CloseIcon } from '../Icons.tsx';
-import { Button } from '../common/Button.tsx';
 import { BlogTopic } from './BlogTopic.tsx';
 import { BlogTagsKeyword } from './BlogTagsKeyword.tsx';
 import { BlogCategoryDef } from '@/services/blogService';
@@ -104,4 +103,4 @@ export const BlogSidebar: React.FC<BlogSidebarProps> = ({
   );
 };
 
-BlogSidebar.displayName = 'BlogSidebar';
+export default BlogSidebar;

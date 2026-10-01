@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
+import { Card } from 'flowbite-react';
 import { PersonalInfo, PrincipleItem } from '../types/index.ts';
 import { CodeIcon, AwardIcon, LayersIcon, RefreshCwIcon, ZapIcon } from './Icons.tsx';
 import { UITranslation } from '../i18n';
-import { Card } from './common';
 import { Section } from './ui';
 
 interface AboutProps {
@@ -65,21 +65,19 @@ export const About: React.FC<AboutProps> = ({ data, principles = [], t }) => {
           const config = getPrincipleConfig(item.title, index);
           return (
             <Card key={index} className="p-5 hover:shadow-md transition-shadow">
-              <Card.Header className="mb-3">
+              <div className="flex flex-col h-full">
                 <div
                   className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 border ${config.bgColor} ${config.borderColor} ${config.textColor}`}
                 >
                   {config.icon}
                 </div>
-                <h5 className="text-lg font-bold text-gray-900 leading-snug">
+                <h5 className="text-lg font-bold text-gray-900 leading-snug mb-2">
                   {item.title}
                 </h5>
-              </Card.Header>
-              <Card.Body>
                 <p className="text-sm text-gray-600 leading-relaxed">
                   {item.description}
                 </p>
-              </Card.Body>
+              </div>
             </Card>
           );
         })}

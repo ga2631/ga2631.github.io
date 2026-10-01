@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Card, Button, Badge } from 'flowbite-react';
 import { SkillCategory } from '../types/index.ts';
 import {
   CodeIcon,
@@ -10,7 +11,6 @@ import {
   LayersIcon,
 } from './Icons.tsx';
 import { UITranslation } from '../i18n';
-import { Card, Button } from './common';
 import { Section } from './ui';
 
 interface SkillsProps {
@@ -60,7 +60,6 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     };
   };
 
-  // Convert level text or score into normalized 1-5 numeric rating
   const getLevelScore = (level?: string | number): number => {
     if (typeof level === 'number') return Math.min(Math.max(level, 1), 5);
     const l = String(level || '').toLowerCase();
@@ -71,40 +70,19 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     return 1;
   };
 
-  // Map 1-5 scale into clean visual indicator dot and tag badge styles
-  const getLevelConfig = (level?: string | number) => {
+  const getLevelColor = (level?: string | number): 'purple' | 'info' | 'success' | 'warning' | 'gray' => {
     const score = getLevelScore(level);
     switch (score) {
       case 5:
-        return {
-          tagClass: 'bg-purple-100 text-purple-800 border-purple-200 hover:bg-purple-200',
-          label: `${t.level5} (5/5)`,
-          dotCount: 5,
-        };
+        return 'purple';
       case 4:
-        return {
-          tagClass: 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200',
-          label: `${t.level4} (4/5)`,
-          dotCount: 4,
-        };
+        return 'info';
       case 3:
-        return {
-          tagClass: 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200',
-          label: `${t.level3} (3/5)`,
-          dotCount: 3,
-        };
+        return 'success';
       case 2:
-        return {
-          tagClass: 'bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-200',
-          label: `${t.level2} (2/5)`,
-          dotCount: 2,
-        };
+        return 'warning';
       default:
-        return {
-          tagClass: 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200',
-          label: `${t.level1} (1/5)`,
-          dotCount: 1,
-        };
+        return 'gray';
     }
   };
 
@@ -116,92 +94,56 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
       title={t.title}
       subtitle={t.subtitle}
     >
-      {/* Standardized 1-5 Scale Proficiency Legend & Interactive Filter Bar */}
+      {/* Proficiency Filter Bar using Flowbite Buttons */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10 p-4 bg-gray-50 border border-gray-200 rounded-lg">
         <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t.legendTitle}:</span>
         <div className="flex items-center gap-2 flex-wrap justify-center">
           <Button
-            variant="unstyled"
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer border ${
-              selectedLevel === null
-                ? 'bg-red-600 text-white border-red-600 shadow-xs'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
-            }`}
+            color={selectedLevel === null ? 'failure' : 'light'}
+            size="xs"
             onClick={() => setSelectedLevel(null)}
-            aria-pressed={selectedLevel === null}
-            title={t.all || 'All'}
           >
-            <span>{t.all || 'All'}</span>
+            {t.all || 'All'}
           </Button>
           <Button
-            variant="unstyled"
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer border ${
-              selectedLevel === 5
-                ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-purple-50 hover:text-purple-700'
-            }`}
+            color={selectedLevel === 5 ? 'purple' : 'light'}
+            size="xs"
             onClick={() => setSelectedLevel(selectedLevel === 5 ? null : 5)}
-            aria-pressed={selectedLevel === 5}
-            title={`${t.level5} (5/5)`}
           >
-            <span>{t.level5}</span>
+            {t.level5} (5/5)
           </Button>
           <Button
-            variant="unstyled"
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer border ${
-              selectedLevel === 4
-                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-blue-50 hover:text-blue-700'
-            }`}
+            color={selectedLevel === 4 ? 'info' : 'light'}
+            size="xs"
             onClick={() => setSelectedLevel(selectedLevel === 4 ? null : 4)}
-            aria-pressed={selectedLevel === 4}
-            title={`${t.level4} (4/5)`}
           >
-            <span>{t.level4}</span>
+            {t.level4} (4/5)
           </Button>
           <Button
-            variant="unstyled"
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer border ${
-              selectedLevel === 3
-                ? 'bg-green-600 text-white border-green-600 shadow-xs'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-green-50 hover:text-green-700'
-            }`}
+            color={selectedLevel === 3 ? 'success' : 'light'}
+            size="xs"
             onClick={() => setSelectedLevel(selectedLevel === 3 ? null : 3)}
-            aria-pressed={selectedLevel === 3}
-            title={`${t.level3} (3/5)`}
           >
-            <span>{t.level3}</span>
+            {t.level3} (3/5)
           </Button>
           <Button
-            variant="unstyled"
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer border ${
-              selectedLevel === 2
-                ? 'bg-yellow-500 text-white border-yellow-500 shadow-xs'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-yellow-50 hover:text-yellow-700'
-            }`}
+            color={selectedLevel === 2 ? 'warning' : 'light'}
+            size="xs"
             onClick={() => setSelectedLevel(selectedLevel === 2 ? null : 2)}
-            aria-pressed={selectedLevel === 2}
-            title={`${t.level2} (2/5)`}
           >
-            <span>{t.level2}</span>
+            {t.level2} (2/5)
           </Button>
           <Button
-            variant="unstyled"
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer border ${
-              selectedLevel === 1
-                ? 'bg-gray-700 text-white border-gray-700 shadow-xs'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
-            }`}
+            color={selectedLevel === 1 ? 'gray' : 'light'}
+            size="xs"
             onClick={() => setSelectedLevel(selectedLevel === 1 ? null : 1)}
-            aria-pressed={selectedLevel === 1}
-            title={`${t.level1} (1/5)`}
           >
-            <span>{t.level1}</span>
+            {t.level1} (1/5)
           </Button>
         </div>
       </div>
 
-      {/* Flowbite Grid */}
+      {/* Grid of Skill Categories */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {categories.map((category, idx) => {
           const config = getCategoryConfig(category.title, idx);
@@ -215,8 +157,8 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
 
           return (
             <Card key={category.title} className="p-5 hover:shadow-md transition-shadow">
-              <Card.Header className="mb-3">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-3">
                   <div
                     className={`w-10 h-10 rounded-lg flex items-center justify-center border flex-shrink-0 ${config.bgColor} ${config.borderColor} ${config.textColor}`}
                   >
@@ -227,20 +169,20 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                     <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{category.description}</p>
                   </div>
                 </div>
-              </Card.Header>
 
-              <Card.Body>
                 {displayedSkills.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {displayedSkills.map((skill) => {
-                      const levelCfg = getLevelConfig(skill.level);
+                      const color = getLevelColor(skill.level);
                       return (
-                        <span
+                        <Badge
                           key={skill.name}
-                          className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border transition-colors cursor-default ${levelCfg.tagClass}`}
+                          color={color}
+                          size="xs"
+                          className="cursor-default"
                         >
                           {skill.name}
-                        </span>
+                        </Badge>
                       );
                     })}
                   </div>
@@ -249,7 +191,7 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
                     <span>{t.noSkills || 'No skills at this level.'}</span>
                   </div>
                 )}
-              </Card.Body>
+              </div>
             </Card>
           );
         })}
@@ -257,3 +199,5 @@ export const Skills: React.FC<SkillsProps> = ({ categories, t }) => {
     </Section>
   );
 };
+
+export default Skills;

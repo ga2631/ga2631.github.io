@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Drawer, DrawerHeader, DrawerItems, Button } from 'flowbite-react';
 import {
-  CloseIcon,
   UserIcon,
   BriefcaseIcon,
   CodeIcon,
@@ -54,29 +54,6 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
   personalInfo,
   onPrint,
 }) => {
-  // Lock body scroll when drawer is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
-  // Handle escape key to close
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
   const getItemIcon = (href: string) => {
     if (href.includes('about')) return <UserIcon size={18} />;
     if (href.includes('experience')) return <BriefcaseIcon size={18} />;
@@ -89,189 +66,156 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
   };
 
   return (
-    <div
-      className={`fixed inset-0 z-[1200] transition-all duration-300 ${
-        isOpen ? 'visible pointer-events-auto' : 'invisible pointer-events-none'
-      }`}
-      aria-hidden={!isOpen}
-      role="dialog"
-      aria-modal="true"
-    >
-      {/* Backdrop */}
-      <div
-        className={`absolute inset-0 bg-gray-900/50 backdrop-blur-xs transition-opacity duration-300 ${
-          isOpen ? 'opacity-100' : 'opacity-0'
-        }`}
-        onClick={onClose}
-        aria-label="Close navigation drawer"
-      />
-
-      {/* Slide-in Panel */}
-      <aside
-        className={`absolute top-0 right-0 bottom-0 w-[min(350px,86vw)] bg-white border-s border-gray-200 shadow-xl flex flex-col transition-transform duration-300 ease-out overflow-hidden ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        {/* Drawer Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-extrabold text-base flex-shrink-0 bg-red-600">
-              T
-            </div>
-            <div className="flex flex-col">
-              <span className="font-heading text-base font-extrabold text-gray-900 leading-tight">
-                {personalInfo.fullName}
-              </span>
-              <span className="text-xs text-gray-500 font-medium">
-                {personalInfo.jobTitle.split('|')[0].trim()}
-              </span>
-            </div>
+    <Drawer open={isOpen} onClose={onClose} position="right" className="w-[min(350px,86vw)] p-0">
+      <DrawerHeader
+        title={personalInfo.fullName}
+        titleIcon={() => (
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-extrabold text-sm bg-red-600 mr-2">
+            T
           </div>
-          <button
-            type="button"
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center cursor-pointer transition-colors"
-            onClick={onClose}
-            aria-label="Close drawer menu"
-          >
-            <CloseIcon size={18} />
-          </button>
+        )}
+        className="p-4 border-b border-gray-200"
+      />
+      <DrawerItems className="p-4 flex flex-col gap-5 overflow-y-auto flex-1">
+        <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 pl-1">
+          {tDrawer.navigation}
+        </div>
+        <nav className="flex flex-col gap-1">
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-700 font-medium text-sm transition-all hover:text-red-600 hover:bg-gray-100 group ${
+                item.isActive ? '!text-red-600 bg-red-50 border border-red-200 font-semibold' : ''
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                trackNavigation(item.href, item.href, 'mobile_drawer');
+                onNavClick(item.href);
+              }}
+            >
+              <div className="text-red-600 flex-shrink-0 mt-0.5">{getItemIcon(item.href)}</div>
+              <span className="flex-1">{item.label}</span>
+              {item.href.includes('blog') && (
+                <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-600 border border-red-200">
+                  {tCommon.articlesBadge}
+                </span>
+              )}
+              <ChevronRightIcon size={16} className="text-gray-400 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+            </a>
+          ))}
+        </nav>
+
+        {/* Preferences / Quick actions */}
+        <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 pl-1">
+          {tDrawer.preferences}
         </div>
 
-        {/* Drawer Body - Navigation Links */}
-        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 pl-1">
-            {tDrawer.navigation}
-          </div>
-          <nav className="flex flex-col gap-1">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-gray-700 font-medium text-sm transition-all hover:text-red-600 hover:bg-gray-100 group ${
-                  item.isActive ? '!text-red-600 bg-red-50 border border-red-200 font-semibold' : ''
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  trackNavigation(item.href, item.href, 'mobile_drawer');
-                  onNavClick(item.href);
+        <div className="flex flex-col gap-3.5 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          {/* Save CV PDF button */}
+          <ButtonPrint
+            label={`${tNav.saveCv} (PDF)`}
+            className="w-full justify-center"
+            size="sm"
+            onPrint={() => {
+              onClose();
+              setTimeout(() => onPrint(), 300);
+            }}
+          />
+
+          {/* Language Selection Buttons */}
+          <div className="flex flex-col gap-2">
+            <span className="text-xs font-semibold text-gray-600">
+              {tDrawer.language}
+            </span>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                color={lang === 'vi' ? 'failure' : 'light'}
+                size="xs"
+                onClick={() => {
+                  setLang('vi');
+                  onClose();
                 }}
               >
-                <div className="text-red-600 flex-shrink-0 mt-0.5">{getItemIcon(item.href)}</div>
-                <span className="flex-1">{item.label}</span>
-                {item.href.includes('blog') && (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-600 border border-red-200">
-                    {tCommon.articlesBadge}
-                  </span>
-                )}
-                <ChevronRightIcon size={16} className="text-gray-400 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
-              </a>
-            ))}
-          </nav>
-
-          {/* Quick Actions in Drawer */}
-          <div className="text-xs font-semibold uppercase tracking-wider text-gray-500 pl-1">
-            {tDrawer.preferences}
-          </div>
-
-          <div className="flex flex-col gap-3.5 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            {/* Save CV PDF button */}
-            <ButtonPrint
-              variant="default"
-              buttonVariant="primary"
-              className="w-full h-10 inline-flex items-center justify-center gap-2 px-4 text-sm font-semibold rounded-lg"
-              label={`${tNav.saveCv} (PDF)`}
-              onPrint={() => {
-                onClose();
-                setTimeout(() => onPrint(), 300);
-              }}
-            />
-
-            {/* Language Selection Buttons */}
-            <div className="flex flex-col gap-2">
-              <span className="text-xs font-semibold text-gray-600">
-                {tDrawer.language}
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  className={`h-9 w-full inline-flex items-center justify-center gap-2 px-3 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                    lang === 'vi'
-                      ? 'bg-red-600 text-white border-red-600 shadow-xs'
-                      : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100 hover:text-red-600'
-                  }`}
-                  onClick={() => {
-                    setLang('vi');
-                    onClose();
-                  }}
-                >
+                <span className="flex items-center gap-1.5 font-semibold">
                   <VietnamFlagIcon size={16} />
                   <span>Tiếng Việt</span>
-                </button>
-                <button
-                  className={`h-9 w-full inline-flex items-center justify-center gap-2 px-3 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                    lang === 'en'
-                      ? 'bg-red-600 text-white border-red-600 shadow-xs'
-                      : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100 hover:text-red-600'
-                  }`}
-                  onClick={() => {
-                    setLang('en');
-                    onClose();
-                  }}
-                >
+                </span>
+              </Button>
+              <Button
+                color={lang === 'en' ? 'failure' : 'light'}
+                size="xs"
+                onClick={() => {
+                  setLang('en');
+                  onClose();
+                }}
+              >
+                <span className="flex items-center gap-1.5 font-semibold">
                   <UKFlagIcon size={16} />
                   <span>English</span>
-                </button>
-              </div>
+                </span>
+              </Button>
             </div>
           </div>
         </div>
 
-        {/* Drawer Footer */}
-        <div className="p-4 border-t border-gray-200 flex flex-col gap-2.5 bg-gray-50 flex-shrink-0">
+        {/* Drawer Social Links Footer */}
+        <div className="pt-4 border-t border-gray-200 flex flex-col gap-2.5 mt-auto">
           <div className="flex items-center gap-2">
-            <a
+            <Button
+              as="a"
               href={personalInfo.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 h-9 inline-flex items-center justify-center gap-2 px-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-100 hover:text-red-600 transition-all"
-              aria-label="GitHub Profile"
+              color="light"
+              size="xs"
+              className="flex-1"
             >
-              <GithubIcon size={16} />
-              <span>GitHub</span>
-            </a>
+              <span className="flex items-center gap-1.5">
+                <GithubIcon size={14} />
+                <span>GitHub</span>
+              </span>
+            </Button>
             {personalInfo.linkedinUrl && (
-              <a
+              <Button
+                as="a"
                 href={personalInfo.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 h-9 inline-flex items-center justify-center gap-2 px-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-100 hover:text-red-600 transition-all"
-                aria-label="LinkedIn Profile"
+                color="light"
+                size="xs"
+                className="flex-1"
               >
-                <LinkedinIcon size={16} />
-                <span>LinkedIn</span>
-              </a>
+                <span className="flex items-center gap-1.5">
+                  <LinkedinIcon size={14} />
+                  <span>LinkedIn</span>
+                </span>
+              </Button>
             )}
-            <a
+            <Button
+              as="a"
               href="#"
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                 e.preventDefault();
                 window.open(getSecureZaloUrl(), '_blank', 'noopener,noreferrer');
               }}
-              onMouseEnter={(e) => { e.currentTarget.href = getSecureZaloUrl(); }}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 h-9 inline-flex items-center justify-center gap-2 px-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-100 hover:text-red-600 transition-all"
-              aria-label="Zalo Profile"
+              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.href = getSecureZaloUrl(); }}
+              color="light"
+              size="xs"
+              className="flex-1"
             >
-              <ZaloIcon size={16} />
-              <span>Zalo</span>
-            </a>
+              <span className="flex items-center gap-1.5">
+                <ZaloIcon size={14} />
+                <span>Zalo</span>
+              </span>
+            </Button>
           </div>
           <div className="text-[0.72rem] text-gray-400 text-center">
             <span>{personalInfo.fullName} • {tDrawer.footerNote}</span>
           </div>
         </div>
-      </aside>
-    </div>
+      </DrawerItems>
+    </Drawer>
   );
 };
 

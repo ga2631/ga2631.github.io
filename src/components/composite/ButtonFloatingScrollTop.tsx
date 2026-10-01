@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Button } from 'flowbite-react';
 import { ArrowUpIcon } from '../Icons.tsx';
 import { UITranslation } from '@/i18n';
-import { ButtonFloating } from '../ui';
 import { trackScrollToTop } from '../../utils/analytics';
 
 export interface ButtonFloatingScrollTopProps {
@@ -49,14 +49,16 @@ export const ButtonFloatingScrollTop: React.FC<ButtonFloatingScrollTopProps> = (
   const displayTitle = title || tCommon?.scrollToTop || 'Scroll to top';
 
   return (
-    <ButtonFloating
-      floatingVariant="secondary"
+    <Button
+      color="light"
+      pill
       onClick={scrollToTop}
       title={displayTitle}
       aria-label={displayTitle}
-      icon={<ArrowUpIcon size={18} />}
-      className={className}
-    />
+      className={`w-11 h-11 p-0 shadow-lg flex items-center justify-center ${className}`.trim()}
+    >
+      <ArrowUpIcon size={18} />
+    </Button>
   );
 };
 

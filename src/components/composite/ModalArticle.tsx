@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Modal } from '../common/Modal';
-import { Badge } from '../common/Badge';
+import { Modal, ModalHeader, ModalBody, Badge } from 'flowbite-react';
 import { CalendarIcon, ClockIcon, ListIcon } from '../Icons';
 import { ModalDiagramViewer } from './ModalDiagramViewer.tsx';
 import { BlogPost } from '../../types/index.ts';
-import { trackTocHeadingClick } from '../../utils/analytics';
 
 export interface TocItem {
   id: string;
@@ -37,9 +35,7 @@ export const processArticleToc = (html: string): ProcessedContent => {
     return { processedHtml: html, tocItems: [] };
   }
 
-  // Determine distinct heading levels present (sorted from highest to lowest: h1 < h2 < h3...)
   const distinctTags = Array.from(new Set(headings.map((h) => h.tagName.toLowerCase()))).sort();
-  // Take up to 2 distinct levels
   const topTwoTags = distinctTags.slice(0, 2);
 
   const usedIds = new Set<string>();
@@ -52,7 +48,6 @@ export const processArticleToc = (html: string): ProcessedContent => {
     const text = heading.textContent?.trim() || '';
     if (!text) return;
 
-    // Generate clean slug ID with safe 'toc-' prefix (supports alphanumeric and Vietnamese unicode)
     let rawSlug = text
       .toLowerCase()
       .normalize('NFD')
@@ -81,7 +76,6 @@ export const processArticleToc = (html: string): ProcessedContent => {
     });
   });
 
-  // Inject generated IDs onto the parsed heading elements
   let index = 0;
   headings.forEach((heading) => {
     const tagName = heading.tagName.toLowerCase();
@@ -170,6 +164,7 @@ export interface ModalArticleProps {
 export interface ModalArticleComponent extends React.FC<ModalArticleProps> {
   TocSidebar: typeof ArticleTocSidebar;
 }
+
 export interface ArticleBodyProps {
   processedHtml: string;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -184,10 +179,8 @@ export const ArticleBody: React.FC<ArticleBodyProps> = React.memo(
       const container = bodyRef.current;
       if (!container || !processedHtml) return;
 
-      // 1. Directly inject HTML into DOM container
       container.innerHTML = processedHtml;
 
-      // 2. Query Mermaid blocks
       const mermaidBlocks = container.querySelectorAll<HTMLElement>('pre.mermaid, .mermaid');
       if (mermaidBlocks.length === 0) return;
 
@@ -292,10 +285,8 @@ export const ModalArticle: ModalArticleComponent = ({
   tocItems,
   activeHeadingId,
   onSelectHeading,
-  isStickyTitleShown = false,
   modalContentRef,
   tCommon,
-  closeAriaLabel = 'Close article popup',
 }) => {
   const [fitViewSvg, setFitViewSvg] = useState<string | null>(null);
 
@@ -329,32 +320,28 @@ export const ModalArticle: ModalArticleComponent = ({
   return (
     <>
       <Modal
-        isOpen={isOpen}
+        show={isOpen}
         onClose={onClose}
-        title={post.title}
-        stickyHeader={true}
-        isStickyTitleShown={isStickyTitleShown}
-        closeAriaLabel={closeAriaLabel}
-        contentRef={modalContentRef}
-        ariaLabelledBy="article-modal-title"
+        size="5xl"
+        dismissible
       >
-        <Modal.Body>
+        <ModalHeader>
+          <div className="flex flex-col gap-1 pr-6">
+            <div className="flex flex-wrap gap-1.5">
+              {post.tags.map((tag) => (
+                <Badge key={tag} color="info" size="xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+            <span id="article-modal-title" className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-tight">
+              {post.title}
+            </span>
+          </div>
+        </ModalHeader>
+        <ModalBody ref={modalContentRef as any}>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-1 min-w-0">
-              {/* Tag Badges */}
-              <div className="flex flex-wrap gap-1.5 mt-1 mb-3">
-                {post.tags.map((tag) => (
-                  <Badge key={tag} variant="cyan" size="sm">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Article Title */}
-              <h1 id="article-modal-title" className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight mb-3">
-                {post.title}
-              </h1>
-
               {/* Meta info bar */}
               <div className="flex items-center gap-3 text-xs text-gray-500 font-medium mb-5 pb-4 border-b border-gray-200">
                 <span className="inline-flex items-center gap-1.5">
@@ -374,7 +361,7 @@ export const ModalArticle: ModalArticleComponent = ({
                 </div>
               )}
 
-              {/* Full Article Content with Protected Mermaid DOM */}
+              {/* Full Article Content */}
               <ArticleBody
                 processedHtml={processedHtml}
                 onClick={handleArticleClick}
@@ -392,7 +379,7 @@ export const ModalArticle: ModalArticleComponent = ({
               />
             )}
           </div>
-        </Modal.Body>
+        </ModalBody>
       </Modal>
 
       {/* Fullscreen Diagram Fit View Overlay */}
@@ -401,7 +388,6 @@ export const ModalArticle: ModalArticleComponent = ({
         svgContent={fitViewSvg}
         onClose={() => setFitViewSvg(null)}
         title={post.title}
-        closeAriaLabel="Close diagram view"
       />
     </>
   );
@@ -409,4 +395,3 @@ export const ModalArticle: ModalArticleComponent = ({
 
 ModalArticle.displayName = 'ModalArticle';
 ModalArticle.TocSidebar = ArticleTocSidebar;
-
