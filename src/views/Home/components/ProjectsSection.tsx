@@ -284,26 +284,45 @@ export function ProjectsSection({
         }}
         className={`${
           isModalOpen ? 'flex' : 'hidden'
-        } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 max-h-full backdrop-blur-sm bg-gray-900/50 p-4 transition-all ease-in-out`}
+        } overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full p-4 md:p-6 bg-black/80 backdrop-blur-md transition-opacity duration-300`}
       >
         <div
-          className="relative p-4 w-full max-w-2xl max-h-full"
+          className="relative w-full max-w-3xl max-h-[92vh] flex flex-col my-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative bg-white rounded-3xl shadow">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-              <h3 className="text-xl font-bold text-gray-900">
-                {isEn ? 'Enterprise Project Details' : 'Chi tiết Dự án Công ty'}
-              </h3>
+          <div className="relative bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden">
+            {/* Flowbite Modal Header */}
+            <div className="flex items-start justify-between p-6 pb-4 border-b border-gray-100 bg-gray-50/50 rounded-t-3xl">
+              <div className="space-y-1 pr-6">
+                <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                  {activeModalProject?.category && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                      {activeModalProject.category}
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 tracking-tight">
+                  {activeModalProject?.title || (isEn ? 'Enterprise Project Details' : 'Chi tiết Dự án Công ty')}
+                </h3>
+                {activeModalProject?.company && (
+                  <p className="text-sm font-medium text-gray-500 flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    {activeModalProject.company}
+                  </p>
+                )}
+              </div>
+
+              {/* Close Button */}
               <button
                 type="button"
                 data-modal-hide="private-project-modal"
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center cursor-pointer"
+                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-2xl text-sm w-9 h-9 ms-auto inline-flex justify-center items-center cursor-pointer transition-colors flex-shrink-0"
               >
                 <svg
-                  className="w-3 h-3"
+                  className="w-3.5 h-3.5"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -321,44 +340,167 @@ export function ProjectsSection({
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-4 md:p-5 space-y-4">
-              <p className="text-base leading-relaxed text-gray-600 font-normal">
-                <strong>{activeModalProject?.title || 'Enterprise Data Hub'}</strong>{' '}
-                {activeModalProject?.company ? `(${activeModalProject.company}) ` : ''}
-                {activeModalProject?.description ||
-                  (isEn
-                    ? 'is an internal enterprise solution built to replace manual ETL pipelines.'
-                    : 'là giải pháp xây dựng riêng nội bộ để thay thế quy trình tải dữ liệu thủ công.')}
-              </p>
-
-              {/* Highlights list */}
-              <ul className="list-disc list-inside text-gray-600 space-y-2 font-normal">
-                {modalHighlights.map((hl, idx) => (
-                  <li key={idx} dangerouslySetInnerHTML={{ __html: hl }} />
-                ))}
-              </ul>
-
-              {/* Tags */}
-              {activeModalProject?.tags && activeModalProject.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {activeModalProject.tags.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="bg-gray-100 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+            {/* Flowbite Modal Body (Scrollable) */}
+            <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(92vh-180px)] text-base">
+              {/* Quick Info */}
+              {(activeModalProject?.role || activeModalProject?.teamSize || activeModalProject?.period) && (
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  {activeModalProject.role && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        {isEn ? 'Role:' : 'Vai trò:'}
+                      </span>
+                      <span className="text-base font-bold text-gray-800">{activeModalProject.role}</span>
+                    </div>
+                  )}
+                  {activeModalProject.teamSize && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        {isEn ? 'Team Size:' : 'Quy mô đội ngũ:'}
+                      </span>
+                      <span className="text-base font-bold text-gray-800">{activeModalProject.teamSize}</span>
+                    </div>
+                  )}
+                  {activeModalProject.period && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                        {isEn ? 'Timeline:' : 'Thời gian thực hiện:'}
+                      </span>
+                      <span className="text-base font-bold text-gray-800">{activeModalProject.period}</span>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* NDA Notice */}
-              <div className="mt-4 p-4 bg-orange-50 text-orange-800 rounded-xl text-sm border border-orange-200 font-medium">
-                🔒{' '}
-                {isEn
-                  ? 'Source code is closed due to enterprise NDA agreements.'
-                  : 'Mã nguồn không được công khai (Closed Source) do thỏa thuận bảo mật NDA với doanh nghiệp.'}
+              {/* Project Description */}
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                  {isEn ? 'Project Overview' : 'Tổng quan dự án'}
+                </h4>
+                <p className="text-base text-gray-700 leading-relaxed text-justify">
+                  {activeModalProject?.description ||
+                    (isEn
+                      ? 'Enterprise backend infrastructure and scalable software architecture.'
+                      : 'Hạ tầng backend doanh nghiệp và kiến trúc phần mềm chịu tải cao.')}
+                </p>
+              </div>
+
+              {/* Highlights & Achievements */}
+              {modalHighlights.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    {isEn ? 'Key Engineering Highlights & Impact' : 'Điểm nổi bật & Đóng góp kỹ thuật'}
+                  </h4>
+                  <ul className="space-y-2.5">
+                    {modalHighlights.map((hl, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-start gap-3 p-3.5 bg-gray-50/80 rounded-2xl border border-gray-100 hover:border-red-200 transition-colors"
+                      >
+                        <span className="flex-shrink-0 w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center mt-0.5">
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          className="text-base text-gray-700 leading-relaxed text-justify"
+                          dangerouslySetInnerHTML={{ __html: hl }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Challenges & Solutions */}
+              {activeModalProject?.challengesSolutions &&
+                activeModalProject.challengesSolutions.length > 0 && (
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                      {isEn ? 'Challenges & Technical Solutions' : 'Thách thức & Giải pháp kỹ thuật'}
+                    </h4>
+                    <div className="space-y-3">
+                      {activeModalProject.challengesSolutions.map((cs, idx) => (
+                        <div
+                          key={idx}
+                          className="p-4 rounded-2xl bg-white border border-gray-200/80 shadow-sm"
+                        >
+                          <div
+                            className="grid items-start gap-x-3 gap-y-3 text-base"
+                            style={{ gridTemplateColumns: 'max-content 1fr' }}
+                          >
+                            {/* Row 1: Challenge */}
+                            <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-xs font-bold bg-amber-100 text-amber-800 whitespace-nowrap self-start">
+                              {isEn ? 'Challenge' : 'Thách thức'}
+                            </span>
+                            <p className="pl-2 text-gray-800 font-medium leading-relaxed text-justify text-base">
+                              {cs.challenge}
+                            </p>
+
+                            {/* Row 2: Solution */}
+                            <span className="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 whitespace-nowrap self-start">
+                              {isEn ? 'Solution' : 'Giải pháp'}
+                            </span>
+                            <p className="pl-2 text-gray-600 leading-relaxed text-justify text-base">
+                              {cs.solution}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Technologies / Tags */}
+              {activeModalProject?.tags && activeModalProject.tags.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                    {isEn ? 'Technologies & Frameworks' : 'Công nghệ sử dụng'}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {activeModalProject.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-1 rounded-full border border-gray-200"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Flowbite NDA Alert Box */}
+              <div className="flex items-start p-4 text-sm text-amber-800 rounded-2xl bg-amber-50 border border-amber-200 gap-3">
+                <svg
+                  className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <div className="leading-relaxed">
+                  <span className="font-bold">
+                    {isEn ? 'Confidentiality Notice (NDA): ' : 'Thỏa thuận Bảo mật (NDA): '}
+                  </span>
+                  {isEn
+                    ? 'Source code is closed due to enterprise NDA agreements.'
+                    : 'Mã nguồn không được công khai (Closed Source) do thỏa thuận bảo mật NDA với doanh nghiệp.'}
+                </div>
               </div>
             </div>
           </div>

@@ -34,7 +34,7 @@ export function EducationSection({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left: Education */}
-        <div className="p-8 bg-white/70 backdrop-blur-sm border border-gray-100 rounded-3xl shadow-sm hover:border-red-300 hover:shadow-lg h-full transition-all ease-in-out">
+        <div className="p-8 bg-white backdrop-blur-sm border border-gray-100 rounded-3xl shadow-sm hover:border-red-300 hover:shadow-lg h-full transition-all ease-in-out">
           {eduItems.map((edu) => (
             <div key={edu.id}>
               <div className="flex items-start space-x-3 mb-6">
