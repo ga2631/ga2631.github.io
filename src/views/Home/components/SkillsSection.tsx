@@ -84,8 +84,6 @@ const DEFAULT_CATEGORIES: {
   },
 ];
 
-const BORDER_PALETTE = ['border-red-500', 'border-rose-500', 'border-orange-500', 'border-amber-500'];
-
 export function SkillsSection({ skillCategories }: SkillsSectionProps) {
   const { currentLang } = useLanguage();
   const isEn = currentLang === 'en';
@@ -94,7 +92,6 @@ export function SkillsSection({ skillCategories }: SkillsSectionProps) {
     skillCategories && skillCategories.length > 0
       ? skillCategories.map((c, i) => ({
           title: c.title,
-          borderColor: BORDER_PALETTE[i % BORDER_PALETTE.length],
           skills: c.skills || [],
         }))
       : DEFAULT_CATEGORIES;
@@ -145,7 +142,7 @@ export function SkillsSection({ skillCategories }: SkillsSectionProps) {
             className="bg-white backdrop-blur-sm rounded-3xl shadow-sm hover:shadow-lg border border-gray-100 hover:border-red-300 p-6 transition-shadow ease-in-out"
           >
             <h4
-              className={`text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 border-b-2 ${cat.borderColor} inline-block pb-1`}
+              className={`text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 border-b-2 border-red-500 inline-block pb-1`}
             >
               {cat.title}
             </h4>
