@@ -8,31 +8,12 @@ interface SkillsSectionProps {
   skillCategories?: SkillCategory[];
 }
 
-/**
- * Maps skill proficiency level to corresponding color style:
- * 1 => Basic => blue
- * 2 => Familiar => emerald
- * 3 => Proficient => amber
- * 4 => Advanced => orange
- * 5 => Expert => red
- */
-export function getProficiencyStyle(level: string | number | undefined): string {
-  const numLevel = typeof level === 'number' ? level : parseInt(String(level), 10);
-
-  switch(numLevel)
-  {
-    case 5:
-      return 'bg-red-100 text-red-500 border border-red-300';
-    case 4:
-      return 'bg-orange-100 text-orange-500 border border-orange-300';
-    case 3:
-      return 'bg-amber-100 text-amber-500 border border-amber-300';
-    case 2:
-      return 'bg-emerald-100 text-emerald-500 border border-emerald-300';
-    case 1:
-    default:
-      return 'bg-blue-100 text-blue-500 border border-blue-300';
-  }
+const levelMapColor: Record<string | number, string> = {
+  5: 'indigo',
+  4: 'blue',
+  3: 'emerald',
+  2: 'amber',
+  1: 'gray'
 }
 
 const DEFAULT_CATEGORIES: {
@@ -120,23 +101,23 @@ export function SkillsSection({ skillCategories }: SkillsSectionProps) {
           </span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="w-3 h-3 rounded-full bg-red-500 shadow-sm shadow-red-300" />
+          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[5]}-500 shadow-sm shadow-${levelMapColor[5]}-300`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Expert' : 'Chuyên gia'}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="w-3 h-3 rounded-full bg-orange-500 shadow-sm shadow-orange-300" />
+          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[4]}-500 shadow-sm shadow-${levelMapColor[4]}-300`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Advanced' : 'Nâng cao'}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="w-3 h-3 rounded-full bg-amber-500 shadow-sm shadow-amber-300" />
+          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[3]}-500 shadow-sm shadow-${levelMapColor[3]}-300`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Proficient' : 'Thành thạo'}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="w-3 h-3 rounded-full bg-emerald-500 shadow-sm shadow-emerald-300" />
+          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[2]}-500 shadow-sm shadow-${levelMapColor[2]}-300`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Familiar' : 'Tiếp cận'}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="w-3 h-3 rounded-full bg-blue-500 shadow-sm shadow-blue-300" />
+          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[1]}-500 shadow-sm shadow-${levelMapColor[1]}-300`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Basic' : 'Cơ bản'}</span>
         </div>
       </div>
@@ -155,7 +136,8 @@ export function SkillsSection({ skillCategories }: SkillsSectionProps) {
             </h4>
             <div className="flex flex-col gap-3">
               {cat.skills.map((skill, sIdx) => {
-                const styleClass = getProficiencyStyle(skill.level);
+                const color = levelMapColor[skill.level] || 'gray';
+                const styleClass = `bg-${color}-100 text-${color}-500 border border-${color}-300`
                 return (
                   <span
                     key={sIdx}
