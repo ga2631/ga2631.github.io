@@ -8,13 +8,33 @@ interface SkillsSectionProps {
   skillCategories?: SkillCategory[];
 }
 
-const levelMapColor: Record<string | number, string> = {
-  5: 'indigo',
-  4: 'blue',
-  3: 'emerald',
-  2: 'amber',
-  1: 'gray'
+interface LevelStyle {
+  dot: string;
+  badge: string;
 }
+
+const LEVEL_MAP: Record<string | number, LevelStyle> = {
+  5: {
+    dot: 'bg-violet-500 shadow-violet-300',
+    badge: 'bg-violet-100 text-violet-700 border-violet-300',
+  },
+  4: {
+    dot: 'bg-blue-500 shadow-blue-300',
+    badge: 'bg-blue-100 text-blue-700 border-blue-300',
+  },
+  3: {
+    dot: 'bg-emerald-500 shadow-emerald-300',
+    badge: 'bg-emerald-100 text-emerald-700 border-emerald-300',
+  },
+  2: {
+    dot: 'bg-amber-500 shadow-amber-300',
+    badge: 'bg-amber-100 text-amber-700 border-amber-300',
+  },
+  1: {
+    dot: 'bg-gray-500 shadow-gray-300',
+    badge: 'bg-gray-100 text-gray-700 border-gray-300',
+  },
+};
 
 const DEFAULT_CATEGORIES: {
   title: string;
@@ -65,6 +85,11 @@ const DEFAULT_CATEGORIES: {
   },
 ];
 
+export function getProficiencyStyle(level: string | number | undefined): string {
+  const numLevel = typeof level === 'number' ? level : parseInt(String(level), 10);
+  return (LEVEL_MAP[numLevel] || LEVEL_MAP[1]).badge;
+}
+
 export function SkillsSection({ skillCategories }: SkillsSectionProps) {
   const { currentLang } = useLanguage();
   const isEn = currentLang === 'en';
@@ -101,23 +126,23 @@ export function SkillsSection({ skillCategories }: SkillsSectionProps) {
           </span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[5]}-500 shadow-sm shadow-${levelMapColor[5]}-300`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[5].dot}`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Expert' : 'Chuyên gia'}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[4]}-500 shadow-sm shadow-${levelMapColor[4]}-300`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[4].dot}`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Advanced' : 'Nâng cao'}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[3]}-500 shadow-sm shadow-${levelMapColor[3]}-300`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[3].dot}`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Proficient' : 'Thành thạo'}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[2]}-500 shadow-sm shadow-${levelMapColor[2]}-300`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[2].dot}`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Familiar' : 'Tiếp cận'}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full bg-${levelMapColor[1]}-500 shadow-sm shadow-${levelMapColor[1]}-300`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[1].dot}`} />
           <span className="text-sm font-medium text-gray-700">{isEn ? 'Basic' : 'Cơ bản'}</span>
         </div>
       </div>
@@ -136,12 +161,11 @@ export function SkillsSection({ skillCategories }: SkillsSectionProps) {
             </h4>
             <div className="flex flex-col gap-3">
               {cat.skills.map((skill, sIdx) => {
-                const color = levelMapColor[skill.level] || 'gray';
-                const styleClass = `bg-${color}-100 text-${color}-500 border border-${color}-300`
+                const badgeStyle = getProficiencyStyle(skill.level);
                 return (
                   <span
                     key={sIdx}
-                    className={`px-4 py-2 rounded-xl text-sm font-bold ${styleClass} hover:scale-105 transition-transform`}
+                    className={`px-4 py-2 rounded-xl text-sm font-bold border ${badgeStyle} hover:scale-105 transition-transform`}
                   >
                     {skill.name}
                   </span>
