@@ -25,7 +25,7 @@ export const BlogTagsKeyword: React.FC<BlogTagsKeywordProps> = ({
 }) => {
   return (
     <div className={className}>
-      <div className="flex items-center gap-2 mb-3 px-1 text-xs font-bold uppercase tracking-wider text-slate-400">
+      <div className="flex items-center gap-2 mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
         <TagIcon size={15} />
         <span>{title}</span>
       </div>

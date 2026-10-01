@@ -32,7 +32,7 @@ export async function generateHomeMetadata(locale: Locale): Promise<Metadata> {
 
 export async function PageHome({ lang }: { lang: Locale }) {
   const currentCvData = await getCvData(lang);
-  const t = uiTranslations[lang];
+  const t = uiTranslations[lang] || uiTranslations.vi;
 
   return (
     <AppShell lang={lang} currentRoute="home" personalInfo={currentCvData.personalInfo}>

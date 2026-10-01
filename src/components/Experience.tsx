@@ -22,60 +22,64 @@ export const Experience: React.FC<ExperienceProps> = ({ experiences, t }) => {
       title={t.title}
       subtitle={t.subtitle}
     >
-      <div className="relative pl-6 md:pl-10 ml-2 md:ml-4 flex flex-col gap-8 before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-[11px] md:before:left-[15px] before:w-[2px] before:bg-gradient-to-b before:from-red-600 before:to-red-800">
+      {/* Flowbite Timeline */}
+      <ol className="relative border-s border-gray-200 ms-3 md:ms-6 flex flex-col gap-8">
         {experiences.map((item) => (
-          <div key={item.id} className="relative">
-            {/* Timeline Dot */}
-            <div className="absolute -left-[20px] md:-left-[31px] top-6 w-5 h-5 rounded-full bg-slate-50 border-[3px] border-red-600 shadow-[0_0_12px_rgba(239,68,68,0.5)] z-10" />
+          <li key={item.id} className="ms-6">
+            {/* Flowbite Timeline Point */}
+            <span className="absolute flex items-center justify-center w-6 h-6 bg-red-100 rounded-full -start-3 ring-8 ring-white text-red-600">
+              <BriefcaseIcon size={12} />
+            </span>
 
-            <Card className="p-6 md:p-8 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group">
-              <Card.Header className="mb-4">
+            {/* Flowbite Timeline Card Content */}
+            <Card className="p-6 hover:shadow-md transition-shadow">
+              <Card.Header className="mb-3">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                  <h3 className="text-xl font-bold text-slate-900 font-heading group-hover:text-red-600 transition-colors duration-150">
+                  <h4 className="text-xl font-bold text-gray-900 leading-snug">
                     {item.role}
-                  </h3>
+                  </h4>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-semibold text-slate-400">
+                    <time className="text-xs font-normal text-gray-400">
                       {item.period}
-                    </span>
+                    </time>
                     {item.current && <Badge variant="emerald">{t.currentPosition}</Badge>}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 text-sm font-semibold text-red-600">
                   <span>{item.company}</span>
-                  <span className="text-slate-400 font-normal">• {item.location}</span>
+                  <span className="text-gray-400 font-normal">• {item.location}</span>
                 </div>
                 {item.companySubtitle && (
-                  <div className="text-xs text-slate-400 italic mt-1">
+                  <p className="text-xs text-gray-400 italic mt-1">
                     {item.companySubtitle}
-                  </div>
+                  </p>
                 )}
               </Card.Header>
 
               <Card.Body>
-                <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">
                   {item.summary}
                 </p>
 
-                <div className="flex flex-col gap-2.5 mb-5">
+                <div className="flex flex-col gap-2.5 mb-4">
                   {item.achievements.map((ach, idx) => (
                     <div
                       key={idx}
-                      className="text-sm text-slate-600 leading-relaxed pl-5 relative before:content-['▹'] before:absolute before:left-0 before:top-0 before:text-red-600 before:font-bold"
+                      className="text-sm text-gray-600 leading-relaxed ps-5 relative before:content-['▹'] before:absolute before:start-0 before:top-0 before:text-red-600 before:font-bold"
                       dangerouslySetInnerHTML={{ __html: ach }}
                     />
                   ))}
                 </div>
               </Card.Body>
 
-              <Card.Footer className="pt-4 border-t border-slate-100">
+              <Card.Footer className="pt-4 border-t border-gray-100">
                 <TechTagList tags={item.technologies} />
               </Card.Footer>
             </Card>
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
     </Section>
   );
 };

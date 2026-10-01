@@ -20,9 +20,9 @@ export default function RootRedirectPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 text-slate-700 gap-3">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-700 gap-3">
       <div className="w-9 h-9 border-[3px] border-red-200 border-t-red-600 rounded-full animate-spin" />
-      <p className="text-sm font-medium text-slate-500">Đang chuyển hướng / Redirecting...</p>
+      <p className="text-sm font-medium text-gray-500">Đang chuyển hướng / Redirecting...</p>
     </div>
   );
 }

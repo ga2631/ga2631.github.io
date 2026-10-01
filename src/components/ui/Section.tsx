@@ -45,7 +45,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
 
           {title && (
             typeof title === 'string' ? (
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-3 font-heading">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-3 font-heading">
                 {title}
               </h2>
             ) : (
@@ -54,7 +54,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           )}
 
           {subtitle && (
-            <p className="text-base md:text-lg text-slate-600 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
               {subtitle}
             </p>
           )}

@@ -29,17 +29,17 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Education Column */}
         <div className="flex flex-col gap-6">
-          <h3 className="flex items-center gap-2.5 text-xl font-bold text-slate-900 mb-2">
+          <h4 className="flex items-center gap-2.5 text-xl font-bold text-gray-900 mb-2">
             <GraduationCapIcon size={22} className="text-red-600 flex-shrink-0" />
             <span>{t.academicBg}</span>
-          </h3>
+          </h4>
 
           {educations.map((edu) => (
-            <Card key={edu.id} className="p-6 transition-all duration-300 hover:-translate-y-1">
+            <Card key={edu.id} className="p-5 hover:shadow-md transition-shadow">
               <Card.Header className="mb-3">
-                <h4 className="text-lg font-bold text-slate-900 mb-1 leading-snug">{edu.degree}</h4>
+                <h5 className="text-lg font-bold text-gray-900 mb-1 leading-snug">{edu.degree}</h5>
                 <div className="text-sm font-semibold text-red-600">{edu.institution}</div>
-                <div className="text-xs text-slate-400 mt-1 mb-3">
+                <div className="text-xs text-gray-400 mt-1 mb-3">
                   {edu.period} • {edu.location}
                 </div>
 
@@ -52,12 +52,12 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
 
               {edu.details && (
                 <Card.Body>
-                  <div className="flex flex-col gap-2.5 mt-2">
+                  <div className="flex flex-col gap-2 mt-2">
                     {edu.details.map((detail, idx) => {
                       const [title, ...rest] = detail.split(': ');
                       return (
-                        <div key={idx} className="text-sm text-slate-600 leading-relaxed">
-                          <span className="font-semibold text-slate-800">• {title}: </span>
+                        <div key={idx} className="text-sm text-gray-600 leading-relaxed">
+                          <span className="font-semibold text-gray-800">• {title}: </span>
                           <span>{rest.join(': ')}</span>
                         </div>
                       );
@@ -71,20 +71,20 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
 
         {/* Certifications Column */}
         <div className="flex flex-col gap-6">
-          <h3 className="flex items-center gap-2.5 text-xl font-bold text-slate-900 mb-2">
+          <h4 className="flex items-center gap-2.5 text-xl font-bold text-gray-900 mb-2">
             <AwardIcon size={22} className="text-purple-600 flex-shrink-0" />
             <span>{t.certificationsTitle}</span>
-          </h3>
+          </h4>
 
           {certifications.map((cert) => (
-            <Card key={cert.id} className="p-6 transition-all duration-300 hover:-translate-y-1">
-              <Card.Header className="mb-4">
+            <Card key={cert.id} className="p-5 hover:shadow-md transition-shadow">
+              <Card.Header className="mb-3">
                 <div className="flex justify-between items-start gap-3">
                   <div>
-                    <h4 className="text-lg font-bold text-slate-900 mb-1 leading-snug">
+                    <h5 className="text-lg font-bold text-gray-900 mb-1 leading-snug">
                       {cert.name}
-                    </h4>
-                    <div className="text-sm font-medium text-slate-600">
+                    </h5>
+                    <div className="text-sm font-medium text-gray-600">
                       {cert.issuer}
                     </div>
                   </div>
@@ -96,10 +96,10 @@ export const EducationCertifications: React.FC<EducationCertificationsProps> = (
                 </div>
               </Card.Header>
 
-              <Card.Footer className="pt-3 border-t border-slate-100">
+              <Card.Footer className="pt-3 border-t border-gray-100">
                 <div className="flex justify-between items-center w-full">
                   {cert.badgeCode ? (
-                    <span className="font-mono text-xs text-slate-400">
+                    <span className="font-mono text-xs text-gray-400">
                       {t.credentialId}: {cert.badgeCode}
                     </span>
                   ) : <div />}

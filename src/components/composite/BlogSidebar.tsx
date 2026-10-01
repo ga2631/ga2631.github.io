@@ -59,19 +59,19 @@ export const BlogSidebar: React.FC<BlogSidebarProps> = ({
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 w-72 bg-white/95 backdrop-blur-xl p-6 shadow-2xl transition-transform duration-300 overflow-y-auto lg:static lg:w-72 lg:translate-x-0 lg:shadow-none lg:border-r lg:border-slate-200/80 lg:bg-transparent flex-shrink-0 ${
+      className={`fixed inset-y-0 left-0 z-50 w-72 bg-white p-6 shadow-2xl transition-transform duration-300 overflow-y-auto lg:static lg:w-72 lg:translate-x-0 lg:shadow-none lg:border-e lg:border-gray-200 lg:bg-transparent flex-shrink-0 ${
         isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       } ${className}`.trim()}
     >
       {/* Mobile Sidebar Close Header */}
-      <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-200/80 lg:hidden">
-        <span className="font-bold text-base text-slate-900 inline-flex items-center gap-2">
+      <div className="flex items-center justify-between pb-4 mb-4 border-b border-gray-200 lg:hidden">
+        <span className="font-bold text-base text-gray-900 inline-flex items-center gap-2">
           <FilterIcon size={16} className="text-red-600" />
           {categoriesTitle}
         </span>
         <button
           type="button"
-          className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer"
+          className="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center cursor-pointer transition-colors"
           onClick={onCloseMobile}
           aria-label="Close sidebar"
         >

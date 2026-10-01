@@ -38,24 +38,24 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Email Card */}
-        <Card className="p-6 transition-all duration-300 hover:-translate-y-1">
-          <Card.Header className="mb-4">
-            <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center mb-2">
-              <MailIcon size={26} />
+        <Card className="p-5 hover:shadow-md transition-shadow">
+          <Card.Header className="mb-3">
+            <div className="w-12 h-12 rounded-lg bg-red-100 text-red-600 flex items-center justify-center mb-2">
+              <MailIcon size={24} />
             </div>
           </Card.Header>
 
-          <Card.Body className="mb-4">
-            <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-1">
+          <Card.Body className="mb-3">
+            <div className="text-xs uppercase font-bold tracking-wider text-gray-400 mb-1">
               {t.emailLabel}
             </div>
-            <SecureEmail asLink className="text-base font-semibold text-slate-900 hover:text-red-600 transition-colors" />
-            <p className="text-xs text-slate-500 mt-2">
+            <SecureEmail asLink className="text-base font-semibold text-gray-900 hover:text-red-600 transition-colors" />
+            <p className="text-xs text-gray-500 mt-2">
               {t.emailHint}
             </p>
           </Card.Body>
 
-          <Card.Footer className="pt-3 border-t border-slate-100">
+          <Card.Footer className="pt-3 border-t border-gray-100">
             <Button
               as="a"
               href="#"
@@ -75,24 +75,24 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
 
         {/* Phone Card */}
         {data.phone && (
-          <Card className="p-6 transition-all duration-300 hover:-translate-y-1">
-            <Card.Header className="mb-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-2">
-                <PhoneIcon size={26} />
+          <Card className="p-5 hover:shadow-md transition-shadow">
+            <Card.Header className="mb-3">
+              <div className="w-12 h-12 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center mb-2">
+                <PhoneIcon size={24} />
               </div>
             </Card.Header>
 
-            <Card.Body className="mb-4">
-              <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-1">
+            <Card.Body className="mb-3">
+              <div className="text-xs uppercase font-bold tracking-wider text-gray-400 mb-1">
                 {t.phoneLabel}
               </div>
-              <SecurePhone asLink className="text-base font-semibold text-slate-900 hover:text-red-600 transition-colors" />
-              <p className="text-xs text-slate-500 mt-2">
+              <SecurePhone asLink className="text-base font-semibold text-gray-900 hover:text-red-600 transition-colors" />
+              <p className="text-xs text-gray-500 mt-2">
                 {t.phoneHint}
               </p>
             </Card.Body>
 
-            <Card.Footer className="pt-3 border-t border-slate-100 flex items-center gap-2">
+            <Card.Footer className="pt-3 border-t border-gray-100 flex items-center gap-2">
               <Button
                 as="a"
                 href="#"
@@ -126,28 +126,28 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
         )}
 
         {/* Location & Personal Card */}
-        <Card className="p-6 transition-all duration-300 hover:-translate-y-1">
-          <Card.Header className="mb-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2">
-              <MapPinIcon size={26} />
+        <Card className="p-5 hover:shadow-md transition-shadow">
+          <Card.Header className="mb-3">
+            <div className="w-12 h-12 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mb-2">
+              <MapPinIcon size={24} />
             </div>
           </Card.Header>
 
-          <Card.Body className="mb-4">
-            <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-1">
+          <Card.Body className="mb-3">
+            <div className="text-xs uppercase font-bold tracking-wider text-gray-400 mb-1">
               {t.locationLabel}
             </div>
-            <div className="text-base font-semibold text-slate-900">
+            <div className="text-base font-semibold text-gray-900">
               {data.location}
             </div>
             {data.birthday && (
-              <p className="text-xs text-slate-500 mt-2">
+              <p className="text-xs text-gray-500 mt-2">
                 {t.locationHint}
               </p>
             )}
           </Card.Body>
 
-          <Card.Footer className="pt-3 border-t border-slate-100">
+          <Card.Footer className="pt-3 border-t border-gray-100">
             <Badge variant="emerald">
               {t.locationCta}
             </Badge>
@@ -156,31 +156,31 @@ export const Contact: React.FC<ContactProps> = ({ data, t }) => {
 
         {/* LinkedIn Profile Card */}
         {data.linkedinUrl && (
-          <Card className="p-6 transition-all duration-300 hover:-translate-y-1">
-            <Card.Header className="mb-4">
-              <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center mb-2">
-                <LinkedinIcon size={26} />
+          <Card className="p-5 hover:shadow-md transition-shadow">
+            <Card.Header className="mb-3">
+              <div className="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-2">
+                <LinkedinIcon size={24} />
               </div>
             </Card.Header>
 
-            <Card.Body className="mb-4">
-              <div className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-1">
+            <Card.Body className="mb-3">
+              <div className="text-xs uppercase font-bold tracking-wider text-gray-400 mb-1">
                 {t.linkedinLabel}
               </div>
               <a
                 href={data.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-semibold text-slate-900 truncate block hover:text-red-600 transition-colors"
+                className="text-sm font-semibold text-gray-900 truncate block hover:text-red-600 transition-colors"
               >
                 {data.linkedinUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
               </a>
-              <p className="text-xs text-slate-500 mt-2">
+              <p className="text-xs text-gray-500 mt-2">
                 {t.linkedinHint}
               </p>
             </Card.Body>
 
-            <Card.Footer className="pt-3 border-t border-slate-100">
+            <Card.Footer className="pt-3 border-t border-gray-100">
               <Button
                 as="a"
                 href={data.linkedinUrl}

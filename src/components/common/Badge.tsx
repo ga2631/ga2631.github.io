@@ -50,42 +50,45 @@ export const Badge: React.FC<BadgeProps> = ({
     if (className) classList.push(className);
   } else if (variant === 'section') {
     classList.push(
-      'inline-flex items-center gap-2 px-4 py-1.5 bg-red-50/80 border border-red-200/80 rounded-full text-xs font-semibold text-red-600 uppercase tracking-wider mb-4'
+      'inline-flex items-center gap-2 px-3.5 py-1.5 bg-red-100 text-red-800 border border-red-200 text-xs font-semibold rounded-full uppercase tracking-wider mb-4'
     );
     if (className) classList.push(className);
   } else if (variant === 'tag-pill') {
     classList.push(
-      'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100/90 text-slate-700 border border-slate-200/80 hover:bg-white hover:border-red-300 hover:text-red-600 transition-all duration-150 cursor-pointer',
-      isActive ? 'bg-red-50 text-red-600 border-red-300 font-semibold active' : ''
+      'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer border',
+      isActive
+        ? 'bg-red-100 text-red-700 border-red-300 font-semibold'
+        : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:text-gray-900'
     );
     if (className) classList.push(className);
   } else if (variant === 'filter-chip') {
     classList.push(
-      'inline-flex items-center gap-2 px-3 py-1 bg-red-50 border border-red-200 rounded-full text-xs font-medium text-red-700 shadow-sm'
+      'inline-flex items-center gap-2 px-3 py-1 bg-red-100 text-red-800 border border-red-200 rounded-full text-xs font-medium shadow-xs'
     );
     if (className) classList.push(className);
   } else {
+    // Flowbite Standard Badge Styles
     classList.push(
-      'inline-flex items-center gap-1.5 rounded-full font-medium transition-all duration-150',
+      'inline-flex items-center gap-1.5 font-medium rounded-full transition-all duration-150',
       size === 'sm' ? 'px-2.5 py-0.5 text-[0.75rem]' : 'px-3 py-1 text-xs'
     );
 
     if (variant === 'emerald') {
-      classList.push('bg-emerald-50 text-emerald-700 border border-emerald-200/80');
+      classList.push('bg-green-100 text-green-800 border border-green-200');
     } else if (variant === 'purple') {
-      classList.push('bg-purple-50 text-purple-700 border border-purple-200/80');
+      classList.push('bg-purple-100 text-purple-800 border border-purple-200');
     } else if (variant === 'cyan') {
-      classList.push('bg-sky-50 text-sky-700 border border-sky-200/80');
+      classList.push('bg-cyan-100 text-cyan-800 border border-cyan-200');
     } else if (variant === 'rose') {
-      classList.push('bg-rose-50 text-rose-700 border border-rose-200/80');
+      classList.push('bg-red-100 text-red-800 border border-red-200');
     } else if (variant === 'amber') {
-      classList.push('bg-amber-50 text-amber-700 border border-amber-200/80');
+      classList.push('bg-yellow-100 text-yellow-800 border border-yellow-200');
     } else {
-      classList.push('bg-slate-100 text-slate-700 border border-slate-200/80 hover:border-slate-300');
+      classList.push('bg-gray-100 text-gray-800 border border-gray-200 hover:bg-gray-200');
     }
 
-    if (isActive) classList.push('ring-1 ring-red-500 font-semibold active');
-    if (interactive || onClick) classList.push('cursor-pointer hover:shadow-sm');
+    if (isActive) classList.push('ring-2 ring-red-500 font-semibold');
+    if (interactive || onClick) classList.push('cursor-pointer hover:opacity-90');
     if (className) classList.push(className);
   }
 
@@ -102,12 +105,12 @@ export const Badge: React.FC<BadgeProps> = ({
   if (variant === 'filter-chip') {
     return (
       <span className={combinedClassName} {...restProps}>
-        {chipKey && <span className="text-slate-500 font-normal">{chipKey}:</span>}
+        {chipKey && <span className="text-gray-500 font-normal">{chipKey}:</span>}
         <strong>{children}</strong>
         {(removable || onRemove) && (
           <button
             type="button"
-            className="w-4 h-4 flex items-center justify-center rounded-full hover:bg-red-200/60 text-red-600 transition-colors"
+            className="w-4 h-4 inline-flex items-center justify-center rounded-full hover:bg-red-200 text-red-700 transition-colors ml-1 cursor-pointer"
             onClick={handleRemove}
             aria-label={removeAriaLabel}
           >
@@ -127,7 +130,11 @@ export const Badge: React.FC<BadgeProps> = ({
         {...restProps}
       >
         <span>{children}</span>
-        {count !== undefined && <span className="text-[0.75rem] font-bold text-slate-500">{count}</span>}
+        {count !== undefined && (
+          <span className="text-[0.75rem] font-bold px-1.5 py-0.5 rounded-full bg-gray-200 text-gray-700 ml-1">
+            {count}
+          </span>
+        )}
       </Component>
     );
   }
@@ -149,7 +156,7 @@ export const Badge: React.FC<BadgeProps> = ({
       {(removable || onRemove) && (
         <button
           type="button"
-          className="ml-1 w-3.5 h-3.5 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors"
+          className="ml-1 w-3.5 h-3.5 inline-flex items-center justify-center rounded-full hover:bg-black/10 transition-colors cursor-pointer"
           onClick={handleRemove}
           aria-label={removeAriaLabel}
         >

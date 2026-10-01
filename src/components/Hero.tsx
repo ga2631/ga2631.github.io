@@ -33,47 +33,47 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 lg:gap-14 items-center">
           {/* Left Column: Visual Developer Profile Card */}
           <div className="flex justify-center lg:justify-start">
-            <Card className="avatar-card w-full max-w-[360px] p-6 text-center">
+            <Card className="avatar-card w-full max-w-[360px] p-6 text-center bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md">
               <div className="relative w-36 h-36 mx-auto mb-4">
                 {data.avatarUrl ? (
                   <img
                     src={data.avatarUrl}
                     alt={data.fullName}
-                    className="w-full h-full object-cover rounded-full border-2 border-white shadow-md"
+                    className="w-full h-full object-cover rounded-full border-2 border-white shadow-sm"
                     onError={(e) => {
                       (e.currentTarget as HTMLElement).style.display = 'none';
                     }}
                   />
                 ) : (
-                  <div className="w-full h-full rounded-full bg-brand-gradient text-white font-extrabold text-4xl flex items-center justify-center">
+                  <div className="w-full h-full rounded-full bg-red-600 text-white font-extrabold text-4xl flex items-center justify-center">
                     T
                   </div>
                 )}
               </div>
 
-              <h3 className="text-2xl font-bold text-slate-900 font-heading mb-1">
+              <h3 className="text-2xl font-bold text-gray-900 font-heading mb-1">
                 {data.fullName}
               </h3>
 
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mx-auto my-2 lg:hidden">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200 mx-auto my-2 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                 <span>{data.availability}</span>
               </div>
 
-              <p className="text-sm text-slate-500 mb-4">{data.location}</p>
+              <p className="text-sm text-gray-500 mb-4">{data.location}</p>
 
-              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-left text-xs font-mono text-slate-700 mb-5">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3.5 text-left text-xs font-mono text-gray-700 mb-5">
                 <div className="flex items-start gap-1.5">
-                  <span className="text-slate-400">$</span>
+                  <span className="text-gray-400">$</span>
                   <span>git status</span>
                 </div>
-                <div className="text-emerald-600 mt-1 flex items-start gap-1.5">
+                <div className="text-green-600 mt-1 flex items-start gap-1.5">
                   <CheckIcon size={14} className="flex-shrink-0 mt-0.5" />
                   <span>{t.workingTreeClean}</span>
                 </div>
-                <div className="text-slate-500 mt-1.5 text-[0.8rem]">
+                <div className="text-gray-500 mt-1.5 text-[0.8rem]">
                   {t.focusPrompt}
-                  <span className="inline-block w-1.5 h-3.5 bg-slate-400 ml-1 animate-pulse" />
+                  <span className="inline-block w-1.5 h-3.5 bg-gray-400 ml-1 animate-pulse" />
                 </div>
               </div>
 
@@ -137,20 +137,20 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
 
           {/* Right Column: Hero Headline & Summary */}
           <div className="text-center lg:text-left">
-            <div className="hidden lg:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 mb-5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <div className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200 mb-5">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
               <span>{data.availability}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 font-heading mb-4 leading-tight">
-              {t.greeting} <span className="text-brand-gradient">{data.fullName}</span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 font-heading mb-4 leading-tight">
+              {t.greeting} <span className="text-red-600">{data.fullName}</span>
             </h1>
 
-            <h2 className="text-xl sm:text-2xl font-semibold text-slate-700 mb-6 font-heading">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-700 mb-6 font-heading">
               {data.jobTitle}
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-8">
+            <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-8">
               {data.bio}
             </p>
 
@@ -162,7 +162,7 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 variant="primary"
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
-                  trackNavigation('#projects', 'Hero Projects CTA', 'hero');
+                  trackNavigation('#projects', 'Hero Projects CTA', 'hero_cta');
                   const elem = document.getElementById('projects');
                   if (elem) elem.scrollIntoView({ behavior: 'smooth' });
                 }}
@@ -178,17 +178,17 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
                 variant="secondary"
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
-                  trackNavigation('#contact', 'Hero Contact CTA', 'hero');
+                  trackNavigation('#contact', 'Hero Contact CTA', 'hero_cta');
                   const elem = document.getElementById('contact');
                   if (elem) elem.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
-                <span>{t.contactMe}</span>
+                <span>{t.getInTouch}</span>
               </Button>
 
               <ButtonPrint
-                label={t.downloadCv || 'Print ATS CV'}
-                title={t.downloadCv || 'Print ATS CV'}
+                label={t.saveCv || 'Print ATS CV'}
+                title={t.saveCv || 'Print ATS CV'}
                 size="md"
               />
             </div>
@@ -199,11 +199,11 @@ export const Hero: React.FC<HeroProps> = ({ data, t }) => {
         {data.stats && data.stats.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8">
             {data.stats.map((stat, index) => (
-              <div key={index} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
+              <div key={index} className="p-4 rounded-lg bg-gray-50 border border-gray-200 text-center">
                 <div className="text-2xl lg:text-3xl font-extrabold text-red-600 font-heading">
                   {stat.value}
                 </div>
-                <div className="text-xs font-medium text-slate-500 mt-1">
+                <div className="text-xs font-medium text-gray-500 mt-1">
                   {stat.label}
                 </div>
               </div>

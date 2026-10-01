@@ -353,9 +353,9 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
   }, [categoriesList, selectedCategory]);
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 relative">
+    <div className="w-full min-h-screen bg-gray-50 relative">
       {/* Mobile Top Filter Trigger Bar (Visible on <= 1024px) */}
-      <div className="lg:hidden sticky top-[72px] z-30 px-4 py-2.5 bg-white/90 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between shadow-sm">
+      <div className="lg:hidden sticky top-[72px] z-30 px-4 py-2.5 bg-white/90 backdrop-blur-md border-b border-gray-200 flex items-center justify-between shadow-xs">
         <Button
           variant="secondary"
           size="sm"
@@ -375,7 +375,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
         {/* Mobile Backdrop for Sidebar Drawer */}
         {isMobileSidebarOpen && (
           <div
-            className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden transition-opacity"
+            className="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-xs lg:hidden transition-opacity"
             onClick={() => setIsMobileSidebarOpen(false)}
             aria-hidden="true"
           />
@@ -417,7 +417,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
             <SectionHeader
               align="left"
               className="mb-8"
-              title={<h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{t.title}</h1>}
+              title={<h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">{t.title}</h1>}
               subtitle={t.subtitle}
             />
 
@@ -505,7 +505,7 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
       {hoveredCategory &&
         createPortal(
           <div
-            className="fixed z-50 p-4 bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-2xl max-w-xs pointer-events-none text-left flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-150"
+            className="fixed z-50 p-4 bg-white border border-gray-200 rounded-lg shadow-xl max-w-xs pointer-events-none text-left flex flex-col gap-2 animate-in fade-in zoom-in-95 duration-150"
             style={{
               top: `${hoveredCategory.top}px`,
               left: `${hoveredCategory.left}px`,
@@ -517,10 +517,10 @@ export const Blog: React.FC<BlogProps> = ({ posts, categories, t, tCommon }) => 
                 {hoveredCategory.cat.scheduleFull[langKey]}
               </BadgeSchedule>
             </div>
-            <div className="font-bold text-sm text-slate-900 leading-snug">
+            <div className="font-bold text-sm text-gray-900 leading-snug">
               {hoveredCategory.cat.title[langKey]}
             </div>
-            <div className="text-xs text-slate-600 leading-relaxed">
+            <div className="text-xs text-gray-600 leading-relaxed">
               <strong className="text-red-600 font-semibold mr-1">
                 {t.trackObjective || 'Mục tiêu'}:
               </strong>

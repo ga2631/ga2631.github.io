@@ -19,13 +19,13 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
   ...restProps
 }) => {
   return (
-    <div className={`mb-3 ${className}`.trim()} {...restProps}>
+    <div className={`mb-4 ${className}`.trim()} {...restProps}>
       {children ? (
         children
       ) : (
         <>
           {(badge || icon || action) && (
-            <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center justify-between gap-2 mb-3">
               <div className="flex items-center gap-2">
                 {icon}
                 {badge}
@@ -35,14 +35,14 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
           )}
           {title && (
             typeof title === 'string' ? (
-              <h3 className="text-xl font-bold text-slate-900 mb-1">{title}</h3>
+              <h5 className="text-xl font-bold tracking-tight text-gray-900 mb-1">{title}</h5>
             ) : (
               title
             )
           )}
           {subtitle && (
             typeof subtitle === 'string' ? (
-              <div className="text-sm text-slate-500">{subtitle}</div>
+              <div className="text-sm font-normal text-gray-500">{subtitle}</div>
             ) : (
               subtitle
             )
@@ -64,7 +64,7 @@ export const CardBody: React.FC<CardBodyProps> = ({
 }) => {
   return (
     <div
-      className={`flex-1 ${className}`.trim()}
+      className={`flex-1 text-gray-600 ${className}`.trim()}
       style={style}
       {...restProps}
     >
@@ -89,7 +89,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
 }) => {
   return (
     <div
-      className={`mt-auto pt-3 ${className}`.trim()}
+      className={`mt-auto pt-4 border-t border-gray-100 ${className}`.trim()}
       style={style}
       {...restProps}
     >
@@ -132,13 +132,14 @@ export const Card = React.forwardRef<HTMLElement, CardProps>(
     ref
   ) => {
     const Component = as;
-    const classList: string[] = ['flex flex-col'];
+    // Flowbite Card Base Design
+    const classList: string[] = ['bg-white border border-gray-200 rounded-lg shadow-xs flex flex-col'];
 
     if (variant === 'glass') {
       classList.push('glass-panel');
     }
     if (onClick || variant === 'interactive') {
-      classList.push('cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300');
+      classList.push('cursor-pointer hover:shadow-md hover:border-gray-300 transition-all duration-200');
     }
     if (className) {
       classList.push(className);

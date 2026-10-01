@@ -99,8 +99,8 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 h-[72px] bg-white/85 backdrop-blur-xl border-b border-black/[0.08] z-[1100] transition-all duration-200 ${
-          isScrolled ? 'shadow-sm bg-white/95' : ''
+        className={`fixed top-0 left-0 right-0 h-[72px] bg-white/90 backdrop-blur-md border-b border-gray-200 z-[1100] transition-all duration-200 ${
+          isScrolled ? 'shadow-xs bg-white/95' : ''
         }`}
       >
         <div className="container mx-auto max-w-[1200px] px-6 h-full flex items-center justify-between">
@@ -116,10 +116,10 @@ export const Header: React.FC<HeaderProps> = ({
               }
             }}
           >
-            <div className="w-[38px] h-[38px] rounded-lg flex items-center justify-center text-white font-extrabold text-base flex-shrink-0 bg-brand-gradient">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-extrabold text-base flex-shrink-0 bg-red-600">
               T
             </div>
-            <span className="text-slate-900">{personalInfo.fullName}</span>
+            <span className="text-gray-900">{personalInfo.fullName}</span>
           </a>
 
           {/* Desktop Navigation Links */}
@@ -128,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
               <a
                 key={item.href}
                 href={item.href}
-                className={`text-slate-600 hover:text-red-600 text-[0.95rem] font-medium transition-colors duration-150 ${
+                className={`text-gray-600 hover:text-red-600 text-sm font-medium transition-colors duration-150 ${
                   item.isActive ? '!text-red-600 font-semibold' : ''
                 }`}
                 onClick={(e) => {
@@ -145,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Desktop Language Switcher Toggle */}
             <Button
               variant="unstyled"
-              className="h-10 min-w-[62px] px-3 rounded-xl bg-slate-100 text-slate-800 border border-slate-200 inline-flex items-center justify-center gap-1.5 text-xs font-bold hover:border-red-400 hover:text-red-600 hover:bg-white transition-all cursor-pointer"
+              className="h-9 min-w-[60px] px-3 rounded-lg bg-gray-100 text-gray-800 border border-gray-200 inline-flex items-center justify-center gap-1.5 text-xs font-semibold hover:bg-gray-200 hover:text-red-600 transition-all cursor-pointer focus:ring-2 focus:ring-gray-300"
               onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')}
               title={lang === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
               aria-label="Toggle Language"
@@ -157,11 +157,11 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile & Tablet Drawer Trigger Button */}
             <Button
               variant="unstyled"
-              className="lg:hidden w-10 h-10 bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-center text-slate-800 hover:border-red-400 hover:text-red-600 hover:bg-white transition-all cursor-pointer"
+              className="lg:hidden w-9 h-9 bg-gray-100 border border-gray-200 rounded-lg flex items-center justify-center text-gray-800 hover:bg-gray-200 hover:text-red-600 transition-all cursor-pointer focus:ring-2 focus:ring-gray-300"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open Navigation Drawer Menu"
               aria-expanded={mobileMenuOpen}
-              icon={<MenuIcon size={22} />}
+              icon={<MenuIcon size={20} />}
             />
           </div>
         </div>

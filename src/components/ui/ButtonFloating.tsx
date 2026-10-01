@@ -31,8 +31,8 @@ export const ButtonFloating = React.forwardRef<HTMLButtonElement, ButtonFloating
 
     const variantClasses =
       floatingVariant === 'primary'
-        ? 'bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white shadow-red-500/25 hover:shadow-red-500/40 hover:-translate-y-0.5 active:translate-y-0'
-        : 'bg-white/95 text-slate-700 border border-slate-200/90 shadow-slate-900/10 hover:bg-white hover:border-red-400 hover:text-red-600 hover:-translate-y-0.5 active:translate-y-0';
+        ? 'bg-red-600 hover:bg-red-700 text-white shadow-md hover:shadow-lg focus:ring-4 focus:ring-red-300'
+        : 'bg-white text-gray-900 border border-gray-200 shadow-md hover:bg-gray-100 hover:text-red-600 hover:border-gray-300 focus:ring-4 focus:ring-gray-100';
 
     return (
       <Button

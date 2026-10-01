@@ -25,23 +25,22 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <Card
-      variant="glass"
-      className={`col-span-full py-12 px-6 text-center mt-3 ${className}`.trim()}
+      className={`col-span-full py-12 px-6 text-center mt-3 bg-white border border-gray-200 rounded-lg shadow-xs ${className}`.trim()}
       style={style}
     >
       <Card.Body>
         {icon && (
-          <div className="text-slate-400 mx-auto mb-4 flex justify-center">
+          <div className="text-gray-400 mx-auto mb-4 flex justify-center">
             {icon}
           </div>
         )}
         {typeof title === 'string' ? (
-          <h3 className="text-xl font-bold text-slate-900 mb-2">{title}</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
         ) : (
           title
         )}
         {description && (
-          <div className="text-slate-500 text-sm max-w-md mx-auto mb-4 leading-relaxed">
+          <div className="text-gray-500 text-sm max-w-md mx-auto mb-4 leading-relaxed">
             {description}
           </div>
         )}

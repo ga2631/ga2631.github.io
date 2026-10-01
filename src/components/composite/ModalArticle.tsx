@@ -114,8 +114,8 @@ export const ArticleTocSidebar: React.FC<ArticleTocSidebarProps> = ({
   if (tocItems.length === 0) return null;
 
   return (
-    <aside className="w-64 flex-shrink-0 hidden lg:block sticky top-4 self-start pl-6 border-l border-slate-200/80" aria-label="Table of Contents">
-      <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+    <aside className="w-64 flex-shrink-0 hidden lg:block sticky top-4 self-start pl-5 border-s border-gray-200" aria-label="Table of Contents">
+      <div className="flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
         <ListIcon size={15} />
         <span>{tocTitle}</span>
       </div>
@@ -131,7 +131,7 @@ export const ArticleTocSidebar: React.FC<ArticleTocSidebarProps> = ({
                 className={`block py-1 leading-snug truncate transition-colors ${
                   activeHeadingId === item.id
                     ? 'text-red-600 font-bold'
-                    : 'text-slate-600 hover:text-red-600 font-medium'
+                    : 'text-gray-600 hover:text-red-600 font-medium'
                 }`}
                 onClick={(e) => {
                   e.preventDefault();
@@ -351,12 +351,12 @@ export const ModalArticle: ModalArticleComponent = ({
               </div>
 
               {/* Article Title */}
-              <h1 id="article-modal-title" className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
+              <h1 id="article-modal-title" className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight leading-tight mb-3">
                 {post.title}
               </h1>
 
               {/* Meta info bar */}
-              <div className="flex items-center gap-3 text-xs text-slate-400 font-medium mb-5 pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-3 text-xs text-gray-500 font-medium mb-5 pb-4 border-b border-gray-200">
                 <span className="inline-flex items-center gap-1.5">
                   <CalendarIcon size={14} /> <span>{post.publishedAt}</span>
                 </span>
@@ -368,7 +368,7 @@ export const ModalArticle: ModalArticleComponent = ({
 
               {/* Summary Callout */}
               {post.summary && (
-                <div className="p-4 mb-6 bg-red-50/60 border border-red-200/80 rounded-xl text-slate-700 text-sm leading-relaxed">
+                <div className="p-4 mb-6 bg-red-50 border border-red-200 rounded-lg text-gray-700 text-sm leading-relaxed">
                   <strong className="text-red-700 font-bold">{tCommon.overview}: </strong>
                   <span>{post.summary}</span>
                 </div>

@@ -39,7 +39,7 @@ export async function PageBlog({ lang }: { lang: Locale }) {
   const t = uiTranslations[lang] || uiTranslations.vi;
 
   return (
-    <AppShell lang={lang as any} currentRoute="blog" personalInfo={currentCvData.personalInfo}>
+    <AppShell lang={lang} currentRoute="blog" personalInfo={currentCvData.personalInfo}>
       <Blog posts={currentBlogPosts} categories={categories} t={t.blog} tCommon={t.common} />
     </AppShell>
   );

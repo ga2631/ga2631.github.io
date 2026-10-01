@@ -166,14 +166,14 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
       title={t.title}
       subtitle={t.subtitle}
     >
-      {/* Primary View Switcher Tabs */}
-      <div className="flex items-center justify-center gap-3 mb-10 flex-wrap">
+      {/* Primary View Switcher Tabs (Flowbite Button Group / Pills) */}
+      <div className="flex items-center justify-center gap-2 mb-10 flex-wrap">
         <Button
           variant="unstyled"
-          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 inline-flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-2 cursor-pointer border ${
             activeTab === 'all'
-              ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm'
-              : 'bg-slate-100 text-slate-600 border border-slate-200/80 hover:bg-white hover:text-slate-900'
+              ? 'bg-red-600 text-white border-red-600 shadow-xs'
+              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 hover:text-gray-900'
           }`}
           onClick={() => {
             setActiveTab('all');
@@ -181,16 +181,16 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
           }}
         >
           <span>{t.allWorks}</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 font-bold">
+          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${activeTab === 'all' ? 'bg-red-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
             {projects.length + (repos.length || 3)}
           </span>
         </Button>
         <Button
           variant="unstyled"
-          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 inline-flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-2 cursor-pointer border ${
             activeTab === 'case-studies'
-              ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm'
-              : 'bg-slate-100 text-slate-600 border border-slate-200/80 hover:bg-white hover:text-slate-900'
+              ? 'bg-red-600 text-white border-red-600 shadow-xs'
+              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 hover:text-gray-900'
           }`}
           onClick={() => {
             setActiveTab('case-studies');
@@ -199,16 +199,16 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
           icon={<SparklesIcon size={15} />}
         >
           <span>{t.caseStudies}</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 font-bold">
+          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${activeTab === 'case-studies' ? 'bg-red-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
             {projects.length}
           </span>
         </Button>
         <Button
           variant="unstyled"
-          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 inline-flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors inline-flex items-center gap-2 cursor-pointer border ${
             activeTab === 'github'
-              ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm'
-              : 'bg-slate-100 text-slate-600 border border-slate-200/80 hover:bg-white hover:text-slate-900'
+              ? 'bg-red-600 text-white border-red-600 shadow-xs'
+              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100 hover:text-gray-900'
           }`}
           onClick={() => {
             setActiveTab('github');
@@ -217,7 +217,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
           icon={<GitRepoIcon size={15} />}
         >
           <span>{t.githubRepos}</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-black/5 font-bold">
+          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${activeTab === 'github' ? 'bg-red-700 text-white' : 'bg-gray-100 text-gray-700'}`}>
             {repos.length || 'Live'}
           </span>
         </Button>
@@ -230,7 +230,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
           projects.map((project: ProjectItem) => (
             <Card
               key={project.id}
-              className="p-6 cursor-pointer transition-all duration-200 hover:-translate-y-1 flex flex-col h-full"
+              className="p-6 cursor-pointer hover:shadow-md transition-shadow flex flex-col h-full"
               onClick={() => {
                 setActiveProject(project);
                 trackProjectModalOpen({
@@ -248,7 +248,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                   </Badge>
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900 mb-1 leading-snug line-clamp-2">{project.title}</h3>
+                <h5 className="text-lg font-bold text-gray-900 mb-1 leading-snug line-clamp-2">{project.title}</h5>
 
                 {project.company && (
                   <div className="text-xs font-semibold text-red-600 mb-2">
@@ -258,12 +258,12 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
               </Card.Header>
 
               <Card.Body className="mb-4">
-                <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">
+                <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
                   {project.shortDescription || project.description}
                 </p>
               </Card.Body>
 
-              <Card.Footer className="mt-auto pt-3 border-t border-slate-100 flex flex-col gap-3">
+              <Card.Footer className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-3">
                 <div className="flex flex-wrap gap-1.5">
                   {project.tags.slice(0, 4).map((tech: string) => {
                     const info = getTechColorInfo(tech);
@@ -317,10 +317,10 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
             {[1, 2, 3].map((i) => (
               <Card key={`skeleton-${i}`} className="p-6 animate-pulse">
                 <Card.Body>
-                  <div className="w-3/5 h-5 bg-slate-200 rounded mb-3" />
-                  <div className="w-full h-3.5 bg-slate-100 rounded mb-2" />
-                  <div className="w-4/5 h-3.5 bg-slate-100 rounded mb-5" />
-                  <div className="w-2/5 h-4 bg-slate-200 rounded" />
+                  <div className="w-3/5 h-5 bg-gray-200 rounded mb-3" />
+                  <div className="w-full h-3.5 bg-gray-100 rounded mb-2" />
+                  <div className="w-4/5 h-3.5 bg-gray-100 rounded mb-5" />
+                  <div className="w-2/5 h-4 bg-gray-200 rounded" />
                 </Card.Body>
               </Card>
             ))}
@@ -337,7 +337,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
             const mainLangInfo = getTechColorInfo(repo.language);
 
             return (
-              <Card key={repo.id} className="p-6 flex flex-col h-full transition-all duration-200 hover:-translate-y-1">
+              <Card key={repo.id} className="p-6 flex flex-col h-full hover:shadow-md transition-shadow">
                 <Card.Header className="mb-3">
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <Badge variant="cyan" icon={<GitRepoIcon size={13} />}>
@@ -348,7 +348,7 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                     </Badge>
                   </div>
 
-                  <h3 className="text-lg font-bold text-slate-900 mb-1 leading-snug">
+                  <h5 className="text-lg font-bold text-gray-900 mb-1 leading-snug">
                     <a
                       href={repo.html_url}
                       target="_blank"
@@ -357,17 +357,17 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                     >
                       {repo.name}
                     </a>
-                  </h3>
+                  </h5>
                 </Card.Header>
 
                 <Card.Body className="mb-4">
-                  <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">
+                  <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
                     {repo.description || 'Public GitHub repository by @ga2631 with active source code and configuration.'}
                   </p>
                 </Card.Body>
 
-                <Card.Footer className="mt-auto pt-3 border-t border-slate-100 flex flex-col gap-3">
-                  <div className="flex items-center justify-between gap-2 text-xs text-slate-500 w-full">
+                <Card.Footer className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-3">
+                  <div className="flex items-center justify-between gap-2 text-xs text-gray-500 w-full">
                     {repo.language && (
                       <div className="inline-flex items-center gap-1.5 font-bold" style={{ color: mainLangInfo.color }}>
                         <span
@@ -382,12 +382,12 @@ export const Projects: React.FC<ProjectsProps> = ({ projects, t, tCommon }) => {
                     )}
 
                     <div className="flex items-center gap-3 ml-auto">
-                      <span className="inline-flex items-center gap-1 text-slate-600 font-semibold" title="Stars">
-                        <StarIcon size={14} className="text-amber-500" />
+                      <span className="inline-flex items-center gap-1 text-gray-600 font-medium" title="Stars">
+                        <StarIcon size={14} className="text-yellow-400" />
                         <span>{repo.stargazers_count}</span>
                       </span>
-                      <span className="inline-flex items-center gap-1 text-slate-600 font-semibold" title="Forks">
-                        <GitForkIcon size={14} className="text-slate-400" />
+                      <span className="inline-flex items-center gap-1 text-gray-600 font-medium" title="Forks">
+                        <GitForkIcon size={14} className="text-gray-400" />
                         <span>{repo.forks_count}</span>
                       </span>
                     </div>

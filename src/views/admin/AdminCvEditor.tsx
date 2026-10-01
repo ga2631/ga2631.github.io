@@ -502,12 +502,12 @@ export const AdminCvEditor: React.FC<AdminCvEditorProps> = ({ onShowToast }) => 
                         <input
                           type="text"
                           className="admin-input"
-                          value={(exp.techStack || []).join(', ')}
+                          value={(exp.technologies || []).join(', ')}
                           onChange={(e) => {
                             const updated = [...cvData.experiences];
                             updated[idx] = {
                               ...updated[idx],
-                              techStack: e.target.value.split(',').map((s) => s.trim()).filter(Boolean),
+                              technologies: e.target.value.split(',').map((s) => s.trim()).filter(Boolean),
                             };
                             setCvData({ ...cvData, experiences: updated });
                           }}
@@ -552,14 +552,14 @@ export const AdminCvEditor: React.FC<AdminCvEditorProps> = ({ onShowToast }) => 
                         />
                       </div>
                       <div className="admin-form-group">
-                        <label>Subtitle / Quy mô</label>
+                        <label>Doanh nghiệp / Khách hàng</label>
                         <input
                           type="text"
                           className="admin-input"
-                          value={proj.subtitle || ''}
+                          value={proj.company || ''}
                           onChange={(e) => {
                             const updated = [...cvData.projects];
-                            updated[idx] = { ...updated[idx], subtitle: e.target.value };
+                            updated[idx] = { ...updated[idx], company: e.target.value };
                             setCvData({ ...cvData, projects: updated });
                           }}
                         />
@@ -583,12 +583,12 @@ export const AdminCvEditor: React.FC<AdminCvEditorProps> = ({ onShowToast }) => 
                       <input
                         type="text"
                         className="admin-input"
-                        value={(proj.techStack || []).join(', ')}
+                        value={(proj.tags || []).join(', ')}
                         onChange={(e) => {
                           const updated = [...cvData.projects];
                           updated[idx] = {
                             ...updated[idx],
-                            techStack: e.target.value.split(',').map((s) => s.trim()).filter(Boolean),
+                            tags: e.target.value.split(',').map((s) => s.trim()).filter(Boolean),
                           };
                           setCvData({ ...cvData, projects: updated });
                         }}
@@ -692,10 +692,10 @@ export const AdminCvEditor: React.FC<AdminCvEditorProps> = ({ onShowToast }) => 
                           <input
                             type="text"
                             className="admin-input"
-                            value={edu.school || ''}
+                            value={edu.institution || ''}
                             onChange={(e) => {
                               const updated = [...cvData.educations];
-                              updated[idx] = { ...updated[idx], school: e.target.value };
+                              updated[idx] = { ...updated[idx], institution: e.target.value };
                               setCvData({ ...cvData, educations: updated });
                             }}
                           />
@@ -724,10 +724,10 @@ export const AdminCvEditor: React.FC<AdminCvEditorProps> = ({ onShowToast }) => 
                           <input
                             type="text"
                             className="admin-input"
-                            value={cert.title || ''}
+                            value={cert.name || ''}
                             onChange={(e) => {
                               const updated = [...cvData.certifications];
-                              updated[idx] = { ...updated[idx], title: e.target.value };
+                              updated[idx] = { ...updated[idx], name: e.target.value };
                               setCvData({ ...cvData, certifications: updated });
                             }}
                           />

@@ -31,13 +31,13 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   if (sticky) {
     return (
       <div
-        className={`sticky top-0 z-20 flex items-center justify-between px-6 py-3.5 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex-shrink-0 transition-all ${className}`.trim()}
+        className={`sticky top-0 z-20 flex items-center justify-between p-4 md:p-5 bg-white/95 backdrop-blur-md border-b border-gray-200 flex-shrink-0 transition-all ${className}`.trim()}
         {...restProps}
       >
         <div className="flex-1 min-w-0 pr-4">
           {title && (
             <span
-              className={`block font-bold text-slate-900 text-sm sm:text-base truncate transition-opacity duration-200 ${
+              className={`block font-bold text-gray-900 text-sm sm:text-base truncate transition-opacity duration-200 ${
                 isStickyTitleShown ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'
               }`}
               title={typeof title === 'string' ? title : undefined}
@@ -49,11 +49,11 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         {showCloseButton && onClose && (
           <button
             type="button"
-            className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer flex-shrink-0 ml-auto"
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center cursor-pointer transition-colors"
             onClick={onClose}
             aria-label={closeAriaLabel}
           >
-            <CloseIcon size={18} />
+            <CloseIcon size={16} />
           </button>
         )}
       </div>
@@ -61,7 +61,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   }
 
   return (
-    <div className={`flex items-start justify-between p-6 border-b border-slate-200/80 flex-shrink-0 ${className}`.trim()} {...restProps}>
+    <div className={`flex items-start justify-between p-4 md:p-5 border-b border-gray-200 rounded-t flex-shrink-0 ${className}`.trim()} {...restProps}>
       {children ? (
         children
       ) : (
@@ -75,14 +75,14 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
             )}
             {title && (
               typeof title === 'string' ? (
-                <h2 className="text-xl font-bold text-slate-900 leading-snug">{title}</h2>
+                <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
               ) : (
                 title
               )
             )}
             {subtitle && (
               typeof subtitle === 'string' ? (
-                <div className="text-sm text-slate-500 mt-1">{subtitle}</div>
+                <p className="text-sm font-normal text-gray-500 mt-1">{subtitle}</p>
               ) : (
                 subtitle
               )
@@ -91,11 +91,11 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
           {showCloseButton && onClose && (
             <button
               type="button"
-              className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer flex-shrink-0 ml-auto"
+              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center cursor-pointer transition-colors"
               onClick={onClose}
               aria-label={closeAriaLabel}
             >
-              <CloseIcon size={18} />
+              <CloseIcon size={16} />
             </button>
           )}
         </>
@@ -113,7 +113,7 @@ export const ModalBody: React.FC<ModalBodyProps> = ({
   ...restProps
 }) => {
   return (
-    <div className={`flex-1 overflow-y-auto p-6 text-slate-700 text-sm leading-relaxed ${className}`.trim()} {...restProps}>
+    <div className={`flex-1 overflow-y-auto p-4 md:p-5 space-y-4 text-gray-600 text-sm leading-relaxed ${className}`.trim()} {...restProps}>
       {children}
     </div>
   );
@@ -132,7 +132,7 @@ export const ModalFooter: React.FC<ModalFooterProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200/80 bg-slate-50/50 flex-shrink-0 ${className}`.trim()}
+      className={`flex items-center justify-end gap-3 p-4 md:p-5 border-t border-gray-200 rounded-b bg-gray-50/50 flex-shrink-0 ${className}`.trim()}
       {...restProps}
     >
       {children}
@@ -177,8 +177,8 @@ export const Modal: ModalComponent = ({
   isStickyTitleShown = false,
   showCloseButton,
   closeAriaLabel = 'Close modal',
-  backdropClassName = 'fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 bg-slate-950/70 backdrop-blur-sm',
-  contentClassName = 'relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden',
+  backdropClassName = 'fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-gray-900/50 backdrop-blur-xs',
+  contentClassName = 'relative w-full max-w-4xl max-h-[90vh] bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col overflow-hidden',
   headerClassName = '',
   bodyClassName = '',
   contentRef,
@@ -259,11 +259,11 @@ export const Modal: ModalComponent = ({
         ) : isCloseButtonVisible ? (
           <button
             type="button"
-            className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer absolute top-4 right-4 z-10"
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center cursor-pointer transition-colors absolute top-4 right-4 z-10"
             onClick={onClose}
             aria-label={closeAriaLabel}
           >
-            <CloseIcon size={18} />
+            <CloseIcon size={16} />
           </button>
         ) : null}
 

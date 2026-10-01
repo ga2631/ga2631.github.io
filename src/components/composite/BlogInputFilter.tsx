@@ -43,8 +43,8 @@ export const BlogInputFilter: React.FC<BlogInputFilterProps> = ({
 
   return (
     <div
-      className={`sticky top-0 z-20 mb-8 p-4 bg-white/90 backdrop-blur-md rounded-2xl border transition-all ${
-        isStuck ? 'border-red-200/80 shadow-md' : 'border-slate-200/80 shadow-sm'
+      className={`sticky top-0 z-20 mb-8 p-4 bg-white/95 backdrop-blur-md rounded-lg border transition-all ${
+        isStuck ? 'border-red-300 shadow-sm' : 'border-gray-200 shadow-xs'
       } ${className}`.trim()}
     >
       <InputSearch
@@ -55,8 +55,8 @@ export const BlogInputFilter: React.FC<BlogInputFilterProps> = ({
 
       {/* Active Filter Chips Bar */}
       {hasActiveFilters && (
-        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 flex-wrap text-xs">
-          <span className="inline-flex items-center gap-1.5 font-bold text-slate-500 uppercase tracking-wider text-xs mr-1">
+        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 flex-wrap text-xs">
+          <span className="inline-flex items-center gap-1.5 font-semibold text-gray-500 uppercase tracking-wider text-xs mr-1">
             <FilterIcon size={13} className="text-red-600" /> {activeFiltersLabel}
           </span>
 

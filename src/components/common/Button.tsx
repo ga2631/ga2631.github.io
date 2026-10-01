@@ -62,70 +62,79 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       if (className) classList.push(className);
     } else if (variant === 'tab') {
       classList.push(
-        'px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer inline-flex items-center gap-2',
+        'px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer inline-flex items-center gap-2',
         isActive
-          ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm'
-          : 'bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent'
+          ? 'bg-red-100 text-red-700 font-semibold'
+          : 'bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100'
       );
       if (className) classList.push(className);
-    } else if (variant === 'icon') {
+    } else if (variant === 'icon' || variant === 'social-icon') {
       classList.push(
-        'w-10 h-10 rounded-xl bg-slate-100 text-slate-700 border border-slate-200/80 flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-white hover:border-red-500/40 hover:text-red-600 hover:-translate-y-0.5 shadow-sm'
-      );
-      if (className) classList.push(className);
-    } else if (variant === 'social-icon') {
-      classList.push(
-        'w-10 h-10 rounded-xl bg-slate-100 text-slate-700 border border-slate-200/80 flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-white hover:border-red-500/40 hover:text-red-600 hover:-translate-y-0.5 shadow-sm'
+        'p-2.5 rounded-lg text-gray-500 bg-white border border-gray-200 hover:bg-gray-100 hover:text-red-600 focus:ring-4 focus:ring-gray-100 flex items-center justify-center cursor-pointer transition-all shadow-xs'
       );
       if (className) classList.push(className);
     } else {
+      // Flowbite Base Button
       classList.push(
-        'inline-flex items-center justify-center gap-2.5 font-semibold whitespace-nowrap cursor-pointer transition-all duration-200'
+        'inline-flex items-center justify-center gap-2 font-medium cursor-pointer transition-all focus:outline-none focus:ring-4 text-center'
       );
 
-      // Sizing
+      // Flowbite Sizing
       if (size === 'sm') {
-        classList.push('px-3.5 py-1.5 text-xs rounded-lg');
+        classList.push('px-3 py-2 text-xs rounded-lg');
       } else if (size === 'lg') {
-        classList.push('px-7 py-3.5 text-base rounded-xl');
+        classList.push('px-6 py-3.5 text-base rounded-lg');
       } else {
-        classList.push('px-5 py-2.5 text-[0.95rem] rounded-xl');
+        classList.push('px-5 py-2.5 text-sm rounded-lg');
       }
 
-      // Variant Styles
+      // Flowbite Color Variants
       if (variant === 'primary') {
         classList.push(
-          'bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 hover:-translate-y-0.5 active:translate-y-0'
+          'text-white bg-red-600 hover:bg-red-700 focus:ring-red-300 shadow-xs'
         );
       } else if (variant === 'secondary') {
         classList.push(
-          'bg-slate-100 text-slate-900 border border-slate-200/80 hover:bg-white hover:border-red-500/40 hover:-translate-y-0.5 shadow-sm'
+          'text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-red-600 focus:ring-gray-100 shadow-xs'
         );
       } else if (variant === 'outline') {
         classList.push(
-          'bg-transparent text-slate-800 border border-slate-200 hover:border-red-600 hover:text-red-600 hover:bg-red-50/60'
+          'text-red-700 hover:text-white border border-red-700 hover:bg-red-700 focus:ring-red-300'
         );
       } else if (variant === 'ghost') {
         classList.push(
-          'bg-transparent text-slate-600 hover:text-red-600 hover:bg-slate-100'
+          'text-gray-600 hover:text-red-600 hover:bg-gray-100 focus:ring-gray-100'
         );
       }
 
-      if (isActive) classList.push('ring-2 ring-red-500/50');
+      if (isActive) classList.push('ring-4 ring-red-300');
       if (className) classList.push(className);
     }
 
     const combinedClassName = classList.join(' ');
 
     const spinnerNode = (
-      <span
-        className="inline-block border-2 border-white/25 border-t-current rounded-full animate-spin flex-shrink-0"
+      <svg
+        className="animate-spin -ml-1 mr-2 w-4 h-4 text-current"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
         aria-hidden="true"
-        style={{
-          width: size === 'sm' ? '12px' : '14px',
-          height: size === 'sm' ? '12px' : '14px',
-        }}
-      />
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
     );
 
     const content = (

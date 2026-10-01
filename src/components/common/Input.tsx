@@ -49,16 +49,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const sizeClasses =
       size === 'sm'
-        ? 'px-3 py-1.5 text-xs'
+        ? 'p-2 text-xs'
         : size === 'lg'
-        ? 'px-5 py-3.5 text-base'
-        : 'px-4 py-2.5 text-sm';
+        ? 'p-4 text-base'
+        : 'p-2.5 text-sm';
 
-    const paddingWithAdornment = startAdornment ? 'pl-10' : '';
-    const paddingWithClearable = clearable && hasValue ? 'pr-10' : '';
+    const paddingWithAdornment = startAdornment ? 'ps-10' : '';
+    const paddingWithClearable = clearable && hasValue ? 'pe-10' : '';
 
     const defaultInputClasses =
-      `w-full bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all outline-none ${sizeClasses} ${paddingWithAdornment} ${paddingWithClearable} ${className}`.trim();
+      `block w-full bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-400 focus:ring-red-500 focus:border-red-500 transition-colors ${sizeClasses} ${paddingWithAdornment} ${paddingWithClearable} ${className}`.trim();
 
     const inputNode = (
       <input
@@ -76,7 +76,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       return (
         <div className={`relative flex items-center w-full ${wrapperClassName}`.trim()}>
           {startAdornment && (
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none flex items-center justify-center">
+            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-500">
               {startAdornment}
             </div>
           )}
@@ -84,15 +84,15 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {clearable && hasValue && (
             <button
               type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute inset-y-0 end-0 flex items-center pe-3 text-gray-400 hover:text-gray-900 cursor-pointer"
               onClick={handleClear}
               aria-label={clearAriaLabel}
             >
-              <CloseIcon size={12} />
+              <CloseIcon size={14} />
             </button>
           )}
           {endAdornment && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 flex items-center justify-center">
+            <div className="absolute inset-y-0 end-0 flex items-center pe-3 text-gray-500">
               {endAdornment}
             </div>
           )}

@@ -40,12 +40,12 @@ export const renderCategoryIcon = (iconName: string, size = 15) => {
 
 export const getDayIconStyle = (code: string) => {
   const c = code.toLowerCase();
-  if (c === 't2' || c === 'mon') return 'bg-amber-100 text-amber-700';
-  if (c === 't3' || c === 'tue') return 'bg-purple-100 text-purple-700';
-  if (c === 't4' || c === 'wed') return 'bg-sky-100 text-sky-700';
-  if (c === 't5' || c === 'thu') return 'bg-emerald-100 text-emerald-700';
-  if (c === 't6' || c === 'fri') return 'bg-rose-100 text-rose-700';
-  return 'bg-slate-200 text-slate-700';
+  if (c === 't2' || c === 'mon') return 'bg-yellow-100 text-yellow-800';
+  if (c === 't3' || c === 'tue') return 'bg-purple-100 text-purple-800';
+  if (c === 't4' || c === 'wed') return 'bg-blue-100 text-blue-800';
+  if (c === 't5' || c === 'thu') return 'bg-green-100 text-green-800';
+  if (c === 't6' || c === 'fri') return 'bg-red-100 text-red-800';
+  return 'bg-gray-100 text-gray-800';
 };
 
 export const BlogTopic: React.FC<BlogTopicProps> = ({
@@ -60,12 +60,12 @@ export const BlogTopic: React.FC<BlogTopicProps> = ({
 }) => {
   return (
     <div className={`mb-6 ${className}`.trim()}>
-      <div className="flex items-center gap-2 mb-3 px-1 text-xs font-bold uppercase tracking-wider text-slate-400">
+      <div className="flex items-center gap-2 mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
         <CalendarIcon size={15} />
         <span>{title}</span>
       </div>
 
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1">
         {categories.map((cat: BlogCategoryDef) => {
           const isActive = selectedCategory === cat.id;
           const count = categoryCounts[cat.id] || 0;
@@ -75,10 +75,10 @@ export const BlogTopic: React.FC<BlogTopicProps> = ({
             <button
               key={cat.id}
               type="button"
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all text-sm font-semibold cursor-pointer border group ${
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-all text-sm font-medium cursor-pointer border group ${
                 isActive
-                  ? 'bg-red-50/90 text-red-600 border-red-200 shadow-sm'
-                  : 'bg-transparent text-slate-700 border-transparent hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-red-50 text-red-600 border-red-200 shadow-xs font-semibold'
+                  : 'bg-transparent text-gray-700 border-transparent hover:bg-gray-100 hover:text-gray-900'
               }`}
               onClick={() => {
                 onSelectCategory(cat.id);
@@ -106,10 +106,10 @@ export const BlogTopic: React.FC<BlogTopicProps> = ({
                 <span className="truncate text-sm">{cat.title[langKey]}</span>
               </div>
               <span
-                className={`text-xs px-2 py-0.5 rounded-full font-bold flex-shrink-0 transition-colors ${
+                className={`text-xs px-2 py-0.5 rounded-full font-semibold flex-shrink-0 transition-colors ${
                   isActive
                     ? 'bg-red-100 text-red-700'
-                    : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
+                    : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'
                 }`}
               >
                 {count}

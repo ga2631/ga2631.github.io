@@ -31,7 +31,7 @@ export const BlogItem: React.FC<BlogItemProps> = ({
 }) => {
   return (
     <Card
-      className={`p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 flex flex-col h-full ${className}`.trim()}
+      className={`p-6 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 flex flex-col h-full bg-white border border-gray-200 rounded-lg shadow-xs hover:shadow-md ${className}`.trim()}
       onClick={() => onSelect(post)}
     >
       <Card.Header className="mb-2">
@@ -47,27 +47,27 @@ export const BlogItem: React.FC<BlogItemProps> = ({
             </Badge>
           )}
 
-          <span className="text-xs text-slate-400 font-medium">
+          <span className="text-xs text-gray-500 font-medium">
             {post.publishedAt}
           </span>
         </div>
 
-        <p className="text-xs text-slate-400 font-medium mb-1.5">
+        <p className="text-xs text-gray-500 font-medium mb-1.5">
           {post.readTime}
         </p>
 
-        <h2 className="text-lg font-bold text-slate-900 leading-snug line-clamp-2 hover:text-red-600 transition-colors">
+        <h2 className="text-lg font-bold text-gray-900 leading-snug line-clamp-2 hover:text-red-600 transition-colors">
           {post.title}
         </h2>
       </Card.Header>
 
       <Card.Body className="mb-4">
-        <p className="text-sm text-slate-600 leading-relaxed line-clamp-3">
+        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
           {post.summary}
         </p>
       </Card.Body>
 
-      <Card.Footer className="mt-auto pt-3 border-t border-slate-100 flex flex-col gap-3">
+      <Card.Footer className="mt-auto pt-3 border-t border-gray-100 flex flex-col gap-3">
         <TechTagList
           tags={post.tags}
           prefix={tagPrefix}
