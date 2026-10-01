@@ -13,12 +13,12 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@next/third-parties": "^15.2.0",
+    "@next/third-parties": "^16.0.0",
     "@supabase/supabase-js": "^2.117.2",
-    "flowbite": "^3.1.2",
-    "flowbite-react": "^0.12.17",
+    "flowbite": "^4.0.0",
+    "flowbite-react": "0.12.17",
     "mermaid": "^12.0.0",
-    "next": "^15.2.0",
+    "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -33,6 +33,7 @@
     "jsdom": "^25.0.1",
     "tailwindcss": "^4.0.9",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0"
   }
 }

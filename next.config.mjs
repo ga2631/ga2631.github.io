@@ -5,6 +5,7 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
+  turbopack: {},
   webpack: (config) => {
     config.module.rules.push({
       test: /\.md$/,

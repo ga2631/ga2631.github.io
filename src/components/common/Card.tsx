@@ -132,12 +132,8 @@ export const Card = React.forwardRef<HTMLElement, CardProps>(
     ref
   ) => {
     const Component = as;
-    // Flowbite Card Base Design
     const classList: string[] = ['bg-white border border-gray-200 rounded-lg shadow-xs flex flex-col'];
 
-    if (variant === 'glass') {
-      classList.push('glass-panel');
-    }
     if (onClick || variant === 'interactive') {
       classList.push('cursor-pointer hover:shadow-md hover:border-gray-300 transition-all duration-200');
     }
