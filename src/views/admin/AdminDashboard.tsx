@@ -207,11 +207,6 @@ export const AdminDashboard: React.FC = () => {
             <div className="topbar-title">
               {activeNav === 'cv' ? '📄 Quản trị & Chỉnh sửa Hồ sơ CV' : '✍️ Quản trị Blog, Chuyên mục & Thẻ'}
             </div>
-            <div className="topbar-actions">
-              <span style={{ fontSize: '0.82rem', color: '#64748b' }}>
-                Đồng bộ Supabase Database ⚡
-              </span>
-            </div>
           </header>
 
           <div className="admin-content">

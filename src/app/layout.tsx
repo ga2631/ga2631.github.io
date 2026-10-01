@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import React from 'react';
 import Script from 'next/script';
 import { Inter, Outfit, Source_Code_Pro } from 'next/font/google';
+import '@/styles/globals.css';
 import '@/styles/index.scss';
 
 const inter = Inter({
