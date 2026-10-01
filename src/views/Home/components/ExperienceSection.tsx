@@ -8,31 +8,6 @@ interface ExperienceSectionProps {
   experiences?: ExperienceItem[];
 }
 
-const DEFAULT_EXPERIENCES: ExperienceItem[] = [
-  {
-    id: 'viettel',
-    role: 'Senior Data Engineer & Backend',
-    company: 'Công ty Công nghệ Viettel (Viettel IDC)',
-    location: 'Quận 10, TP. HCM',
-    period: 'Jan 2024 - Hiện tại',
-    summary:
-      'Thiết kế Enterprise Data Hub sử dụng kiến trúc Medallion. Xây dựng ETL pipelines tự động hóa để xử lý hàng Gigabyte dữ liệu BigQuery Avro hàng ngày. Tích hợp sâu các dashboard Web Analytics qua Looker Studio, GTM và GA4.',
-    achievements: [],
-    technologies: ['Rust', 'DuckDB', 'PostgreSQL', 'Looker Studio'],
-  },
-  {
-    id: 'vng',
-    role: 'Backend Developer',
-    company: 'VNG Corporation',
-    location: 'Quận 7, TP. HCM',
-    period: 'Mar 2021 - Dec 2023',
-    summary:
-      'Phát triển hệ thống APIs Microservices, tích hợp Redis Caching. Tối ưu hoá câu truy vấn JSONB giúp giảm 50% thời gian phản hồi API. Setup toàn bộ cấu hình Docker và luồng CI/CD qua GitLab CI.',
-    achievements: [],
-    technologies: ['Node.js', 'Go (Golang)', 'Redis', 'Docker'],
-  },
-];
-
 const TECH_TAG_STYLES: Record<string, string> = {
   Rust: 'bg-red-50 text-red-700 border-red-100',
   DuckDB: 'bg-orange-50 text-orange-700 border-orange-100',
@@ -44,11 +19,15 @@ const TECH_TAG_STYLES: Record<string, string> = {
   Docker: 'bg-red-50 text-red-700 border-red-100',
 };
 
-export function ExperienceSection({ experiences }: ExperienceSectionProps) {
+export function ExperienceSection({ experiences = [] }: ExperienceSectionProps) {
   const { currentLang } = useLanguage();
   const isEn = currentLang === 'en';
 
-  const items = experiences && experiences.length > 0 ? experiences : DEFAULT_EXPERIENCES;
+  if (!experiences || experiences.length === 0) {
+    return null;
+  }
+
+  const items = experiences;
 
   return (
     <section id="experience" className="mb-16 scroll-mt-28">

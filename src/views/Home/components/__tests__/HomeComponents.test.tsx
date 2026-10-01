@@ -60,9 +60,15 @@ describe('CV Home Components', () => {
   });
 
   it('renders PrinciplesSection correctly', () => {
+    const mockPrinciples = [
+      {
+        title: 'Kiến trúc bền vững',
+        description: 'Thiết kế hệ thống microservices mô-đun hóa',
+      },
+    ];
     const { getByText } = render(
       <LanguageProvider>
-        <PrinciplesSection />
+        <PrinciplesSection principles={mockPrinciples} />
       </LanguageProvider>
     );
     expect(getByText('Engineering excellence')).toBeDefined();
@@ -70,9 +76,21 @@ describe('CV Home Components', () => {
   });
 
   it('renders ExperienceSection correctly', () => {
+    const mockExperiences = [
+      {
+        id: 'exp-1',
+        role: 'Senior Data Engineer & Backend',
+        company: 'Công ty Viettel',
+        location: 'TP. HCM',
+        period: '2024 - Hiện tại',
+        summary: 'Thiết kế Enterprise Data Hub',
+        achievements: [],
+        technologies: ['Rust', 'PostgreSQL'],
+      },
+    ];
     const { getByText } = render(
       <LanguageProvider>
-        <ExperienceSection />
+        <ExperienceSection experiences={mockExperiences} />
       </LanguageProvider>
     );
     expect(getByText('Professional Experience')).toBeDefined();
@@ -222,9 +240,18 @@ describe('CV Home Components', () => {
   });
 
   it('renders EducationSection correctly', () => {
+    const mockEducations = [
+      {
+        id: 'hcmup',
+        institution: 'Trường Đại học Sư phạm TP. HCM',
+        degree: 'Sư phạm Tin học',
+        location: 'TP. HCM',
+        period: '2018',
+      },
+    ];
     const { getByText } = render(
       <LanguageProvider>
-        <EducationSection />
+        <EducationSection educations={mockEducations} />
       </LanguageProvider>
     );
     expect(getByText('Education & Certifications')).toBeDefined();

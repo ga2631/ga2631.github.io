@@ -9,40 +9,19 @@ interface EducationSectionProps {
   certifications?: CertificationItem[];
 }
 
-const DEFAULT_EDUCATIONS: EducationItem[] = [
-  {
-    id: 'hcmup',
-    institution: 'Trường Đại học Sư phạm TP. HCM',
-    degree: 'Chuyên ngành: Sư phạm Tin học',
-    location: 'TP. Hồ Chí Minh, Việt Nam',
-    period: '2018',
-    details: [
-      'Tự học lập trình (Self-taught) từ năm lớp 3.',
-      'Tập trung sâu vào thuật toán, cấu trúc dữ liệu cốt lõi.',
-      'Quyết định tham gia thị trường lao động thực tế sớm để áp dụng các dự án thực tiễn.',
-    ],
-  },
-];
-
-const DEFAULT_CERTIFICATIONS: CertificationItem[] = [
-  {
-    id: 'coursera-sql',
-    name: 'Chứng chỉ SQL (Nâng cao)',
-    issuer: 'Nền tảng: Coursera',
-    issueDate: 'Mar 2021 - Dec 2023',
-    credentialUrl: 'https://coursera.org',
-  },
-];
-
 export function EducationSection({
-  educations,
-  certifications,
+  educations = [],
+  certifications = [],
 }: EducationSectionProps) {
   const { currentLang } = useLanguage();
   const isEn = currentLang === 'en';
 
-  const eduItems = educations && educations.length > 0 ? educations : DEFAULT_EDUCATIONS;
-  const certItems = certifications && certifications.length > 0 ? certifications : DEFAULT_CERTIFICATIONS;
+  const eduItems = educations || [];
+  const certItems = certifications || [];
+
+  if (eduItems.length === 0 && certItems.length === 0) {
+    return null;
+  }
 
   return (
     <section id="education" className="mb-16 scroll-mt-28">

@@ -21,25 +21,6 @@ export interface ProjectsSectionProps {
   publicProjects?: ProjectItem[];
 }
 
-const DEFAULT_ENTERPRISE_PROJECTS: ProjectItem[] = [
-  {
-    id: 'data-hub',
-    title: 'Enterprise Data Hub',
-    company: 'Viet Nam Gate Advertising JSC',
-    category: 'Enterprise',
-    projectType: 'enterprise',
-    isPrivate: true,
-    description:
-      'Công cụ Dockerized chuyển đổi hàng trăm shard file BigQuery Avro đổ trực tiếp vào kho PostgreSQL. Xử lý đồng bộ dữ liệu siêu tốc của công ty nội bộ.',
-    highlights: [
-      'Phân tích và convert định dạng JSONB/Avro phức tạp.',
-      'Đồng bộ đa luồng đẩy 600+ shard file vào PostgreSQL.',
-      'Kiến trúc Docker gọn nhẹ, chạy trên schedule cron/Airflow.',
-    ],
-    tags: ['Python', 'PostgreSQL', 'Docker'],
-  },
-];
-
 /**
  * Checks whether a project is an internal company Enterprise project
  */
@@ -70,9 +51,7 @@ export function ProjectsSection({
   const isEn = currentLang === 'en';
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeModalProject, setActiveModalProject] = useState<ProjectItem>(
-    DEFAULT_ENTERPRISE_PROJECTS[0]
-  );
+  const [activeModalProject, setActiveModalProject] = useState<ProjectItem | null>(null);
 
   // GitHub public projects
   const [fetchedGithubProjects, setFetchedGithubProjects] = useState<ProjectItem[]>(
@@ -133,7 +112,7 @@ export function ProjectsSection({
         isPrivate: true,
       }));
     }
-    return DEFAULT_ENTERPRISE_PROJECTS;
+    return [];
   })();
 
   // 2. Public projects: Fetched from GitHub

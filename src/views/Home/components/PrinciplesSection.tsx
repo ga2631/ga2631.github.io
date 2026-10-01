@@ -8,37 +8,6 @@ interface PrinciplesSectionProps {
   principles?: PrincipleItem[];
 }
 
-const DEFAULT_PRINCIPLES = [
-  {
-    title: 'Kiến trúc bền vững',
-    desc: 'Thiết kế hệ thống microservices mô-đun hóa và kiến trúc hướng sự kiện (Event-Driven) với tính sẵn sàng cao, chịu lỗi tốt và độ trễ thấp.',
-    borderClass: 'border-t-red-500 hover:border-red-500',
-    textClass: 'text-red-500',
-    bgClass: 'bg-red-50 text-red-500',
-  },
-  {
-    title: 'Clean Code',
-    desc: 'Ứng dụng ngôn ngữ lập trình Golang, Python, Java và thiết kế hướng nghiệp vụ (DDD) nhằm đảm bảo tính bảo trì lâu dài, độ bao phủ kiểm thử cao và dữ liệu chuẩn mực',
-    borderClass: 'border-t-blue-500 hover:border-blue-500',
-    textClass: 'text-blue-500',
-    bgClass: 'bg-blue-50 text-blue-500',
-  },
-  {
-    title: 'Tự động hóa',
-    desc: 'Tự động hóa đóng gói container Docker đa tầng và luồng CI/CD giúp quy trình triển khai phần mềm mượt mà, zero-downtime.',
-    borderClass: 'border-t-emerald-500 hover:border-emerald-500',
-    textClass: 'text-emerald-500',
-    bgClass: 'bg-emerald-50 text-emerald-500',
-  },
-  {
-    title: 'Tối ưu hóa',
-    desc: 'Xây dựng luồng xử lý CDC thời gian thực, tối ưu hóa các điểm nghẽn truy vấn cơ sở dữ liệu và cung cấp báo cáo phân tích tức thì.',
-    borderClass: 'border-t-amber-500 hover:border-amber-500',
-    textClass: 'text-amber-500',
-    bgClass: 'bg-amber-50 text-amber-500',
-  },
-];
-
 const THEME_MAP = [
   { borderClass: 'border-t-red-500 hover:border-red-500', textClass: 'text-red-500', bgClass: 'bg-red-50 text-red-500' },
   { borderClass: 'border-t-blue-500 hover:border-blue-500', textClass: 'text-blue-500', bgClass: 'bg-blue-50 text-blue-500' },
@@ -46,17 +15,19 @@ const THEME_MAP = [
   { borderClass: 'border-t-amber-500 hover:border-amber-500', textClass: 'text-amber-500', bgClass: 'bg-amber-50 text-amber-500' },
 ];
 
-export function PrinciplesSection({ principles }: PrinciplesSectionProps) {
+export function PrinciplesSection({ principles = [] }: PrinciplesSectionProps) {
   const { currentLang } = useLanguage();
   const isEn = currentLang === 'en';
 
-  const items = principles && principles.length > 0
-    ? principles.map((p, idx) => ({
-        title: p.title,
-        desc: p.description,
-        ...(THEME_MAP[idx % THEME_MAP.length]),
-      }))
-    : DEFAULT_PRINCIPLES;
+  if (!principles || principles.length === 0) {
+    return null;
+  }
+
+  const items = principles.map((p, idx) => ({
+    title: p.title,
+    desc: p.description,
+    ...(THEME_MAP[idx % THEME_MAP.length]),
+  }));
 
   return (
     <section id="about" className="mb-16 scroll-mt-28">

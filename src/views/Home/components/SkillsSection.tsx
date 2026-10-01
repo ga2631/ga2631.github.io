@@ -36,78 +36,25 @@ const LEVEL_MAP: Record<string | number, LevelStyle> = {
   },
 };
 
-const DEFAULT_CATEGORIES: {
-  title: string;
-  borderColor: string;
-  skills: SkillItem[];
-}[] = [
-  {
-    title: 'Lập trình & Cốt lõi',
-    borderColor: 'border-red-500',
-    skills: [
-      { name: 'Rust', level: 5 },
-      { name: 'TS / Node.js', level: 4 },
-      { name: 'Go (Golang)', level: 3 },
-      { name: 'Python', level: 3 },
-      { name: 'PHP', level: 2 },
-    ],
-  },
-  {
-    title: 'CSDL & Hạ tầng',
-    borderColor: 'border-rose-500',
-    skills: [
-      { name: 'PostgreSQL', level: 5 },
-      { name: 'DuckDB', level: 4 },
-      { name: 'Docker', level: 4 },
-      { name: 'Redis', level: 3 },
-      { name: 'Linux (Arch)', level: 3 },
-    ],
-  },
-  {
-    title: 'Phân tích Sản phẩm',
-    borderColor: 'border-orange-500',
-    skills: [
-      { name: 'GA4 (Google Analytics)', level: 5 },
-      { name: 'GTM (Tag Manager)', level: 5 },
-      { name: 'Looker Studio', level: 4 },
-      { name: 'BigQuery', level: 3 },
-    ],
-  },
-  {
-    title: 'Agile & AI',
-    borderColor: 'border-amber-500',
-    skills: [
-      { name: 'Scrum Framework', level: 4 },
-      { name: 'Jira / Confluence', level: 3 },
-      { name: 'Prompt Engineering', level: 3 },
-      { name: 'GitHub Copilot', level: 2 },
-    ],
-  },
-];
-
 export function getProficiencyStyle(level: string | number | undefined): string {
   const numLevel = typeof level === 'number' ? level : parseInt(String(level), 10);
   return (LEVEL_MAP[numLevel] || LEVEL_MAP[1]).badge;
 }
 
-export function SkillsSection({ skillCategories }: SkillsSectionProps) {
+export function SkillsSection({ skillCategories = [] }: SkillsSectionProps) {
   const { currentLang } = useLanguage();
   const isEn = currentLang === 'en';
 
-  const categories =
-    skillCategories && skillCategories.length > 0
-      ? skillCategories.map((c) => ({
-          title: c.title,
-          skills: [...(c.skills || [])].sort(
-            (a, b) => Number(b.level || 0) - Number(a.level || 0)
-          ),
-        }))
-      : DEFAULT_CATEGORIES.map((c) => ({
-          ...c,
-          skills: [...c.skills].sort(
-            (a, b) => Number(b.level || 0) - Number(a.level || 0)
-          ),
-        }));
+  if (!skillCategories || skillCategories.length === 0) {
+    return null;
+  }
+
+  const categories = skillCategories.map((c) => ({
+    title: c.title,
+    skills: [...(c.skills || [])].sort(
+      (a, b) => Number(b.level || 0) - Number(a.level || 0)
+    ),
+  }));
 
   return (
     <section id="skills" className="mb-16 scroll-mt-28">
