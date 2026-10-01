@@ -38,8 +38,8 @@ export default async function BlogPage({
   const resolvedParams = await params;
   const lang = resolvedParams.lang;
 
-  let initialPosts = [];
-  let initialCategories = [];
+  let initialPosts: any[] = [];
+  let initialCategories: any[] = [];
 
   try {
     [initialPosts, initialCategories] = await Promise.all([

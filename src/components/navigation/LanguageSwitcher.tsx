@@ -26,12 +26,12 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-800/80 hover:bg-gray-700/80 text-gray-200 border border-gray-700/60 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-red-500/40"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-red-500/40"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         <span className="text-sm">{currentMeta.flag}</span>
-        <span className="uppercase tracking-wider">{currentLang}</span>
+        <span className="uppercase tracking-wider font-bold">{currentLang}</span>
         <svg
           className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
@@ -43,8 +43,8 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-44 rounded-xl shadow-xl bg-gray-900/95 backdrop-blur-md border border-gray-700/80 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
-          <div className="px-3 py-1 text-[11px] font-medium text-gray-400 uppercase tracking-wider border-b border-gray-800 mb-1">
+        <div className="absolute right-0 mt-2 w-44 rounded-xl shadow-xl bg-white border border-gray-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+          <div className="px-3 py-1 text-[11px] font-medium text-gray-400 uppercase tracking-wider border-b border-gray-100 mb-1">
             Chọn Ngôn Ngữ / Language
           </div>
           {languages.map((lang) => {
@@ -63,8 +63,8 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
                 }}
                 className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between transition-colors ${
                   isSelected
-                    ? 'bg-red-500/15 text-red-400 font-semibold'
-                    : 'text-gray-300 hover:bg-gray-800/80 hover:text-white'
+                    ? 'bg-red-50 text-red-600 font-semibold'
+                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
                   <span>{lang.name}</span>
                 </div>
                 {isSelected && (
-                  <svg className="w-3.5 h-3.5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-3.5 h-3.5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fillRule="evenodd"
                       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"

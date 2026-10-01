@@ -85,7 +85,7 @@ The architecture leverages the Supabase database schema designed for multi-langu
 - **Robust Auto-Retry Policy (`requestClient`):** Implements exponential backoff retry (3 retries for GET queries, 1 retry for mutation operations) to handle transient network blips gracefully.
 - **Dual Telemetry Dispatch (`analytics.ts`):** Dispatches user events and language switches to both `window.dataLayer` (GTM) and `gtag` (GA4) with strict TypeScript typing.
 - **Zero-Dependency Safe Markdown Parser (`markdownParser.ts`):** Custom parser generating automated slug IDs for headings, code syntax blocks, and fast in-memory HTML conversion.
-- **Glassmorphism & Tailwind v4 (`globals.css`):** Hardware-accelerated CSS backdrop filters, responsive CSS variables, and light/dark theme tokens.
+- **CSS & Tailwind v4 (`globals.css`):** Ambient float background glow, text shimmer animation, proficiency badge styles matching the design specifications.
 
 ---
 
@@ -93,7 +93,7 @@ The architecture leverages the Supabase database schema designed for multi-langu
 
 | File Path | Description / Responsibility |
 |---|---|
-| [`src/app/layout.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/app/layout.tsx) | Root application layout with ThemeProvider, LanguageProvider, Google Analytics/GTM |
+| [`src/app/layout.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/app/layout.tsx) | Root application layout with LanguageProvider, Google Analytics/GTM, Roboto font, and Flowbite CSS |
 | [`src/app/page.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/app/page.tsx) | Root page loading default language (`vi`) with zero redirection latency |
 | [`src/app/[lang]/layout.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/app/[lang]/layout.tsx) | Locale wrapper layout with `generateStaticParams` |
 | [`src/app/[lang]/page.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/app/[lang]/page.tsx) | Home / CV View route with dynamic SEO metadata |
@@ -103,7 +103,15 @@ The architecture leverages the Supabase database schema designed for multi-langu
 | [`src/components/layouts/CvLayout.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/layouts/CvLayout.tsx) | Dedicated layout for Portfolio / CV |
 | [`src/components/layouts/BlogLayout.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/layouts/BlogLayout.tsx) | Dedicated layout for Tech Blog |
 | [`src/components/layouts/CmsLayout.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/components/layouts/CmsLayout.tsx) | Dedicated layout with collapsible sidebar for CMS Studio |
-| [`src/views/Home/index.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/index.tsx) | Home / CV View component (Hero, Experience, Projects, Skills, Contact) |
+| [`src/views/Home/index.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/index.tsx) | Main Home / CV View assembling modular section components |
+| [`src/views/Home/components/HeroSection.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/components/HeroSection.tsx) | Profile Card with spinning conic-gradient, Avatar, Bio, and 4 Key Metric cards |
+| [`src/views/Home/components/PrinciplesSection.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/components/PrinciplesSection.tsx) | Engineering Excellence section with 4 color-themed architecture pillars |
+| [`src/views/Home/components/ExperienceSection.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/components/ExperienceSection.tsx) | Professional Experience timeline with colored tech badges |
+| [`src/views/Home/components/ProjectsSection.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/components/ProjectsSection.tsx) | Featured Projects cards with Public/Enterprise badges and NDA case study modal |
+| [`src/views/Home/components/SkillsSection.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/components/SkillsSection.tsx) | Tech Stack & Tools Matrix with Proficiency scale legend and categorized badges |
+| [`src/views/Home/components/EducationSection.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/components/EducationSection.tsx) | Education details & Certifications verification card |
+| [`src/views/Home/components/ContactSection.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/components/ContactSection.tsx) | Let's Connect grid (Email, Phone/Zalo, Location, LinkedIn) |
+| [`src/views/Home/components/FloatDownloadButton.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Home/components/FloatDownloadButton.tsx) | Floating Save / Download CV action button |
 | [`src/views/Blog/index.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Blog/index.tsx) | Blog listing component with live search and category/tag filtering |
 | [`src/views/Blog/BlogPostDetail.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Blog/BlogPostDetail.tsx) | Single article reader with markdown rendering and auto-TOC |
 | [`src/views/Cms/index.tsx`](file:///Users/tanhn/Projects/ga2631.github.io/src/views/Cms/index.tsx) | CMS Admin panel with CRUD for Posts, Categories, Tags, and CV JSON editor |

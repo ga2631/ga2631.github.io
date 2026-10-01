@@ -1,13 +1,22 @@
 import type { Metadata } from 'next';
-import { ThemeProvider } from '@/context/ThemeContext';
+import '@/styles/globals.css';
+import { Roboto } from 'next/font/google';
 import { LanguageProvider } from '@/i18n/LanguageContext';
+import { FlowbiteInit } from '@/components/common/FlowbiteInit';
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
 import { GA_MEASUREMENT_ID, GTM_ID } from '@/utils/analytics';
 
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700', '900'],
+  subsets: ['latin', 'vietnamese'],
+  display: 'swap',
+  variable: '--font-roboto',
+});
+
 export const metadata: Metadata = {
-  title: 'Huỳnh Nhật Tân | Software Architect & Lead Fullstack Engineer',
+  title: 'Huỳnh Nhật Tân - Portfolio',
   description:
-    'Executive Portfolio, ATS Curriculum Vitae & Architectural Tech Blog of Huynh Nhat Tan - Software Architect & Lead Engineer.',
+    'Huỳnh Nhật Tân - Executive Portfolio & ATS Curriculum Vitae. Building High-Performance Backend & Data Platforms.',
   metadataBase: new URL('https://ga2631.github.io'),
   icons: {
     icon: '/favicon.svg',
@@ -20,13 +29,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className="dark" suppressHydrationWarning>
-      <body className="bg-gray-950 text-gray-100 antialiased selection:bg-red-500/30 selection:text-red-200">
-        <ThemeProvider>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
-        </ThemeProvider>
+    <html lang="vi" className={`scroll-smooth ${roboto.variable}`} suppressHydrationWarning>
+      <body className="bg-[#fafafa] min-h-screen text-gray-800 font-sans antialiased relative flex flex-col">
+        <LanguageProvider>
+          {children}
+          <FlowbiteInit />
+        </LanguageProvider>
 
         {/* Google Analytics 4 & GTM */}
         {GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX' && (

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { LanguageSwitcher } from '../navigation/LanguageSwitcher';
-import { ThemeToggle } from '../navigation/ThemeToggle';
 import { getCurrentUser, signOut, onAuthStateChange } from '@/services/authService';
 import { isSupabaseConfigured } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
@@ -49,41 +48,41 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
   ];
 
   return (
-    <div className="min-h-screen flex bg-gray-950 text-gray-100 transition-colors duration-200">
+    <div className="min-h-screen flex bg-[#fafafa] text-gray-800 font-sans antialiased transition-colors duration-200">
       {/* CMS Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-900/95 backdrop-blur-md border-r border-gray-800 transform transition-transform duration-200 md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 md:translate-x-0 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } flex flex-col justify-between`}
+        } flex flex-col justify-between shadow-sm`}
       >
         <div>
           {/* Sidebar Header */}
-          <div className="h-16 px-6 flex items-center justify-between border-b border-gray-800">
+          <div className="h-16 px-6 flex items-center justify-between border-b border-gray-100">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center font-black text-white text-sm shadow">
                 ⚡
               </div>
-              <div className="font-bold text-sm tracking-tight text-white">
+              <div className="font-bold text-sm tracking-tight text-gray-900">
                 CMS Studio
               </div>
             </div>
             <button
               onClick={() => setIsSidebarOpen(false)}
-              className="md:hidden text-gray-400 hover:text-white"
+              className="md:hidden text-gray-400 hover:text-gray-900"
             >
               ✕
             </button>
           </div>
 
           {/* Connection Status Badge */}
-          <div className="px-6 py-3 border-b border-gray-800/60">
+          <div className="px-6 py-3 border-b border-gray-100">
             <div className="flex items-center gap-2 text-xs">
               <span
                 className={`w-2 h-2 rounded-full ${
-                  isConfigured ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                  isConfigured ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
                 }`}
               />
-              <span className="text-gray-400 font-mono text-[11px]">
+              <span className="text-gray-500 font-mono text-[11px]">
                 {isConfigured ? dict.cms.connected : dict.cms.disconnected}
               </span>
             </div>
@@ -102,8 +101,8 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                   }}
                   className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     isActive
-                      ? 'bg-red-500/15 text-red-400 border border-red-500/30 shadow-sm'
-                      : 'text-gray-300 hover:bg-gray-800/80 hover:text-white'
+                      ? 'bg-red-50 text-red-600 border border-red-200 shadow-sm'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
                   <span className="text-base">{item.icon}</span>
@@ -115,14 +114,14 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
         </div>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-gray-800 space-y-2">
+        <div className="p-4 border-t border-gray-100 space-y-2">
           {currentUser ? (
-            <div className="bg-gray-800/60 p-2.5 rounded-xl border border-gray-700/60 text-xs">
+            <div className="bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-xs">
               <div className="text-gray-400 text-[10px] uppercase font-mono">Đã đăng nhập</div>
-              <div className="font-medium text-white truncate">{currentUser.email}</div>
+              <div className="font-medium text-gray-900 truncate">{currentUser.email}</div>
               <button
                 onClick={handleSignOut}
-                className="mt-2 w-full px-2 py-1 text-[11px] bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors font-medium text-center"
+                className="mt-2 w-full px-2 py-1 text-[11px] bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors font-medium text-center border border-red-200"
               >
                 {dict.cms.signOut}
               </button>
@@ -135,7 +134,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
 
           <Link
             href={getLocalizedHref('')}
-            className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-300 hover:text-white bg-gray-800/80 hover:bg-gray-700 rounded-lg border border-gray-700 transition-colors"
+            className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-700 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors"
           >
             <span>🌐</span>
             <span>{dict.cms.viewSite}</span>
@@ -146,23 +145,22 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
       {/* Main CMS Area */}
       <div className="flex-1 md:pl-64 flex flex-col min-w-0">
         {/* CMS Topbar */}
-        <header className="sticky top-0 z-30 h-16 bg-gray-900/80 backdrop-blur-md border-b border-gray-800 px-4 sm:px-6 flex items-center justify-between">
+        <header className="sticky top-0 z-30 h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 sm:px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setIsSidebarOpen(true)}
-              className="md:hidden p-2 rounded-lg bg-gray-800 text-gray-300 hover:text-white"
+              className="md:hidden p-2 rounded-lg bg-gray-100 text-gray-600 hover:text-gray-900"
             >
               ☰
             </button>
-            <h1 className="text-base font-bold text-white capitalize">
+            <h1 className="text-base font-bold text-gray-900 capitalize">
               {menuItems.find((m) => m.id === activeTab)?.label || 'CMS Admin'}
             </h1>
           </div>
 
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
-            <ThemeToggle />
           </div>
         </header>
 

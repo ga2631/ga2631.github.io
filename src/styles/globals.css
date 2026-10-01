@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-roboto), 'Roboto', sans-serif;
+
+  --color-expert: #fee2e2;
+  --color-expertText: #ef4444;
+  --color-expertBorder: #fca5a5;
+
+  --color-advanced: #ffedd5;
+  --color-advancedText: #f97316;
+  --color-advancedBorder: #fdba74;
+
+  --color-proficient: #fef3c7;
+  --color-proficientText: #f59e0b;
+  --color-proficientBorder: #fcd34d;
+
+  --color-familiar: #ecfdf5;
+  --color-familiarText: #10b981;
+  --color-familiarBorder: #6ee7b7;
+
+  --color-basic: #eff6ff;
+  --color-basicText: #3b82f6;
+  --color-basicBorder: #93c5fd;
+
+  --animate-spin-slow: spin-slow 4s linear infinite;
+  --animate-text-shimmer: text-shimmer 2.5s ease-out infinite alternate;
+}
+
+@keyframes text-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ambientFloat {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  100% {
+    transform: translateX(-50%) translateY(30px) scale(1.05);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #fafafa;
+  color: #1f2937;
+  font-family: var(--font-roboto), 'Roboto', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hiệu ứng gradient nền cho text nổi bật - Tone Đỏ/Hồng */
+.text-gradient-shimmer {
+  background: linear-gradient(110deg, #e11d48 20%, #be123c 40%, #f43f5e 60%, #e11d48 80%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.animate-text-shimmer {
+  animation: text-shimmer 2.5s ease-out infinite alternate;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 4s linear infinite;
+}
+
+/* Ambient Glow Background */
+body::before {
+  content: "";
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.16) 0, rgba(225, 29, 72, 0.1) 40%, transparent 70%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: -1;
+  animation: ambientFloat 12s ease-in-out infinite alternate;
+}
+
+/* Fallback & explicit classes for proficiency tokens */
+.bg-expert { background-color: #fee2e2; }
+.text-expertText { color: #ef4444; }
+.border-expertBorder { border-color: #fca5a5; }
+
+.bg-advanced { background-color: #ffedd5; }
+.text-advancedText { color: #f97316; }
+.border-advancedBorder { border-color: #fdba74; }
+
+.bg-proficient { background-color: #fef3c7; }
+.text-proficientText { color: #f59e0b; }
+.border-proficientBorder { border-color: #fcd34d; }
+
+.bg-familiar { background-color: #ecfdf5; }
+.text-familiarText { color: #10b981; }
+.border-familiarBorder { border-color: #6ee7b7; }
+
+.bg-basic { background-color: #eff6ff; }
+.text-basicText { color: #3b82f6; }
+.border-basicBorder { border-color: #93c5fd; }
