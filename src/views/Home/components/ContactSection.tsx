@@ -10,8 +10,7 @@ interface ContactSectionProps {
 }
 
 export function ContactSection({ personalInfo }: ContactSectionProps) {
-  const { currentLang } = useLanguage();
-  const isEn = currentLang === 'en';
+  const { dict } = useLanguage();
 
   const email = personalInfo?.email || 'hello@example.com';
   const phone = personalInfo?.phone || '+84 901 234 567';
@@ -26,7 +25,7 @@ export function ContactSection({ personalInfo }: ContactSectionProps) {
     <section id="contact" className="mb-16 scroll-mt-28">
       <div className="flex items-center mb-8">
         <h3 className="text-3xl font-bold text-gray-900 tracking-tight">
-          {isEn ? "Let's Connect" : "Let's Connect"}
+          {dict.sections.contactTitle}
         </h3>
         <div className="ml-6 flex-grow h-px bg-gradient-to-r from-gray-200 to-transparent" />
       </div>
@@ -48,7 +47,7 @@ export function ContactSection({ personalInfo }: ContactSectionProps) {
               />
             </svg>
           </div>
-          <span className="text-gray-500 font-medium text-sm mb-1">Email</span>
+          <span className="text-gray-500 font-medium text-sm mb-1">{dict.contact.email}</span>
           <strong className="text-gray-900 font-bold">{email}</strong>
         </a>
 
@@ -69,7 +68,7 @@ export function ContactSection({ personalInfo }: ContactSectionProps) {
             </svg>
           </div>
           <span className="text-gray-500 font-medium text-sm mb-1">
-            {isEn ? 'Phone / Zalo' : 'Điện thoại / Zalo'}
+            {dict.contact.phone}
           </span>
           <strong className="text-gray-900 font-bold">{phone}</strong>
         </a>
@@ -93,7 +92,7 @@ export function ContactSection({ personalInfo }: ContactSectionProps) {
             </svg>
           </div>
           <span className="text-gray-500 font-medium text-sm mb-1">
-            {isEn ? 'Location' : 'Địa chỉ'}
+            {dict.contact.location}
           </span>
           <strong className="text-gray-900 font-bold">{location}</strong>
         </div>

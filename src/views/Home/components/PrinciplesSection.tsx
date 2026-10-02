@@ -16,8 +16,7 @@ const THEME_MAP = [
 ];
 
 export function PrinciplesSection({ principles = [] }: PrinciplesSectionProps) {
-  const { currentLang } = useLanguage();
-  const isEn = currentLang === 'en';
+  const { dict } = useLanguage();
 
   if (!principles || principles.length === 0) {
     return null;
@@ -33,7 +32,7 @@ export function PrinciplesSection({ principles = [] }: PrinciplesSectionProps) {
     <section id="about" className="mb-16 scroll-mt-28">
       <div className="flex items-center mb-8">
         <h3 className="text-3xl font-bold text-gray-900 tracking-tight">
-          {isEn ? 'Engineering excellence' : 'Engineering excellence'}
+          {dict.sections.principlesTitle}
         </h3>
         <div className="ml-6 flex-grow h-px bg-gradient-to-r from-gray-200 to-transparent" />
       </div>

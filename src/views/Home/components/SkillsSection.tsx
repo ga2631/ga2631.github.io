@@ -42,8 +42,7 @@ export function getProficiencyStyle(level: string | number | undefined): string 
 }
 
 export function SkillsSection({ skillCategories = [] }: SkillsSectionProps) {
-  const { currentLang } = useLanguage();
-  const isEn = currentLang === 'en';
+  const { dict } = useLanguage();
 
   if (!skillCategories || skillCategories.length === 0) {
     return null;
@@ -60,7 +59,7 @@ export function SkillsSection({ skillCategories = [] }: SkillsSectionProps) {
     <section id="skills" className="mb-16 scroll-mt-28">
       <div className="flex items-center mb-8">
         <h3 className="text-3xl font-bold text-gray-900 tracking-tight">
-          {isEn ? 'Tech Stack & Tools' : 'Tech Stack & Tools'}
+          {dict.sections.skillsTitle}
         </h3>
         <div className="ml-6 flex-grow h-px bg-gradient-to-r from-gray-200 to-transparent" />
       </div>
@@ -69,28 +68,28 @@ export function SkillsSection({ skillCategories = [] }: SkillsSectionProps) {
       <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-4 pb-6 bg-white backdrop-blur-sm rounded-3xl shadow-sm border border-gray-100 p-6">
         <div className="flex items-center space-x-2">
           <span className="text-sm font-medium text-gray-700">
-            {isEn ? 'PROFICIENCY SCALE:' : 'THANG ĐIỂM THÀNH THẠO:'}
+            {dict.skills.scaleTitle}
           </span>
         </div>
         <div className="flex items-center space-x-2">
           <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[5].dot}`} />
-          <span className="text-sm font-medium text-gray-700">{isEn ? 'Expert' : 'Chuyên gia'}</span>
+          <span className="text-sm font-medium text-gray-700">{dict.skills.expert}</span>
         </div>
         <div className="flex items-center space-x-2">
           <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[4].dot}`} />
-          <span className="text-sm font-medium text-gray-700">{isEn ? 'Advanced' : 'Nâng cao'}</span>
+          <span className="text-sm font-medium text-gray-700">{dict.skills.advanced}</span>
         </div>
         <div className="flex items-center space-x-2">
           <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[3].dot}`} />
-          <span className="text-sm font-medium text-gray-700">{isEn ? 'Proficient' : 'Thành thạo'}</span>
+          <span className="text-sm font-medium text-gray-700">{dict.skills.proficient}</span>
         </div>
         <div className="flex items-center space-x-2">
           <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[2].dot}`} />
-          <span className="text-sm font-medium text-gray-700">{isEn ? 'Familiar' : 'Tiếp cận'}</span>
+          <span className="text-sm font-medium text-gray-700">{dict.skills.familiar}</span>
         </div>
         <div className="flex items-center space-x-2">
           <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[1].dot}`} />
-          <span className="text-sm font-medium text-gray-700">{isEn ? 'Basic' : 'Cơ bản'}</span>
+          <span className="text-sm font-medium text-gray-700">{dict.skills.basic}</span>
         </div>
       </div>
 

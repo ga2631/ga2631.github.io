@@ -9,8 +9,7 @@ interface ExperienceSectionProps {
 }
 
 export function ExperienceSection({ experiences = [] }: ExperienceSectionProps) {
-  const { currentLang } = useLanguage();
-  const isEn = currentLang === 'en';
+  const { dict } = useLanguage();
 
   if (!experiences || experiences.length === 0) {
     return null;
@@ -22,7 +21,7 @@ export function ExperienceSection({ experiences = [] }: ExperienceSectionProps) 
     <section id="experience" className="mb-16 scroll-mt-28">
       <div className="flex items-center mb-8">
         <h3 className="text-3xl font-bold text-gray-900 tracking-tight">
-          {isEn ? 'Professional Experience' : 'Professional Experience'}
+          {dict.sections.experienceTitle}
         </h3>
         <div className="ml-6 flex-grow h-px bg-gradient-to-r from-gray-200 to-transparent" />
       </div>

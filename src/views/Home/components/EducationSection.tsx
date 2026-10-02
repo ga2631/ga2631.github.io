@@ -13,8 +13,7 @@ export function EducationSection({
   educations = [],
   certifications = [],
 }: EducationSectionProps) {
-  const { currentLang } = useLanguage();
-  const isEn = currentLang === 'en';
+  const { dict } = useLanguage();
 
   const eduItems = educations || [];
   const certItems = certifications || [];
@@ -27,7 +26,7 @@ export function EducationSection({
     <section id="education" className="mb-16 scroll-mt-28">
       <div className="flex items-center mb-8">
         <h3 className="text-3xl font-bold text-gray-900 tracking-tight">
-          {isEn ? 'Education & Certifications' : 'Education & Certifications'}
+          {dict.sections.educationTitle}
         </h3>
         <div className="ml-6 flex-grow h-px bg-gradient-to-r from-gray-200 to-transparent" />
       </div>
@@ -102,7 +101,7 @@ export function EducationSection({
                     rel="noopener noreferrer"
                     className="inline-flex items-center text-sm font-medium text-red-600 hover:text-red-800"
                   >
-                    {isEn ? 'Verify Certificate' : 'Xác minh chứng chỉ'}
+                    {dict.education.verify}
                     <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"

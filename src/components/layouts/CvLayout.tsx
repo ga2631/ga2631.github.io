@@ -6,7 +6,7 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import { trackNavigation } from '@/utils/analytics';
 
 export function CvLayout({ children }: { children: React.ReactNode }) {
-  const { currentLang, changeLanguage, getLocalizedHref } = useLanguage();
+  const { currentLang, changeLanguage, getLocalizedHref, dict } = useLanguage();
   const isEn = currentLang === 'en';
   const [activeSection, setActiveSection] = useState<string>('about');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -85,11 +85,11 @@ export function CvLayout({ children }: { children: React.ReactNode }) {
   };
 
   const navLinks = [
-    { id: 'about', label: isEn ? 'About' : 'Năng lực', href: '#about' },
-    { id: 'experience', label: isEn ? 'Experience' : 'Kinh nghiệm', href: '#experience' },
-    { id: 'projects', label: isEn ? 'Projects' : 'Dự án', href: '#projects' },
-    { id: 'skills', label: isEn ? 'Skills' : 'Kỹ năng', href: '#skills' },
-    { id: 'education', label: isEn ? 'Education' : 'Học vấn', href: '#education' },
+    { id: 'about', label: dict.nav.about, href: '#about' },
+    { id: 'experience', label: dict.nav.experience, href: '#experience' },
+    { id: 'projects', label: dict.nav.projects, href: '#projects' },
+    { id: 'skills', label: dict.nav.skills, href: '#skills' },
+    { id: 'education', label: dict.nav.education, href: '#education' },
   ];
 
   return (
@@ -118,7 +118,7 @@ export function CvLayout({ children }: { children: React.ReactNode }) {
               T
             </div>
             <span className="self-center text-2xl font-bold whitespace-nowrap text-gray-900 tracking-tight">
-              Huỳnh Nhật Tân
+              {dict.nav.brand}
             </span>
           </Link>
 
@@ -180,7 +180,7 @@ export function CvLayout({ children }: { children: React.ReactNode }) {
                   onClick={() => handleNavClick('Blog', '/blog')}
                   className="block py-2 px-3 text-gray-700 hover:text-red-600 lg:p-0 transition-colors"
                 >
-                  Blog
+                  {dict.nav.blog}
                 </Link>
               </li>
 
@@ -191,14 +191,14 @@ export function CvLayout({ children }: { children: React.ReactNode }) {
                   className="block py-2 px-3 text-gray-400 hover:text-red-600 lg:p-0 transition-colors"
                   title="CMS Admin"
                 >
-                  CMS
+                  {dict.nav.cms}
                 </Link>
               </li>
 
               {/* Language Toggle in Tablet/Mobile Menu */}
               <li className="lg:hidden pt-3 mt-2 border-t border-gray-200/80 flex items-center justify-between px-3">
                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  {isEn ? 'Language' : 'Ngôn ngữ'}
+                  {dict.nav.language}
                 </span>
                 <div className="flex items-center space-x-2 bg-white border border-gray-200 px-2.5 py-1 rounded-full shadow-inner">
                   <span className={`text-xs font-bold ${!isEn ? 'text-gray-900' : 'text-gray-400'}`}>
@@ -253,11 +253,7 @@ export function CvLayout({ children }: { children: React.ReactNode }) {
       <footer className="w-full mt-auto relative z-10 bg-transparent">
         <div className="mx-auto max-w-screen-xl p-6 text-center">
           <span className="text-sm text-gray-400">
-            © 2026{' '}
-            <a href="#" className="hover:text-red-600 transition-colors">
-              Huỳnh Nhật Tân
-            </a>
-            . All Rights Reserved. Hosted on GitHub Pages.
+            {dict.footer.copyright}
           </span>
         </div>
       </footer>

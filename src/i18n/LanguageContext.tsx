@@ -19,6 +19,7 @@ export interface LanguageContextType {
   isLoadingLanguages: boolean;
   isChangingLanguage: boolean;
   setIsChangingLanguage: (val: boolean) => void;
+  isInitialized: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
@@ -36,14 +37,15 @@ export function LanguageProvider({
 
   const [currentLang, setCurrentLang] = useState<Locale>(initialLang);
   const [languages, setLanguages] = useState<Language[]>([
-    { code: 'vi', name: 'Tiếng Việt', is_active: true },
     { code: 'en', name: 'English', is_active: true },
+    { code: 'vi', name: 'Tiếng Việt', is_active: true },
   ]);
   const [isLoadingLanguages, setIsLoadingLanguages] = useState<boolean>(true);
   const [isChangingLanguage, setIsChangingLanguage] = useState<boolean>(false);
   const [targetLoadingLang, setTargetLoadingLang] = useState<Locale | null>(null);
+  const [isInitialized, setIsInitialized] = useState<boolean>(() => typeof window === 'undefined' || !!initialLang);
 
-  // Synchronize language with URL pathname or detect timezone on root
+  // Synchronize language with URL pathname or default to English / saved choice
   useEffect(() => {
     if (!pathname) return;
 
@@ -62,14 +64,18 @@ export function LanguageProvider({
       try {
         localStorage.setItem('user_language', firstSegment);
       } catch {}
+      setIsInitialized(true);
     } else if (segments.length === 0 || (firstSegment !== 'vi' && firstSegment !== 'en' && firstSegment !== 'admin')) {
-      // If visiting root "/" or non-localized URL: detect language via timezone / browser
+      // If visiting root "/" or non-localized URL: detect saved preference or default to English
       const detected = detectUserLanguage();
       setCurrentLang((prev) => (prev !== detected ? detected : prev));
       const newPath = getLocalizedHref(pathname, detected);
       if (newPath !== pathname) {
         router.replace(newPath);
       }
+      setIsInitialized(true);
+    } else {
+      setIsInitialized(true);
     }
   }, [pathname]);
 
@@ -145,22 +151,27 @@ export function LanguageProvider({
         isLoadingLanguages,
         isChangingLanguage,
         setIsChangingLanguage,
+        isInitialized,
       }}
     >
-      {children}
+      {!isInitialized ? (
+        <LoadingModal
+          variant="fullscreen"
+          message={dict.common.loading}
+          subtitle={dict.common.initializing}
+        />
+      ) : (
+        children
+      )}
       {isChangingLanguage && (
         <LoadingModal
           variant="modal"
           message={
             targetLoadingLang === 'en'
-              ? 'Switching language to English...'
-              : 'Đang chuyển ngôn ngữ sang Tiếng Việt...'
+              ? dict.common.switchingLangEn
+              : dict.common.switchingLangVi
           }
-          subtitle={
-            targetLoadingLang === 'en'
-              ? 'Synchronizing localized data from Supabase'
-              : 'Đang đồng bộ dữ liệu bản dịch từ Supabase'
-          }
+          subtitle={dict.common.loadingSubtitle}
         />
       )}
     </LanguageContext.Provider>

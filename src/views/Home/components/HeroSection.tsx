@@ -10,16 +10,15 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ personalInfo }: HeroSectionProps) {
-  const { currentLang } = useLanguage();
-  const isEn = currentLang === 'en';
+  const { dict } = useLanguage();
 
   const stats = personalInfo.stats && personalInfo.stats.length >= 4
     ? personalInfo.stats
     : [
-        { label: isEn ? 'Years Experience' : 'Kinh Nghiệm Thực Chiến', value: '5 Năm' },
-        { label: isEn ? 'Data Matching Rate' : 'Tỷ Lệ Khớp Nối Dữ Liệu', value: '96%' },
-        { label: isEn ? 'Query Speedup' : 'Tăng Hiệu Năng Truy Vấn', value: '70%+' },
-        { label: isEn ? 'Concurrent Users' : 'Users Đồng Thời Xử Lý', value: '1,000+' },
+        { label: dict.hero.statYears, value: '5 Năm' },
+        { label: dict.hero.statMatching, value: '96%' },
+        { label: dict.hero.statQuery, value: '70%+' },
+        { label: dict.hero.statUsers, value: '1,000+' },
       ];
 
   const handleSocialClick = (platform: string, url: string) => {
@@ -56,7 +55,7 @@ export function HeroSection({ personalInfo }: HeroSectionProps) {
             </div>
 
             <h5 className="mb-1 text-4xl font-bold text-gray-900">
-              {personalInfo.fullName || 'Huỳnh Nhật Tân'}
+              {personalInfo.fullName || dict.nav.brand}
             </h5>
             <span className="text-xl font-bold text-rose-600 px-3 py-1 mb-3">
               {personalInfo.jobTitle || 'Software Engineer'}
@@ -65,16 +64,12 @@ export function HeroSection({ personalInfo }: HeroSectionProps) {
             <div className="flex items-center space-x-2 text-xs font-medium text-green-700 bg-green-100 px-3 py-1.5 rounded-full mb-6 border border-green-200 shadow-sm">
               <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
               <span>
-                {personalInfo.availability ||
-                  (isEn ? 'Open for new opportunities' : 'Đang mở đón cơ hội mới')}
+                {personalInfo.availability || dict.hero.availability}
               </span>
             </div>
 
             <p className="text-gray-500 text-md italic mb-6 leading-relaxed flex-grow">
-              &quot;{personalInfo.tagline ||
-                (isEn
-                  ? 'Writing code not just for computers to run, but for humans to maintain and systems to scale.'
-                  : 'Viết code không chỉ để máy tính thực thi, mà còn để con người bảo trì và hệ thống tự động hóa mở rộng.')}&quot;
+              &quot;{personalInfo.tagline || dict.hero.defaultTagline}&quot;
             </p>
 
             {/* Các liên kết Social */}
@@ -155,43 +150,28 @@ export function HeroSection({ personalInfo }: HeroSectionProps) {
         {/* Introduce (Right) */}
         <div className="lg:col-span-8 p-8 lg:p-12 flex flex-col justify-center h-full">
           <p className="text-sm font-bold text-rose-500 uppercase tracking-widest mb-3">
-            Hi there, I&apos;m Tân 👋
+            {dict.hero.greeting}
           </p>
 
           <h2 className="text-4xl lg:text-5xl font-black tracking-tight text-gray-900 mb-6 leading-[1.15]">
-            Building <br />
+            {dict.hero.headlinePrefix} <br />
             <span className="text-gradient-shimmer animate-text-shimmer inline-block pb-1">
-              High-Performance
+              {dict.hero.headlineHighlight}
             </span>
             <br />
-            Backend &amp; Data Platforms.
+            {dict.hero.headlineSuffix}
           </h2>
 
           <div className="text-gray-600 text-lg leading-relaxed space-y-4 font-normal">
             <p className="text-justify">
-              {personalInfo.bio ||
-                (isEn
-                  ? 'I specialize in designing and building distributed Backend architectures (Microservices/Medallion Architecture) and data platforms (Data Engineering Platforms). My specialty is database optimization and high-load system scaling.'
-                  : 'Tôi chuyên thiết kế và xây dựng các hệ thống Backend kiến trúc phân tán (Microservices/Medallion Architecture) và nền tảng dữ liệu (Data Engineering Platforms). Sở trường của tôi là giải quyết các bài toán tối ưu hóa cơ sở dữ liệu và mở rộng hệ thống chịu tải cao.')}
+              {personalInfo.bio || dict.hero.defaultBio1}
             </p>
             <p className="text-justify">
-              {isEn ? (
-                <>
-                  Alongside coding with{' '}
-                  <strong className="text-gray-900 bg-gray-100 px-1.5 py-0.5 rounded font-medium">
-                    Rust, Python, Go, and TypeScript
-                  </strong>
-                  , I am passionate about Web Analytics (GA4/GTM). Outside work, I love exploring Vietnam roads on my Suzuki Raider.
-                </>
-              ) : (
-                <>
-                  Bên cạnh việc coding với{' '}
-                  <strong className="text-gray-900 bg-gray-100 px-1.5 py-0.5 rounded font-medium">
-                    Rust, Python, Go và TypeScript
-                  </strong>
-                  , tôi còn đam mê Web Analytics (GA4/GTM). Ngoài giờ làm việc, tôi thích rong ruổi trên chiếc Suzuki Raider dọc theo các nẻo đường Việt Nam.
-                </>
-              )}
+              {dict.hero.defaultBio2Prefix}{' '}
+              <strong className="text-gray-900 bg-gray-100 px-1.5 py-0.5 rounded font-medium">
+                Rust, Python, Go &amp; TypeScript
+              </strong>
+              , {dict.hero.defaultBio2Suffix}
             </p>
           </div>
 
@@ -201,7 +181,7 @@ export function HeroSection({ personalInfo }: HeroSectionProps) {
               className="text-white bg-gradient-to-r from-red-500 to-rose-600 px-6 py-3 rounded-full font-bold hover:shadow-lg hover:shadow-rose-200 transition-all transform hover:-translate-y-1"
             >
               <span className="flex items-center space-x-2">
-                <span>{isEn ? 'Featured Projects' : 'Dự án nổi bật'}</span>
+                <span>{dict.hero.featuredProjects}</span>
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"

@@ -62,22 +62,21 @@ export function HomeView({ initialCvData }: { initialCvData?: CVData | null }) {
   }
 
   const personalInfo = cv?.personalInfo || {
-    fullName: 'Huỳnh Nhật Tân',
+    fullName: dict.nav.brand,
     jobTitle: 'Software Engineer',
-    tagline:
-      'Viết code không chỉ để máy tính thực thi, mà còn để con người bảo trì và hệ thống tự động hóa mở rộng.',
-    bio: 'Tôi chuyên thiết kế và xây dựng các hệ thống Backend kiến trúc phân tán (Microservices/Medallion Architecture) và nền tảng dữ liệu (Data Engineering Platforms). Sở trường của tôi là giải quyết các bài toán tối ưu hóa cơ sở dữ liệu và mở rộng hệ thống chịu tải cao.',
+    tagline: dict.hero.defaultTagline,
+    bio: dict.hero.defaultBio1,
     email: 'hello@example.com',
     phone: '0901234567',
     location: 'TP. Hồ Chí Minh, VN',
-    availability: 'Đang mở đón cơ hội mới',
+    availability: dict.hero.availability,
     githubUrl: 'https://github.com/ga2631',
     linkedinUrl: 'https://linkedin.com/in/huynhnhattan',
     stats: [
-      { label: 'Kinh Nghiệm Thực Chiến', value: '5 Năm' },
-      { label: 'Tỷ Lệ Khớp Nối Dữ Liệu', value: '96%' },
-      { label: 'Tăng Hiệu Năng Truy Vấn', value: '70%+' },
-      { label: 'Users Đồng Thời Xử Lý', value: '1,000+' },
+      { label: dict.hero.statYears, value: '5 Năm' },
+      { label: dict.hero.statMatching, value: '96%' },
+      { label: dict.hero.statQuery, value: '70%+' },
+      { label: dict.hero.statUsers, value: '1,000+' },
     ],
   };
 
