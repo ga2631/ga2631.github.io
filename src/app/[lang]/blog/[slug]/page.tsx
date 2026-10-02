@@ -76,11 +76,11 @@ export default async function BlogPostDetailPage({
     // Try to provide minimal fallback placeholder if rendering dynamically
     return (
       <BlogLayout>
-        <div className="py-24 text-center glass-panel p-8 rounded-3xl max-w-lg mx-auto border border-gray-800 space-y-4">
+        <div className="py-24 text-center bg-white border border-gray-200 rounded-2xl p-8 max-w-lg mx-auto space-y-4 shadow-xs">
           <div className="text-3xl">📄</div>
-          <h2 className="text-xl font-bold text-white">Bài viết không tồn tại</h2>
-          <p className="text-xs text-gray-400">
-            Không tìm thấy bài viết với đường dẫn <code>{slug}</code> trên cơ sở dữ liệu Supabase.
+          <h2 className="text-xl font-bold text-gray-900">Bài viết không tồn tại</h2>
+          <p className="text-xs text-gray-500">
+            Không tìm thấy bài viết với đường dẫn <code className="bg-gray-100 px-1.5 py-0.5 rounded text-red-600 font-mono">{slug}</code>.
           </p>
         </div>
       </BlogLayout>

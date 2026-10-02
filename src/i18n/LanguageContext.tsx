@@ -181,7 +181,28 @@ export function LanguageProvider({
 export function useLanguage(): LanguageContextType {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    // Graceful fallback for static build / error boundaries
+    const fallbackLang = defaultLocale;
+    return {
+      currentLang: fallbackLang,
+      languages: [
+        { code: 'en', name: 'English', is_active: true },
+        { code: 'vi', name: 'Tiếng Việt', is_active: true },
+      ],
+      dict: getDictionary(fallbackLang),
+      meta: localeMetadataMap[fallbackLang] || localeMetadataMap.en,
+      changeLanguage: () => {},
+      getLocalizedHref: (path: string, targetLang: Locale = fallbackLang) => {
+        const cleanPath = path.startsWith('/') ? path : `/${path}`;
+        const pathWithoutLocale = cleanPath.replace(/^\/(vi|en)(\/|$)/, '/');
+        const finalSubPath = pathWithoutLocale === '/' ? '' : pathWithoutLocale;
+        return `/${targetLang}${finalSubPath}`;
+      },
+      isLoadingLanguages: false,
+      isChangingLanguage: false,
+      setIsChangingLanguage: () => {},
+      isInitialized: true,
+    };
   }
   return context;
 }

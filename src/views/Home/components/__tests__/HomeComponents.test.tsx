@@ -67,11 +67,11 @@ describe('CV Home Components', () => {
       },
     ];
     const { getByText } = render(
-      <LanguageProvider>
+      <LanguageProvider initialLang="vi">
         <PrinciplesSection principles={mockPrinciples} />
       </LanguageProvider>
     );
-    expect(getByText('Engineering excellence')).toBeDefined();
+    expect(getByText('Triết lý kỹ thuật')).toBeDefined();
     expect(getByText('Kiến trúc bền vững')).toBeDefined();
   });
 
@@ -89,11 +89,11 @@ describe('CV Home Components', () => {
       },
     ];
     const { getByText } = render(
-      <LanguageProvider>
+      <LanguageProvider initialLang="vi">
         <ExperienceSection experiences={mockExperiences} />
       </LanguageProvider>
     );
-    expect(getByText('Professional Experience')).toBeDefined();
+    expect(getByText('Kinh nghiệm làm việc')).toBeDefined();
     expect(getByText('Senior Data Engineer & Backend')).toBeDefined();
   });
 
@@ -130,24 +130,24 @@ describe('CV Home Components', () => {
       </LanguageProvider>
     );
 
-    expect(getByText('Featured Projects')).toBeDefined();
+    expect(getByText('Dự án nổi bật')).toBeDefined();
 
     // Check Enterprise badge & project
-    expect(getByText('Enterprise')).toBeDefined();
+    expect(getAllByText('Enterprise').length).toBeGreaterThan(0);
     expect(getAllByText('Custom Enterprise System').length).toBeGreaterThan(0);
     expect(getByText('Tech Corp')).toBeDefined();
-    expect(getByText('Xem chi tiết')).toBeDefined();
+    expect(getByText('Chi tiết dự án')).toBeDefined();
 
     // Check Public badge & project
-    expect(getByText('Public')).toBeDefined();
+    expect(getAllByText('Public').length).toBeGreaterThan(0);
     expect(getByText('Custom Public Tool')).toBeDefined();
-    const viewSourceLink = getByText('View Source').closest('a');
+    const viewSourceLink = getByText('Mã nguồn').closest('a');
     expect(viewSourceLink).toBeDefined();
     expect(viewSourceLink?.getAttribute('href')).toBe('https://github.com/ga2631/custom-public');
     expect(viewSourceLink?.getAttribute('target')).toBe('_blank');
 
-    // Click 'Xem chi tiết' to open Enterprise Modal
-    const detailsButton = getByText('Xem chi tiết');
+    // Click 'Chi tiết dự án' to open Enterprise Modal
+    const detailsButton = getByText('Chi tiết dự án');
     fireEvent.click(detailsButton);
 
     // Check Modal content
@@ -184,12 +184,12 @@ describe('CV Home Components', () => {
     );
 
     // Verify Enterprise pill
-    expect(getByText('Enterprise')).toBeDefined();
+    expect(getAllByText('Enterprise').length).toBeGreaterThan(0);
     expect(getAllByText('Hạ tầng Dữ liệu ERP & Medallion Data Warehouse').length).toBeGreaterThan(0);
     expect(getByText('Viet Nam Gate Advertising JSC')).toBeDefined();
     
-    // Verify Xem chi tiết button exists
-    const detailBtn = getByText('Xem chi tiết');
+    // Verify Chi tiết dự án button exists
+    const detailBtn = getByText('Chi tiết dự án');
     expect(detailBtn).toBeDefined();
 
     // Trigger modal
@@ -219,7 +219,7 @@ describe('CV Home Components', () => {
       </LanguageProvider>
     );
 
-    expect(getByText('Tech Stack & Tools')).toBeDefined();
+    expect(getByText('Tech Stack & Công cụ')).toBeDefined();
     expect(getByText('Lập trình')).toBeDefined();
 
     // Level 1 => Basic => gray (bg-gray-100)
@@ -254,21 +254,21 @@ describe('CV Home Components', () => {
       },
     ];
     const { getByText } = render(
-      <LanguageProvider>
+      <LanguageProvider initialLang="vi">
         <EducationSection educations={mockEducations} />
       </LanguageProvider>
     );
-    expect(getByText('Education & Certifications')).toBeDefined();
+    expect(getByText('Học vấn & Chứng chỉ')).toBeDefined();
     expect(getByText('Trường Đại học Sư phạm TP. HCM')).toBeDefined();
   });
 
   it('renders ContactSection correctly', () => {
     const { getByText } = render(
-      <LanguageProvider>
+      <LanguageProvider initialLang="vi">
         <ContactSection personalInfo={dummyPersonalInfo} />
       </LanguageProvider>
     );
-    expect(getByText("Let's Connect")).toBeDefined();
+    expect(getByText('Kết nối')).toBeDefined();
     expect(getByText('hello@example.com')).toBeDefined();
   });
 

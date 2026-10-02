@@ -1,103 +1,229 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { LanguageSwitcher } from '../navigation/LanguageSwitcher';
 import { trackNavigation } from '@/utils/analytics';
 
 export function BlogLayout({ children }: { children: React.ReactNode }) {
-  const { dict, getLocalizedHref } = useLanguage();
+  const { currentLang, changeLanguage, getLocalizedHref, dict } = useLanguage();
+  const isEn = currentLang === 'en';
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  // Auto-close mobile menu when clicking outside or pressing ESC
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleNavClick = (name: string, target: string) => {
     trackNavigation(name, target, 'desktop_header');
+    setIsMobileMenuOpen(false);
   };
 
-  return (
-    <div className="min-h-screen flex flex-col bg-[#fafafa] text-gray-800 font-sans antialiased transition-colors duration-200">
-      {/* Blog Dedicated Header */}
-      <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo & Subtitle */}
-          <div className="flex items-center gap-4">
-            <Link
-              href={getLocalizedHref('blog')}
-              className="flex items-center gap-2.5 group"
-              onClick={() => handleNavClick('BlogHome', '/blog')}
-            >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center font-bold text-white text-base shadow-md group-hover:scale-105 transition-transform">
-                ✍️
-              </div>
-              <div>
-                <div className="text-sm font-bold tracking-tight text-gray-900 group-hover:text-indigo-600 transition-colors">
-                  Engineering Blog
-                </div>
-                <div className="text-[10px] text-gray-500 font-mono">
-                  Architecture &amp; High Load Logbook
-                </div>
-              </div>
-            </Link>
+  const handleLanguageToggle = () => {
+    const nextLang = isEn ? 'vi' : 'en';
+    changeLanguage(nextLang);
+  };
 
-            {/* Back to CV Link */}
-            <Link
-              href={getLocalizedHref('')}
-              onClick={() => handleNavClick('BackToCV', '/')}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 hover:text-red-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors ml-4"
+  const navLinks = [
+    { id: 'about', label: dict.nav.about, href: getLocalizedHref('#about') },
+    { id: 'experience', label: dict.nav.experience, href: getLocalizedHref('#experience') },
+    { id: 'projects', label: dict.nav.projects, href: getLocalizedHref('#projects') },
+    { id: 'skills', label: dict.nav.skills, href: getLocalizedHref('#skills') },
+    { id: 'education', label: dict.nav.education, href: getLocalizedHref('#education') },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800 antialiased font-sans">
+      {/* Mobile/Tablet Menu Backdrop Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/25 backdrop-blur-xs z-30 lg:hidden transition-opacity duration-200"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* NAVBAR */}
+      <nav
+        ref={navRef}
+        className="bg-white/80 backdrop-blur-md fixed w-full z-40 top-0 start-0 border-b border-gray-100 shadow-xs transition-all duration-300"
+      >
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          {/* Logo */}
+          <Link
+            href={getLocalizedHref('')}
+            className="flex items-center space-x-3 rtl:space-x-reverse group"
+            onClick={() => handleNavClick('Brand', '/')}
+          >
+            <div className="w-10 h-10 bg-gradient-to-tr from-red-600 to-rose-600 text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-lg shadow-red-500/30 group-hover:scale-105 transition-transform">
+              T
+            </div>
+            <span className="self-center text-2xl font-bold whitespace-nowrap text-gray-900 tracking-tight">
+              {dict.nav.brand}
+            </span>
+          </Link>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 cursor-pointer"
+            aria-controls="navbar-sticky"
+            aria-expanded={isMobileMenuOpen}
+          >
+            <span className="sr-only">Open main menu</span>
+            <svg
+              className="w-5 h-5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 17 14"
             >
-              <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              <span>{dict.blog.backToHome}</span>
-            </Link>
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M1 1h15M1 7h15M1 13h15"
+              />
+            </svg>
+          </button>
+
+          {/* Navbar Links */}
+          <div
+            className={`items-center justify-between ${
+              isMobileMenuOpen ? 'block' : 'hidden'
+            } w-full lg:flex lg:w-auto lg:order-1`}
+            id="navbar-sticky"
+          >
+            <ul className="flex flex-col p-4 lg:p-0 mt-4 font-medium border border-gray-100 rounded-2xl bg-gray-50 lg:space-x-6 rtl:space-x-reverse lg:flex-row lg:mt-0 lg:border-0 lg:bg-transparent shadow-xs lg:shadow-none">
+              {navLinks.map((link) => (
+                <li key={link.id}>
+                  <a
+                    href={link.href}
+                    onClick={() => handleNavClick(link.label, link.href)}
+                    className="block py-2 px-3 text-gray-700 hover:text-red-600 lg:p-0 transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+
+              <li>
+                <Link
+                  href={getLocalizedHref('blog')}
+                  onClick={() => handleNavClick('Blog', '/blog')}
+                  className="block py-2 px-3 text-red-600 font-bold lg:p-0 transition-colors"
+                >
+                  {dict.nav.blog}
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href={getLocalizedHref('admin')}
+                  onClick={() => handleNavClick('CMS', '/admin')}
+                  className="block py-2 px-3 text-gray-400 hover:text-red-600 lg:p-0 transition-colors"
+                  title="CMS Admin"
+                >
+                  {dict.nav.cms}
+                </Link>
+              </li>
+
+              {/* Mobile Language Toggle */}
+              <li className="lg:hidden pt-3 mt-2 border-t border-gray-200/80 flex items-center justify-between px-3">
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  {dict.nav.language}
+                </span>
+                <div className="flex items-center space-x-2 bg-white border border-gray-200 px-2.5 py-1 rounded-full shadow-inner">
+                  <span className={`text-xs font-bold ${!isEn ? 'text-gray-900' : 'text-gray-400'}`}>
+                    VN
+                  </span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isEn}
+                      onChange={handleLanguageToggle}
+                      className="sr-only peer"
+                      aria-label="Toggle language mobile"
+                    />
+                    <div className="w-9 h-5 bg-gray-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600 shadow-2xs transition-colors" />
+                  </label>
+                  <span className={`text-xs ${isEn ? 'font-bold text-gray-900' : 'font-medium text-gray-400'}`}>
+                    EN
+                  </span>
+                </div>
+              </li>
+            </ul>
           </div>
 
-          {/* Right actions: CMS Link & Lang Switcher */}
-          <div className="flex items-center gap-3">
-            <Link
-              href={getLocalizedHref('admin')}
-              onClick={() => handleNavClick('CMS', '/admin')}
-              className="px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-1"
-              title="CMS Admin"
-            >
-              <span>⚡</span>
-              <span className="hidden sm:inline">CMS</span>
-            </Link>
-
-            <LanguageSwitcher />
+          {/* Desktop Language Toggle */}
+          <div className="hidden lg:flex lg:order-2 items-center space-x-3 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-full shadow-inner">
+            <span className={`text-sm font-bold ${!isEn ? 'text-gray-900' : 'text-gray-400'}`}>
+              VN
+            </span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isEn}
+                onChange={handleLanguageToggle}
+                className="sr-only peer"
+                aria-label="Toggle language"
+              />
+              <div className="w-11 h-6 bg-gray-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600 shadow-2xs transition-colors" />
+            </label>
+            <span className={`text-sm ${isEn ? 'font-bold text-gray-900' : 'font-medium text-gray-400'}`}>
+              EN
+            </span>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Main Blog Body */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Blog Container */}
+      <main className="max-w-screen-xl mx-auto w-full p-4 pt-24 lg:pt-28 flex-grow">
         {children}
       </main>
 
-      {/* Blog Footer */}
-      <footer className="border-t border-gray-100 bg-white py-8 mt-12 text-xs text-gray-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <span className="font-semibold text-gray-800">{dict.blog.title}</span>
-            <span className="mx-2">•</span>
-            <span>Huỳnh Nhật Tân</span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link href={getLocalizedHref('')} className="hover:text-indigo-600 transition-colors">
-              {dict.nav.cv}
-            </Link>
-            <Link href={getLocalizedHref('admin')} className="hover:text-indigo-600 transition-colors">
-              {dict.nav.cms}
-            </Link>
-            <a
-              href="https://github.com/ga2631"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gray-900 transition-colors"
-            >
-              GitHub
-            </a>
-          </div>
+      {/* Footer */}
+      <footer className="w-full mt-auto relative z-10 bg-transparent">
+        <div className="mx-auto max-w-screen-xl p-6 text-center">
+          <span className="text-sm text-gray-400">
+            {dict.footer.copyright}
+          </span>
         </div>
       </footer>
     </div>
