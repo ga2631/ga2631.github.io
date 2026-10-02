@@ -34,7 +34,7 @@ export function EducationSection({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left: Education */}
-        <div className="p-8 bg-white backdrop-blur-sm border border-gray-100 rounded-3xl shadow-sm hover:border-red-300 hover:shadow-lg h-full transition-all ease-in-out">
+        <div className="p-8 bg-white backdrop-blur-sm border border-gray-100 rounded-3xl shadow-sm border-t-4 border-t-red-500 hover:border-red-500 hover:shadow-lg h-full transition-all ease-in-out">
           {eduItems.map((edu) => (
             <div key={edu.id}>
               <div className="flex items-start space-x-3 mb-6">
@@ -83,7 +83,7 @@ export function EducationSection({
           {certItems.map((cert) => (
             <div
               key={cert.id}
-              className="bg-white backdrop-blur-sm border border-gray-100 rounded-2xl p-5 shadow-sm hover:border-red-300 hover:shadow-lg transition-all ease-in-out mb-8"
+              className="bg-white backdrop-blur-sm border border-gray-100 rounded-2xl p-5 shadow-sm border-t-4 border-t-red-500 hover:border-red-500 hover:shadow-lg transition-all ease-in-out mb-8"
             >
               <div className="flex flex-wrap items-start justify-between">
                 <div>

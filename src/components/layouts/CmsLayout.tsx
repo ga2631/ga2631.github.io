@@ -49,6 +49,15 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
 
   return (
     <div className="min-h-screen flex bg-[#fafafa] text-gray-800 font-sans antialiased transition-colors duration-200">
+      {/* Mobile Sidebar Backdrop */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/25 backdrop-blur-[2px] z-40 md:hidden transition-opacity duration-200"
+          onClick={() => setIsSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* CMS Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 md:translate-x-0 ${

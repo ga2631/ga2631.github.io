@@ -99,7 +99,7 @@ export function SkillsSection({ skillCategories = [] }: SkillsSectionProps) {
         {categories.map((cat, idx) => (
           <div
             key={idx}
-            className="bg-white backdrop-blur-sm rounded-3xl shadow-sm hover:shadow-lg border border-gray-100 hover:border-red-300 p-6 transition-shadow ease-in-out"
+            className="bg-white backdrop-blur-sm rounded-3xl shadow-sm hover:shadow-lg border border-gray-100 border-t-4 border-t-red-500 hover:border-red-500 p-6 transition-all ease-in-out"
           >
             <h4
               className={`text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 border-b-2 border-red-500 inline-block pb-1`}

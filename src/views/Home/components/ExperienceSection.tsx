@@ -31,7 +31,7 @@ export function ExperienceSection({ experiences = [] }: ExperienceSectionProps) 
         {items.map((exp) => (
           <li key={exp.id} className="mb-12 ms-8">
             <span className="absolute flex items-center justify-center w-6 h-6 bg-red-600 rounded-full -start-3 ring-2 ring-white shadow-lg" />
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg hover:border-red-300 transition-all ease-in-out">
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 border-t-4 border-t-red-500 shadow-sm hover:shadow-lg hover:border-red-500 transition-all ease-in-out">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-2">
                 <div>
                   <h3 className="text-xl font-bold text-red-600">{exp.role}</h3>

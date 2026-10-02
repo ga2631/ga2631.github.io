@@ -36,7 +36,7 @@ export function ContactSection({ personalInfo }: ContactSectionProps) {
         <a
           href={`mailto:${email}`}
           onClick={() => handleLinkClick('Email', `mailto:${email}`)}
-          className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-100 shadow-lg shadow-red-100/40 flex flex-col items-center justify-center text-center hover:-translate-y-1 hover:border-red-300 hover:shadow-lg transition-all group"
+          className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-100 shadow-lg shadow-red-100/40 flex flex-col items-center justify-center text-center border-t-4 border-t-red-500 hover:-translate-y-1 hover:border-red-500 hover:shadow-lg transition-all group"
         >
           <div className="w-12 h-12 bg-red-50 text-red-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-red-600 group-hover:text-white transition-colors">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,9 +56,9 @@ export function ContactSection({ personalInfo }: ContactSectionProps) {
         <a
           href={`tel:${phone.replace(/\s+/g, '')}`}
           onClick={() => handleLinkClick('Phone', `tel:${phone}`)}
-          className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-100 shadow-lg shadow-red-100/40 flex flex-col items-center justify-center text-center hover:-translate-y-1 hover:border-rose-300 hover:shadow-lg transition-all group"
+          className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-100 shadow-lg shadow-red-100/40 flex flex-col items-center justify-center text-center border-t-4 border-t-blue-500 hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg transition-all group"
         >
-          <div className="w-12 h-12 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-rose-600 group-hover:text-white transition-colors">
+          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -75,8 +75,8 @@ export function ContactSection({ personalInfo }: ContactSectionProps) {
         </a>
 
         {/* Box Địa chỉ */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-100 shadow-lg shadow-red-100/40 flex flex-col items-center justify-center text-center hover:-translate-y-1 hover:border-orange-300 hover:shadow-lg transition-all group">
-          <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-100 shadow-lg shadow-red-100/40 flex flex-col items-center justify-center text-center border-t-4 border-t-emerald-500 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg transition-all group">
+          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -104,7 +104,7 @@ export function ContactSection({ personalInfo }: ContactSectionProps) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => handleLinkClick('LinkedIn', linkedinUrl)}
-          className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-100 shadow-lg shadow-red-100/40 flex flex-col items-center justify-center text-center hover:-translate-y-1 hover:border-red-400 hover:shadow-lg transition-all group"
+          className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-100 shadow-lg shadow-red-100/40 flex flex-col items-center justify-center text-center border-t-4 border-t-amber-500 hover:-translate-y-1 hover:border-amber-500 hover:shadow-lg transition-all group"
         >
           <div className="w-12 h-12 bg-[#0077b5]/10 text-[#0077b5] rounded-full flex items-center justify-center mb-4 group-hover:bg-[#0077b5] group-hover:text-white transition-colors">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
