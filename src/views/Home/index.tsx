@@ -14,6 +14,7 @@ import {
   ContactSection,
   FloatDownloadButton,
 } from './components';
+import { LoadingModal } from '@/components/common/LoadingModal';
 
 export function HomeView({ initialCvData }: { initialCvData?: CVData | null }) {
   const { dict, currentLang } = useLanguage();
@@ -57,12 +58,7 @@ export function HomeView({ initialCvData }: { initialCvData?: CVData | null }) {
   }, [cv, isLoading]);
 
   if (isLoading && !cv) {
-    return (
-      <div className="py-24 flex flex-col items-center justify-center text-center">
-        <div className="w-12 h-12 rounded-full border-2 border-red-500 border-t-transparent animate-spin mb-4" />
-        <p className="text-gray-400 text-sm">{dict.common.loading}</p>
-      </div>
-    );
+    return <LoadingModal variant="fullscreen" />;
   }
 
   const personalInfo = cv?.personalInfo || {

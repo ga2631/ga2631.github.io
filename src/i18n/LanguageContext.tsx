@@ -7,6 +7,7 @@ import { Dictionary } from './dictionaries/vi';
 import { getDictionary } from './getDictionary';
 import { getActiveLanguages, Language } from '@/services/languageService';
 import { trackLanguageChange } from '@/utils/analytics';
+import { LoadingModal } from '@/components/common/LoadingModal';
 
 export interface LanguageContextType {
   currentLang: Locale;
@@ -16,6 +17,8 @@ export interface LanguageContextType {
   changeLanguage: (newLang: Locale) => void;
   getLocalizedHref: (path: string, targetLang?: Locale) => string;
   isLoadingLanguages: boolean;
+  isChangingLanguage: boolean;
+  setIsChangingLanguage: (val: boolean) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
@@ -37,6 +40,8 @@ export function LanguageProvider({
     { code: 'en', name: 'English', is_active: true },
   ]);
   const [isLoadingLanguages, setIsLoadingLanguages] = useState<boolean>(true);
+  const [isChangingLanguage, setIsChangingLanguage] = useState<boolean>(false);
+  const [targetLoadingLang, setTargetLoadingLang] = useState<Locale | null>(null);
 
   // Synchronize language with URL pathname or detect timezone on root
   useEffect(() => {
@@ -103,6 +108,9 @@ export function LanguageProvider({
   const changeLanguage = (newLang: Locale) => {
     if (newLang === currentLang) return;
 
+    setIsChangingLanguage(true);
+    setTargetLoadingLang(newLang);
+
     try {
       localStorage.setItem('user_language', newLang);
     } catch {}
@@ -117,6 +125,12 @@ export function LanguageProvider({
     startTransition(() => {
       setCurrentLang(newLang);
     });
+
+    // Provide a smooth, polished loading feedback window for Supabase queries
+    setTimeout(() => {
+      setIsChangingLanguage(false);
+      setTargetLoadingLang(null);
+    }, 400);
   };
 
   return (
@@ -129,9 +143,26 @@ export function LanguageProvider({
         changeLanguage,
         getLocalizedHref,
         isLoadingLanguages,
+        isChangingLanguage,
+        setIsChangingLanguage,
       }}
     >
       {children}
+      {isChangingLanguage && (
+        <LoadingModal
+          variant="modal"
+          message={
+            targetLoadingLang === 'en'
+              ? 'Switching language to English...'
+              : 'Đang chuyển ngôn ngữ sang Tiếng Việt...'
+          }
+          subtitle={
+            targetLoadingLang === 'en'
+              ? 'Synchronizing localized data from Supabase'
+              : 'Đang đồng bộ dữ liệu bản dịch từ Supabase'
+          }
+        />
+      )}
     </LanguageContext.Provider>
   );
 }

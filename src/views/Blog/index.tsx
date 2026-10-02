@@ -6,6 +6,7 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import { getBlogPosts, getBlogCategories, BlogCategoryDef } from '@/services/blogService';
 import { BlogPost } from '@/types';
 import { trackBlogSearch, trackBlogCategoryFilter, trackBlogTagClick } from '@/utils/analytics';
+import { LoadingModal } from '@/components/common/LoadingModal';
 
 export function BlogView({
   initialPosts = [],
@@ -179,10 +180,7 @@ export function BlogView({
 
       {/* Articles Grid */}
       {isLoading ? (
-        <div className="py-20 flex flex-col items-center justify-center">
-          <div className="w-10 h-10 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin mb-3" />
-          <p className="text-gray-400 text-xs">{dict.common.loading}</p>
-        </div>
+        <LoadingModal variant="inline" message={isEn ? 'Querying articles from Supabase...' : 'Đang truy vấn bài viết từ Supabase...'} />
       ) : filteredPosts.length === 0 ? (
         <div className="py-16 text-center glass-panel rounded-3xl p-8 max-w-xl mx-auto border border-gray-800">
           <div className="text-3xl mb-2">🔍</div>
