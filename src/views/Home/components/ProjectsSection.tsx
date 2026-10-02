@@ -52,6 +52,7 @@ export function ProjectsSection({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeModalProjectId, setActiveModalProjectId] = useState<string | null>(null);
+  const [activeModalIndex, setActiveModalIndex] = useState<number | null>(null);
 
   // GitHub public projects
   const [fetchedGithubProjects, setFetchedGithubProjects] = useState<ProjectItem[]>(
@@ -83,15 +84,27 @@ export function ProjectsSection({
     };
   }, [publicProjects]);
 
-  // Handle ESC key to close modal
+  // Manage body scroll lock and handle ESC key to close modal
   useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.body.classList.remove('overflow-hidden');
+      document.querySelectorAll('[modal-backdrop], [drawer-backdrop]').forEach((el) => el.remove());
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isModalOpen) {
         setIsModalOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+      document.body.classList.remove('overflow-hidden');
+    };
   }, [isModalOpen]);
 
   // 1. Enterprise projects: All projects from Supabase cv_documents
@@ -142,18 +155,24 @@ export function ProjectsSection({
     [enterpriseItems, publicItems]
   );
 
-  // Derive activeModalProject from displayProjects and activeModalProjectId
+  // Derive activeModalProject from displayProjects, activeModalProjectId, and activeModalIndex
   const activeModalProject: ProjectItem | null = useMemo(() => {
-    if (!activeModalProjectId) return null;
-    return (
-      displayProjects.find(
+    if (!isModalOpen) return null;
+    if (activeModalProjectId) {
+      const byId = displayProjects.find(
         (p) => p.id === activeModalProjectId || p.title === activeModalProjectId
-      ) || null
-    );
-  }, [displayProjects, activeModalProjectId]);
+      );
+      if (byId) return byId;
+    }
+    if (activeModalIndex !== null && displayProjects[activeModalIndex]) {
+      return displayProjects[activeModalIndex];
+    }
+    return displayProjects[0] || null;
+  }, [displayProjects, activeModalProjectId, activeModalIndex, isModalOpen]);
 
-  const handleOpenModal = (proj: ProjectItem) => {
-    setActiveModalProjectId(proj.id || proj.title);
+  const handleOpenModal = (proj: ProjectItem, index: number) => {
+    setActiveModalProjectId(proj.id || proj.title || String(index));
+    setActiveModalIndex(index);
     setIsModalOpen(true);
     trackProjectModalOpen(proj);
   };
@@ -191,12 +210,12 @@ export function ProjectsSection({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {displayProjects.map((proj) => {
+        {displayProjects.map((proj, idx) => {
           const isEnterprise = isEnterpriseProject(proj);
 
           return (
             <div
-              key={proj.id}
+              key={proj.id || idx}
               className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-lg hover:border-red-200 transition-all ease-in-out"
             >
               {/* Type 1: Enterprise Pill vs Type 2: Public Pill */}
@@ -251,9 +270,7 @@ export function ProjectsSection({
               {isEnterprise ? (
                 <button
                   type="button"
-                  data-modal-target="private-project-modal"
-                  data-modal-toggle="private-project-modal"
-                  onClick={() => handleOpenModal(proj)}
+                  onClick={() => handleOpenModal(proj, idx)}
                   className="w-full text-center text-red-600 bg-red-50 font-medium py-2.5 rounded-xl hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
                 >
                   {isEn ? 'View Details' : 'Xem chi tiết'}
@@ -352,7 +369,6 @@ export function ProjectsSection({
                 {/* Close Button */}
                 <button
                   type="button"
-                  data-modal-hide="private-project-modal"
                   onClick={() => setIsModalOpen(false)}
                   className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-2xl text-sm w-9 h-9 inline-flex justify-center items-center cursor-pointer transition-colors flex-shrink-0"
                 >

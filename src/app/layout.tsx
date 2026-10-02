@@ -29,7 +29,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi" className={`scroll-smooth ${roboto.variable}`} suppressHydrationWarning>
+    <html
+      lang="vi"
+      className={`scroll-smooth ${roboto.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body className="bg-[#fafafa] min-h-screen text-gray-800 font-sans antialiased relative flex flex-col">
         <LanguageProvider>
           {children}

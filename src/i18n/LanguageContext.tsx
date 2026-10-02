@@ -41,6 +41,14 @@ export function LanguageProvider({
   // Synchronize language with URL pathname or detect timezone on root
   useEffect(() => {
     if (!pathname) return;
+
+    // Ensure scrolling is always enabled on route transition
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+      document.body.classList.remove('overflow-hidden');
+      document.querySelectorAll('[modal-backdrop], [drawer-backdrop]').forEach((el) => el.remove());
+    }
+
     const segments = pathname.split('/').filter(Boolean);
     const firstSegment = segments[0] as Locale;
 
@@ -102,9 +110,12 @@ export function LanguageProvider({
     trackLanguageChange(newLang, currentLang);
     const newPath = getLocalizedHref(pathname || '', newLang);
 
+    if (typeof window !== 'undefined' && window.history) {
+      window.history.replaceState(null, '', newPath);
+    }
+
     startTransition(() => {
       setCurrentLang(newLang);
-      router.push(newPath);
     });
   };
 
