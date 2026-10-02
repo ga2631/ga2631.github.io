@@ -11,7 +11,7 @@ vi.mock('next/navigation', () => ({
     forward: vi.fn(),
     prefetch: vi.fn(),
   }),
-  usePathname: () => '/',
+  usePathname: () => '/vi',
   useSearchParams: () => new URLSearchParams(),
 }));
 
@@ -99,7 +99,7 @@ describe('CV Home Components', () => {
 
   it('renders ProjectsSection with Enterprise (modal) and Public (GitHub link) projects correctly', async () => {
     const { getByText, getAllByText, container } = render(
-      <LanguageProvider>
+      <LanguageProvider initialLang="vi">
         <ProjectsSection
           enterpriseProjects={[
             {
@@ -151,12 +151,16 @@ describe('CV Home Components', () => {
     fireEvent.click(detailsButton);
 
     // Check Modal content
-    expect(getByText('Chi tiết Dự án Công ty')).toBeDefined();
+    expect(getAllByText('Custom Enterprise System').length).toBeGreaterThan(0);
     expect(getByText('High throughput Kafka pipeline')).toBeDefined();
     expect(getByText('Zero downtime deployment')).toBeDefined();
     expect(
       getByText(/Mã nguồn không được công khai \(Closed Source\) do thỏa thuận bảo mật NDA/)
     ).toBeDefined();
+
+    // Verify language toggle exists inside the modal
+    const modalToggle = container.querySelector('input[aria-label="Toggle language in modal"]');
+    expect(modalToggle).toBeDefined();
   });
 
   it('renders projects passed from Supabase cv_documents as Enterprise with modal trigger', () => {
@@ -174,7 +178,7 @@ describe('CV Home Components', () => {
     ];
 
     const { getByText, getAllByText } = render(
-      <LanguageProvider>
+      <LanguageProvider initialLang="vi">
         <ProjectsSection projects={supabaseMockProjects} />
       </LanguageProvider>
     );
@@ -190,7 +194,7 @@ describe('CV Home Components', () => {
 
     // Trigger modal
     fireEvent.click(detailBtn);
-    expect(getByText('Chi tiết Dự án Công ty')).toBeDefined();
+    expect(getAllByText('Hạ tầng Dữ liệu ERP & Medallion Data Warehouse').length).toBeGreaterThan(0);
     expect(getByText('Tăng tốc truy vấn 70%')).toBeDefined();
   });
 
@@ -210,7 +214,7 @@ describe('CV Home Components', () => {
     ];
 
     const { getByText } = render(
-      <LanguageProvider>
+      <LanguageProvider initialLang="vi">
         <SkillsSection skillCategories={mockCategories} />
       </LanguageProvider>
     );
@@ -218,25 +222,25 @@ describe('CV Home Components', () => {
     expect(getByText('Tech Stack & Tools')).toBeDefined();
     expect(getByText('Lập trình')).toBeDefined();
 
-    // Level 1 => Basic => blue (bg-blue-100)
+    // Level 1 => Basic => gray (bg-gray-100)
     const skill1 = getByText('HTML/CSS');
-    expect(skill1.className).toContain('bg-blue-100');
+    expect(skill1.className).toContain('bg-gray-100');
 
-    // Level 2 => Familiar => emerald (bg-emerald-100)
+    // Level 2 => Familiar => amber (bg-amber-100)
     const skill2 = getByText('Rust');
-    expect(skill2.className).toContain('bg-emerald-100');
+    expect(skill2.className).toContain('bg-amber-100');
 
-    // Level 3 => Proficient => amber (bg-amber-100)
+    // Level 3 => Proficient => emerald (bg-emerald-100)
     const skill3 = getByText('Go');
-    expect(skill3.className).toContain('bg-amber-100');
+    expect(skill3.className).toContain('bg-emerald-100');
 
-    // Level 4 => Advanced => orange (bg-orange-100)
+    // Level 4 => Advanced => blue (bg-blue-100)
     const skill4 = getByText('Python');
-    expect(skill4.className).toContain('bg-orange-100');
+    expect(skill4.className).toContain('bg-blue-100');
 
-    // Level 5 => Expert => red (bg-red-100)
+    // Level 5 => Expert => violet (bg-violet-100)
     const skill5 = getByText('TypeScript');
-    expect(skill5.className).toContain('bg-red-100');
+    expect(skill5.className).toContain('bg-violet-100');
   });
 
   it('renders EducationSection correctly', () => {

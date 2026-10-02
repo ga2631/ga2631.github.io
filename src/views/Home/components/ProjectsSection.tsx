@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ProjectItem } from '@/types';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { trackProjectModalOpen, trackProjectLinkClick } from '@/utils/analytics';
@@ -47,11 +47,11 @@ export function ProjectsSection({
   enterpriseProjects,
   publicProjects,
 }: ProjectsSectionProps) {
-  const { currentLang } = useLanguage();
+  const { currentLang, changeLanguage } = useLanguage();
   const isEn = currentLang === 'en';
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeModalProject, setActiveModalProject] = useState<ProjectItem | null>(null);
+  const [activeModalProjectId, setActiveModalProjectId] = useState<string | null>(null);
 
   // GitHub public projects
   const [fetchedGithubProjects, setFetchedGithubProjects] = useState<ProjectItem[]>(
@@ -95,7 +95,7 @@ export function ProjectsSection({
   }, [isModalOpen]);
 
   // 1. Enterprise projects: All projects from Supabase cv_documents
-  const enterpriseItems: ProjectItem[] = (() => {
+  const enterpriseItems: ProjectItem[] = useMemo(() => {
     if (enterpriseProjects && enterpriseProjects.length > 0) {
       return enterpriseProjects.map((p) => ({
         ...p,
@@ -113,10 +113,10 @@ export function ProjectsSection({
       }));
     }
     return [];
-  })();
+  }, [enterpriseProjects, projects]);
 
   // 2. Public projects: Fetched from GitHub
-  const publicItems: ProjectItem[] = (() => {
+  const publicItems: ProjectItem[] = useMemo(() => {
     if (publicProjects && publicProjects.length > 0) {
       return publicProjects.map((p) => ({
         ...p,
@@ -134,13 +134,26 @@ export function ProjectsSection({
       }));
     }
     return FALLBACK_PUBLIC_PROJECTS;
-  })();
+  }, [publicProjects, fetchedGithubProjects]);
 
   // Combined project display list: Enterprise projects from Supabase first, followed by Public projects from GitHub
-  const displayProjects: ProjectItem[] = [...enterpriseItems, ...publicItems];
+  const displayProjects: ProjectItem[] = useMemo(
+    () => [...enterpriseItems, ...publicItems],
+    [enterpriseItems, publicItems]
+  );
+
+  // Derive activeModalProject from displayProjects and activeModalProjectId
+  const activeModalProject: ProjectItem | null = useMemo(() => {
+    if (!activeModalProjectId) return null;
+    return (
+      displayProjects.find(
+        (p) => p.id === activeModalProjectId || p.title === activeModalProjectId
+      ) || null
+    );
+  }, [displayProjects, activeModalProjectId]);
 
   const handleOpenModal = (proj: ProjectItem) => {
-    setActiveModalProject(proj);
+    setActiveModalProjectId(proj.id || proj.title);
     setIsModalOpen(true);
     trackProjectModalOpen(proj);
   };
@@ -293,7 +306,7 @@ export function ProjectsSection({
           <div className="relative bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden">
             {/* Flowbite Modal Header */}
             <div className="flex items-start justify-between p-6 pb-4 border-b border-gray-100 bg-gray-50/50 rounded-t-3xl">
-              <div className="space-y-1 pr-6">
+              <div className="space-y-1 pr-4">
                 <div className="flex flex-wrap items-center gap-2 mb-1.5">
                   {activeModalProject?.category && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
@@ -314,30 +327,53 @@ export function ProjectsSection({
                 )}
               </div>
 
-              {/* Close Button */}
-              <button
-                type="button"
-                data-modal-hide="private-project-modal"
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-2xl text-sm w-9 h-9 ms-auto inline-flex justify-center items-center cursor-pointer transition-colors flex-shrink-0"
-              >
-                <svg
-                  className="w-3.5 h-3.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 14 14"
+              {/* Action Buttons: Language Toggle + Close Button */}
+              <div className="flex items-center gap-3 ms-auto flex-shrink-0">
+                {/* Language Toggle in Modal */}
+                <div className="flex items-center space-x-2 bg-white border border-gray-200 px-2.5 py-1 rounded-full shadow-sm">
+                  <span className={`text-xs font-bold ${!isEn ? 'text-gray-900' : 'text-gray-400'}`}>
+                    VN
+                  </span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isEn}
+                      onChange={() => changeLanguage(isEn ? 'vi' : 'en')}
+                      className="sr-only peer"
+                      aria-label="Toggle language in modal"
+                    />
+                    <div className="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600 shadow-sm transition-colors" />
+                  </label>
+                  <span className={`text-xs ${isEn ? 'font-bold text-gray-900' : 'font-medium text-gray-400'}`}>
+                    EN
+                  </span>
+                </div>
+
+                {/* Close Button */}
+                <button
+                  type="button"
+                  data-modal-hide="private-project-modal"
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-2xl text-sm w-9 h-9 inline-flex justify-center items-center cursor-pointer transition-colors flex-shrink-0"
                 >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                  />
-                </svg>
-                <span className="sr-only">Đóng modal</span>
-              </button>
+                  <svg
+                    className="w-3.5 h-3.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                    />
+                  </svg>
+                  <span className="sr-only">Đóng modal</span>
+                </button>
+              </div>
             </div>
 
             {/* Flowbite Modal Body (Scrollable) */}

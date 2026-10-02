@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Locale, defaultLocale, localeMetadataMap, LocaleMeta } from './config';
+import { Locale, defaultLocale, localeMetadataMap, LocaleMeta, detectUserLanguage } from './config';
 import { Dictionary } from './dictionaries/vi';
 import { getDictionary } from './getDictionary';
 import { getActiveLanguages, Language } from '@/services/languageService';
@@ -38,17 +38,27 @@ export function LanguageProvider({
   ]);
   const [isLoadingLanguages, setIsLoadingLanguages] = useState<boolean>(true);
 
-  // Synchronize language with URL pathname
+  // Synchronize language with URL pathname or detect timezone on root
   useEffect(() => {
     if (!pathname) return;
     const segments = pathname.split('/').filter(Boolean);
     const firstSegment = segments[0] as Locale;
+
     if (firstSegment === 'vi' || firstSegment === 'en') {
-      if (firstSegment !== currentLang) {
-        setCurrentLang(firstSegment);
+      setCurrentLang((prev) => (prev !== firstSegment ? firstSegment : prev));
+      try {
+        localStorage.setItem('user_language', firstSegment);
+      } catch {}
+    } else if (segments.length === 0 || (firstSegment !== 'vi' && firstSegment !== 'en' && firstSegment !== 'admin')) {
+      // If visiting root "/" or non-localized URL: detect language via timezone / browser
+      const detected = detectUserLanguage();
+      setCurrentLang((prev) => (prev !== detected ? detected : prev));
+      const newPath = getLocalizedHref(pathname, detected);
+      if (newPath !== pathname) {
+        router.replace(newPath);
       }
     }
-  }, [pathname, currentLang]);
+  }, [pathname]);
 
   // Dynamically load active languages from Supabase table 'languages'
   useEffect(() => {
@@ -84,6 +94,10 @@ export function LanguageProvider({
 
   const changeLanguage = (newLang: Locale) => {
     if (newLang === currentLang) return;
+
+    try {
+      localStorage.setItem('user_language', newLang);
+    } catch {}
 
     trackLanguageChange(newLang, currentLang);
     const newPath = getLocalizedHref(pathname || '', newLang);
