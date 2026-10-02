@@ -216,7 +216,7 @@ export function ProjectsSection({
           return (
             <div
               key={proj.id || idx}
-              className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-lg hover:border-red-200 transition-all ease-in-out"
+              className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-lg hover:border-red-400 transition-all ease-in-out"
             >
               {/* Type 1: Enterprise Pill vs Type 2: Public Pill */}
               <div className="flex justify-between items-start mb-4">
@@ -450,7 +450,7 @@ export function ProjectsSection({
                     {modalHighlights.map((hl, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-3 p-3.5 bg-gray-50/80 rounded-2xl border border-gray-100 hover:border-red-200 transition-colors"
+                        className="flex items-start gap-3 p-3.5 bg-gray-50/80 rounded-2xl border border-gray-100 hover:border-red-400 transition-colors ease-in-out"
                       >
                         <span className="flex-shrink-0 w-6 h-6 rounded-lg bg-red-100 text-red-600 flex items-center justify-center mt-0.5">
                           <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
