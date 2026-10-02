@@ -23,7 +23,9 @@ export function HomeView({ initialCvData }: { initialCvData?: CVData | null }) {
   useEffect(() => {
     let isMounted = true;
     async function loadCv() {
-      setIsLoading(true);
+      if (!initialCvData) {
+        setIsLoading(true);
+      }
       try {
         const data = await getCvData(currentLang);
         if (isMounted) setCv(data);
@@ -37,7 +39,22 @@ export function HomeView({ initialCvData }: { initialCvData?: CVData | null }) {
     return () => {
       isMounted = false;
     };
-  }, [currentLang]);
+  }, [currentLang, initialCvData]);
+
+  // Ensure precise scroll alignment to hash when reloading or navigating to a specific section
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash;
+      const target = document.querySelector(hash);
+      if (target) {
+        // Allow DOM rendering and font layout to stabilize before smooth scrolling
+        const timer = setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [cv, isLoading]);
 
   if (isLoading && !cv) {
     return (

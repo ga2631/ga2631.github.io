@@ -37,6 +37,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Ensure all anchored sections have clearance below fixed navbar */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
 body {
   background-color: #fafafa;
   color: #1f2937;
