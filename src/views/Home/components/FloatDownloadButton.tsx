@@ -21,8 +21,8 @@ export function FloatDownloadButton({ resumePdfUrl }: { resumePdfUrl?: string })
       href={resumePdfUrl || '#'}
       onClick={handleClick}
       download={Boolean(resumePdfUrl)}
-      title={isEn ? 'Tải xuống CV' : 'Tải xuống CV'}
-      aria-label="Tải xuống CV"
+      title={isEn ? 'Save CV' : 'Tải xuống CV'}
+      aria-label={isEn ? 'Save CV' : 'Tải xuống CV'}
       className="fixed bottom-8 right-8 z-50 text-white bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full p-4 shadow-xl shadow-red-500/40 transition-transform hover:scale-110 flex items-center justify-center group"
     >
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

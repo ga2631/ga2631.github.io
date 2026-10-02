@@ -112,7 +112,7 @@ export function HomeView({ initialCvData }: { initialCvData?: CVData | null }) {
       <ContactSection personalInfo={personalInfo} />
 
       {/* Float Button: Save CV */}
-      <FloatDownloadButton resumePdfUrl={personalInfo.resumePdfUrl} />
+      {/* <FloatDownloadButton resumePdfUrl={personalInfo.resumePdfUrl} /> */}
     </>
   );
 }
