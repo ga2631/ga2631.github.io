@@ -84,12 +84,17 @@ export function ProjectsSection({
     };
   }, [publicProjects]);
 
-  // Manage body scroll lock and handle ESC key to close modal
+  // Manage root & body scroll lock and handle ESC key to close modal
   useEffect(() => {
     if (isModalOpen) {
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      document.documentElement.classList.add('overflow-hidden');
+      document.body.classList.add('overflow-hidden');
     } else {
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      document.documentElement.classList.remove('overflow-hidden');
       document.body.classList.remove('overflow-hidden');
       document.querySelectorAll('[modal-backdrop], [drawer-backdrop]').forEach((el) => el.remove());
     }
@@ -102,7 +107,9 @@ export function ProjectsSection({
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      document.documentElement.classList.remove('overflow-hidden');
       document.body.classList.remove('overflow-hidden');
     };
   }, [isModalOpen]);
@@ -314,7 +321,7 @@ export function ProjectsSection({
         }}
         className={`${
           isModalOpen ? 'flex' : 'hidden'
-        } overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full p-4 md:p-6 bg-black/80 backdrop-blur-md transition-opacity duration-300`}
+        } overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full p-4 md:p-6 bg-black/80 backdrop-blur-md transition-opacity duration-300 overscroll-contain`}
       >
         <div
           className="relative w-full max-w-3xl max-h-[92vh] flex flex-col my-auto"
@@ -322,78 +329,95 @@ export function ProjectsSection({
         >
           <div className="relative bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden">
             {/* Flowbite Modal Header */}
-            <div className="flex items-start justify-between p-6 pb-4 border-b border-gray-100 bg-gray-50/50 rounded-t-3xl">
-              <div className="space-y-1 pr-4">
-                <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                  {activeModalProject?.category && (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+            <div className="p-6 pb-4 border-b border-gray-100 bg-gray-50/50 rounded-t-3xl space-y-3">
+              {/* Row 1: Pill (Left) + Language Toggle & Close Button (Right) */}
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  {activeModalProject?.category ? (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                       {activeModalProject.category}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                      Enterprise
                     </span>
                   )}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 tracking-tight">
+
+                {/* Right: Language Toggle + Close Button */}
+                <div className="flex items-center gap-2.5">
+                  {/* Segmented Language Switcher in Modal */}
+                  <div className="inline-flex items-center p-0.5 bg-gray-100/90 rounded-full border border-gray-200 shadow-inner">
+                    <button
+                      type="button"
+                      onClick={() => changeLanguage('vi')}
+                      className={`px-2.5 py-0.5 text-[11px] font-bold rounded-full transition-all duration-150 cursor-pointer ${
+                        !isEn
+                          ? 'bg-white text-red-600 shadow-xs'
+                          : 'text-gray-400 hover:text-gray-700'
+                      }`}
+                      aria-label="Tiếng Việt"
+                    >
+                      VI
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => changeLanguage('en')}
+                      className={`px-2.5 py-0.5 text-[11px] font-bold rounded-full transition-all duration-150 cursor-pointer ${
+                        isEn
+                          ? 'bg-white text-red-600 shadow-xs'
+                          : 'text-gray-400 hover:text-gray-700'
+                      }`}
+                      aria-label="English"
+                    >
+                      EN
+                    </button>
+                  </div>
+
+                  {/* Close Button */}
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="text-gray-400 bg-gray-100 hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm w-7 h-7 inline-flex justify-center items-center cursor-pointer transition-colors flex-shrink-0"
+                  >
+                    <svg
+                      className="w-3 h-3"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 14"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                      />
+                    </svg>
+                    <span className="sr-only">Đóng modal</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Row 2: Title full-width */}
+              <div className="space-y-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight leading-snug w-full">
                   {activeModalProject?.title || (isEn ? 'Enterprise Project Details' : 'Chi tiết Dự án Công ty')}
                 </h3>
                 {activeModalProject?.company && (
                   <p className="text-sm font-medium text-gray-500 flex items-center gap-1.5">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                     {activeModalProject.company}
                   </p>
                 )}
               </div>
-
-              {/* Action Buttons: Language Toggle + Close Button */}
-              <div className="flex items-center gap-3 ms-auto flex-shrink-0">
-                {/* Language Toggle in Modal */}
-                <div className="flex items-center space-x-2 bg-white border border-gray-200 px-2.5 py-1 rounded-full shadow-sm">
-                  <span className={`text-xs font-bold ${!isEn ? 'text-gray-900' : 'text-gray-400'}`}>
-                    VN
-                  </span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={isEn}
-                      onChange={() => changeLanguage(isEn ? 'vi' : 'en')}
-                      className="sr-only peer"
-                      aria-label="Toggle language in modal"
-                    />
-                    <div className="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-red-600 shadow-sm transition-colors" />
-                  </label>
-                  <span className={`text-xs ${isEn ? 'font-bold text-gray-900' : 'font-medium text-gray-400'}`}>
-                    EN
-                  </span>
-                </div>
-
-                {/* Close Button */}
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-2xl text-sm w-9 h-9 inline-flex justify-center items-center cursor-pointer transition-colors flex-shrink-0"
-                >
-                  <svg
-                    className="w-3.5 h-3.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                  <span className="sr-only">Đóng modal</span>
-                </button>
-              </div>
             </div>
 
             {/* Flowbite Modal Body (Scrollable) */}
-            <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(92vh-180px)] text-base">
+            <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(92vh-180px)] text-base overscroll-contain">
               {/* Quick Info */}
               {(activeModalProject?.role || activeModalProject?.teamSize || activeModalProject?.period) && (
                 <div className="flex flex-wrap items-center justify-between gap-4">
