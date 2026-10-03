@@ -318,16 +318,30 @@ export function CmsPostEditor({
     }
   };
 
+  // Lock body scroll so page never drifts/scrolls while editor is open
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   return (
-    <div className="space-y-6" role="region" aria-label="Notion Post Editor">
-      {/* 1. Floating Top Header Bar */}
-      <div className="sticky top-3 z-40 bg-white/95 backdrop-blur-md border border-gray-200/90 rounded-2xl p-3 sm:px-5 sm:py-3 shadow-lg shadow-gray-200/40 transition-all flex flex-wrap items-center justify-between gap-3">
+    <div
+      className="fixed inset-x-0 bottom-0 top-16 z-30 bg-[#fafafa] flex flex-col overflow-hidden px-3 sm:px-6 py-2.5 max-w-7xl mx-auto w-full"
+      role="region"
+      aria-label="Notion Post Editor"
+    >
+      {/* 1. Editor Top Action Bar (Docked, shrink-0) */}
+      <div className="shrink-0 bg-white/95 backdrop-blur-md border border-gray-200/90 rounded-2xl p-2.5 px-4 shadow-2xs flex flex-wrap items-center justify-between gap-3">
         {/* Left: Back button & Slug/Status info */}
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={onCancel}
-            className="p-2 px-3 rounded-xl border border-gray-200 hover:bg-gray-100 text-gray-700 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
+            className="p-1.5 px-3 rounded-xl border border-gray-200 hover:bg-gray-100 text-gray-700 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
             title="Quay lại danh sách"
           >
             <span>←</span>
@@ -367,7 +381,7 @@ export function CmsPostEditor({
           {/* SEO Score Button */}
           <button
             type="button"
-            onClick={() => setShowSeoDrawer(!showSeoDrawer)}
+            onClick={() => setShowSeoDrawer(true)}
             className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               seoResult.status === 'excellent'
                 ? 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100/60'
@@ -378,7 +392,6 @@ export function CmsPostEditor({
             title="Mở bảng phân tích SEO & xem trước Google Search"
           >
             <span>🎯 SEO {seoResult.score}%</span>
-            <span className="text-[10px]">{showSeoDrawer ? '▲' : '▼'}</span>
           </button>
 
           {/* Editor Mode Toggles */}
@@ -459,111 +472,36 @@ export function CmsPostEditor({
         </div>
       </div>
 
-      {/* Main Two-Column Layout (Canvas + Right Sidebar) */}
-      <div className="flex flex-col lg:flex-row items-start gap-6">
+      {/* 2. Main Two-Column Layout (Fills remaining height, overflow-hidden) */}
+      <div className="flex-1 min-h-0 flex flex-col lg:flex-row items-stretch gap-3 sm:gap-4 pt-2.5 overflow-hidden">
         {/* LEFT COLUMN: Main Writing Canvas */}
-        <div className="flex-1 min-w-0 space-y-5 w-full">
-          {/* SEO Analyzer & Google SERP Preview Drawer (2.3.4.5) */}
-          {showSeoDrawer && (
-            <div className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm space-y-5 animate-in fade-in">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">🎯</span>
-                  <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">
-                    2.3.4.5 Công Cụ Tính Toán & Tối Ưu Hóa SEO Google
-                  </h3>
-                </div>
-                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-gray-100 text-gray-800">
-                  Điểm chất lượng: {seoResult.score} / 100
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                {/* Google SERP Card Preview */}
-                <div className="lg:col-span-6 space-y-2">
-                  <span className="text-[11px] font-bold uppercase text-gray-400 tracking-wider">
-                    Mô phỏng hiển thị trên Google Search:
-                  </span>
-                  <div className="p-4 rounded-2xl bg-white border border-gray-200 shadow-xs space-y-1">
-                    <div className="flex items-center gap-2 text-xs text-gray-700">
-                      <span className="w-4 h-4 rounded-full bg-red-600 text-white font-bold text-[9px] flex items-center justify-center">
-                        T
-                      </span>
-                      <div className="truncate">
-                        <span className="font-semibold text-gray-900">huynhnhattan.dev</span>
-                        <span className="text-gray-400"> › blog › {editingPost.slug || 'slug'}</span>
-                      </div>
-                    </div>
-                    <div className="text-base sm:text-lg font-medium text-blue-700 hover:underline cursor-pointer leading-snug pt-0.5 line-clamp-2">
-                      {currentTrans.title || 'Tiêu đề bài viết kỹ thuật sẽ hiển thị tại đây'}
-                    </div>
-                    <p className="text-xs text-gray-600 leading-relaxed line-clamp-2 pt-0.5">
-                      {currentTrans.summary ||
-                        'Đoạn tóm tắt meta description của bài viết sẽ được hiển thị trên Google để thu hút độc giả nhấp chuột vào đọc...'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Checklist items */}
-                <div className="lg:col-span-6 space-y-2.5">
-                  <span className="text-[11px] font-bold uppercase text-gray-400 tracking-wider">
-                    Đánh giá tiêu chí kỹ thuật:
-                  </span>
-                  <div className="space-y-2 text-xs">
-                    {seoResult.checks.map((chk, i) => (
-                      <div
-                        key={i}
-                        className={`p-3 rounded-xl border flex items-start gap-2.5 ${
-                          chk.passed
-                            ? 'bg-emerald-50/60 border-emerald-200 text-emerald-900'
-                            : 'bg-amber-50/60 border-amber-200 text-amber-900'
-                        }`}
-                      >
-                        <span className="font-bold text-sm shrink-0">{chk.passed ? '✅' : '⚠️'}</span>
-                        <div>
-                          <div className="font-bold">{chk.label}</div>
-                          <div className="text-[11px] opacity-90 mt-0.5">{chk.recommendation}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Article Title & Summary Inputs */}
-          <div className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden space-y-2.5">
+          {/* Article Title & Summary Inputs (Compact, shrink-0) */}
+          <div className="shrink-0 bg-white border border-gray-100 rounded-2xl p-3 sm:px-4 sm:py-2.5 shadow-xs space-y-1.5">
             <div>
-              <label className="block text-xs font-bold uppercase text-gray-400 tracking-wider mb-1">
-                Tiêu Đề Bài Viết ({activeLang.toUpperCase()}) <span className="text-red-500">*</span>
-              </label>
               <input
                 type="text"
                 required
                 value={currentTrans.title}
                 onChange={(e) => updateTransField('title', e.target.value)}
-                placeholder={activeLang === 'vi' ? 'Ví dụ: Thiết kế Hệ thống Microservices với Event-Driven Architecture' : 'E.g., High-Concurrency Microservices with Event-Driven Architecture'}
-                className="w-full text-lg sm:text-2xl font-black text-gray-900 border-b border-gray-200 pb-2 focus:outline-none focus:border-red-500 placeholder-gray-300"
+                placeholder={activeLang === 'vi' ? 'Tiêu đề bài viết kỹ thuật...' : 'Technical article title...'}
+                className="w-full text-base sm:text-lg font-black text-gray-900 border-b border-gray-100 pb-1 focus:outline-none placeholder-gray-300"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase text-gray-400 tracking-wider mb-1">
-                Tóm Tắt Ngắn / Meta Summary ({activeLang.toUpperCase()})
-              </label>
-              <textarea
-                rows={2}
+              <input
+                type="text"
                 value={currentTrans.summary || ''}
                 onChange={(e) => updateTransField('summary', e.target.value)}
-                placeholder={activeLang === 'vi' ? 'Tóm tắt 1-2 câu ngắn gọn làm nổi bật nội dung cốt lõi của bài viết...' : 'Concise 1-2 sentence executive summary highlighting key takeaways...'}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50/70 border border-gray-200 text-xs sm:text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 leading-relaxed"
+                placeholder={activeLang === 'vi' ? 'Tóm tắt ngắn 1-2 câu làm nổi bật nội dung cốt lõi của bài viết...' : 'Concise 1-2 sentence executive summary highlighting key takeaways...'}
+                className="w-full text-xs text-gray-700 focus:outline-none placeholder-gray-300"
               />
             </div>
           </div>
 
-          {/* Notion-Style Format Toolbar (2.3.4.3) */}
-          <div className="sticky top-18 z-30 bg-white/95 backdrop-blur-md border border-gray-200 rounded-2xl p-2 shadow-sm flex items-center justify-between gap-1 overflow-x-auto text-xs">
+          {/* Notion-Style Format Toolbar (shrink-0) */}
+          <div className="shrink-0 bg-white border border-gray-200 rounded-xl p-1.5 shadow-xs flex items-center justify-between gap-1 overflow-x-auto text-xs">
             <div className="flex items-center gap-1">
               {/* Quick Notion commands dropdown button */}
               <button
@@ -727,60 +665,61 @@ export function CmsPostEditor({
             </div>
           )}
 
-          {/* Main Canvas (Editor & Live Preview) */}
-          <div className={`grid gap-6 ${editorMode === 'split' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}>
+          {/* Main Canvas (Editor & Live Preview) - Fills ALL remaining height */}
+          <div className={`flex-1 min-h-0 grid gap-3 sm:gap-4 ${editorMode === 'split' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} overflow-hidden`}>
             {/* Editor Area */}
             {editorMode !== 'preview' && (
-              <div className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col min-h-[500px]">
-                <div className="flex items-center justify-between pb-3 mb-2 border-b border-gray-100">
-                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+              <div className="bg-white border border-gray-100 rounded-2xl p-3.5 sm:p-4 shadow-sm flex flex-col h-full overflow-hidden">
+                <div className="flex items-center justify-between pb-2 mb-1 border-b border-gray-100 shrink-0">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                     Nội dung Markdown ({activeLang.toUpperCase()})
                   </span>
-                  <span className="text-[11px] text-gray-400 font-mono">
+                  <span className="text-[10px] text-gray-400 font-mono">
                     Hỗ trợ Mermaid ```mermaid & KaTeX $$ math $$
                   </span>
                 </div>
                 <textarea
                   ref={textareaRef}
-                  rows={24}
                   value={currentTrans.content_md}
                   onChange={(e) => updateTransField('content_md', e.target.value)}
                   placeholder="Bắt đầu viết bài viết kỹ thuật ở đây. Sử dụng # để tạo tiêu đề, ```mermaid để vẽ sơ đồ, $$ để viết công thức toán..."
-                  className="w-full flex-1 p-2 bg-transparent text-gray-900 font-mono text-xs sm:text-sm leading-relaxed focus:outline-none resize-y placeholder-gray-300"
+                  className="w-full flex-1 min-h-0 p-1 bg-transparent text-gray-900 font-mono text-xs sm:text-sm leading-relaxed focus:outline-none resize-none placeholder-gray-300 overflow-y-auto"
                 />
               </div>
             )}
 
             {/* Live Preview Area */}
             {editorMode !== 'write' && (
-              <div className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm overflow-y-auto max-h-[800px]">
-                <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
-                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+              <div className="bg-white border border-gray-100 rounded-2xl p-3.5 sm:p-4 shadow-sm flex flex-col h-full overflow-hidden">
+                <div className="flex items-center justify-between pb-2 mb-2 border-b border-gray-100 shrink-0">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span>Xem Trước Trực Tiếp (Live Render)</span>
                   </span>
-                  <span className="text-[11px] font-mono text-gray-400">
-                    Hiển thị giống 100% giao diện Blog
+                  <span className="text-[10px] font-mono text-gray-400">
+                    100% giao diện Blog
                   </span>
                 </div>
 
-                {/* Rendered Article Body */}
-                <article className="prose prose-sm sm:prose max-w-none text-gray-800 leading-relaxed">
-                  <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight leading-tight">
-                    {currentTrans.title || 'Tiêu đề bài viết'}
-                  </h1>
+                {/* Rendered Article Body with internal scrolling */}
+                <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
+                  <article className="prose prose-sm sm:prose max-w-none text-gray-800 leading-relaxed">
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-tight">
+                      {currentTrans.title || 'Tiêu đề bài viết'}
+                    </h1>
 
-                  {currentTrans.summary && (
-                    <div className="my-4 border-l-4 border-red-500 bg-red-50/50 p-4 rounded-r-xl italic text-gray-700 text-xs sm:text-sm leading-relaxed">
-                      {currentTrans.summary}
-                    </div>
-                  )}
+                    {currentTrans.summary && (
+                      <div className="my-3 border-l-4 border-red-500 bg-red-50/50 p-3 rounded-r-xl italic text-gray-700 text-xs sm:text-sm leading-relaxed">
+                        {currentTrans.summary}
+                      </div>
+                    )}
 
-                  <div
-                    dangerouslySetInnerHTML={{ __html: previewHtml }}
-                    className="article-preview-content space-y-3"
-                  />
-                </article>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: previewHtml }}
+                      className="article-preview-content space-y-3"
+                    />
+                  </article>
+                </div>
               </div>
             )}
           </div>
@@ -788,203 +727,282 @@ export function CmsPostEditor({
 
         {/* RIGHT COLUMN: Right Sidebar (Publishing Settings & Select Tags) */}
         {showSidebar && (
-          <aside className="w-full lg:w-80 xl:w-88 shrink-0 lg:sticky lg:top-20 self-start space-y-4">
-            <div className="bg-white backdrop-blur-sm rounded-3xl p-5 shadow-sm border border-gray-100 border-t-4 border-t-red-600 hover:shadow-md transition-all space-y-4">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-base">⚙️</span>
-                  <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
-                    Cài Đặt Bài Viết
-                  </h3>
-                </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-bold">
-                  Publishing
-                </span>
+          <aside className="w-full lg:w-80 xl:w-84 shrink-0 h-full overflow-y-auto bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-t-4 border-t-red-600 space-y-3.5">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
+              <div className="flex items-center gap-2">
+                <span className="text-base">⚙️</span>
+                <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+                  Cài Đặt Bài Viết
+                </h3>
               </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-bold">
+                Publishing
+              </span>
+            </div>
 
-              {/* 2.3.2. Chuyên Mục Kỹ Thuật (Category) */}
-              <div>
-                <label className="block text-xs text-gray-700 font-bold mb-1.5">
-                  Chuyên Mục Kỹ Thuật <span className="text-red-500">*</span>
+            {/* 2.3.2. Chuyên Mục Kỹ Thuật (Category) */}
+            <div>
+              <label className="block text-xs text-gray-700 font-bold mb-1.5">
+                Chuyên Mục Kỹ Thuật <span className="text-red-500">*</span>
+              </label>
+              <select
+                aria-label="Chọn chuyên mục kỹ thuật"
+                value={editingPost.category_id || ''}
+                onChange={(e) => {
+                  const catId = e.target.value || null;
+                  setEditingPost((prev) => ({ ...prev, category_id: catId }));
+                }}
+                className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 cursor-pointer"
+              >
+                <option value="">-- Chọn chuyên mục --</option>
+                {categories.map((c) => (
+                  <option key={c.id || c.slug} value={c.id || c.slug}>
+                    {c.post_schedule ? `[Thứ ${c.post_schedule + 1}] ` : ''}
+                    {c.translations?.[activeLang]?.name || c.translations?.vi?.name || c.slug}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 2.3.4. Ngày Đăng Bài (Smart date recommendation) */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs text-gray-700 font-bold">
+                  Ngày Đăng Bài
                 </label>
-                <select
-                  aria-label="Chọn chuyên mục kỹ thuật"
-                  value={editingPost.category_id || ''}
-                  onChange={(e) => {
-                    const catId = e.target.value || null;
-                    setEditingPost((prev) => ({ ...prev, category_id: catId }));
-                  }}
-                  className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 cursor-pointer"
-                >
-                  <option value="">-- Chọn chuyên mục --</option>
-                  {categories.map((c) => (
-                    <option key={c.id || c.slug} value={c.id || c.slug}>
-                      {c.post_schedule ? `[Thứ ${c.post_schedule + 1}] ` : ''}
-                      {c.translations?.[activeLang]?.name || c.translations?.vi?.name || c.slug}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* 2.3.4. Ngày Đăng Bài (Smart date recommendation) */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs text-gray-700 font-bold">
-                    Ngày Đăng Bài
-                  </label>
-                  <button
-                    type="button"
-                    onClick={handleRecommendDate}
-                    className="text-[11px] text-blue-600 hover:text-blue-700 hover:underline font-semibold cursor-pointer flex items-center gap-1"
-                    title="Gợi ý ngày Thứ tương ứng lịch chuyên mục gần nhất"
-                  >
-                    <span>📅</span>
-                    <span>Gợi ý lịch</span>
-                  </button>
-                </div>
-                <input
-                  type="date"
-                  value={editingPost.published_at ? editingPost.published_at.substring(0, 10) : ''}
-                  onChange={(e) => setEditingPost({ ...editingPost, published_at: e.target.value || null })}
-                  className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
-                />
-              </div>
-
-              {/* Slug URL */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs text-gray-700 font-bold">
-                    Slug (Đường Dẫn) <span className="text-red-500">*</span>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const baseTitle = currentTrans.title || '';
-                      if (baseTitle) setEditingPost({ ...editingPost, slug: generateSlug(baseTitle) });
-                    }}
-                    className="text-[11px] text-blue-600 hover:text-blue-700 hover:underline font-semibold cursor-pointer"
-                  >
-                    Tạo từ tiêu đề
-                  </button>
-                </div>
-                <input
-                  type="text"
-                  required
-                  value={editingPost.slug}
-                  onChange={(e) => setEditingPost({ ...editingPost, slug: generateSlug(e.target.value) })}
-                  placeholder="slug-url-bai-viet"
-                  className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
-                />
-              </div>
-
-              {/* Thời Gian Đọc */}
-              <div>
-                <label className="block text-xs text-gray-700 font-bold mb-1.5">
-                  Thời Gian Đọc (Phút)
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    min="1"
-                    max="60"
-                    value={editingPost.read_time}
-                    onChange={(e) => setEditingPost({ ...editingPost, read_time: Number(e.target.value) || 5 })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
-                  />
-                  <span className="absolute right-3 top-2 text-[10px] text-gray-400 font-mono">
-                    {readingStats.words} từ
-                  </span>
-                </div>
-              </div>
-
-              {/* 2.3.3. Thẻ Kỹ Thuật (Tags) - Dạng Select theo yêu cầu của user */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs text-gray-700 font-bold">
-                    Thẻ Kỹ Thuật (Tags)
-                  </label>
-                  {selectedTags.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setEditingPost({ ...editingPost, tag_ids: [], tags: [] })}
-                      className="text-[10px] text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
-                    >
-                      Xóa tất cả
-                    </button>
-                  )}
-                </div>
-
-                {/* Dropdown Select to pick tags */}
-                <select
-                  aria-label="Chọn thẻ kỹ thuật"
-                  value=""
-                  onChange={(e) => {
-                    handleAddTag(e.target.value);
-                    e.target.value = '';
-                  }}
-                  className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 cursor-pointer"
-                >
-                  <option value="">+ Chọn thêm thẻ kỹ thuật...</option>
-                  {unselectedTags.map((tg) => (
-                    <option key={tg.id || tg.slug} value={tg.id || tg.slug}>
-                      #{tg.slug} — {tg.translations?.[activeLang]?.name || tg.translations?.vi?.name || tg.slug}
-                    </option>
-                  ))}
-                </select>
-
-                {/* Selected tag chips */}
-                <div className="flex flex-wrap gap-1.5 mt-2.5 min-h-[28px]">
-                  {selectedTags.length === 0 ? (
-                    <span className="text-[11px] text-gray-400 italic">
-                      Chưa chọn thẻ nào. Chọn thẻ từ menu trên.
-                    </span>
-                  ) : (
-                    selectedTags.map((tg) => (
-                      <span
-                        key={tg.id || tg.slug}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 text-red-700 border border-red-200 text-xs font-semibold animate-in fade-in"
-                      >
-                        <span>#{tg.slug}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveTag(tg.id || tg.slug)}
-                          className="hover:text-red-900 font-bold ml-0.5 cursor-pointer text-xs"
-                          title={`Bỏ thẻ #${tg.slug}`}
-                        >
-                          ✕
-                        </button>
-                      </span>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {/* SEO Summary in Sidebar */}
-              <div className="pt-2 border-t border-gray-100">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-bold text-gray-700">Điểm SEO Google</span>
-                  <span className="text-xs font-mono font-bold text-red-600">{seoResult.score} / 100</span>
-                </div>
-                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full transition-all duration-500 ${
-                      seoResult.score >= 80 ? 'bg-emerald-500' : seoResult.score >= 50 ? 'bg-amber-500' : 'bg-red-500'
-                    }`}
-                    style={{ width: `${seoResult.score}%` }}
-                  />
-                </div>
                 <button
                   type="button"
-                  onClick={() => setShowSeoDrawer(!showSeoDrawer)}
-                  className="mt-2.5 w-full py-1.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-[11px] font-bold text-gray-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                  onClick={handleRecommendDate}
+                  className="text-[11px] text-blue-600 hover:text-blue-700 hover:underline font-semibold cursor-pointer flex items-center gap-1"
+                  title="Gợi ý ngày Thứ tương ứng lịch chuyên mục gần nhất"
                 >
-                  <span>{showSeoDrawer ? 'Đóng phân tích SEO' : 'Xem chi tiết SEO & Snippet'}</span>
+                  <span>📅</span>
+                  <span>Gợi ý lịch</span>
                 </button>
               </div>
+              <input
+                type="date"
+                value={editingPost.published_at ? editingPost.published_at.substring(0, 10) : ''}
+                onChange={(e) => setEditingPost({ ...editingPost, published_at: e.target.value || null })}
+                className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+              />
+            </div>
+
+            {/* Slug URL */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs text-gray-700 font-bold">
+                  Slug (Đường Dẫn) <span className="text-red-500">*</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const baseTitle = currentTrans.title || '';
+                    if (baseTitle) setEditingPost({ ...editingPost, slug: generateSlug(baseTitle) });
+                  }}
+                  className="text-[11px] text-blue-600 hover:text-blue-700 hover:underline font-semibold cursor-pointer"
+                >
+                  Tạo từ tiêu đề
+                </button>
+              </div>
+              <input
+                type="text"
+                required
+                value={editingPost.slug}
+                onChange={(e) => setEditingPost({ ...editingPost, slug: generateSlug(e.target.value) })}
+                placeholder="slug-url-bai-viet"
+                className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+              />
+            </div>
+
+            {/* Thời Gian Đọc */}
+            <div>
+              <label className="block text-xs text-gray-700 font-bold mb-1.5">
+                Thời Gian Đọc (Phút)
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="1"
+                  max="60"
+                  value={editingPost.read_time}
+                  onChange={(e) => setEditingPost({ ...editingPost, read_time: Number(e.target.value) || 5 })}
+                  className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                />
+                <span className="absolute right-3 top-2 text-[10px] text-gray-400 font-mono">
+                  {readingStats.words} từ
+                </span>
+              </div>
+            </div>
+
+            {/* 2.3.3. Thẻ Kỹ Thuật (Tags) - Dạng Select theo yêu cầu của user */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs text-gray-700 font-bold">
+                  Thẻ Kỹ Thuật (Tags)
+                </label>
+                {selectedTags.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setEditingPost({ ...editingPost, tag_ids: [], tags: [] })}
+                    className="text-[10px] text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                  >
+                    Xóa tất cả
+                  </button>
+                )}
+              </div>
+
+              {/* Dropdown Select to pick tags */}
+              <select
+                aria-label="Chọn thẻ kỹ thuật"
+                value=""
+                onChange={(e) => {
+                  handleAddTag(e.target.value);
+                  e.target.value = '';
+                }}
+                className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 cursor-pointer"
+              >
+                <option value="">+ Chọn thêm thẻ kỹ thuật...</option>
+                {unselectedTags.map((tg) => (
+                  <option key={tg.id || tg.slug} value={tg.id || tg.slug}>
+                    #{tg.slug} — {tg.translations?.[activeLang]?.name || tg.translations?.vi?.name || tg.slug}
+                  </option>
+                ))}
+              </select>
+
+              {/* Selected tag chips */}
+              <div className="flex flex-wrap gap-1.5 mt-2 min-h-[28px]">
+                {selectedTags.length === 0 ? (
+                  <span className="text-[11px] text-gray-400 italic">
+                    Chưa chọn thẻ nào. Chọn thẻ từ menu trên.
+                  </span>
+                ) : (
+                  selectedTags.map((tg) => (
+                    <span
+                      key={tg.id || tg.slug}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 text-red-700 border border-red-200 text-xs font-semibold animate-in fade-in"
+                    >
+                      <span>#{tg.slug}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTag(tg.id || tg.slug)}
+                        className="hover:text-red-900 font-bold ml-0.5 cursor-pointer text-xs"
+                        title={`Bỏ thẻ #${tg.slug}`}
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* SEO Summary in Sidebar */}
+            <div className="pt-2 border-t border-gray-100">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-bold text-gray-700">Điểm SEO Google</span>
+                <span className="text-xs font-mono font-bold text-red-600">{seoResult.score} / 100</span>
+              </div>
+              <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-500 ${
+                    seoResult.score >= 80 ? 'bg-emerald-500' : seoResult.score >= 50 ? 'bg-amber-500' : 'bg-red-500'
+                  }`}
+                  style={{ width: `${seoResult.score}%` }}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSeoDrawer(true)}
+                className="mt-2.5 w-full py-1.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-[11px] font-bold text-gray-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>Xem chi tiết SEO & Snippet</span>
+              </button>
             </div>
           </aside>
         )}
       </div>
+
+      {/* SEO Modal Popup (Does not push layout or cause page scroll) */}
+      {showSeoDrawer && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white rounded-3xl p-6 shadow-2xl border border-gray-100 max-w-3xl w-full max-h-[85vh] overflow-y-auto space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🎯</span>
+                <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">
+                  2.3.4.5 Công Cụ Tính Toán & Tối Ưu Hóa SEO Google
+                </h3>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-gray-100 text-gray-800">
+                  Điểm chất lượng: {seoResult.score} / 100
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowSeoDrawer(false)}
+                  className="text-gray-400 hover:text-gray-700 text-base font-bold cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Google SERP Card Preview */}
+              <div className="lg:col-span-6 space-y-2">
+                <span className="text-[11px] font-bold uppercase text-gray-400 tracking-wider">
+                  Mô phỏng hiển thị trên Google Search:
+                </span>
+                <div className="p-4 rounded-2xl bg-white border border-gray-200 shadow-xs space-y-1">
+                  <div className="flex items-center gap-2 text-xs text-gray-700">
+                    <span className="w-4 h-4 rounded-full bg-red-600 text-white font-bold text-[9px] flex items-center justify-center">
+                      T
+                    </span>
+                    <div className="truncate">
+                      <span className="font-semibold text-gray-900">huynhnhattan.dev</span>
+                      <span className="text-gray-400"> › blog › {editingPost.slug || 'slug'}</span>
+                    </div>
+                  </div>
+                  <div className="text-base sm:text-lg font-medium text-blue-700 hover:underline cursor-pointer leading-snug pt-0.5 line-clamp-2">
+                    {currentTrans.title || 'Tiêu đề bài viết kỹ thuật sẽ hiển thị tại đây'}
+                  </div>
+                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-2 pt-0.5">
+                    {currentTrans.summary ||
+                      'Đoạn tóm tắt meta description của bài viết sẽ được hiển thị trên Google để thu hút độc giả nhấp chuột vào đọc...'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Checklist items */}
+              <div className="lg:col-span-6 space-y-2.5">
+                <span className="text-[11px] font-bold uppercase text-gray-400 tracking-wider">
+                  Đánh giá tiêu chí kỹ thuật:
+                </span>
+                <div className="space-y-2 text-xs">
+                  {seoResult.checks.map((chk, i) => (
+                    <div
+                      key={i}
+                      className={`p-3 rounded-xl border flex items-start gap-2.5 ${
+                        chk.passed
+                          ? 'bg-emerald-50/60 border-emerald-200 text-emerald-900'
+                          : 'bg-amber-50/60 border-amber-200 text-amber-900'
+                      }`}
+                    >
+                      <span className="font-bold text-sm shrink-0">{chk.passed ? '✅' : '⚠️'}</span>
+                      <div>
+                        <div className="font-bold">{chk.label}</div>
+                        <div className="text-[11px] opacity-90 mt-0.5">{chk.recommendation}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
