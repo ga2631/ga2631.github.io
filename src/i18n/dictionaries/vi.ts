@@ -28,7 +28,7 @@ export const viDict = {
     defaultBio2Suffix: 'tôi còn đam mê Web Analytics (GA4/GTM). Ngoài giờ làm việc, tôi thích rong ruổi trên chiếc Suzuki Raider dọc theo các nẻo đường Việt Nam.',
   },
   sections: {
-    principlesTitle: 'Triết lý kỹ thuật',
+    principlesTitle: 'Năng lực',
     principlesSubtitle: 'Năng lực cốt lõi & Nguyên tắc kỹ thuật',
     experienceTitle: 'Kinh nghiệm làm việc',
     experienceSubtitle: 'Kinh nghiệm chuyên môn',

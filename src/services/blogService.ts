@@ -158,10 +158,10 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
     'getBlogCategories',
     async () => {
       if (!isSupabaseConfigured()) {
-        throw new Error('[blogService] Supabase is not configured.');
+        return [];
       }
       const supabase = getSupabaseClient();
-      if (!supabase) throw new Error('[blogService] Supabase client unavailable.');
+      if (!supabase) return [];
 
       console.log(`[Supabase 🗂️ Categories] Querying table "categories" JOIN "category_translations"`);
       const { data, error } = await supabase
@@ -180,8 +180,11 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
         `)
         .order('post_schedule', { ascending: true });
 
-      if (error) throw new Error(error.message);
-      if (!data) return [];
+      if (error) {
+        console.warn('[blogService] Could not load categories:', error.message);
+        return [];
+      }
+      if (!data || data.length === 0) return [];
 
       const allCategory: BlogCategoryDef = {
         id: 'all',

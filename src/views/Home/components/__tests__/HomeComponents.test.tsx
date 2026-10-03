@@ -71,7 +71,7 @@ describe('CV Home Components', () => {
         <PrinciplesSection principles={mockPrinciples} />
       </LanguageProvider>
     );
-    expect(getByText('Triết lý kỹ thuật')).toBeDefined();
+    expect(getByText('Năng lực')).toBeDefined();
     expect(getByText('Kiến trúc bền vững')).toBeDefined();
   });
 
@@ -187,7 +187,7 @@ describe('CV Home Components', () => {
     expect(getAllByText('Enterprise').length).toBeGreaterThan(0);
     expect(getAllByText('Hạ tầng Dữ liệu ERP & Medallion Data Warehouse').length).toBeGreaterThan(0);
     expect(getByText('Viet Nam Gate Advertising JSC')).toBeDefined();
-    
+
     // Verify Chi tiết dự án button exists
     const detailBtn = getByText('Chi tiết dự án');
     expect(detailBtn).toBeDefined();

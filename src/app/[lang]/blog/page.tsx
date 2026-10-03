@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import { BlogLayout } from '@/components/layouts/BlogLayout';
 import { BlogView } from '@/views/Blog';
-import { getBlogPosts, getBlogCategories } from '@/services/blogService';
 import { buildDynamicMetadata } from '@/utils/seo';
 import { supportedLocales } from '@/i18n/config';
 
@@ -30,29 +29,10 @@ export async function generateMetadata({
   });
 }
 
-export default async function BlogPage({
-  params,
-}: {
-  params: Promise<{ lang: string }> | { lang: string };
-}) {
-  const resolvedParams = await params;
-  const lang = resolvedParams.lang;
-
-  let initialPosts: any[] = [];
-  let initialCategories: any[] = [];
-
-  try {
-    [initialPosts, initialCategories] = await Promise.all([
-      getBlogPosts(lang),
-      getBlogCategories(),
-    ]);
-  } catch {
-    // Graceful fallback for SSR/build
-  }
-
+export default function BlogPage() {
   return (
     <BlogLayout fixedHeight={true}>
-      <BlogView initialPosts={initialPosts} initialCategories={initialCategories} />
+      <BlogView initialPosts={[]} initialCategories={[]} />
     </BlogLayout>
   );
 }

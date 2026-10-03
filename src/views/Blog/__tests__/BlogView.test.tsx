@@ -189,4 +189,43 @@ describe('Blog Components', () => {
     expect(getByText('Tiêu đề bài viết số 25')).toBeDefined();
     expect(queryByText('Tiêu đề bài viết số 1')).toBeNull();
   });
+
+  it('renders skeleton loading inside the article area when initialPosts is empty without modal loading', () => {
+    const { getByRole, getByText, queryByRole } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogView initialPosts={[]} initialCategories={mockCategories} />
+      </LanguageProvider>
+    );
+
+    // Blog View layout is rendered immediately
+    expect(getByText('Ghi chép Kỹ thuật & Kiến trúc Hệ thống')).toBeDefined();
+    expect(getByText('Chuyên đề')).toBeDefined();
+
+    // Loading status is visible inside article area
+    expect(getByRole('status', { name: 'Loading articles' })).toBeDefined();
+
+    // No modal dialog or blocking overlay
+    expect(queryByRole('dialog')).toBeNull();
+  });
+
+  it('renders static box headers and skeleton bodies for categories and tags when initial data is empty', () => {
+    const { getByRole, getByText, queryByText } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogView initialPosts={[]} initialCategories={[]} />
+      </LanguageProvider>
+    );
+
+    // Both box headers are always visible
+    expect(getByText('Chuyên đề')).toBeDefined();
+    expect(getByText('Thẻ & Từ khoá')).toBeDefined();
+
+    // Bodies show skeletons
+    expect(getByRole('status', { name: 'Loading categories' })).toBeDefined();
+    expect(getByRole('status', { name: 'Loading tags' })).toBeDefined();
+    expect(getByRole('status', { name: 'Loading articles' })).toBeDefined();
+
+    // No crude text loading banner
+    expect(queryByText('Đang tải danh sách bài viết...')).toBeNull();
+  });
 });
+
