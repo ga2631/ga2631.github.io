@@ -74,7 +74,7 @@ export function getPostContentHtml(post: BlogPost): string {
 /**
  * Maps a raw Supabase Post row with joins into the standard BlogPost interface.
  */
-function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
+export function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
   const translations = Array.isArray(row.post_translations) ? row.post_translations : [];
   const translation =
     translations.find((t: any) => t.lang_code === lang) ||
@@ -83,7 +83,13 @@ function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
     {};
 
   const categories = row.categories || {};
-  const categorySlug = categories.slug || 'tech-radar-career-insights';
+  const categorySlug = categories.slug || '';
+  const catTranslations = Array.isArray(categories.category_translations) ? categories.category_translations : [];
+  const catTrans =
+    catTranslations.find((ct: any) => ct.lang_code === lang) ||
+    catTranslations.find((ct: any) => ct.lang_code === 'vi') ||
+    catTranslations[0];
+  const categoryName = catTrans?.name || '';
 
   const postTags = Array.isArray(row.post_tags) ? row.post_tags : [];
   const tags: string[] = postTags
@@ -108,6 +114,7 @@ function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
     title: translation.title || 'Untitled',
     summary: translation.summary || '',
     category: categorySlug,
+    categoryName,
     publishedAt,
     date: dateStr,
     readTime: readTimeStr,
@@ -117,29 +124,6 @@ function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
     content: translation.content_md || '',
   };
 }
-
-const DEFAULT_CATEGORY_DESCRIPTIONS: Record<string, { vi: string; en: string }> = {
-  'kien-truc-he-thong': {
-    vi: 'Chuyên đề phân tích kiến trúc hệ thống phân tán, xử lý tải cao, kiến trúc phi trạng thái và mở rộng hàng ngang.',
-    en: 'In-depth analysis of distributed system architecture, high-concurrency solutions, stateless design, and horizontal scaling.',
-  },
-  'ky-thuat-va-phan-tich-du-lieu': {
-    vi: 'Thiết kế CSDL, chuẩn hoá dữ liệu (1NF - BCNF), kiến trúc Medallion Data Warehouse và giải pháp xử lý dữ liệu lớn.',
-    en: 'Database design, normalization (1NF - BCNF), Medallion Data Warehouse architecture, and big data pipelines.',
-  },
-  'devops-cloud-va-cong-cu': {
-    vi: 'Tự động hoá CI/CD, cơ sở hạ tầng dưới dạng mã (IaC), chiến lược triển khai Blue-Green và công cụ tối ưu năng suất.',
-    en: 'CI/CD automation, Infrastructure as Code (IaC), Blue-Green zero-downtime deployment, and productivity tooling.',
-  },
-  'ky-thuat-lap-trinh': {
-    vi: 'Kỹ nghệ lập trình phần mềm, thiết kế Design Patterns, cấu trúc dữ liệu & giải thuật thực chiến, tối ưu Clean Code.',
-    en: 'Software craftsmanship, Design Patterns, real-world data structures & algorithms, and Clean Code practices.',
-  },
-  'tech-radar-va-goc-nhin': {
-    vi: 'Xu hướng công nghệ mới, góc nhìn thị trường lập trình viên, tâm sự làm nghề và bài học kinh nghiệm sau nhiều năm.',
-    en: 'Emerging tech radar trends, software engineering market insights, career perspectives, and practical lessons.',
-  },
-};
 
 const SCHEDULE_DAY_MAP: Record<number, { dayCode: string; viDay: string; enDay: string; viFull: string; enFull: string }> = {
   1: { dayCode: 'MON', viDay: 'Thứ 2', enDay: 'Mon', viFull: 'Thứ 2 hàng tuần', enFull: 'Every Monday' },
@@ -222,11 +206,6 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
           enFull: 'Weekly',
         };
 
-        const fallbackDesc = DEFAULT_CATEGORY_DESCRIPTIONS[cat.slug] || {
-          vi: 'Chuyên đề chuyên sâu về kỹ thuật và kiến trúc hệ thống.',
-          en: 'Technical articles and deep architectural insights.',
-        };
-
         return {
           id: cat.slug,
           dayCode: scheduleInfo.dayCode,
@@ -243,8 +222,8 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
             en: enTrans.name || cat.slug,
           },
           description: {
-            vi: viTrans.description || fallbackDesc.vi,
-            en: enTrans.description || fallbackDesc.en,
+            vi: viTrans.description || '',
+            en: enTrans.description || '',
           },
           iconName: cat.icon || 'LayersIcon',
           color: cat.color || '#3B82F6',

@@ -97,6 +97,7 @@ export const viDict = {
     loadMore: 'Tải thêm bài viết',
     filterToggle: 'Chuyên đề & Bộ lọc',
     authorRole: 'Kỹ sư Full stack & Dữ liệu',
+    backToTop: 'Lên đầu',
   },
   cms: {
     dashboard: 'Bảng Điều Khiển',

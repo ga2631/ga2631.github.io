@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
+let mockPathname = '/vi/blog';
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
     push: vi.fn(),
@@ -11,7 +12,7 @@ vi.mock('next/navigation', () => ({
     forward: vi.fn(),
     prefetch: vi.fn(),
   }),
-  usePathname: () => '/vi/blog',
+  usePathname: () => mockPathname,
   useSearchParams: () => new URLSearchParams(),
 }));
 
@@ -19,7 +20,7 @@ import { LanguageProvider } from '@/i18n/LanguageContext';
 import { BlogView } from '../index';
 import { BlogPostDetailView } from '../BlogPostDetail';
 import { BlogPost } from '@/types';
-import { BlogCategoryDef } from '@/services/blogService';
+import { BlogCategoryDef, mapDbPostToBlogPost } from '@/services/blogService';
 
 describe('Blog Components', () => {
   const mockCategories: BlogCategoryDef[] = [
@@ -138,16 +139,122 @@ describe('Blog Components', () => {
   });
 
   it('renders BlogPostDetailView correctly with Table of Contents and markdown content', () => {
-    const { getByText, getAllByText } = render(
+    const { getByText, getAllByText, getByRole } = render(
       <LanguageProvider initialLang="vi">
         <BlogPostDetailView post={mockPosts[0]} />
       </LanguageProvider>
     );
 
-    expect(getByText('Kiến trúc tổng thể giải cứu hệ thống')).toBeDefined();
+    // Title is present in both full header (H1) and collapsed sticky header (H2)
+    expect(getAllByText('Kiến trúc tổng thể giải cứu hệ thống').length).toBeGreaterThanOrEqual(1);
+    expect(getByRole('region', { name: 'Sticky article header' })).toBeDefined();
     expect(getByText('Phân tích chi tiết bài toán OOM và giải pháp Medallion Architecture.')).toBeDefined();
     expect(getByText('Mục Lục Bài Viết')).toBeDefined();
     expect(getAllByText(/Quay lại danh sách bài viết/).length).toBeGreaterThan(0);
+  });
+
+  it('toggles summary and tags when clicking the sticky header title', () => {
+    const { getByRole, container } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogPostDetailView post={mockPosts[0]} />
+      </LanguageProvider>
+    );
+
+    const stickyRegion = getByRole('region', { name: 'Sticky article header' });
+    const toggleButton = stickyRegion.querySelector('button')!;
+    expect(toggleButton).toBeDefined();
+
+    // Initially collapsed
+    expect(toggleButton.getAttribute('aria-expanded')).toBe('false');
+    expect(container.querySelector('#sticky-article-details')).toBeNull();
+
+    // Click to expand
+    fireEvent.click(toggleButton);
+    expect(toggleButton.getAttribute('aria-expanded')).toBe('true');
+    const details = container.querySelector('#sticky-article-details');
+    expect(details).toBeDefined();
+    expect(details?.textContent).toContain('Phân tích chi tiết bài toán OOM');
+    expect(details?.textContent).toContain('#Data Engineering');
+
+    // Click again to collapse
+    fireEvent.click(toggleButton);
+    expect(toggleButton.getAttribute('aria-expanded')).toBe('false');
+    expect(container.querySelector('#sticky-article-details')).toBeNull();
+  });
+
+  it('maps Supabase post with joined category_translations into human-readable categoryName', () => {
+    const rawSupabaseRow = {
+      id: 'post-1',
+      slug: 'tech-radar-post-1',
+      read_time: 7,
+      published_at: '2026-09-30T00:00:00.000Z',
+      categories: {
+        id: 'cat-1',
+        slug: 'tech-radar-career-insights',
+        category_translations: [
+          { lang_code: 'vi', name: 'Tech Radar & Góc nhìn Nghề nghiệp', description: 'Mô tả VI' },
+          { lang_code: 'en', name: 'Tech Radar & Career Insights', description: 'Desc EN' },
+        ],
+      },
+      post_translations: [
+        { lang_code: 'vi', title: 'Dự báo Xu hướng Công nghệ 2026', summary: 'Phân tích lộ trình nghề nghiệp và công nghệ mới.' },
+        { lang_code: 'en', title: 'Tech Trend Forecast 2026', summary: 'Career path and new tech.' },
+      ],
+      post_tags: [],
+    };
+
+    const postVi = mapDbPostToBlogPost(rawSupabaseRow, 'vi');
+    expect(postVi.categoryName).toBe('Tech Radar & Góc nhìn Nghề nghiệp');
+    expect(postVi.category).toBe('tech-radar-career-insights');
+
+    const postEn = mapDbPostToBlogPost(rawSupabaseRow, 'en');
+    expect(postEn.categoryName).toBe('Tech Radar & Career Insights');
+    expect(postEn.category).toBe('tech-radar-career-insights');
+  });
+
+  it('renders human-readable category title instead of slug tech-radar-career-insights in BlogPostDetailView', () => {
+    const techRadarPostVi: BlogPost = {
+      id: 'post-tr-1',
+      slug: 'tech-radar-post-1',
+      title: 'Dự báo Xu hướng Công nghệ 2026',
+      summary: 'Phân tích lộ trình nghề nghiệp và công nghệ mới.',
+      category: 'tech-radar-career-insights',
+      categoryName: 'Tech Radar & Góc nhìn Nghề nghiệp',
+      publishedAt: '2026-09-30T00:00:00.000Z',
+      date: '2026-09-30',
+      readTime: '7 phút đọc',
+      tags: ['Career', 'TechRadar'],
+      author: 'Huỳnh Nhật Tân',
+      contentHtml: '<p>Nội dung radar...</p>',
+      content: 'Nội dung radar...',
+    };
+
+    const techRadarPostEn: BlogPost = {
+      ...techRadarPostVi,
+      categoryName: 'Tech Radar & Career Insights',
+    };
+
+    // Vietnamese test
+    const { getAllByText: getAllByTextVi, queryByText: queryByTextVi } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogPostDetailView post={techRadarPostVi} />
+      </LanguageProvider>
+    );
+
+    expect(getAllByTextVi('Tech Radar & Góc nhìn Nghề nghiệp').length).toBeGreaterThan(0);
+    expect(queryByTextVi('tech-radar-career-insights')).toBeNull();
+
+    // English test
+    mockPathname = '/en/blog';
+    const { getAllByText: getAllByTextEn, queryByText: queryByTextEn } = render(
+      <LanguageProvider initialLang="en">
+        <BlogPostDetailView post={techRadarPostEn} />
+      </LanguageProvider>
+    );
+
+    expect(getAllByTextEn('Tech Radar & Career Insights').length).toBeGreaterThan(0);
+    expect(queryByTextEn('tech-radar-career-insights')).toBeNull();
+    mockPathname = '/vi/blog';
   });
 
   it('supports pagination across multiple pages and updates current page view', () => {
@@ -226,6 +333,24 @@ describe('Blog Components', () => {
 
     // No crude text loading banner
     expect(queryByText('Đang tải danh sách bài viết...')).toBeNull();
+  });
+
+  it('renders BlogPostDetailSkeleton correctly when article is loading', () => {
+    const { getByRole, getByText, queryByRole } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogPostDetailView isLoading={true} />
+      </LanguageProvider>
+    );
+
+    // Article detail skeleton container
+    expect(getByRole('status', { name: 'Loading article detail' })).toBeDefined();
+
+    // Breadcrumb and TOC title
+    expect(getByText('Quay lại danh sách bài viết')).toBeDefined();
+    expect(getByText('Mục Lục Bài Viết')).toBeDefined();
+
+    // No modal dialog
+    expect(queryByRole('dialog')).toBeNull();
   });
 });
 

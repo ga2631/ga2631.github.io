@@ -99,6 +99,7 @@ export const enDict: Dictionary = {
     loadMore: 'Load more articles',
     filterToggle: 'Topics & Filters',
     authorRole: 'Fullstack & Data Engineer',
+    backToTop: 'Back to top',
   },
   cms: {
     dashboard: 'Dashboard',

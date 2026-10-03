@@ -107,6 +107,7 @@ export interface BlogPost {
   tags: string[];
   author: string;
   category?: string;
+  categoryName?: string;
   sections?: Record<string, string>;
   contentHtml: string;
   content?: string;

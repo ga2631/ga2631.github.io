@@ -499,7 +499,11 @@ export function BlogView({
                 </span>
                 {selectedCategory !== 'all' && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 font-medium">
-                    <span>{categoryMap.get(selectedCategory)?.title[currentLang] || selectedCategory}</span>
+                    <span>
+                      {categoryMap.get(selectedCategory)?.title[currentLang] ||
+                        categoryMap.get(selectedCategory)?.title.vi ||
+                        selectedCategory}
+                    </span>
                     <button
                       type="button"
                       onClick={() => handleCategorySelect('all')}
@@ -600,7 +604,11 @@ export function BlogView({
                 {paginatedPosts.map((post) => {
                   const catDef = post.category ? categoryMap.get(post.category) : undefined;
                   const catTitle =
-                    catDef?.title[currentLang] || catDef?.title.vi || post.category || '';
+                    post.categoryName ||
+                    catDef?.title[currentLang] ||
+                    catDef?.title.vi ||
+                    post.category ||
+                    '';
                   const catColors = getCategoryColor(catDef?.dayCode);
 
                   return (
