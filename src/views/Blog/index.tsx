@@ -101,6 +101,7 @@ export function BlogView({
   initialCategories?: BlogCategoryDef[];
 }) {
   const { dict, currentLang, getLocalizedHref } = useLanguage();
+  const isEn = currentLang === 'en';
   const [posts, setPosts] = useState<BlogPost[]>(initialPosts);
   const [categories, setCategories] = useState<BlogCategoryDef[]>(initialCategories);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -210,7 +211,7 @@ export function BlogView({
         <button
           type="button"
           onClick={() => setIsMobileFilterOpen((prev) => !prev)}
-          className="w-full flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-xl shadow-xs text-sm font-medium text-gray-900 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-red-500 transition-colors"
+          className="w-full flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-xl shadow-xs text-sm font-medium text-gray-900 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-red-500 transition-colors cursor-pointer"
           aria-expanded={isMobileFilterOpen}
         >
           <div className="flex items-center gap-2">
@@ -227,14 +228,14 @@ export function BlogView({
 
       {/* Main Two-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT SIDEBAR: Categories & Tags */}
+        {/* LEFT SIDEBAR: Categories (Top) & Tags (Bottom) - Sticky Fixed Position */}
         <aside
-          className={`lg:col-span-4 xl:col-span-3 space-y-6 ${
-            isMobileFilterOpen ? 'block' : 'hidden lg:block'
+          className={`lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] flex flex-col relative z-30 ${
+            isMobileFilterOpen ? 'block' : 'hidden lg:flex'
           }`}
         >
-          {/* Section 1: Categories */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+          {/* Section 1: Categories (Top) with Rich Hover Popover on the Right */}
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs shrink-0 overflow-visible relative">
             <div className="flex items-center gap-2 pb-3 mb-3 border-b border-gray-100">
               <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -251,47 +252,96 @@ export function BlogView({
               {categories.map((cat) => {
                 const isSelected = selectedCategory === cat.id;
                 const title = cat.title[currentLang] || cat.title.vi || cat.id;
+                const description = cat.description[currentLang] || cat.description.vi || '';
+                const scheduleFull = cat.scheduleFull[currentLang] || cat.scheduleFull.vi || '';
+                const scheduleDay = cat.scheduleDay[currentLang] || cat.scheduleDay.vi || '';
                 const count = statistics.categoryCounts[cat.id] || 0;
                 const colors = getCategoryColor(cat.dayCode);
 
                 return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => handleCategorySelect(cat.id)}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium transition-all text-left border ${
-                      isSelected
-                        ? 'bg-red-50 text-red-700 font-semibold border-red-200 shadow-2xs'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 border-transparent'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                      <div
-                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${colors.iconBg}`}
-                      >
-                        {renderCategoryIcon(cat.dayCode)}
-                      </div>
-                      <span className="truncate">{title}</span>
-                    </div>
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-mono shrink-0 ${
+                  <div key={cat.id} className="relative group/cat">
+                    <button
+                      type="button"
+                      onClick={() => handleCategorySelect(cat.id)}
+                      className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium transition-all text-left border cursor-pointer ${
                         isSelected
-                          ? 'bg-red-600 text-white font-bold'
-                          : 'bg-gray-100 text-gray-600 font-semibold'
+                          ? 'bg-red-50 text-red-700 font-semibold border-red-200 shadow-2xs'
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 border-transparent'
                       }`}
                     >
-                      {count}
-                    </span>
-                  </button>
+                      <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                        <div
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${colors.iconBg}`}
+                        >
+                          {renderCategoryIcon(cat.dayCode)}
+                        </div>
+                        <span className="truncate">{title}</span>
+                      </div>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-mono shrink-0 ${
+                          isSelected
+                            ? 'bg-red-600 text-white font-bold'
+                            : 'bg-gray-100 text-gray-600 font-semibold'
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </button>
+
+                    {/* Popover Card on Hover (Displays to the Right with Left Arrow) */}
+                    <div className="hidden lg:block absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 w-80 pointer-events-none opacity-0 invisible -translate-x-2 transition-all duration-200 ease-out group-hover/cat:opacity-100 group-hover/cat:visible group-hover/cat:translate-x-0 group-hover/cat:pointer-events-auto">
+                      <div className="relative bg-white border border-gray-200 rounded-2xl p-4 shadow-xl text-left space-y-2.5">
+                        {/* Pointer Arrow pointing directly Left to the Category */}
+                        <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-l border-b border-gray-200 rotate-45 z-10" />
+
+                        {/* Popover Top Bar */}
+                        <div className="flex items-center justify-between gap-2 relative z-20">
+                          <span
+                            className={`inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full border ${colors.badge}`}
+                          >
+                            {scheduleDay}
+                          </span>
+                          <span className="text-[11px] font-mono text-gray-500 font-medium">
+                            {count} {isEn ? 'articles' : 'bài viết'}
+                          </span>
+                        </div>
+
+                        {/* Title */}
+                        <h4 className="text-sm font-bold text-gray-900 leading-snug relative z-20">
+                          {title}
+                        </h4>
+
+                        {/* Description (Chuyên đề này nói về điều gì) */}
+                        {description && (
+                          <p className="text-xs text-gray-600 leading-relaxed relative z-20">
+                            {description}
+                          </p>
+                        )}
+
+                        {/* Schedule (Lịch đăng bài là khi nào) */}
+                        <div className="pt-2.5 border-t border-gray-100 flex items-center gap-1.5 text-xs text-gray-700 font-medium relative z-20">
+                          <svg className="w-3.5 h-3.5 text-red-600 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                          </svg>
+                          <span>
+                            <strong className="text-gray-900">{isEn ? 'Schedule:' : 'Lịch đăng:'}</strong> {scheduleFull}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Section 2: Tags & Keywords */}
+          {/* Section 2: Tags & Keywords (Bottom) - Scrollable independently */}
           {statistics.allTags.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs">
-              <div className="flex items-center gap-2 pb-3 mb-3 border-b border-gray-100">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs flex-1 flex flex-col min-h-0 overflow-hidden">
+              <div className="flex items-center gap-2 pb-3 mb-3 border-b border-gray-100 shrink-0">
                 <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
                   <path d="M7 7h.01" />
@@ -301,12 +351,13 @@ export function BlogView({
                 </h3>
               </div>
 
-              <div className="flex flex-wrap gap-1.5 max-h-96 overflow-y-auto pr-1">
+              {/* Scrollable Tag Cloud Container */}
+              <div className="flex-1 overflow-y-auto pr-1 flex flex-wrap content-start gap-1.5 max-h-56 sm:max-h-64 lg:max-h-72">
                 {/* All Tags Pill */}
                 <button
                   type="button"
                   onClick={() => handleTagSelect('all')}
-                  className={`text-xs px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                  className={`text-xs px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
                     selectedTag === 'all'
                       ? 'bg-red-600 text-white font-semibold shadow-2xs'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
@@ -328,7 +379,7 @@ export function BlogView({
                       key={tg}
                       type="button"
                       onClick={() => handleTagSelect(tg)}
-                      className={`text-xs px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 ${
+                      className={`text-xs px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
                         isSelected
                           ? 'bg-red-600 text-white font-semibold shadow-2xs'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
@@ -346,8 +397,8 @@ export function BlogView({
           )}
         </aside>
 
-        {/* RIGHT MAIN AREA: Hero Header, Search & Article Grid */}
-        <div className="lg:col-span-8 xl:col-span-9 space-y-6">
+        {/* RIGHT MAIN AREA: Hero Header, Sticky Box Filter & Article Grid */}
+        <div className="lg:col-span-8 xl:col-span-9 space-y-6 min-w-0">
           {/* Hero Header */}
           <div className="text-left space-y-1">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
@@ -356,34 +407,36 @@ export function BlogView({
             <p className="text-sm text-gray-500">{dict.blog.subtitle}</p>
           </div>
 
-          {/* Search Input Bar */}
-          <div className="relative w-full">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-400">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder={dict.blog.searchPlaceholder}
-              className="block w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 shadow-2xs transition-all"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute inset-y-0 end-0 flex items-center pe-3 text-gray-400 hover:text-gray-600"
-                aria-label="Clear search"
-              >
+          {/* Sticky Box Filter Bar: Pins on viewport top when scrolling */}
+          <div className="sticky top-20 lg:top-24 z-20 bg-gray-50/95 backdrop-blur-md py-2 -my-2 transition-all">
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-400">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
                 </svg>
-              </button>
-            )}
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder={dict.blog.searchPlaceholder}
+                className="block w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 shadow-2xs transition-all"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 end-0 flex items-center pe-3 text-gray-400 hover:text-gray-600 cursor-pointer"
+                  aria-label="Clear search"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Articles Section */}
@@ -398,7 +451,7 @@ export function BlogView({
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="mt-4 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-xs font-medium text-white rounded-xl transition-colors shadow-xs"
+                className="mt-4 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-xs font-medium text-white rounded-xl transition-colors shadow-xs cursor-pointer"
               >
                 {dict.common.retry}
               </button>
@@ -456,7 +509,7 @@ export function BlogView({
                               key={i}
                               type="button"
                               onClick={() => handleTagSelect(tg)}
-                              className="text-[11px] font-medium text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 border border-gray-200 px-2 py-0.5 rounded-md transition-colors"
+                              className="text-[11px] font-medium text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 border border-gray-200 px-2 py-0.5 rounded-md transition-colors cursor-pointer"
                             >
                               #{tg}
                             </button>
@@ -474,7 +527,7 @@ export function BlogView({
                   <button
                     type="button"
                     onClick={handleLoadMore}
-                    className="px-6 py-2.5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-red-600 focus:outline-hidden focus:ring-2 focus:ring-red-500 shadow-xs transition-colors"
+                    className="px-6 py-2.5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-red-600 focus:outline-hidden focus:ring-2 focus:ring-red-500 shadow-xs transition-colors cursor-pointer"
                   >
                     {dict.blog.loadMore || 'Tải thêm bài viết'}
                   </button>

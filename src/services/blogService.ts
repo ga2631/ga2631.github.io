@@ -118,6 +118,29 @@ function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
   };
 }
 
+const DEFAULT_CATEGORY_DESCRIPTIONS: Record<string, { vi: string; en: string }> = {
+  'kien-truc-he-thong': {
+    vi: 'Chuyên đề phân tích kiến trúc hệ thống phân tán, xử lý tải cao, kiến trúc phi trạng thái và mở rộng hàng ngang.',
+    en: 'In-depth analysis of distributed system architecture, high-concurrency solutions, stateless design, and horizontal scaling.',
+  },
+  'ky-thuat-va-phan-tich-du-lieu': {
+    vi: 'Thiết kế CSDL, chuẩn hoá dữ liệu (1NF - BCNF), kiến trúc Medallion Data Warehouse và giải pháp xử lý dữ liệu lớn.',
+    en: 'Database design, normalization (1NF - BCNF), Medallion Data Warehouse architecture, and big data pipelines.',
+  },
+  'devops-cloud-va-cong-cu': {
+    vi: 'Tự động hoá CI/CD, cơ sở hạ tầng dưới dạng mã (IaC), chiến lược triển khai Blue-Green và công cụ tối ưu năng suất.',
+    en: 'CI/CD automation, Infrastructure as Code (IaC), Blue-Green zero-downtime deployment, and productivity tooling.',
+  },
+  'ky-thuat-lap-trinh': {
+    vi: 'Kỹ nghệ lập trình phần mềm, thiết kế Design Patterns, cấu trúc dữ liệu & giải thuật thực chiến, tối ưu Clean Code.',
+    en: 'Software craftsmanship, Design Patterns, real-world data structures & algorithms, and Clean Code practices.',
+  },
+  'tech-radar-va-goc-nhin': {
+    vi: 'Xu hướng công nghệ mới, góc nhìn thị trường lập trình viên, tâm sự làm nghề và bài học kinh nghiệm sau nhiều năm.',
+    en: 'Emerging tech radar trends, software engineering market insights, career perspectives, and practical lessons.',
+  },
+};
+
 const SCHEDULE_DAY_MAP: Record<number, { dayCode: string; viDay: string; enDay: string; viFull: string; enFull: string }> = {
   1: { dayCode: 'MON', viDay: 'Thứ 2', enDay: 'Mon', viFull: 'Thứ 2 hàng tuần', enFull: 'Every Monday' },
   2: { dayCode: 'TUE', viDay: 'Thứ 3', enDay: 'Tue', viFull: 'Thứ 3 hàng tuần', enFull: 'Every Tuesday' },
@@ -196,6 +219,11 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
           enFull: 'Weekly',
         };
 
+        const fallbackDesc = DEFAULT_CATEGORY_DESCRIPTIONS[cat.slug] || {
+          vi: 'Chuyên đề chuyên sâu về kỹ thuật và kiến trúc hệ thống.',
+          en: 'Technical articles and deep architectural insights.',
+        };
+
         return {
           id: cat.slug,
           dayCode: scheduleInfo.dayCode,
@@ -212,8 +240,8 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
             en: enTrans.name || cat.slug,
           },
           description: {
-            vi: viTrans.description || '',
-            en: enTrans.description || '',
+            vi: viTrans.description || fallbackDesc.vi,
+            en: enTrans.description || fallbackDesc.en,
           },
           iconName: cat.icon || 'LayersIcon',
           color: cat.color || '#3B82F6',
