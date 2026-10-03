@@ -51,7 +51,7 @@ export default async function BlogPage({
   }
 
   return (
-    <BlogLayout>
+    <BlogLayout fixedHeight={true}>
       <BlogView initialPosts={initialPosts} initialCategories={initialCategories} />
     </BlogLayout>
   );

@@ -149,4 +149,44 @@ describe('Blog Components', () => {
     expect(getByText('Mục Lục Bài Viết')).toBeDefined();
     expect(getAllByText('← Quay lại danh sách bài viết').length).toBeGreaterThan(0);
   });
+
+  it('supports pagination across multiple pages and updates current page view', () => {
+    const manyPosts: BlogPost[] = Array.from({ length: 25 }, (_, idx) => ({
+      id: `post-${idx + 1}`,
+      slug: `slug-post-${idx + 1}`,
+      title: `Tiêu đề bài viết số ${idx + 1}`,
+      summary: `Tóm tắt bài viết số ${idx + 1}`,
+      category: 'ky-thuat-du-lieu',
+      publishedAt: '2026-09-29T00:00:00.000Z',
+      date: '2026-09-29',
+      readTime: '5 phút đọc',
+      tags: ['Data'],
+      author: 'Huỳnh Nhật Tân',
+      contentHtml: '<p>Content</p>',
+      content: 'Content',
+    }));
+
+    const { getByText, queryByText } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogView initialPosts={manyPosts} initialCategories={mockCategories} />
+      </LanguageProvider>
+    );
+
+    // Page 1 should show posts 1 to 20
+    expect(getByText('Tiêu đề bài viết số 1')).toBeDefined();
+    expect(getByText('Tiêu đề bài viết số 20')).toBeDefined();
+    expect(queryByText('Tiêu đề bài viết số 21')).toBeNull();
+
+    // Verify pagination controls: Trang 1 / 2
+    expect(getByText(/Trang/)).toBeDefined();
+
+    // Click Next button or Page 2 button
+    const nextButton = getByText('Sau').closest('button')!;
+    fireEvent.click(nextButton);
+
+    // Page 2 should now show post 21 and 25, and post 1 should not be visible
+    expect(getByText('Tiêu đề bài viết số 21')).toBeDefined();
+    expect(getByText('Tiêu đề bài viết số 25')).toBeDefined();
+    expect(queryByText('Tiêu đề bài viết số 1')).toBeNull();
+  });
 });

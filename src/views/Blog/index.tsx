@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { getBlogPosts, getBlogCategories, getBlogStatistics, BlogCategoryDef } from '@/services/blogService';
@@ -102,14 +102,16 @@ export function BlogView({
 }) {
   const { dict, currentLang, getLocalizedHref } = useLanguage();
   const isEn = currentLang === 'en';
+  const POSTS_PER_PAGE = 20;
   const [posts, setPosts] = useState<BlogPost[]>(initialPosts);
   const [categories, setCategories] = useState<BlogCategoryDef[]>(initialCategories);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedTag, setSelectedTag] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
-  const [visibleCount, setVisibleCount] = useState<number>(20);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(initialPosts.length === 0);
+  const articlesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -161,14 +163,43 @@ export function BlogView({
     });
   }, [posts, selectedCategory, selectedTag, searchQuery]);
 
-  const displayedPosts = useMemo(() => {
-    return filteredPosts.slice(0, visibleCount);
-  }, [filteredPosts, visibleCount]);
+  // Calculate pagination bounds
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / POSTS_PER_PAGE));
+
+  const paginatedPosts = useMemo(() => {
+    const start = (currentPage - 1) * POSTS_PER_PAGE;
+    return filteredPosts.slice(start, start + POSTS_PER_PAGE);
+  }, [filteredPosts, currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+    if (articlesContainerRef.current) {
+      if (typeof articlesContainerRef.current.scrollTo === 'function') {
+        articlesContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        articlesContainerRef.current.scrollTop = 0;
+      }
+    }
+  };
+
+  const getPageNumbers = () => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', totalPages];
+    }
+    if (currentPage >= totalPages - 3) {
+      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchQuery(val);
-    setVisibleCount(20);
+    setCurrentPage(1);
     if (val.length > 2) {
       trackBlogSearch(val, filteredPosts.length);
     }
@@ -176,13 +207,13 @@ export function BlogView({
 
   const handleCategorySelect = (catId: string) => {
     setSelectedCategory(catId);
-    setVisibleCount(20);
+    setCurrentPage(1);
     trackBlogCategoryFilter(catId);
   };
 
   const handleTagSelect = (tag: string) => {
     setSelectedTag(tag);
-    setVisibleCount(20);
+    setCurrentPage(1);
     trackBlogTagClick(tag);
   };
 
@@ -190,11 +221,7 @@ export function BlogView({
     setSelectedCategory('all');
     setSelectedTag('all');
     setSearchQuery('');
-    setVisibleCount(20);
-  };
-
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 20);
+    setCurrentPage(1);
   };
 
   // Map category slug to category metadata
@@ -205,9 +232,9 @@ export function BlogView({
   }, [categories]);
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col min-h-0">
       {/* Mobile Filter Toggle Bar */}
-      <div className="lg:hidden">
+      <div className="lg:hidden shrink-0 mb-3">
         <button
           type="button"
           onClick={() => setIsMobileFilterOpen((prev) => !prev)}
@@ -227,10 +254,10 @@ export function BlogView({
       </div>
 
       {/* Main Two-Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT SIDEBAR: Categories (Top) & Tags (Bottom) - Sticky Fixed Position */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 flex-1 min-h-0 items-stretch">
+        {/* LEFT SIDEBAR: Categories (Top) & Tags (Bottom) - Full Height */}
         <aside
-          className={`lg:col-span-4 xl:col-span-3 space-y-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] flex flex-col relative z-30 ${
+          className={`lg:col-span-4 xl:col-span-3 space-y-4 lg:h-full lg:max-h-full flex flex-col min-h-0 relative z-30 ${
             isMobileFilterOpen ? 'block' : 'hidden lg:flex'
           }`}
         >
@@ -338,9 +365,9 @@ export function BlogView({
             </div>
           </div>
 
-          {/* Section 2: Tags & Keywords (Bottom) - Scrollable independently */}
+          {/* Section 2: Tags & Keywords (Bottom) - Fills remaining space & scrollable independently */}
           {statistics.allTags.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs flex-1 flex flex-col min-h-0 overflow-hidden">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs lg:flex-1 flex flex-col min-h-0 overflow-hidden">
               <div className="flex items-center gap-2 pb-3 mb-3 border-b border-gray-100 shrink-0">
                 <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
@@ -351,8 +378,8 @@ export function BlogView({
                 </h3>
               </div>
 
-              {/* Scrollable Tag Cloud Container */}
-              <div className="flex-1 overflow-y-auto pr-1 flex flex-wrap content-start gap-1.5 max-h-56 sm:max-h-64 lg:max-h-72">
+              {/* Scrollable Tag Cloud Container - Full height flex with independent scrolling */}
+              <div className="flex-1 overflow-y-auto pr-1.5 flex flex-wrap content-start gap-1.5 min-h-0 max-h-60 lg:max-h-none custom-scrollbar">
                 {/* All Tags Pill */}
                 <button
                   type="button"
@@ -397,18 +424,19 @@ export function BlogView({
           )}
         </aside>
 
-        {/* RIGHT MAIN AREA: Hero Header, Sticky Box Filter & Article Grid */}
-        <div className="lg:col-span-8 xl:col-span-9 space-y-6 min-w-0">
-          {/* Hero Header */}
-          <div className="text-left space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-              {dict.blog.title}
-            </h1>
-            <p className="text-sm text-gray-500">{dict.blog.subtitle}</p>
-          </div>
+        {/* RIGHT MAIN AREA: Fixed full height matching sidebar & viewport */}
+        <div className="lg:col-span-8 xl:col-span-9 lg:h-full lg:max-h-full flex flex-col min-h-0 min-w-0">
+          {/* Top Section: Header & Search Bar (shrink-0) */}
+          <div className="shrink-0 space-y-3 pb-3">
+            {/* Hero Header */}
+            <div className="text-left space-y-1">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                {dict.blog.title}
+              </h1>
+              <p className="text-sm text-gray-500">{dict.blog.subtitle}</p>
+            </div>
 
-          {/* Sticky Box Filter Bar: Pins on viewport top when scrolling */}
-          <div className="sticky top-20 lg:top-24 z-20 bg-gray-50/95 backdrop-blur-md py-2 -my-2 transition-all">
+            {/* Sticky Search Input */}
             <div className="relative w-full">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-400">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -421,7 +449,7 @@ export function BlogView({
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder={dict.blog.searchPlaceholder}
-                className="block w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 shadow-2xs transition-all"
+                className="block w-full p-2.5 ps-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 shadow-2xs transition-all"
               />
               {searchQuery && (
                 <button
@@ -437,30 +465,87 @@ export function BlogView({
                 </button>
               )}
             </div>
+
+            {/* Active Filter Chips */}
+            {(selectedCategory !== 'all' || selectedTag !== 'all' || searchQuery) && (
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-xs">
+                <span className="text-gray-500 font-medium">
+                  {isEn ? 'Filtering by:' : 'Đang lọc theo:'}
+                </span>
+                {selectedCategory !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 font-medium">
+                    <span>{categoryMap.get(selectedCategory)?.title[currentLang] || selectedCategory}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleCategorySelect('all')}
+                      className="hover:text-red-900 font-bold ml-0.5 cursor-pointer"
+                      title="Clear category filter"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {selectedTag !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 font-medium">
+                    <span>#{selectedTag}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleTagSelect('all')}
+                      className="hover:text-red-900 font-bold ml-0.5 cursor-pointer"
+                      title="Clear tag filter"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-medium">
+                    <span>&ldquo;{searchQuery}&rdquo;</span>
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="hover:text-gray-900 font-bold ml-0.5 cursor-pointer"
+                      title="Clear search"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="text-gray-400 hover:text-red-600 underline ml-1 cursor-pointer font-medium"
+                >
+                  {isEn ? 'Clear all' : 'Xoá tất cả'}
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Articles Section */}
-          {isLoading ? (
-            <LoadingModal variant="inline" message={dict.common.loadingSupabase} />
-          ) : filteredPosts.length === 0 ? (
-            <div className="py-16 text-center bg-white border border-gray-200 rounded-2xl p-8 max-w-xl mx-auto shadow-xs">
-              <div className="text-3xl mb-3">🔍</div>
-              <p className="text-sm text-gray-800 font-semibold mb-1">
-                {dict.blog.noPostsFound}
-              </p>
-              <button
-                type="button"
-                onClick={handleResetFilters}
-                className="mt-4 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-xs font-medium text-white rounded-xl transition-colors shadow-xs cursor-pointer"
-              >
-                {dict.common.retry}
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              {/* Articles Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {displayedPosts.map((post) => {
+          {/* Middle Section: Scrollable Articles Area (flex-1 min-h-0 overflow-y-auto) */}
+          <div
+            ref={articlesContainerRef}
+            className="flex-1 min-h-0 overflow-y-auto pr-1 sm:pr-1.5 custom-scrollbar"
+          >
+            {isLoading ? (
+              <LoadingModal variant="inline" message={dict.common.loadingSupabase} />
+            ) : filteredPosts.length === 0 ? (
+              <div className="py-16 text-center bg-white border border-gray-200 rounded-2xl p-8 max-w-xl mx-auto shadow-xs">
+                <div className="text-3xl mb-3">🔍</div>
+                <p className="text-sm text-gray-800 font-semibold mb-1">
+                  {dict.blog.noPostsFound}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="mt-4 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-xs font-medium text-white rounded-xl transition-colors shadow-xs cursor-pointer"
+                >
+                  {dict.common.retry}
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pb-3">
+                {paginatedPosts.map((post) => {
                   const catDef = post.category ? categoryMap.get(post.category) : undefined;
                   const catTitle =
                     catDef?.title[currentLang] || catDef?.title.vi || post.category || '';
@@ -520,19 +605,98 @@ export function BlogView({
                   );
                 })}
               </div>
+            )}
+          </div>
 
-              {/* Load More Button */}
-              {filteredPosts.length > visibleCount && (
-                <div className="text-center pt-2">
+          {/* Bottom Section: Pagination Bar (shrink-0) */}
+          {filteredPosts.length > 0 && (
+            <div className="shrink-0 pt-3 pb-1 border-t border-gray-200/80 flex flex-wrap items-center justify-between gap-3 text-xs bg-gray-50/90 backdrop-blur-xs">
+              {/* Summary Count & Current Page Indicator */}
+              <div className="text-gray-500 font-medium">
+                {isEn ? (
+                  <span>
+                    Page <strong className="text-gray-900">{currentPage}</strong> /{' '}
+                    <strong className="text-gray-900">{totalPages}</strong>{' '}
+                    <span className="text-gray-400 font-mono">({filteredPosts.length} articles)</span>
+                  </span>
+                ) : (
+                  <span>
+                    Trang <strong className="text-gray-900">{currentPage}</strong> /{' '}
+                    <strong className="text-gray-900">{totalPages}</strong>{' '}
+                    <span className="text-gray-400 font-mono">({filteredPosts.length} bài viết)</span>
+                  </span>
+                )}
+              </div>
+
+              {/* Navigation Controls */}
+              {totalPages > 1 ? (
+                <div className="flex items-center gap-1.5">
+                  {/* Prev Button */}
                   <button
                     type="button"
-                    onClick={handleLoadMore}
-                    className="px-6 py-2.5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:text-red-600 focus:outline-hidden focus:ring-2 focus:ring-red-500 shadow-xs transition-colors cursor-pointer"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-2.5 py-1.5 rounded-lg border font-medium transition-colors flex items-center gap-1 ${
+                      currentPage === 1
+                        ? 'border-gray-200 text-gray-400 bg-gray-100/50 cursor-not-allowed opacity-60'
+                        : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 cursor-pointer shadow-2xs'
+                    }`}
+                    aria-label="Previous page"
                   >
-                    {dict.blog.loadMore || 'Tải thêm bài viết'}
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>{isEn ? 'Prev' : 'Trước'}</span>
+                  </button>
+
+                  {/* Numbered Page Buttons */}
+                  <div className="flex items-center gap-1">
+                    {getPageNumbers().map((p, idx) => {
+                      if (p === '...') {
+                        return (
+                          <span key={`dots-${idx}`} className="px-1.5 py-1 text-gray-400 font-mono text-xs">
+                            ...
+                          </span>
+                        );
+                      }
+                      const pageNum = p as number;
+                      const isActive = pageNum === currentPage;
+                      return (
+                        <button
+                          key={pageNum}
+                          type="button"
+                          onClick={() => handlePageChange(pageNum)}
+                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg font-mono text-xs font-semibold transition-colors cursor-pointer ${
+                            isActive
+                              ? 'bg-red-600 text-white shadow-2xs'
+                              : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Next Button */}
+                  <button
+                    type="button"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`px-2.5 py-1.5 rounded-lg border font-medium transition-colors flex items-center gap-1 ${
+                      currentPage === totalPages
+                        ? 'border-gray-200 text-gray-400 bg-gray-100/50 cursor-not-allowed opacity-60'
+                        : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 cursor-pointer shadow-2xs'
+                    }`}
+                    aria-label="Next page"
+                  >
+                    <span>{isEn ? 'Next' : 'Sau'}</span>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
                   </button>
                 </div>
-              )}
+              ) : null}
             </div>
           )}
         </div>

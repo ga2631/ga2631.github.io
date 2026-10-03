@@ -2,10 +2,21 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { trackNavigation } from '@/utils/analytics';
 
-export function BlogLayout({ children }: { children: React.ReactNode }) {
+export function BlogLayout({
+  children,
+  fixedHeight,
+}: {
+  children: React.ReactNode;
+  fixedHeight?: boolean;
+}) {
+  const pathname = usePathname();
+  const isFixedLayout =
+    fixedHeight ??
+    (pathname ? pathname.endsWith('/blog') || pathname.endsWith('/blog/') : false);
   const { currentLang, changeLanguage, getLocalizedHref, dict } = useLanguage();
   const isEn = currentLang === 'en';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -67,7 +78,11 @@ export function BlogLayout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800 antialiased font-sans">
+    <div
+      className={`min-h-screen flex flex-col bg-gray-50 text-gray-800 antialiased font-sans ${
+        isFixedLayout ? 'lg:h-screen lg:overflow-hidden' : ''
+      }`}
+    >
       {/* Mobile/Tablet Menu Backdrop Overlay */}
       {isMobileMenuOpen && (
         <div
@@ -125,9 +140,8 @@ export function BlogLayout({ children }: { children: React.ReactNode }) {
 
           {/* Navbar Links */}
           <div
-            className={`items-center justify-between ${
-              isMobileMenuOpen ? 'block' : 'hidden'
-            } w-full lg:flex lg:w-auto lg:order-1`}
+            className={`items-center justify-between ${isMobileMenuOpen ? 'block' : 'hidden'
+              } w-full lg:flex lg:w-auto lg:order-1`}
             id="navbar-sticky"
           >
             <ul className="flex flex-col p-4 lg:p-0 mt-4 font-medium border border-gray-100 rounded-2xl bg-gray-50 lg:space-x-6 rtl:space-x-reverse lg:flex-row lg:mt-0 lg:border-0 lg:bg-transparent shadow-xs lg:shadow-none">
@@ -214,18 +228,15 @@ export function BlogLayout({ children }: { children: React.ReactNode }) {
       </nav>
 
       {/* Main Blog Container */}
-      <main className="max-w-screen-xl mx-auto w-full p-4 pt-24 lg:pt-28 flex-grow">
+      <main
+        className={`max-w-screen-xl mx-auto w-full px-4 flex-grow ${
+          isFixedLayout
+            ? 'pt-20 lg:pt-22 pb-3 lg:h-[calc(100vh-0px)] flex flex-col min-h-0 overflow-hidden'
+            : 'pt-24 lg:pt-28 p-4'
+        }`}
+      >
         {children}
       </main>
-
-      {/* Footer */}
-      <footer className="w-full mt-auto relative z-10 bg-transparent">
-        <div className="mx-auto max-w-screen-xl p-6 text-center">
-          <span className="text-sm text-gray-400">
-            {dict.footer.copyright}
-          </span>
-        </div>
-      </footer>
     </div>
   );
 }

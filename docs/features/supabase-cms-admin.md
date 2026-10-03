@@ -85,7 +85,8 @@ The architecture leverages the Supabase database schema designed for multi-langu
 - **Robust Auto-Retry Policy (`requestClient`):** Implements exponential backoff retry (3 retries for GET queries, 1 retry for mutation operations) to handle transient network blips gracefully.
 - **Dual Telemetry Dispatch (`analytics.ts`):** Dispatches user events and language switches to both `window.dataLayer` (GTM) and `gtag` (GA4) with strict TypeScript typing.
 - **Zero-Dependency Safe Markdown Parser (`markdownParser.ts`):** Custom parser generating automated slug IDs for headings, code syntax blocks, and fast in-memory HTML conversion.
-- **CSS & Tailwind v4 (`globals.css`):** Ambient float background glow, text shimmer animation, proficiency badge styles matching the design specifications.
+- **Full-Height Adaptive Blog Sidebar Layout (`BlogView` & `globals.css`):** Zero-drift sticky layout with scheduled Categories locked (`shrink-0`), while Tags & Keywords dynamically flexes (`lg:flex-1 min-h-0`) with a custom slim scrollbar (`.custom-scrollbar`).
+- **Symmetric Viewbox, Viewport Lock & Isolated Article Scroll (`BlogLayout` & `BlogView`):** Entire window/page scrolling is locked on desktop (`lg:h-screen lg:overflow-hidden`), ensuring Header, Search, Sidebar, and Pagination remain 100% fixed with ZERO drift. Only the article card grid (`flex-1 min-h-0 overflow-y-auto custom-scrollbar`) scrolls independently, configured with a 20-post per page limit (`POSTS_PER_PAGE = 20`) and smart page navigation.
 
 ---
 
