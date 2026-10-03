@@ -71,7 +71,7 @@ describe('CmsLayout Top Navigation Bar', () => {
     const toggleBtn = screen.getByLabelText('Toggle Navigation Menu');
     fireEvent.click(toggleBtn);
 
-    // Should switch icon to ✕
-    expect(screen.getByText('✕')).toBeDefined();
+    // Should switch icon to fa-xmark
+    expect(toggleBtn.querySelector('.fa-xmark')).not.toBeNull();
   });
 });

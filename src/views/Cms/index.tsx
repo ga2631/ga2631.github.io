@@ -253,8 +253,8 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
           }`}
         >
           <span>{feedback.message}</span>
-          <button onClick={() => setFeedback(null)} className="font-bold text-sm">
-            ✕
+          <button onClick={() => setFeedback(null)} className="font-bold text-sm cursor-pointer hover:opacity-75">
+            <i className="fa-solid fa-xmark"></i>
           </button>
         </div>
       )}
@@ -329,9 +329,10 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
             </div>
             <button
               onClick={handleSaveCv}
-              className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow transition-colors"
+              className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow transition-colors flex items-center gap-1.5 cursor-pointer"
             >
-              💾 {dict.cms.save}
+              <i className="fa-solid fa-floppy-disk"></i>
+              <span>{dict.cms.save}</span>
             </button>
           </div>
 
@@ -355,8 +356,9 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
 
             {currentUser ? (
               <div className="space-y-4 pt-2">
-                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs">
-                  ✅ Bạn đang đăng nhập với tài khoản: <strong>{currentUser.email}</strong>
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
+                  <i className="fa-solid fa-circle-check text-emerald-400"></i>
+                  <span>Bạn đang đăng nhập với tài khoản: <strong>{currentUser.email}</strong></span>
                 </div>
                 <button
                   onClick={async () => {

@@ -38,13 +38,13 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
     setCurrentUser(null);
   };
 
-  const menuItems: { id: CmsTab; label: string; icon: string }[] = [
-    { id: 'dashboard', label: dict.cms.dashboard, icon: '📊' },
-    { id: 'posts', label: dict.cms.posts, icon: '📝' },
-    { id: 'categories', label: dict.cms.categories, icon: '📁' },
-    { id: 'tags', label: dict.cms.tags, icon: '🏷️' },
-    { id: 'cv', label: dict.cms.cvEditor, icon: '📄' },
-    { id: 'settings', label: dict.cms.settings, icon: '⚙️' },
+  const menuItems: { id: CmsTab; label: string; iconClass: string }[] = [
+    { id: 'dashboard', label: dict.cms.dashboard, iconClass: 'fa-solid fa-chart-pie' },
+    { id: 'posts', label: dict.cms.posts, iconClass: 'fa-solid fa-file-lines' },
+    { id: 'categories', label: dict.cms.categories, iconClass: 'fa-solid fa-folder' },
+    { id: 'tags', label: dict.cms.tags, iconClass: 'fa-solid fa-tags' },
+    { id: 'cv', label: dict.cms.cvEditor, iconClass: 'fa-solid fa-id-card' },
+    { id: 'settings', label: dict.cms.settings, iconClass: 'fa-solid fa-gear' },
   ];
 
   return (
@@ -55,7 +55,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
           {/* Brand Logo & Connection Status */}
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center font-black text-white text-base shadow-md shadow-red-500/20 shrink-0">
-              ⚡
+              <i className="fa-solid fa-bolt text-sm"></i>
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                       : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 font-semibold'
                   }`}
                 >
-                  <span className="text-sm">{item.icon}</span>
+                  <i className={`${item.iconClass} text-xs`}></i>
                   <span>{item.label}</span>
                 </button>
               );
@@ -105,7 +105,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
               className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-200 transition-colors"
               title={dict.cms.viewSite}
             >
-              <span>🌐</span>
+              <i className="fa-solid fa-globe text-xs"></i>
               <span className="hidden xl:inline">{dict.cms.viewSite}</span>
             </Link>
 
@@ -139,7 +139,11 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
               className="md:hidden p-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
-              {isMobileNavOpen ? '✕' : '☰'}
+              {isMobileNavOpen ? (
+                <i className="fa-solid fa-xmark text-sm"></i>
+              ) : (
+                <i className="fa-solid fa-bars text-sm"></i>
+              )}
             </button>
           </div>
         </div>
@@ -164,7 +168,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                         : 'bg-gray-50 text-gray-700 hover:bg-gray-100 font-medium'
                     }`}
                   >
-                    <span>{item.icon}</span>
+                    <i className={`${item.iconClass} text-xs`}></i>
                     <span>{item.label}</span>
                   </button>
                 );
@@ -176,7 +180,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                 href={getLocalizedHref('')}
                 className="text-gray-600 font-medium hover:text-gray-900 flex items-center gap-1"
               >
-                <span>🌐</span>
+                <i className="fa-solid fa-globe text-xs"></i>
                 <span>{dict.cms.viewSite}</span>
               </Link>
               {currentUser && (

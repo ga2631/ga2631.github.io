@@ -260,7 +260,7 @@ export function CmsDashboard({
                 {isEn ? 'Total Posts' : 'Tổng Bài Viết'}
               </span>
               <span className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">
-                📚
+                <i className="fa-solid fa-book-open"></i>
               </span>
             </div>
             <div className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
@@ -280,7 +280,7 @@ export function CmsDashboard({
                 {isEn ? 'Published' : 'Đã Xuất Bản'}
               </span>
               <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">
-                ✅
+                <i className="fa-solid fa-circle-check"></i>
               </span>
             </div>
             <div className="text-3xl sm:text-4xl font-black text-emerald-600 tracking-tight">
@@ -300,7 +300,7 @@ export function CmsDashboard({
                 {isEn ? 'Scheduled' : 'Đã Lên Lịch'}
               </span>
               <span className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm font-bold">
-                🗓️
+                <i className="fa-solid fa-calendar-days"></i>
               </span>
             </div>
             <div className="text-3xl sm:text-4xl font-black text-purple-600 tracking-tight">
@@ -320,7 +320,7 @@ export function CmsDashboard({
                 {isEn ? 'Drafts' : 'Bản Nháp'}
               </span>
               <span className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold">
-                📝
+                <i className="fa-solid fa-pen-to-square"></i>
               </span>
             </div>
             <div className="text-3xl sm:text-4xl font-black text-amber-600 tracking-tight">
@@ -635,7 +635,7 @@ export function CmsDashboard({
                 onClick={handleTestGa4Ping}
                 className="w-full py-2 px-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <span>📡</span>
+                <i className="fa-solid fa-tower-broadcast"></i>
                 <span>Gửi Test Ping sự kiện GA4</span>
               </button>
               {testPingStatus && (

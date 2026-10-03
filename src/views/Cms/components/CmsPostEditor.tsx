@@ -21,11 +21,11 @@ interface CmsPostEditorProps {
 
 const MERMAID_SAMPLE = `\`\`\`mermaid
 flowchart TD
-  Client[🌐 Web Browser / Mobile App] --> Gateway[⚡ API Gateway - Nginx]
-  Gateway --> Auth[🛡️ Auth & Session Service]
-  Gateway --> Core[⚙️ Core Business Service]
-  Core --> Cache[(⚡ Redis Cluster)]
-  Core --> DB[(🐘 PostgreSQL Primary)]
+  Client[Web Browser / Mobile App] --> Gateway[API Gateway - Nginx]
+  Gateway --> Auth[Auth & Session Service]
+  Gateway --> Core[Core Business Service]
+  Core --> Cache[(Redis Cluster)]
+  Core --> DB[(PostgreSQL Primary)]
 \`\`\``;
 
 const LATEX_SAMPLE = `$$
@@ -119,6 +119,18 @@ export function CmsPostEditor({
       setEditingPost((prev) => ({ ...prev, read_time: readingStats.minutes }));
     }
   }, [readingStats.minutes]);
+
+  // Lock body and html scroll while editor is active to strictly ensure 1 single view with zero page drift
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, []);
 
   // SEO Analysis
   const seoResult: SeoAnalysisResult = useMemo(() => {
@@ -259,18 +271,18 @@ export function CmsPostEditor({
 
   // Slash commands list
   const slashCommands = [
-    { label: 'Tiêu đề H1', desc: 'Đầu mục chính bài viết', icon: 'H1', action: () => insertTextAtCursor('# ', '', 'Tiêu đề lớn') },
-    { label: 'Tiêu đề H2', desc: 'Phân đoạn nội dung chính', icon: 'H2', action: () => insertTextAtCursor('## ', '', 'Đầu mục đoạn') },
-    { label: 'Tiêu đề H3', desc: 'Mục con chi tiết', icon: 'H3', action: () => insertTextAtCursor('### ', '', 'Tiêu đề con') },
-    { label: 'Danh sách chấm', desc: 'Gạch đầu dòng danh sách', icon: '•', action: () => insertTextAtCursor('- ', '', 'Ý chính') },
-    { label: 'Danh sách số', desc: 'Thứ tự các bước thực hiện', icon: '1.', action: () => insertTextAtCursor('1. ', '', 'Bước 1') },
-    { label: 'Trích dẫn / Quote', desc: 'Trích dẫn khối nội dung', icon: '“', action: () => insertTextAtCursor('> ', '', 'Nội dung trích dẫn') },
-    { label: 'Khối mã Code', desc: 'Code highlight cú pháp', icon: '</>', action: () => insertTextAtCursor('```typescript\n', '\n```', '// Mã nguồn TypeScript') },
-    { label: 'Kiến trúc Mermaid', desc: 'Biểu đồ luồng / Flowchart trực quan (2.3.4.1)', icon: '📐', action: () => insertTextAtCursor('\n' + MERMAID_SAMPLE + '\n') },
-    { label: 'Công thức Toán LaTeX', desc: 'KaTeX Math Formula (2.3.4.2)', icon: '∑', action: () => insertTextAtCursor('\n' + LATEX_SAMPLE + '\n') },
-    { label: 'Bảng dữ liệu Table', desc: 'Bảng so sánh markdown', icon: '⊞', action: () => insertTextAtCursor('\n' + TABLE_SAMPLE + '\n') },
-    { label: 'Hộp Ghi chú (Callout)', desc: 'Ghi chú kỹ thuật nổi bật', icon: 'ℹ️', action: () => insertTextAtCursor('> [!NOTE]\n> ', '', 'Lưu ý kiến trúc quan trọng cho hệ thống chịu tải.') },
-    { label: 'Đường phân cách (HR)', desc: 'Ngăn cách các phân đoạn', icon: '—', action: () => insertTextAtCursor('\n---\n') },
+    { label: 'Tiêu đề H1', desc: 'Đầu mục chính bài viết', iconClass: 'fa-solid fa-heading', action: () => insertTextAtCursor('# ', '', 'Tiêu đề lớn') },
+    { label: 'Tiêu đề H2', desc: 'Phân đoạn nội dung chính', iconClass: 'fa-solid fa-heading text-xs', action: () => insertTextAtCursor('## ', '', 'Đầu mục đoạn') },
+    { label: 'Tiêu đề H3', desc: 'Mục con chi tiết', iconClass: 'fa-solid fa-heading text-[10px]', action: () => insertTextAtCursor('### ', '', 'Tiêu đề con') },
+    { label: 'Danh sách chấm', desc: 'Gạch đầu dòng danh sách', iconClass: 'fa-solid fa-list-ul', action: () => insertTextAtCursor('- ', '', 'Ý chính') },
+    { label: 'Danh sách số', desc: 'Thứ tự các bước thực hiện', iconClass: 'fa-solid fa-list-ol', action: () => insertTextAtCursor('1. ', '', 'Bước 1') },
+    { label: 'Trích dẫn / Quote', desc: 'Trích dẫn khối nội dung', iconClass: 'fa-solid fa-quote-left', action: () => insertTextAtCursor('> ', '', 'Nội dung trích dẫn') },
+    { label: 'Khối mã Code', desc: 'Code highlight cú pháp', iconClass: 'fa-solid fa-code', action: () => insertTextAtCursor('```typescript\n', '\n```', '// Mã nguồn TypeScript') },
+    { label: 'Kiến trúc Mermaid', desc: 'Biểu đồ luồng / Flowchart trực quan (2.3.4.1)', iconClass: 'fa-solid fa-diagram-project', action: () => insertTextAtCursor('\n' + MERMAID_SAMPLE + '\n') },
+    { label: 'Công thức Toán LaTeX', desc: 'KaTeX Math Formula (2.3.4.2)', iconClass: 'fa-solid fa-square-root-variable', action: () => insertTextAtCursor('\n' + LATEX_SAMPLE + '\n') },
+    { label: 'Bảng dữ liệu Table', desc: 'Bảng so sánh markdown', iconClass: 'fa-solid fa-table', action: () => insertTextAtCursor('\n' + TABLE_SAMPLE + '\n') },
+    { label: 'Hộp Ghi chú (Callout)', desc: 'Ghi chú kỹ thuật nổi bật', iconClass: 'fa-solid fa-circle-info', action: () => insertTextAtCursor('> [!NOTE]\n> ', '', 'Lưu ý kiến trúc quan trọng cho hệ thống chịu tải.') },
+    { label: 'Đường phân cách (HR)', desc: 'Ngăn cách các phân đoạn', iconClass: 'fa-solid fa-minus', action: () => insertTextAtCursor('\n---\n') },
   ];
 
   const filteredCommands = useMemo(() => {
@@ -330,12 +342,12 @@ export function CmsPostEditor({
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 top-16 z-30 bg-[#fafafa] flex flex-col overflow-hidden px-3 sm:px-6 py-2.5 max-w-7xl mx-auto w-full"
+      className="fixed inset-x-0 bottom-0 top-16 z-30 bg-[#fafafa] flex flex-col overflow-hidden h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] px-3 sm:px-6 py-2 max-w-7xl mx-auto w-full"
       role="region"
       aria-label="Notion Post Editor"
     >
       {/* 1. Editor Top Action Bar (Docked, shrink-0) */}
-      <div className="shrink-0 bg-white/95 backdrop-blur-md border border-gray-200/90 rounded-2xl p-2.5 px-4 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+      <div className="shrink-0 bg-white/95 backdrop-blur-md border border-gray-200/90 rounded-2xl p-2 px-4 shadow-2xs flex flex-wrap items-center justify-between gap-2.5">
         {/* Left: Back button & Slug/Status info */}
         <div className="flex items-center gap-3">
           <button
@@ -344,7 +356,7 @@ export function CmsPostEditor({
             className="p-1.5 px-3 rounded-xl border border-gray-200 hover:bg-gray-100 text-gray-700 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
             title="Quay lại danh sách"
           >
-            <span>←</span>
+            <i className="fa-solid fa-arrow-left text-xs"></i>
             <span className="hidden sm:inline">Quay lại</span>
           </button>
 
@@ -370,7 +382,8 @@ export function CmsPostEditor({
 
           {/* Reading Stats pill */}
           <div className="hidden md:flex items-center gap-1.5 text-[11px] text-gray-500 font-mono bg-gray-50 px-2.5 py-1 rounded-xl border border-gray-200">
-            <span>⏱️ {editingPost.read_time || 5}m</span>
+            <i className="fa-solid fa-clock text-xs text-gray-400"></i>
+            <span>{editingPost.read_time || 5}m</span>
             <span>•</span>
             <span>{readingStats.words} từ</span>
           </div>
@@ -391,7 +404,8 @@ export function CmsPostEditor({
             }`}
             title="Mở bảng phân tích SEO & xem trước Google Search"
           >
-            <span>🎯 SEO {seoResult.score}%</span>
+            <i className="fa-solid fa-bullseye text-xs"></i>
+            <span>SEO {seoResult.score}%</span>
           </button>
 
           {/* Editor Mode Toggles */}
@@ -451,12 +465,12 @@ export function CmsPostEditor({
           <button
             type="button"
             onClick={() => setShowSidebar(!showSidebar)}
-            className={`p-1.5 px-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+            className={`p-1.5 px-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               showSidebar ? 'bg-gray-100 text-gray-800 border-gray-300' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
             }`}
             title="Ẩn / Hiện cài đặt bài viết bên phải"
           >
-            <span>⚙️</span>
+            <i className="fa-solid fa-gear text-xs"></i>
             <span className="hidden xl:inline">{showSidebar ? 'Ẩn Cài đặt' : 'Cài đặt'}</span>
           </button>
 
@@ -467,17 +481,27 @@ export function CmsPostEditor({
             disabled={isSaving}
             className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-500/25 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-60 active:scale-95"
           >
-            {isSaving ? <span>⏳ Lưu...</span> : <span>💾 Lưu Bài Viết</span>}
+            {isSaving ? (
+              <>
+                <i className="fa-solid fa-spinner fa-spin text-xs"></i>
+                <span>Lưu...</span>
+              </>
+            ) : (
+              <>
+                <i className="fa-solid fa-floppy-disk text-xs"></i>
+                <span>Lưu Bài Viết</span>
+              </>
+            )}
           </button>
         </div>
       </div>
 
       {/* 2. Main Two-Column Layout (Fills remaining height, overflow-hidden) */}
-      <div className="flex-1 min-h-0 flex flex-col lg:flex-row items-stretch gap-3 sm:gap-4 pt-2.5 overflow-hidden">
+      <div className="flex-1 min-h-0 flex flex-row items-stretch gap-3 sm:gap-4 pt-2 overflow-hidden">
         {/* LEFT COLUMN: Main Writing Canvas */}
-        <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden space-y-2.5">
+        <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden space-y-2">
           {/* Article Title & Summary Inputs (Compact, shrink-0) */}
-          <div className="shrink-0 bg-white border border-gray-100 rounded-2xl p-3 sm:px-4 sm:py-2.5 shadow-xs space-y-1.5">
+          <div className="shrink-0 bg-white border border-gray-100 rounded-2xl p-2.5 sm:px-4 sm:py-2 shadow-xs space-y-1">
             <div>
               <input
                 type="text"
@@ -509,8 +533,9 @@ export function CmsPostEditor({
                 onClick={() => setShowSlashMenu(!showSlashMenu)}
                 className="px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors shrink-0"
               >
-                <span>⚡ / Lệnh Notion</span>
-                <span className="text-[10px]">▼</span>
+                <i className="fa-solid fa-bolt text-xs"></i>
+                <span>/ Lệnh Notion</span>
+                <i className="fa-solid fa-chevron-down text-[9px] ml-0.5"></i>
               </button>
 
               <div className="h-5 w-px bg-gray-200 mx-1" />
@@ -543,10 +568,10 @@ export function CmsPostEditor({
               <button
                 type="button"
                 onClick={() => insertTextAtCursor('$ ', ' $', 'E = mc^2')}
-                className="p-1.5 px-2 rounded-lg hover:bg-gray-100 font-serif text-gray-700 cursor-pointer"
+                className="p-1.5 px-2 rounded-lg hover:bg-gray-100 text-gray-700 cursor-pointer flex items-center justify-center"
                 title="Inline Math ($ formula $)"
               >
-                ∑
+                <i className="fa-solid fa-square-root-variable text-xs"></i>
               </button>
 
               <div className="h-5 w-px bg-gray-200 mx-1" />
@@ -595,20 +620,22 @@ export function CmsPostEditor({
               <button
                 type="button"
                 onClick={() => insertTextAtCursor('\n' + MERMAID_SAMPLE + '\n')}
-                className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold border border-blue-200 flex items-center gap-1 cursor-pointer shrink-0"
+                className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold border border-blue-200 flex items-center gap-1.5 cursor-pointer shrink-0"
                 title="Chèn sơ đồ kiến trúc Mermaid"
               >
-                <span>📐 Mermaid</span>
+                <i className="fa-solid fa-diagram-project text-xs"></i>
+                <span>Mermaid</span>
               </button>
 
               {/* 2.3.4.2 LaTeX Shortcut */}
               <button
                 type="button"
                 onClick={() => insertTextAtCursor('\n' + LATEX_SAMPLE + '\n')}
-                className="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold border border-purple-200 flex items-center gap-1 cursor-pointer shrink-0"
+                className="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold border border-purple-200 flex items-center gap-1.5 cursor-pointer shrink-0"
                 title="Chèn công thức toán LaTeX / KaTeX"
               >
-                <span>∑ LaTeX</span>
+                <i className="fa-solid fa-square-root-variable text-xs"></i>
+                <span>LaTeX</span>
               </button>
             </div>
           </div>
@@ -626,7 +653,7 @@ export function CmsPostEditor({
                     onClick={() => setShowSlashMenu(false)}
                     className="text-gray-400 hover:text-gray-600 text-xs font-bold cursor-pointer"
                   >
-                    ✕
+                    <i className="fa-solid fa-xmark"></i>
                   </button>
                 </div>
 
@@ -652,7 +679,7 @@ export function CmsPostEditor({
                       className="p-2 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-200 text-left flex items-start gap-2.5 transition-all cursor-pointer"
                     >
                       <span className="w-7 h-7 rounded-lg bg-gray-100 text-gray-800 font-bold text-xs flex items-center justify-center shrink-0">
-                        {cmd.icon}
+                        <i className={cmd.iconClass}></i>
                       </span>
                       <div>
                         <div className="text-xs font-bold text-gray-900">{cmd.label}</div>
@@ -727,10 +754,10 @@ export function CmsPostEditor({
 
         {/* RIGHT COLUMN: Right Sidebar (Publishing Settings & Select Tags) */}
         {showSidebar && (
-          <aside className="w-full lg:w-80 xl:w-84 shrink-0 h-full overflow-y-auto bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-t-4 border-t-red-600 space-y-3.5">
+          <aside className="w-80 shrink-0 h-full overflow-y-auto bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-t-4 border-t-red-600 space-y-3.5">
             <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
               <div className="flex items-center gap-2">
-                <span className="text-base">⚙️</span>
+                <i className="fa-solid fa-gear text-red-600 text-sm"></i>
                 <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
                   Cài Đặt Bài Viết
                 </h3>
@@ -776,7 +803,7 @@ export function CmsPostEditor({
                   className="text-[11px] text-blue-600 hover:text-blue-700 hover:underline font-semibold cursor-pointer flex items-center gap-1"
                   title="Gợi ý ngày Thứ tương ứng lịch chuyên mục gần nhất"
                 >
-                  <span>📅</span>
+                  <i className="fa-solid fa-calendar-check text-[10px]"></i>
                   <span>Gợi ý lịch</span>
                 </button>
               </div>
@@ -889,7 +916,7 @@ export function CmsPostEditor({
                         className="hover:text-red-900 font-bold ml-0.5 cursor-pointer text-xs"
                         title={`Bỏ thẻ #${tg.slug}`}
                       >
-                        ✕
+                        <i className="fa-solid fa-xmark text-[10px]"></i>
                       </button>
                     </span>
                   ))
@@ -929,7 +956,7 @@ export function CmsPostEditor({
           <div className="bg-white rounded-3xl p-6 shadow-2xl border border-gray-100 max-w-3xl w-full max-h-[85vh] overflow-y-auto space-y-4">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div className="flex items-center gap-2">
-                <span className="text-xl">🎯</span>
+                <i className="fa-solid fa-bullseye text-red-600 text-lg"></i>
                 <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">
                   2.3.4.5 Công Cụ Tính Toán & Tối Ưu Hóa SEO Google
                 </h3>
@@ -943,7 +970,7 @@ export function CmsPostEditor({
                   onClick={() => setShowSeoDrawer(false)}
                   className="text-gray-400 hover:text-gray-700 text-base font-bold cursor-pointer"
                 >
-                  ✕
+                  <i className="fa-solid fa-xmark"></i>
                 </button>
               </div>
             </div>
@@ -989,7 +1016,13 @@ export function CmsPostEditor({
                           : 'bg-amber-50/60 border-amber-200 text-amber-900'
                       }`}
                     >
-                      <span className="font-bold text-sm shrink-0">{chk.passed ? '✅' : '⚠️'}</span>
+                      <span className="font-bold text-sm shrink-0">
+                        {chk.passed ? (
+                          <i className="fa-solid fa-circle-check text-emerald-600"></i>
+                        ) : (
+                          <i className="fa-solid fa-triangle-exclamation text-amber-500"></i>
+                        )}
+                      </span>
                       <div>
                         <div className="font-bold">{chk.label}</div>
                         <div className="text-[11px] opacity-90 mt-0.5">{chk.recommendation}</div>

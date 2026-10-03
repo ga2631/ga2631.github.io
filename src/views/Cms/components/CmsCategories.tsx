@@ -33,13 +33,13 @@ const COLOR_PRESETS = [
 ];
 
 const ICON_OPTIONS = [
-  { id: 'LayersIcon', label: 'Hệ thống / Layers', icon: '📐' },
-  { id: 'DatabaseIcon', label: 'Cơ sở Dữ liệu / Data', icon: '🗄️' },
-  { id: 'CpuIcon', label: 'Thuật toán / CPU', icon: '⚡' },
-  { id: 'SparklesIcon', label: 'Frontend / UI', icon: '✨' },
-  { id: 'RadarIcon', label: 'Tech Radar / Xu hướng', icon: '📡' },
-  { id: 'BookOpenIcon', label: 'Tài liệu / Tổng hợp', icon: '📚' },
-  { id: 'TerminalIcon', label: 'Hệ thống / DevOps', icon: '💻' },
+  { id: 'LayersIcon', label: 'Hệ thống / Layers', iconClass: 'fa-solid fa-layer-group' },
+  { id: 'DatabaseIcon', label: 'Cơ sở Dữ liệu / Data', iconClass: 'fa-solid fa-database' },
+  { id: 'CpuIcon', label: 'Thuật toán / CPU', iconClass: 'fa-solid fa-microchip' },
+  { id: 'SparklesIcon', label: 'Frontend / UI', iconClass: 'fa-solid fa-wand-magic-sparkles' },
+  { id: 'RadarIcon', label: 'Tech Radar / Xu hướng', iconClass: 'fa-solid fa-tower-broadcast' },
+  { id: 'BookOpenIcon', label: 'Tài liệu / Tổng hợp', iconClass: 'fa-solid fa-book-open' },
+  { id: 'TerminalIcon', label: 'Hệ thống / DevOps', iconClass: 'fa-solid fa-terminal' },
 ];
 
 function generateSlug(text: string): string {
@@ -279,14 +279,14 @@ export function CmsCategories({
             placeholder={isEn ? 'Search category name or slug...' : 'Tìm kiếm theo tên hoặc slug...'}
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-2xs"
           />
-          <span className="absolute left-3 top-2.5 text-gray-400 text-xs">🔍</span>
+          <i className="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-xs"></i>
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-xs"
+              className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-xs cursor-pointer"
             >
-              ✕
+              <i className="fa-solid fa-xmark"></i>
             </button>
           )}
         </div>
@@ -299,7 +299,9 @@ export function CmsCategories({
       {/* Category Cards Grid */}
       {filteredCategories.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm space-y-3">
-          <span className="text-3xl">📁</span>
+          <span className="text-3xl text-gray-300">
+            <i className="fa-solid fa-folder-open"></i>
+          </span>
           <div className="text-sm font-bold text-gray-800">
             {isEn ? 'No categories found' : 'Không tìm thấy chuyên mục nào'}
           </div>
@@ -329,8 +331,8 @@ export function CmsCategories({
                   {/* Top Bar: Icon, Schedule Badge, Slug */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <span className="text-2xl p-2 rounded-2xl bg-gray-50 border border-gray-100 group-hover:scale-105 transition-transform">
-                        {matchedIcon.icon}
+                      <span className="text-xl p-2.5 w-10 h-10 flex items-center justify-center rounded-2xl bg-gray-50 border border-gray-100 text-gray-700 group-hover:scale-105 transition-transform">
+                        <i className={matchedIcon.iconClass}></i>
                       </span>
                       <div>
                         <span className={`inline-block text-[11px] font-bold px-2 py-0.5 rounded-md border ${schedInfo.badge}`}>
@@ -343,8 +345,8 @@ export function CmsCategories({
                     </div>
 
                     <div className="text-right">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gray-100 text-gray-800 text-xs font-bold font-mono">
-                        <span>📝</span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-gray-100 text-gray-800 text-xs font-bold font-mono">
+                        <i className="fa-solid fa-file-lines text-gray-400 text-[10px]"></i>
                         <span>{count}</span>
                       </span>
                     </div>
@@ -399,7 +401,7 @@ export function CmsCategories({
                         className="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
                         title={isEn ? 'Delete category' : 'Xoá chuyên mục'}
                       >
-                        {deletingId === cat.id ? '...' : '✕'}
+                        {deletingId === cat.id ? '...' : <i className="fa-solid fa-trash-can"></i>}
                       </button>
                     )}
                   </div>
@@ -418,7 +420,7 @@ export function CmsCategories({
             <div className="flex items-center justify-between border-b border-gray-100 pb-4">
               <div className="flex items-center gap-2.5">
                 <span className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">
-                  📁
+                  <i className="fa-solid fa-folder"></i>
                 </span>
                 <h2 className="text-lg font-black text-gray-900 tracking-tight">
                   {editingCategory.id
@@ -431,7 +433,7 @@ export function CmsCategories({
                 onClick={() => setEditingCategory(null)}
                 className="w-8 h-8 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-700 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer"
               >
-                ✕
+                <i className="fa-solid fa-xmark"></i>
               </button>
             </div>
 
@@ -662,7 +664,7 @@ export function CmsCategories({
                   >
                     {ICON_OPTIONS.map((opt) => (
                       <option key={opt.id} value={opt.id}>
-                        {opt.icon} {opt.label}
+                        {opt.label}
                       </option>
                     ))}
                   </select>

@@ -331,10 +331,10 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
       expect(screen.getByText('#microservices')).toBeDefined();
 
       // Check Notion commands button
-      expect(screen.getByText(/⚡ \/ Lệnh Notion/i)).toBeDefined();
+      expect(screen.getByText(/Lệnh Notion/i)).toBeDefined();
 
       // Check SEO toggle button
-      expect(screen.getByText(/🎯 SEO/i)).toBeDefined();
+      expect(screen.getByText(/SEO \d+%/i)).toBeDefined();
     });
 
     it('supports 2.3.1 bilingual language switching between VI and EN', () => {
@@ -400,7 +400,7 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
       );
 
       // Open slash commands palette
-      const slashButton = screen.getByText(/⚡ \/ Lệnh Notion/i);
+      const slashButton = screen.getByText(/Lệnh Notion/i);
       fireEvent.click(slashButton);
 
       expect(screen.getByText(/Menu Lệnh Notion/i)).toBeDefined();
@@ -430,7 +430,7 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
         </LanguageProvider>
       );
 
-      const seoToggle = screen.getByText(/🎯 SEO/i);
+      const seoToggle = screen.getByText(/SEO \d+%/i);
       fireEvent.click(seoToggle);
 
       expect(screen.getByText(/2.3.4.5 Công Cụ Tính Toán & Tối Ưu Hóa SEO Google/i)).toBeDefined();
@@ -517,7 +517,7 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
         </LanguageProvider>
       );
 
-      const saveBtn = screen.getByRole('button', { name: /💾 Lưu Bài Viết/i });
+      const saveBtn = screen.getByRole('button', { name: /Lưu Bài Viết/i });
       fireEvent.click(saveBtn);
 
       await waitFor(() => {

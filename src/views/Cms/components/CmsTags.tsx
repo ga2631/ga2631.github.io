@@ -221,14 +221,14 @@ export function CmsTags({
             placeholder={isEn ? 'Search tag by slug or name...' : 'Tìm kiếm thẻ theo slug hoặc tên...'}
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-2xs"
           />
-          <span className="absolute left-3 top-2.5 text-gray-400 text-xs">🔍</span>
+          <i className="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-xs"></i>
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-xs"
+              className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-xs cursor-pointer"
             >
-              ✕
+              <i className="fa-solid fa-xmark"></i>
             </button>
           )}
         </div>
@@ -238,20 +238,22 @@ export function CmsTags({
             <button
               type="button"
               onClick={() => setViewMode('grid')}
-              className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === 'grid' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500 hover:text-gray-900'
               }`}
             >
-              ⊞ {isEn ? 'Cards' : 'Dạng thẻ'}
+              <i className="fa-solid fa-table-cells-large text-[11px]"></i>
+              <span>{isEn ? 'Cards' : 'Dạng thẻ'}</span>
             </button>
             <button
               type="button"
               onClick={() => setViewMode('cloud')}
-              className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 viewMode === 'cloud' ? 'bg-white text-gray-900 shadow-2xs' : 'text-gray-500 hover:text-gray-900'
               }`}
             >
-              ☁ {isEn ? 'Cloud' : 'Đám mây'}
+              <i className="fa-solid fa-cloud text-[11px]"></i>
+              <span>{isEn ? 'Cloud' : 'Đám mây'}</span>
             </button>
           </div>
           <span className="text-xs text-gray-400 font-mono">
@@ -265,7 +267,9 @@ export function CmsTags({
         <>
           {filteredTags.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm space-y-3">
-              <span className="text-3xl">🏷️</span>
+              <span className="text-3xl text-gray-300">
+                <i className="fa-solid fa-tags"></i>
+              </span>
               <div className="text-sm font-bold text-gray-800">
                 {isEn ? 'No tags found' : 'Không tìm thấy thẻ nào'}
               </div>
@@ -337,10 +341,10 @@ export function CmsTags({
                             type="button"
                             onClick={() => handleDelete(tag.id!, tag.slug)}
                             disabled={deletingId === tag.id}
-                            className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-semibold transition-colors cursor-pointer disabled:opacity-50"
                             title={isEn ? 'Delete tag' : 'Xoá thẻ'}
                           >
-                            {deletingId === tag.id ? '...' : '✕'}
+                            {deletingId === tag.id ? '...' : <i className="fa-solid fa-trash-can"></i>}
                           </button>
                         )}
                       </div>
@@ -379,16 +383,16 @@ export function CmsTags({
                     className="text-gray-400 hover:text-gray-700 ml-1 cursor-pointer"
                     title={isEn ? 'Edit tag' : 'Chỉnh sửa'}
                   >
-                    ✎
+                    <i className="fa-solid fa-pen text-[10px]"></i>
                   </button>
                   {tag.id && (
                     <button
                       type="button"
                       onClick={() => handleDelete(tag.id!, tag.slug)}
-                      className="text-red-400 hover:text-red-600 cursor-pointer font-bold"
+                      className="text-red-400 hover:text-red-600 cursor-pointer font-bold ml-0.5"
                       title={isEn ? 'Delete tag' : 'Xoá'}
                     >
-                      ✕
+                      <i className="fa-solid fa-trash-can text-[10px]"></i>
                     </button>
                   )}
                 </div>
@@ -406,7 +410,7 @@ export function CmsTags({
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div className="flex items-center gap-2">
                 <span className="w-7 h-7 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs">
-                  🏷️
+                  <i className="fa-solid fa-tag"></i>
                 </span>
                 <h2 className="text-base font-black text-gray-900 tracking-tight">
                   {editingTag.id
@@ -419,7 +423,7 @@ export function CmsTags({
                 onClick={() => setEditingTag(null)}
                 className="w-7 h-7 rounded-xl hover:bg-gray-100 text-gray-400 hover:text-gray-700 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer"
               >
-                ✕
+                <i className="fa-solid fa-xmark"></i>
               </button>
             </div>
 

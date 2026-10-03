@@ -162,7 +162,7 @@ export function CmsPosts({
           onClick={onCreateNewPost}
           className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
         >
-          <span>+</span>
+          <i className="fa-solid fa-plus text-xs"></i>
           <span>{isEn ? 'Write New Article' : 'Viết Bài Viết Mới'}</span>
         </button>
       </div>
@@ -179,7 +179,7 @@ export function CmsPosts({
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
               {isEn ? 'Total Articles' : 'Tổng Bài Viết'}
             </span>
-            <span className="text-xs">📚</span>
+            <span className="text-xs text-blue-600"><i className="fa-solid fa-book-open"></i></span>
           </div>
           <div className="text-3xl font-black text-gray-900">{stats.total}</div>
           <div className="text-[11px] text-blue-600 font-semibold mt-1">Tất cả bài viết</div>
@@ -195,7 +195,7 @@ export function CmsPosts({
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
               {isEn ? 'Published' : 'Đã Xuất Bản'}
             </span>
-            <span className="text-xs">✅</span>
+            <span className="text-xs text-emerald-600"><i className="fa-solid fa-circle-check"></i></span>
           </div>
           <div className="text-3xl font-black text-emerald-600">{stats.published}</div>
           <div className="text-[11px] text-emerald-700 font-semibold mt-1">Đang công khai</div>
@@ -211,7 +211,7 @@ export function CmsPosts({
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
               {isEn ? 'Scheduled' : 'Đã Lên Lịch'}
             </span>
-            <span className="text-xs">🗓️</span>
+            <span className="text-xs text-purple-600"><i className="fa-solid fa-calendar-days"></i></span>
           </div>
           <div className="text-3xl font-black text-purple-600">{stats.scheduled}</div>
           <div className="text-[11px] text-purple-700 font-semibold mt-1">Chờ ngày tự động live</div>
@@ -227,7 +227,7 @@ export function CmsPosts({
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
               {isEn ? 'Drafts' : 'Bản Nháp'}
             </span>
-            <span className="text-xs">📝</span>
+            <span className="text-xs text-amber-600"><i className="fa-solid fa-pen-to-square"></i></span>
           </div>
           <div className="text-3xl font-black text-amber-600">{stats.drafts}</div>
           <div className="text-[11px] text-amber-700 font-semibold mt-1">Đang biên soạn</div>
@@ -245,14 +245,14 @@ export function CmsPosts({
             placeholder={isEn ? 'Search title or slug...' : 'Tìm kiếm theo tiêu đề hoặc slug...'}
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-2xs"
           />
-          <span className="absolute left-3 top-2.5 text-gray-400 text-xs">🔍</span>
+          <i className="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-xs"></i>
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-xs"
+              className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-xs cursor-pointer"
             >
-              ✕
+              <i className="fa-solid fa-xmark"></i>
             </button>
           )}
         </div>
@@ -295,7 +295,9 @@ export function CmsPosts({
       <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-red-600">
         {filteredPosts.length === 0 ? (
           <div className="py-16 text-center space-y-3">
-            <span className="text-3xl">📝</span>
+            <span className="text-3xl text-gray-300">
+              <i className="fa-solid fa-file-circle-question"></i>
+            </span>
             <div className="text-sm font-bold text-gray-800">
               {isEn ? 'No articles match your criteria' : 'Không có bài viết nào phù hợp bộ lọc'}
             </div>
@@ -388,9 +390,10 @@ export function CmsPosts({
                           <Link
                             href={`/${currentLang}/blog/${p.slug}`}
                             target="_blank"
-                            className="px-2.5 py-1 rounded-lg bg-white hover:bg-red-50 text-red-600 text-[11px] font-semibold border border-red-200 transition-colors"
+                            className="px-2.5 py-1 rounded-lg bg-white hover:bg-red-50 text-red-600 text-[11px] font-semibold border border-red-200 transition-colors flex items-center gap-1"
                           >
-                            Xem ↗
+                            <span>Xem</span>
+                            <i className="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
                           </Link>
 
                           {p.id && (
@@ -398,10 +401,10 @@ export function CmsPosts({
                               type="button"
                               onClick={() => handleDelete(p.id!, p.slug)}
                               disabled={deletingId === p.id}
-                              className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                              className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-semibold transition-colors cursor-pointer disabled:opacity-50"
                               title="Xóa bài viết"
                             >
-                              {deletingId === p.id ? '...' : '✕'}
+                              {deletingId === p.id ? '...' : <i className="fa-solid fa-trash-can"></i>}
                             </button>
                           )}
                         </div>
