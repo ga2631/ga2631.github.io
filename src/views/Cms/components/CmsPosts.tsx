@@ -261,9 +261,10 @@ export function CmsPosts({
         <div className="flex items-center gap-3 w-full md:w-auto flex-wrap">
           {/* Category Dropdown */}
           <select
+            aria-label={isEn ? 'Filter by category' : 'Lọc theo chuyên mục'}
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20"
+            className="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
           >
             <option value="all">{isEn ? 'All Categories' : 'Tất cả chuyên mục'}</option>
             {categories.map((c) => (
@@ -275,9 +276,10 @@ export function CmsPosts({
 
           {/* Status Dropdown */}
           <select
+            aria-label={isEn ? 'Filter by status' : 'Lọc theo trạng thái'}
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value as any)}
-            className="px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20"
+            className="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
           >
             <option value="all">{isEn ? 'All Status' : 'Tất cả trạng thái'}</option>
             <option value="published">{isEn ? 'Published' : 'Đã xuất bản'}</option>

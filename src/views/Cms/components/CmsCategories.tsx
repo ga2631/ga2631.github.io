@@ -599,6 +599,7 @@ export function CmsCategories({
                     Lịch xuất bản trong tuần <span className="text-red-500">*</span>
                   </label>
                   <select
+                    aria-label="Lịch xuất bản trong tuần"
                     value={editingCategory.post_schedule}
                     onChange={(e) => {
                       const sched = Number(e.target.value);
@@ -609,7 +610,7 @@ export function CmsCategories({
                         color: opt?.color || editingCategory.color,
                       });
                     }}
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
                   >
                     {SCHEDULE_DAY_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -658,9 +659,10 @@ export function CmsCategories({
                     Biểu tượng đại diện (Icon)
                   </label>
                   <select
+                    aria-label="Biểu tượng đại diện"
                     value={editingCategory.icon || 'LayersIcon'}
                     onChange={(e) => setEditingCategory({ ...editingCategory, icon: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
                   >
                     {ICON_OPTIONS.map((opt) => (
                       <option key={opt.id} value={opt.id}>

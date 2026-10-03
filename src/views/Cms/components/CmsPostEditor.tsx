@@ -754,7 +754,7 @@ export function CmsPostEditor({
 
         {/* RIGHT COLUMN: Right Sidebar (Publishing Settings & Select Tags) */}
         {showSidebar && (
-          <aside className="w-80 shrink-0 h-full overflow-y-auto bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-t-4 border-t-red-600 space-y-3.5">
+          <aside className="w-80 shrink-0 h-full overflow-y-auto bg-white rounded-2xl p-4 shadow-sm border border-gray-100 border-t-4 border-t-red-600 space-y-3.5 custom-scrollbar">
             <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
               <div className="flex items-center gap-2">
                 <i className="fa-solid fa-gear text-red-600 text-sm"></i>
@@ -779,7 +779,7 @@ export function CmsPostEditor({
                   const catId = e.target.value || null;
                   setEditingPost((prev) => ({ ...prev, category_id: catId }));
                 }}
-                className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 cursor-pointer"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
               >
                 <option value="">-- Chọn chuyên mục --</option>
                 {categories.map((c) => (
@@ -811,7 +811,7 @@ export function CmsPostEditor({
                 type="date"
                 value={editingPost.published_at ? editingPost.published_at.substring(0, 10) : ''}
                 onChange={(e) => setEditingPost({ ...editingPost, published_at: e.target.value || null })}
-                className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors"
               />
             </div>
 
@@ -838,7 +838,7 @@ export function CmsPostEditor({
                 value={editingPost.slug}
                 onChange={(e) => setEditingPost({ ...editingPost, slug: generateSlug(e.target.value) })}
                 placeholder="slug-url-bai-viet"
-                className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors"
               />
             </div>
 
@@ -854,7 +854,7 @@ export function CmsPostEditor({
                   max="60"
                   value={editingPost.read_time}
                   onChange={(e) => setEditingPost({ ...editingPost, read_time: Number(e.target.value) || 5 })}
-                  className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors"
                 />
                 <span className="absolute right-3 top-2 text-[10px] text-gray-400 font-mono">
                   {readingStats.words} từ
@@ -887,14 +887,18 @@ export function CmsPostEditor({
                   handleAddTag(e.target.value);
                   e.target.value = '';
                 }}
-                className="w-full px-3 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 cursor-pointer"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
               >
                 <option value="">+ Chọn thêm thẻ kỹ thuật...</option>
-                {unselectedTags.map((tg) => (
-                  <option key={tg.id || tg.slug} value={tg.id || tg.slug}>
-                    #{tg.slug} — {tg.translations?.[activeLang]?.name || tg.translations?.vi?.name || tg.slug}
-                  </option>
-                ))}
+                {unselectedTags.length === 0 ? (
+                  <option value="" disabled>Đã chọn tất cả thẻ khả dụng</option>
+                ) : (
+                  unselectedTags.map((tg) => (
+                    <option key={tg.id || tg.slug} value={tg.id || tg.slug}>
+                      #{tg.slug} — {tg.translations?.[activeLang]?.name || tg.translations?.vi?.name || tg.slug}
+                    </option>
+                  ))
+                )}
               </select>
 
               {/* Selected tag chips */}
