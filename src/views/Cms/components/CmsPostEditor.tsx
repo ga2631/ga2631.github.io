@@ -8,6 +8,7 @@ import {
   analyzePostSeo,
   SeoAnalysisResult,
 } from '@/utils/markdownRenderer';
+import { getCategoryColorClasses } from '@/utils/categoryColors';
 import 'katex/dist/katex.min.css';
 
 interface CmsPostEditorProps {
@@ -789,6 +790,19 @@ export function CmsPostEditor({
                   </option>
                 ))}
               </select>
+              {editingPost.category_id && (() => {
+                const selectedCat = categories.find((c) => (c.id || c.slug) === editingPost.category_id);
+                if (!selectedCat) return null;
+                const catColors = getCategoryColorClasses(selectedCat.color);
+                return (
+                  <div className="mt-2 flex items-center gap-1.5">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${catColors.badge}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${catColors.dotBg}`} />
+                      <span>{selectedCat.translations?.[activeLang]?.name || selectedCat.translations?.vi?.name || selectedCat.slug}</span>
+                    </span>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* 2.3.4. Ngày Đăng Bài (Smart date recommendation) */}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AdminPost, AdminCategory, AdminTag } from '@/services/blogAdminService';
 import { CmsPostEditor } from './CmsPostEditor';
 import { CmsTab } from '@/components/layouts/CmsLayout';
+import { getCategoryColorClasses } from '@/utils/categoryColors';
 
 interface CmsPostsProps {
   posts: AdminPost[];
@@ -348,7 +349,7 @@ export function CmsPosts({
                       </td>
 
                       <td className="py-4 pr-3 whitespace-nowrap">
-                        <span className="px-2.5 py-1 rounded-md bg-gray-100 text-gray-800 text-[11px] font-semibold border border-gray-200">
+                        <span className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border ${getCategoryColorClasses(cat?.color).badge}`}>
                           {catName}
                         </span>
                       </td>

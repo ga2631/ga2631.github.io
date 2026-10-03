@@ -226,7 +226,7 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
             en: enTrans.description || '',
           },
           iconName: cat.icon || 'LayersIcon',
-          color: cat.color || '#3B82F6',
+          color: cat.color || 'blue',
         };
       });
 

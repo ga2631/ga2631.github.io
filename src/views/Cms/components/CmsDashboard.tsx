@@ -6,6 +6,7 @@ import { AdminPost, AdminCategory, AdminTag } from '@/services/blogAdminService'
 import { CmsTab } from '@/components/layouts/CmsLayout';
 import { GA_MEASUREMENT_ID, GTM_ID, APP_ENV, trackEvent } from '@/utils/analytics';
 import { isSupabaseConfigured } from '@/utils/supabase/client';
+import { getCategoryColorClasses } from '@/utils/categoryColors';
 
 interface CmsDashboardProps {
   posts: AdminPost[];
@@ -410,10 +411,14 @@ export function CmsDashboard({
               ? (post.translations?.[currentLang]?.title || post.translations?.vi?.title || post.translations?.en?.title || post.slug)
               : '';
 
+            const catColors = slot.category ? getCategoryColorClasses(slot.category.color) : null;
+            const borderTopClass = catColors ? catColors.borderTop : schedInfo.borderTop;
+            const badgeClass = catColors ? catColors.badge : schedInfo.badge;
+
             return (
               <div
                 key={slot.daySchedule}
-                className={`bg-white backdrop-blur-sm rounded-3xl p-5 shadow-sm border border-t-4 ${schedInfo.borderTop} border-gray-100 hover:shadow-lg transition-all flex flex-col justify-between min-h-[220px]`}
+                className={`bg-white backdrop-blur-sm rounded-3xl p-5 shadow-sm border border-t-4 ${borderTopClass} border-gray-100 hover:shadow-lg transition-all flex flex-col justify-between min-h-[220px]`}
               >
                 <div>
                   {/* Slot Date & Weekday */}
@@ -428,7 +433,7 @@ export function CmsDashboard({
 
                   {/* Category Pill */}
                   <div className="mb-2.5">
-                    <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-md border ${schedInfo.badge}`}>
+                    <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-md border ${badgeClass}`}>
                       {catName}
                     </span>
                   </div>
@@ -545,7 +550,7 @@ export function CmsDashboard({
                           </td>
 
                           <td className="py-3.5 pr-3 whitespace-nowrap">
-                            <span className="px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 text-[11px] font-medium border border-gray-200">
+                            <span className={`px-2 py-0.5 rounded-md text-[11px] font-medium border ${getCategoryColorClasses(cat?.color).badge}`}>
                               {catName}
                             </span>
                           </td>

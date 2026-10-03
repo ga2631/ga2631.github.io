@@ -6,6 +6,7 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import { getBlogPosts, getBlogCategories, getBlogStatistics, BlogCategoryDef } from '@/services/blogService';
 import { BlogPost } from '@/types';
 import { trackBlogSearch, trackBlogCategoryFilter, trackBlogTagClick } from '@/utils/analytics';
+import { getCategoryColorClasses } from '@/utils/categoryColors';
 
 function getCategoryColor(dayCode?: string) {
   switch (dayCode) {
@@ -303,7 +304,7 @@ export function BlogView({
                   const scheduleFull = cat.scheduleFull[currentLang] || cat.scheduleFull.vi || '';
                   const scheduleDay = cat.scheduleDay[currentLang] || cat.scheduleDay.vi || '';
                   const count = statistics.categoryCounts[cat.id] || 0;
-                  const colors = getCategoryColor(cat.dayCode);
+                  const colors = cat.color ? getCategoryColorClasses(cat.color) : getCategoryColor(cat.dayCode);
 
                   return (
                     <div key={cat.id} className="relative group/cat">
@@ -335,7 +336,7 @@ export function BlogView({
 
                       {/* Popover Card on Hover (Displays to the Right with Left Arrow) */}
                       <div className="hidden lg:block absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 w-80 pointer-events-none opacity-0 invisible -translate-x-2 transition-all duration-200 ease-out group-hover/cat:opacity-100 group-hover/cat:visible group-hover/cat:translate-x-0 group-hover/cat:pointer-events-auto">
-                        <div className="relative bg-white backdrop-blur-sm border border-gray-100 border-t-4 border-t-red-500 rounded-3xl p-5 shadow-xl text-left space-y-2.5">
+                        <div className={`relative bg-white backdrop-blur-sm border border-gray-100 border-t-4 ${colors.borderTop} rounded-3xl p-5 shadow-xl text-left space-y-2.5`}>
                           {/* Pointer Arrow pointing directly Left to the Category */}
                           <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-l border-b border-gray-100 rotate-45 z-10" />
 
@@ -609,7 +610,7 @@ export function BlogView({
                     catDef?.title.vi ||
                     post.category ||
                     '';
-                  const catColors = getCategoryColor(catDef?.dayCode);
+                  const catColors = catDef?.color ? getCategoryColorClasses(catDef.color) : getCategoryColor(catDef?.dayCode);
 
                   return (
                     <article

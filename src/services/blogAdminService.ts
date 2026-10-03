@@ -98,7 +98,7 @@ export async function getAllAdminCategories(): Promise<AdminCategory[]> {
           slug: cat.slug,
           post_schedule: cat.post_schedule ?? 1,
           icon: cat.icon || 'LayersIcon',
-          color: cat.color || '#3B82F6',
+          color: cat.color || 'blue',
           translations: transMap,
         };
       });
@@ -119,7 +119,7 @@ export async function saveAdminCategory(category: AdminCategory): Promise<{ succ
         slug: category.slug.trim(),
         post_schedule: Number(category.post_schedule) || 1,
         icon: category.icon || 'LayersIcon',
-        color: category.color || '#3B82F6',
+        color: category.color || 'blue',
       };
       if (category.id) {
         payload.id = category.id;

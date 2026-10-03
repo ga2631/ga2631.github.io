@@ -166,6 +166,48 @@ describe('CMS Phase 2: Categories and Tags Management', () => {
       });
     });
 
+    it('allows selecting a Flowbite color and saves the color name', async () => {
+      const handleSave = vi.fn().mockResolvedValue(undefined);
+
+      render(
+        <LanguageProvider>
+          <CmsCategories
+            categories={mockCategories}
+            posts={mockPosts}
+            isLoading={false}
+            onSaveCategory={handleSave}
+            onDeleteCategory={vi.fn()}
+            currentLang="vi"
+          />
+        </LanguageProvider>
+      );
+
+      // Open Create Modal
+      const createButton = screen.getByRole('button', { name: /\+ Thêm Chuyên Mục Mới/i });
+      fireEvent.click(createButton);
+
+      // Fill Name
+      const nameInput = screen.getByPlaceholderText(/Ví dụ: Kiến trúc Hệ thống/i);
+      fireEvent.change(nameInput, { target: { value: 'DevOps & Cloud' } });
+
+      // Pick purple from Flowbite color dropdown
+      const colorSelect = screen.getByRole('combobox', { name: 'Chọn màu sắc Flowbite' });
+      fireEvent.change(colorSelect, { target: { value: 'purple' } });
+
+      // Click save
+      const submitButton = screen.getByRole('button', { name: /Lưu Chuyên Mục/i });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(handleSave).toHaveBeenCalledWith(expect.objectContaining({
+          color: 'purple',
+          translations: expect.objectContaining({
+            vi: expect.objectContaining({ name: 'DevOps & Cloud' }),
+          }),
+        }));
+      });
+    });
+
     it('calls onDeleteCategory when delete is clicked and confirmed', async () => {
       const handleDelete = vi.fn().mockResolvedValue(undefined);
       vi.spyOn(window, 'confirm').mockReturnValue(true);

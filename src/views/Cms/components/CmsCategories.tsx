@@ -3,6 +3,12 @@
 import React, { useState, useMemo } from 'react';
 import { AdminCategory, AdminPost } from '@/services/blogAdminService';
 import { CmsTab } from '@/components/layouts/CmsLayout';
+import {
+  FLOWBITE_CATEGORY_COLORS,
+  getCategoryColorClasses,
+  normalizeCategoryColor,
+  FlowbiteCategoryColor,
+} from '@/utils/categoryColors';
 
 interface CmsCategoriesProps {
   categories: AdminCategory[];
@@ -15,21 +21,11 @@ interface CmsCategoriesProps {
 }
 
 const SCHEDULE_DAY_OPTIONS = [
-  { value: 1, vi: 'Thứ 2 (Hệ thống)', en: 'Monday (Architecture)', color: '#3B82F6', borderTop: 'border-t-blue-500', badge: 'bg-blue-50 text-blue-700 border-blue-200' },
-  { value: 2, vi: 'Thứ 3 (Thuật toán)', en: 'Tuesday (Algorithms)', color: '#10B981', borderTop: 'border-t-emerald-500', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  { value: 3, vi: 'Thứ 4 (Cơ sở Dữ liệu)', en: 'Wednesday (Database)', color: '#F59E0B', borderTop: 'border-t-amber-500', badge: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { value: 4, vi: 'Thứ 5 (Frontend UI)', en: 'Thursday (Frontend UI)', color: '#8B5CF6', borderTop: 'border-t-purple-500', badge: 'bg-purple-50 text-purple-700 border-purple-200' },
-  { value: 5, vi: 'Thứ 6 (Tech Radar)', en: 'Friday (Tech Radar)', color: '#EC4899', borderTop: 'border-t-rose-500', badge: 'bg-rose-50 text-rose-700 border-rose-200' },
-];
-
-const COLOR_PRESETS = [
-  { name: 'Xanh Dương', hex: '#3B82F6', borderTop: 'border-t-blue-500' },
-  { name: 'Xanh Lá', hex: '#10B981', borderTop: 'border-t-emerald-500' },
-  { name: 'Vàng Hổ Phách', hex: '#F59E0B', borderTop: 'border-t-amber-500' },
-  { name: 'Tím', hex: '#8B5CF6', borderTop: 'border-t-purple-500' },
-  { name: 'Hồng Đỏ', hex: '#EC4899', borderTop: 'border-t-rose-500' },
-  { name: 'Chàm', hex: '#6366F1', borderTop: 'border-t-indigo-500' },
-  { name: 'Xanh Cyan', hex: '#06B6D4', borderTop: 'border-t-cyan-500' },
+  { value: 1, vi: 'Thứ 2 (Hệ thống)', en: 'Monday (Architecture)', color: 'blue' as FlowbiteCategoryColor },
+  { value: 2, vi: 'Thứ 3 (Thuật toán)', en: 'Tuesday (Algorithms)', color: 'green' as FlowbiteCategoryColor },
+  { value: 3, vi: 'Thứ 4 (Cơ sở Dữ liệu)', en: 'Wednesday (Database)', color: 'yellow' as FlowbiteCategoryColor },
+  { value: 4, vi: 'Thứ 5 (Frontend UI)', en: 'Thursday (Frontend UI)', color: 'purple' as FlowbiteCategoryColor },
+  { value: 5, vi: 'Thứ 6 (Tech Radar)', en: 'Friday (Tech Radar)', color: 'pink' as FlowbiteCategoryColor },
 ];
 
 const ICON_OPTIONS = [
@@ -95,7 +91,7 @@ export function CmsCategories({
 
   const handleOpenCreateModal = () => {
     const nextSched = (categories.length % 5) + 1;
-    const defaultColor = SCHEDULE_DAY_OPTIONS.find((s) => s.value === nextSched)?.color || '#3B82F6';
+    const defaultColor = SCHEDULE_DAY_OPTIONS.find((s) => s.value === nextSched)?.color || 'blue';
     setEditingCategory({
       slug: `chuyen-de-${Date.now().toString().slice(-4)}`,
       post_schedule: nextSched,
@@ -213,11 +209,14 @@ export function CmsCategories({
             const displayName = matched
               ? (matched.translations?.[currentLang]?.name || matched.translations?.vi?.name || matched.slug)
               : null;
+            const dayColors = matched
+              ? getCategoryColorClasses(matched.color)
+              : getCategoryColorClasses(day.color);
 
             return (
               <div
                 key={day.value}
-                className={`p-4 rounded-2xl border border-t-4 ${day.borderTop} ${
+                className={`p-4 rounded-2xl border border-t-4 ${dayColors.borderTop} ${
                   matched ? 'bg-white shadow-xs border-gray-200' : 'bg-gray-50/70 border-dashed border-gray-200'
                 } flex flex-col justify-between transition-all`}
               >
@@ -316,6 +315,7 @@ export function CmsCategories({
           {filteredCategories.map((cat) => {
             const count = postCounts[cat.id || cat.slug] || 0;
             const schedInfo = SCHEDULE_DAY_OPTIONS.find((s) => s.value === cat.post_schedule) || SCHEDULE_DAY_OPTIONS[0];
+            const catColors = getCategoryColorClasses(cat.color);
             const nameVi = cat.translations?.vi?.name || cat.slug;
             const nameEn = cat.translations?.en?.name || cat.slug;
             const descVi = cat.translations?.vi?.description || '';
@@ -325,17 +325,17 @@ export function CmsCategories({
             return (
               <div
                 key={cat.id || cat.slug}
-                className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 ${schedInfo.borderTop} hover:shadow-lg transition-all flex flex-col justify-between group`}
+                className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 ${catColors.borderTop} hover:shadow-lg transition-all flex flex-col justify-between group`}
               >
                 <div className="space-y-3">
                   {/* Top Bar: Icon, Schedule Badge, Slug */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <span className="text-xl p-2.5 w-10 h-10 flex items-center justify-center rounded-2xl bg-gray-50 border border-gray-100 text-gray-700 group-hover:scale-105 transition-transform">
+                      <span className={`text-xl p-2.5 w-10 h-10 flex items-center justify-center rounded-2xl ${catColors.iconBg} border border-gray-100 group-hover:scale-105 transition-transform`}>
                         <i className={matchedIcon.iconClass}></i>
                       </span>
                       <div>
-                        <span className={`inline-block text-[11px] font-bold px-2 py-0.5 rounded-md border ${schedInfo.badge}`}>
+                        <span className={`inline-block text-[11px] font-bold px-2 py-0.5 rounded-md border ${catColors.badge}`}>
                           {isEn ? schedInfo.en : schedInfo.vi}
                         </span>
                         <div className="text-[11px] font-mono text-gray-400 mt-0.5 truncate max-w-[160px]">
@@ -354,7 +354,7 @@ export function CmsCategories({
 
                   {/* Title & Description */}
                   <div className="space-y-1.5 pt-1">
-                    <h3 className="text-base font-black text-gray-900 group-hover:text-red-600 transition-colors leading-snug">
+                    <h3 className={`text-base font-black text-gray-900 group-hover:${catColors.text} transition-colors leading-snug`}>
                       {isEn ? nameEn : nameVi}
                     </h3>
                     {nameVi !== nameEn && (
@@ -627,30 +627,53 @@ export function CmsCategories({
               {/* Color & Icon Settings */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                    Màu sắc nhận diện (Theme Color)
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={editingCategory.color || '#3B82F6'}
-                      onChange={(e) => setEditingCategory({ ...editingCategory, color: e.target.value })}
-                      className="w-8 h-8 rounded-lg border border-gray-200 cursor-pointer p-0.5"
-                    />
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      {COLOR_PRESETS.map((p) => (
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-gray-700">
+                      Màu sắc Flowbite (Theme Color) <span className="text-red-500">*</span>
+                    </label>
+                    {/* Live Preview Badge */}
+                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getCategoryColorClasses(editingCategory.color).badge}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${getCategoryColorClasses(editingCategory.color).dotBg}`} />
+                      <span>{isEn ? getCategoryColorClasses(editingCategory.color).nameEn : getCategoryColorClasses(editingCategory.color).nameVi}</span>
+                    </span>
+                  </div>
+
+                  <select
+                    aria-label="Chọn màu sắc Flowbite"
+                    value={normalizeCategoryColor(editingCategory.color)}
+                    onChange={(e) => setEditingCategory({ ...editingCategory, color: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
+                  >
+                    {FLOWBITE_CATEGORY_COLORS.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {isEn ? c.nameEn : c.nameVi}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Flowbite Color Swatches Quick-pick */}
+                  <div className="flex items-center gap-1.5 flex-wrap mt-2">
+                    {FLOWBITE_CATEGORY_COLORS.map((c) => {
+                      const isSelected = normalizeCategoryColor(editingCategory.color) === c.id;
+                      return (
                         <button
-                          key={p.hex}
+                          key={c.id}
                           type="button"
-                          onClick={() => setEditingCategory({ ...editingCategory, color: p.hex })}
-                          style={{ backgroundColor: p.hex }}
-                          className={`w-6 h-6 rounded-full border-2 transition-transform ${
-                            editingCategory.color === p.hex ? 'border-gray-900 scale-110 shadow-xs' : 'border-white hover:scale-105'
+                          onClick={() => setEditingCategory({ ...editingCategory, color: c.id })}
+                          className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer ${c.dotBg} ${
+                            isSelected
+                              ? 'ring-2 ring-offset-2 ring-gray-900 scale-110 shadow-xs'
+                              : 'opacity-70 hover:opacity-100 hover:scale-105'
                           }`}
-                          title={p.name}
-                        />
-                      ))}
-                    </div>
+                          title={isEn ? c.nameEn : c.nameVi}
+                          aria-label={c.nameVi}
+                        >
+                          {isSelected && (
+                            <i className="fa-solid fa-check text-white text-[9px]"></i>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
