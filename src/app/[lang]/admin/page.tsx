@@ -9,7 +9,7 @@ export default function AdminPage() {
 
   return (
     <CmsLayout activeTab={activeTab} onSelectTab={setActiveTab}>
-      <CmsView activeTab={activeTab} />
+      <CmsView activeTab={activeTab} onSelectTab={setActiveTab} />
     </CmsLayout>
   );
 }
