@@ -147,7 +147,7 @@ describe('Blog Components', () => {
     expect(getByText('Kiến trúc tổng thể giải cứu hệ thống')).toBeDefined();
     expect(getByText('Phân tích chi tiết bài toán OOM và giải pháp Medallion Architecture.')).toBeDefined();
     expect(getByText('Mục Lục Bài Viết')).toBeDefined();
-    expect(getAllByText('← Quay lại danh sách bài viết').length).toBeGreaterThan(0);
+    expect(getAllByText(/Quay lại danh sách bài viết/).length).toBeGreaterThan(0);
   });
 
   it('supports pagination across multiple pages and updates current page view', () => {

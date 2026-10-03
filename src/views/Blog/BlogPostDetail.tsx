@@ -59,7 +59,7 @@ export function BlogPostDetailView({ post }: { post: BlogPost }) {
       </div>
 
       {/* Article Header Card */}
-      <header className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+      <header className="bg-white backdrop-blur-sm border border-gray-100 border-t-4 border-t-red-500 hover:border-red-500 rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-lg transition-all ease-in-out space-y-4">
         <div className="flex flex-wrap items-center gap-2">
           {post.category && (
             <span className="px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 text-xs font-semibold border border-red-200">
@@ -101,7 +101,7 @@ export function BlogPostDetailView({ post }: { post: BlogPost }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Article Body */}
         <article className={`${toc.length > 0 ? 'lg:col-span-8 xl:col-span-9' : 'lg:col-span-12'}`}>
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-xs">
+          <div className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all ease-in-out">
             <div
               className="space-y-4 text-gray-800 leading-relaxed text-sm sm:text-base [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-gray-900 [&>h2]:mt-8 [&>h2]:mb-3 [&>h2]:pt-4 [&>h2]:border-t [&>h2]:border-gray-100 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:text-gray-900 [&>h3]:mt-6 [&>h3]:mb-2 [&>p]:mb-4 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1 [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:space-y-1 [&>blockquote]:border-l-4 [&>blockquote]:border-red-400 [&>blockquote]:bg-red-50/40 [&>blockquote]:p-3.5 [&>blockquote]:rounded-r-lg [&>blockquote]:italic [&>pre]:bg-gray-900 [&>pre]:text-gray-100 [&>pre]:p-4 [&>pre]:rounded-xl [&>pre]:overflow-x-auto [&>pre]:my-4 [&>pre]:text-xs [&>pre]:sm:text-sm [&>pre]:font-mono [&>code]:bg-gray-100 [&>code]:text-red-600 [&>code]:px-1.5 [&>code]:py-0.5 [&>code]:rounded [&>code]:text-xs [&>code]:font-mono [&>img]:rounded-xl [&>img]:my-4 [&>img]:shadow-xs"
               dangerouslySetInnerHTML={{ __html: htmlContent }}
@@ -112,7 +112,7 @@ export function BlogPostDetailView({ post }: { post: BlogPost }) {
         {/* Table of Contents (Sticky on Desktop) */}
         {toc.length > 0 && (
           <aside className="lg:col-span-4 xl:col-span-3 hidden lg:block sticky top-24">
-            <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-xs space-y-3">
+            <div className="bg-white backdrop-blur-sm border border-gray-100 border-t-4 border-t-red-500 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all ease-in-out space-y-3">
               <div className="flex items-center gap-1.5 pb-2 border-b border-gray-100">
                 <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <line x1="8" y1="6" x2="21" y2="6" />
@@ -132,9 +132,8 @@ export function BlogPostDetailView({ post }: { post: BlogPost }) {
                     key={idx}
                     href={`#${item.id}`}
                     onClick={() => handleTocClick(item)}
-                    className={`block text-gray-600 hover:text-red-600 hover:font-medium transition-colors truncate py-1 ${
-                      item.level === 3 ? 'pl-3 text-[11px]' : ''
-                    } ${item.level === 4 ? 'pl-5 text-[10px]' : ''}`}
+                    className={`block text-gray-600 hover:text-red-600 hover:font-medium transition-colors truncate py-1 ${item.level === 3 ? 'pl-3 text-[11px]' : ''
+                      } ${item.level === 4 ? 'pl-5 text-[10px]' : ''}`}
                     title={item.text}
                   >
                     {item.text}
@@ -147,7 +146,7 @@ export function BlogPostDetailView({ post }: { post: BlogPost }) {
       </div>
 
       {/* Article Footer */}
-      <footer className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-all ease-in-out flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-rose-600 text-white flex items-center justify-center font-bold text-base shadow-md shadow-red-500/20">
             T

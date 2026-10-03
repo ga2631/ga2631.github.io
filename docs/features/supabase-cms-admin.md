@@ -87,6 +87,7 @@ The architecture leverages the Supabase database schema designed for multi-langu
 - **Zero-Dependency Safe Markdown Parser (`markdownParser.ts`):** Custom parser generating automated slug IDs for headings, code syntax blocks, and fast in-memory HTML conversion.
 - **Full-Height Adaptive Blog Sidebar Layout (`BlogView` & `globals.css`):** Zero-drift sticky layout with scheduled Categories locked (`shrink-0`), while Tags & Keywords dynamically flexes (`lg:flex-1 min-h-0`) with a custom slim scrollbar (`.custom-scrollbar`).
 - **Symmetric Viewbox, Viewport Lock & Isolated Article Scroll (`BlogLayout` & `BlogView`):** Entire window/page scrolling is locked on desktop (`lg:h-screen lg:overflow-hidden`), ensuring Header, Search, Sidebar, and Pagination remain 100% fixed with ZERO drift. Only the article card grid (`flex-1 min-h-0 overflow-y-auto custom-scrollbar`) scrolls independently, configured with a 20-post per page limit (`POSTS_PER_PAGE = 20`) and smart page navigation.
+- **Consistent CV Box Design Alignment (`BlogView` & `BlogPostDetail`):** All card containers across the Blog views strictly adhere to the CV page box styling guidelines (`bg-white backdrop-blur-sm rounded-3xl p-5/p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all ease-in-out`), featuring the signature `border-t-4` colored accent borders mapped dynamically to weekday publishing themes (Architecture: blue, Data: emerald, DevOps: amber, Programming: purple, Tech Radar: rose, default: red).
 
 ---
 

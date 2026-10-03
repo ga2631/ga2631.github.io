@@ -14,31 +14,37 @@ function getCategoryColor(dayCode?: string) {
       return {
         badge: 'bg-blue-50 text-blue-700 border-blue-200',
         iconBg: 'bg-blue-100 text-blue-600',
+        borderTop: 'border-t-blue-500 hover:border-blue-500',
       };
     case 'TUE':
       return {
         badge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
         iconBg: 'bg-emerald-100 text-emerald-600',
+        borderTop: 'border-t-emerald-500 hover:border-emerald-500',
       };
     case 'WED':
       return {
         badge: 'bg-amber-50 text-amber-700 border-amber-200',
         iconBg: 'bg-amber-100 text-amber-600',
+        borderTop: 'border-t-amber-500 hover:border-amber-500',
       };
     case 'THU':
       return {
         badge: 'bg-purple-50 text-purple-700 border-purple-200',
         iconBg: 'bg-purple-100 text-purple-600',
+        borderTop: 'border-t-purple-500 hover:border-purple-500',
       };
     case 'FRI':
       return {
         badge: 'bg-rose-50 text-rose-700 border-rose-200',
         iconBg: 'bg-rose-100 text-rose-600',
+        borderTop: 'border-t-rose-500 hover:border-rose-500',
       };
     default:
       return {
         badge: 'bg-indigo-50 text-indigo-700 border-indigo-200',
         iconBg: 'bg-indigo-100 text-indigo-600',
+        borderTop: 'border-t-red-500 hover:border-red-500',
       };
   }
 }
@@ -238,7 +244,7 @@ export function BlogView({
         <button
           type="button"
           onClick={() => setIsMobileFilterOpen((prev) => !prev)}
-          className="w-full flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-xl shadow-xs text-sm font-medium text-gray-900 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-red-500 transition-colors cursor-pointer"
+          className="w-full flex items-center justify-between p-3.5 bg-white backdrop-blur-sm border border-gray-100 border-t-4 border-t-red-500 rounded-2xl shadow-sm text-sm font-medium text-gray-900 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-red-500 transition-all cursor-pointer"
           aria-expanded={isMobileFilterOpen}
         >
           <div className="flex items-center gap-2">
@@ -257,12 +263,11 @@ export function BlogView({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 flex-1 min-h-0 items-stretch">
         {/* LEFT SIDEBAR: Categories (Top) & Tags (Bottom) - Full Height */}
         <aside
-          className={`lg:col-span-4 xl:col-span-3 space-y-4 lg:h-full lg:max-h-full flex flex-col min-h-0 relative z-30 ${
-            isMobileFilterOpen ? 'block' : 'hidden lg:flex'
-          }`}
+          className={`lg:col-span-4 xl:col-span-3 space-y-4 lg:h-full lg:max-h-full flex flex-col min-h-0 relative z-30 ${isMobileFilterOpen ? 'block' : 'hidden lg:flex'
+            }`}
         >
           {/* Section 1: Categories (Top) with Rich Hover Popover on the Right */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs shrink-0 overflow-visible relative">
+          <div className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-lg transition-all ease-in-out shrink-0 overflow-visible relative">
             <div className="flex items-center gap-2 pb-3 mb-3 border-b border-gray-100">
               <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -290,11 +295,10 @@ export function BlogView({
                     <button
                       type="button"
                       onClick={() => handleCategorySelect(cat.id)}
-                      className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium transition-all text-left border cursor-pointer ${
-                        isSelected
-                          ? 'bg-red-50 text-red-700 font-semibold border-red-200 shadow-2xs'
-                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 border-transparent'
-                      }`}
+                      className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium transition-all text-left border cursor-pointer ${isSelected
+                        ? 'bg-red-50 text-red-700 font-semibold border-red-200 shadow-2xs'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 border-transparent'
+                        }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0 pr-2">
                         <div
@@ -305,11 +309,10 @@ export function BlogView({
                         <span className="truncate">{title}</span>
                       </div>
                       <span
-                        className={`text-xs px-2 py-0.5 rounded-full font-mono shrink-0 ${
-                          isSelected
-                            ? 'bg-red-600 text-white font-bold'
-                            : 'bg-gray-100 text-gray-600 font-semibold'
-                        }`}
+                        className={`text-xs px-2 py-0.5 rounded-full font-mono shrink-0 ${isSelected
+                          ? 'bg-red-600 text-white font-bold'
+                          : 'bg-gray-100 text-gray-600 font-semibold'
+                          }`}
                       >
                         {count}
                       </span>
@@ -317,9 +320,9 @@ export function BlogView({
 
                     {/* Popover Card on Hover (Displays to the Right with Left Arrow) */}
                     <div className="hidden lg:block absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 w-80 pointer-events-none opacity-0 invisible -translate-x-2 transition-all duration-200 ease-out group-hover/cat:opacity-100 group-hover/cat:visible group-hover/cat:translate-x-0 group-hover/cat:pointer-events-auto">
-                      <div className="relative bg-white border border-gray-200 rounded-2xl p-4 shadow-xl text-left space-y-2.5">
+                      <div className="relative bg-white backdrop-blur-sm border border-gray-100 border-t-4 border-t-red-500 rounded-3xl p-5 shadow-xl text-left space-y-2.5">
                         {/* Pointer Arrow pointing directly Left to the Category */}
-                        <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-l border-b border-gray-200 rotate-45 z-10" />
+                        <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-l border-b border-gray-100 rotate-45 z-10" />
 
                         {/* Popover Top Bar */}
                         <div className="flex items-center justify-between gap-2 relative z-20">
@@ -367,7 +370,7 @@ export function BlogView({
 
           {/* Section 2: Tags & Keywords (Bottom) - Fills remaining space & scrollable independently */}
           {statistics.allTags.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-xs lg:flex-1 flex flex-col min-h-0 overflow-hidden">
+            <div className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-lg transition-all ease-in-out lg:flex-1 flex flex-col min-h-0 overflow-hidden">
               <div className="flex items-center gap-2 pb-3 mb-3 border-b border-gray-100 shrink-0">
                 <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
@@ -384,11 +387,10 @@ export function BlogView({
                 <button
                   type="button"
                   onClick={() => handleTagSelect('all')}
-                  className={`text-xs px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-                    selectedTag === 'all'
-                      ? 'bg-red-600 text-white font-semibold shadow-2xs'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
-                  }`}
+                  className={`text-xs px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${selectedTag === 'all'
+                    ? 'bg-red-600 text-white font-semibold shadow-2xs'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
+                    }`}
                 >
                   <span>{dict.blog.allTags || 'Tất cả Thẻ & Từ khoá'}</span>
                   <span className={`text-[10px] font-mono ${selectedTag === 'all' ? 'text-red-100' : 'text-gray-500'}`}>
@@ -406,11 +408,10 @@ export function BlogView({
                       key={tg}
                       type="button"
                       onClick={() => handleTagSelect(tg)}
-                      className={`text-xs px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
-                        isSelected
-                          ? 'bg-red-600 text-white font-semibold shadow-2xs'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
-                      }`}
+                      className={`text-xs px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${isSelected
+                        ? 'bg-red-600 text-white font-semibold shadow-2xs'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
+                        }`}
                     >
                       <span>#{tg}</span>
                       <span className={`text-[10px] font-mono ${isSelected ? 'text-red-100' : 'text-gray-500'}`}>
@@ -438,10 +439,9 @@ export function BlogView({
 
             {/* Sticky Search Input */}
             <div className="relative w-full">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-400">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="m21 21-4.3-4.3" />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400 z-10">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
               </div>
               <input
@@ -449,13 +449,13 @@ export function BlogView({
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder={dict.blog.searchPlaceholder}
-                className="block w-full p-2.5 ps-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-red-500 focus:border-red-500 shadow-2xs transition-all"
+                className="block w-full p-2.5 pl-10 pr-10 text-sm text-gray-900 border border-gray-200 rounded-2xl bg-white backdrop-blur-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 shadow-xs transition-all"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute inset-y-0 end-0 flex items-center pe-3 text-gray-400 hover:text-gray-600 cursor-pointer"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 cursor-pointer z-10"
                   aria-label="Clear search"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -530,7 +530,7 @@ export function BlogView({
             {isLoading ? (
               <LoadingModal variant="inline" message={dict.common.loadingSupabase} />
             ) : filteredPosts.length === 0 ? (
-              <div className="py-16 text-center bg-white border border-gray-200 rounded-2xl p-8 max-w-xl mx-auto shadow-xs">
+              <div className="py-16 text-center bg-white backdrop-blur-sm border border-gray-100 border-t-4 border-t-red-500 rounded-3xl p-8 max-w-xl mx-auto shadow-sm hover:shadow-lg transition-all ease-in-out">
                 <div className="text-3xl mb-3">🔍</div>
                 <p className="text-sm text-gray-800 font-semibold mb-1">
                   {dict.blog.noPostsFound}
@@ -554,7 +554,7 @@ export function BlogView({
                   return (
                     <article
                       key={post.id}
-                      className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md hover:border-gray-300 transition-all flex flex-col justify-between group"
+                      className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 ${catColors.borderTop} hover:shadow-lg transition-all ease-in-out flex flex-col justify-between group`}
                     >
                       <div>
                         {/* Category Badge Pill */}
@@ -636,11 +636,10 @@ export function BlogView({
                     type="button"
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-2.5 py-1.5 rounded-lg border font-medium transition-colors flex items-center gap-1 ${
-                      currentPage === 1
-                        ? 'border-gray-200 text-gray-400 bg-gray-100/50 cursor-not-allowed opacity-60'
-                        : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 cursor-pointer shadow-2xs'
-                    }`}
+                    className={`px-2.5 py-1.5 rounded-lg border font-medium transition-colors flex items-center gap-1 ${currentPage === 1
+                      ? 'border-gray-200 text-gray-400 bg-gray-100/50 cursor-not-allowed opacity-60'
+                      : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 cursor-pointer shadow-2xs'
+                      }`}
                     aria-label="Previous page"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -666,11 +665,10 @@ export function BlogView({
                           key={pageNum}
                           type="button"
                           onClick={() => handlePageChange(pageNum)}
-                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg font-mono text-xs font-semibold transition-colors cursor-pointer ${
-                            isActive
-                              ? 'bg-red-600 text-white shadow-2xs'
-                              : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
-                          }`}
+                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg font-mono text-xs font-semibold transition-colors cursor-pointer ${isActive
+                            ? 'bg-red-600 text-white shadow-2xs'
+                            : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                            }`}
                         >
                           {pageNum}
                         </button>
@@ -683,11 +681,10 @@ export function BlogView({
                     type="button"
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`px-2.5 py-1.5 rounded-lg border font-medium transition-colors flex items-center gap-1 ${
-                      currentPage === totalPages
-                        ? 'border-gray-200 text-gray-400 bg-gray-100/50 cursor-not-allowed opacity-60'
-                        : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 cursor-pointer shadow-2xs'
-                    }`}
+                    className={`px-2.5 py-1.5 rounded-lg border font-medium transition-colors flex items-center gap-1 ${currentPage === totalPages
+                      ? 'border-gray-200 text-gray-400 bg-gray-100/50 cursor-not-allowed opacity-60'
+                      : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 cursor-pointer shadow-2xs'
+                      }`}
                     aria-label="Next page"
                   >
                     <span>{isEn ? 'Next' : 'Sau'}</span>
