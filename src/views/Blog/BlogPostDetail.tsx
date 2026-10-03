@@ -361,19 +361,6 @@ export function BlogPostDetailView({
         </div>
       </div>
 
-      {/* Back to Blog Breadcrumb */}
-      <div>
-        <Link
-          href={getLocalizedHref('blog')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-red-600 transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span>{dict.blog.backToBlog}</span>
-        </Link>
-      </div>
-
       {/* Article Header Card */}
       <header
         ref={headerRef}
@@ -468,25 +455,24 @@ export function BlogPostDetailView({
         )}
       </div>
 
-      {/* Article Footer */}
-      <footer className="bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-all ease-in-out flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-rose-600 text-white flex items-center justify-center font-bold text-base shadow-md shadow-red-500/20">
-            T
-          </div>
-          <div>
-            <div className="text-xs font-bold text-gray-900">{post.author}</div>
-            <div className="text-[11px] text-gray-500">{dict.blog.authorRole || 'Kỹ sư Full stack & Dữ liệu'}</div>
-          </div>
-        </div>
-
-        <Link
-          href={getLocalizedHref('blog')}
-          className="px-4 py-2 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-800 text-xs font-medium border border-gray-200 hover:text-red-600 transition-colors shadow-2xs"
+      {/* Floating Back to Blog Button */}
+      <Link
+        href={getLocalizedHref('blog')}
+        aria-label={dict.blog.backToBlog}
+        title={dict.blog.backToBlog}
+        className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs sm:text-sm font-semibold rounded-full shadow-lg shadow-red-500/35 hover:shadow-xl hover:shadow-red-500/45 transition-all duration-300 ease-out hover:-translate-y-1 active:scale-95 group cursor-pointer"
+      >
+        <svg
+          className="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0 transition-transform duration-300 group-hover:-translate-x-1"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          viewBox="0 0 24 24"
         >
-          {dict.blog.backToBlog}
-        </Link>
-      </footer>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span className="tracking-tight">{dict.blog.backToBlog}</span>
+      </Link>
     </div>
   );
 }

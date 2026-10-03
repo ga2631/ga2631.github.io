@@ -91,7 +91,7 @@ export const enDict: Dictionary = {
     author: 'Author',
     tocTitle: 'Table of Contents',
     shareArticle: 'Share Article',
-    backToBlog: 'Back to Articles',
+    backToBlog: 'Articles',
     backToHome: 'Back to CV',
     noPostsFound: 'No articles matched your selected filters.',
     recentPosts: 'Recent Articles',

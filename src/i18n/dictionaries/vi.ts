@@ -89,7 +89,7 @@ export const viDict = {
     author: 'Tác giả',
     tocTitle: 'Mục Lục Bài Viết',
     shareArticle: 'Chia sẻ bài viết',
-    backToBlog: 'Quay lại danh sách bài viết',
+    backToBlog: 'Danh sách bài viết',
     backToHome: 'Về trang CV',
     noPostsFound: 'Không tìm thấy bài viết nào phù hợp với bộ lọc.',
     recentPosts: 'Bài viết mới nhất',

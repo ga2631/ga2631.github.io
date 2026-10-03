@@ -150,7 +150,7 @@ describe('Blog Components', () => {
     expect(getByRole('region', { name: 'Sticky article header' })).toBeDefined();
     expect(getByText('Phân tích chi tiết bài toán OOM và giải pháp Medallion Architecture.')).toBeDefined();
     expect(getByText('Mục Lục Bài Viết')).toBeDefined();
-    expect(getAllByText(/Quay lại danh sách bài viết/).length).toBeGreaterThan(0);
+    expect(getAllByText(/Danh sách bài viết/).length).toBeGreaterThan(0);
   });
 
   it('toggles summary and tags when clicking the sticky header title', () => {
@@ -346,7 +346,7 @@ describe('Blog Components', () => {
     expect(getByRole('status', { name: 'Loading article detail' })).toBeDefined();
 
     // Breadcrumb and TOC title
-    expect(getByText('Quay lại danh sách bài viết')).toBeDefined();
+    expect(getByText('Danh sách bài viết')).toBeDefined();
     expect(getByText('Mục Lục Bài Viết')).toBeDefined();
 
     // No modal dialog
