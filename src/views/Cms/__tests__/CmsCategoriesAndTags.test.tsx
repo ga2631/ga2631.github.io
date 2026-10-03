@@ -190,9 +190,9 @@ describe('CMS Phase 2: Categories and Tags Management', () => {
       const nameInput = screen.getByPlaceholderText(/Ví dụ: Kiến trúc Hệ thống/i);
       fireEvent.change(nameInput, { target: { value: 'DevOps & Cloud' } });
 
-      // Pick purple from Flowbite color dropdown
-      const colorSelect = screen.getByRole('combobox', { name: 'Chọn màu sắc Flowbite' });
-      fireEvent.change(colorSelect, { target: { value: 'purple' } });
+      // Pick purple from Flowbite color swatches
+      const purpleSwatch = screen.getByLabelText('Tím (Purple)');
+      fireEvent.click(purpleSwatch);
 
       // Click save
       const submitButton = screen.getByRole('button', { name: /Lưu Chuyên Mục/i });

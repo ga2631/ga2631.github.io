@@ -627,32 +627,12 @@ export function CmsCategories({
               {/* Color & Icon Settings */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-gray-700">
-                      Màu sắc Flowbite (Theme Color) <span className="text-red-500">*</span>
-                    </label>
-                    {/* Live Preview Badge */}
-                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${getCategoryColorClasses(editingCategory.color).badge}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${getCategoryColorClasses(editingCategory.color).dotBg}`} />
-                      <span>{isEn ? getCategoryColorClasses(editingCategory.color).nameEn : getCategoryColorClasses(editingCategory.color).nameVi}</span>
-                    </span>
-                  </div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">
+                    Màu sắc Flowbite (Theme Color) <span className="text-red-500">*</span>
+                  </label>
 
-                  <select
-                    aria-label="Chọn màu sắc Flowbite"
-                    value={normalizeCategoryColor(editingCategory.color)}
-                    onChange={(e) => setEditingCategory({ ...editingCategory, color: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
-                  >
-                    {FLOWBITE_CATEGORY_COLORS.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {isEn ? c.nameEn : c.nameVi}
-                      </option>
-                    ))}
-                  </select>
-
-                  {/* Flowbite Color Swatches Quick-pick */}
-                  <div className="flex items-center gap-1.5 flex-wrap mt-2">
+                  {/* Flowbite Color Swatches Palette */}
+                  <div className="flex items-center gap-2 flex-wrap py-1">
                     {FLOWBITE_CATEGORY_COLORS.map((c) => {
                       const isSelected = normalizeCategoryColor(editingCategory.color) === c.id;
                       return (
@@ -660,16 +640,16 @@ export function CmsCategories({
                           key={c.id}
                           type="button"
                           onClick={() => setEditingCategory({ ...editingCategory, color: c.id })}
-                          className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer ${c.dotBg} ${
+                          className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer ${c.dotBg} ${
                             isSelected
                               ? 'ring-2 ring-offset-2 ring-gray-900 scale-110 shadow-xs'
-                              : 'opacity-70 hover:opacity-100 hover:scale-105'
+                              : 'opacity-75 hover:opacity-100 hover:scale-105'
                           }`}
                           title={isEn ? c.nameEn : c.nameVi}
                           aria-label={c.nameVi}
                         >
                           {isSelected && (
-                            <i className="fa-solid fa-check text-white text-[9px]"></i>
+                            <i className="fa-solid fa-check text-white text-[10px]"></i>
                           )}
                         </button>
                       );
