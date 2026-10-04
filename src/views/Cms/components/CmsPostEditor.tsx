@@ -429,14 +429,6 @@ export function CmsPostEditor({
               </span>
             )}
           </div>
-
-          {/* Reading Stats pill */}
-          <div className="hidden md:flex items-center gap-1.5 text-[11px] text-gray-500 font-mono bg-gray-50 px-2.5 py-1 rounded-xl border border-gray-200">
-            <i className="fa-solid fa-clock text-xs text-gray-400"></i>
-            <span>{editingPost.read_time || 5}m</span>
-            <span>•</span>
-            <span>{readingStats.words} từ</span>
-          </div>
         </div>
 
         {/* Right: Actions */}
@@ -491,9 +483,8 @@ export function CmsPostEditor({
               type="button"
               aria-label="VI"
               onClick={() => setActiveLang('vi')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                activeLang === 'vi' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${activeLang === 'vi' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600 hover:text-gray-900'
+                }`}
               title="Bản Tiếng Việt (Mặc định)"
             >
               <span>VI</span>
@@ -503,9 +494,8 @@ export function CmsPostEditor({
               type="button"
               aria-label="EN"
               onClick={() => setActiveLang('en')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                activeLang === 'en' ? 'bg-blue-600 text-white shadow-2xs font-extrabold' : 'text-gray-600 hover:text-gray-900'
-              }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${activeLang === 'en' ? 'bg-blue-600 text-white shadow-2xs font-extrabold' : 'text-gray-600 hover:text-gray-900'
+                }`}
               title="Bản Tiếng Anh (Khi chọn)"
             >
               <span>EN</span>
@@ -585,11 +575,10 @@ export function CmsPostEditor({
                 <button
                   type="button"
                   onClick={() => setShowViReference(!showViReference)}
-                  className={`px-2.5 py-1 rounded-xl font-bold border flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors text-[11px] ${
-                    showViReference
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white hover:bg-blue-100/60 text-blue-700 border-blue-200'
-                  }`}
+                  className={`px-2.5 py-1 rounded-xl font-bold border flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors text-[11px] ${showViReference
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white hover:bg-blue-100/60 text-blue-700 border-blue-200'
+                    }`}
                   title="Mở bảng đối chiếu nội dung Tiếng Việt gốc"
                 >
                   <i className="fa-solid fa-columns text-xs"></i>
