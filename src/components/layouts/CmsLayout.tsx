@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { LanguageSwitcher } from '../navigation/LanguageSwitcher';
 import { getCurrentUser, signOut, onAuthStateChange } from '@/services/authService';
 import { isSupabaseConfigured } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
@@ -63,9 +62,8 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                   CMS Studio
                 </span>
                 <span
-                  className={`w-2 h-2 rounded-full ${
-                    isConfigured ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-                  }`}
+                  className={`w-2 h-2 rounded-full ${isConfigured ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
+                    }`}
                   title={isConfigured ? dict.cms.connected : dict.cms.disconnected}
                 />
               </div>
@@ -84,11 +82,10 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                   key={item.id}
                   type="button"
                   onClick={() => onSelectTab(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-white text-red-600 shadow-xs font-black'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 font-semibold'
-                  }`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${isActive
+                    ? 'bg-white text-red-600 shadow-xs font-black'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 font-semibold'
+                    }`}
                 >
                   <i className={`${item.iconClass} text-xs`}></i>
                   <span>{item.label}</span>
@@ -108,9 +105,6 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
               <i className="fa-solid fa-globe text-xs"></i>
               <span className="hidden xl:inline">{dict.cms.viewSite}</span>
             </Link>
-
-            {/* Language Switcher */}
-            <LanguageSwitcher />
 
             {/* User Profile / Sign Out */}
             {currentUser && (
@@ -162,11 +156,10 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                       onSelectTab(item.id);
                       setIsMobileNavOpen(false);
                     }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs transition-all ${
-                      isActive
-                        ? 'bg-red-50 text-red-600 border border-red-200 font-bold'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 font-medium'
-                    }`}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs transition-all ${isActive
+                      ? 'bg-red-50 text-red-600 border border-red-200 font-bold'
+                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100 font-medium'
+                      }`}
                   >
                     <i className={`${item.iconClass} text-xs`}></i>
                     <span>{item.label}</span>

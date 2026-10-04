@@ -213,7 +213,7 @@ export function CmsPostEditor({
           }
         });
       })
-      .catch(() => {});
+      .catch(() => { });
 
     return () => {
       isMounted = false;
@@ -396,13 +396,12 @@ export function CmsPostEditor({
           <button
             type="button"
             onClick={() => setShowSeoDrawer(true)}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              seoResult.status === 'excellent'
-                ? 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100/60'
-                : seoResult.status === 'good'
+            className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${seoResult.status === 'excellent'
+              ? 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100/60'
+              : seoResult.status === 'good'
                 ? 'bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100/60'
                 : 'bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100/60'
-            }`}
+              }`}
             title="Mở bảng phân tích SEO & xem trước Google Search"
           >
             <i className="fa-solid fa-bullseye text-xs"></i>
@@ -414,27 +413,24 @@ export function CmsPostEditor({
             <button
               type="button"
               onClick={() => setEditorMode('write')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                editorMode === 'write' ? 'bg-white text-gray-900 shadow-2xs font-bold' : 'text-gray-500'
-              }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${editorMode === 'write' ? 'bg-white text-gray-900 shadow-2xs font-bold' : 'text-gray-500'
+                }`}
             >
               Viết
             </button>
             <button
               type="button"
               onClick={() => setEditorMode('split')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                editorMode === 'split' ? 'bg-white text-gray-900 shadow-2xs font-bold' : 'text-gray-500'
-              }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${editorMode === 'split' ? 'bg-white text-gray-900 shadow-2xs font-bold' : 'text-gray-500'
+                }`}
             >
               Chia đôi
             </button>
             <button
               type="button"
               onClick={() => setEditorMode('preview')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                editorMode === 'preview' ? 'bg-white text-gray-900 shadow-2xs font-bold' : 'text-gray-500'
-              }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${editorMode === 'preview' ? 'bg-white text-gray-900 shadow-2xs font-bold' : 'text-gray-500'
+                }`}
             >
               Xem trước
             </button>
@@ -445,18 +441,16 @@ export function CmsPostEditor({
             <button
               type="button"
               onClick={() => setActiveLang('vi')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                activeLang === 'vi' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600'
-              }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${activeLang === 'vi' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600'
+                }`}
             >
               VI
             </button>
             <button
               type="button"
               onClick={() => setActiveLang('en')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                activeLang === 'en' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600'
-              }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${activeLang === 'en' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600'
+                }`}
             >
               EN
             </button>
@@ -466,9 +460,8 @@ export function CmsPostEditor({
           <button
             type="button"
             onClick={() => setShowSidebar(!showSidebar)}
-            className={`p-1.5 px-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              showSidebar ? 'bg-gray-100 text-gray-800 border-gray-300' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
-            }`}
+            className={`p-1.5 px-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${showSidebar ? 'bg-gray-100 text-gray-800 border-gray-300' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+              }`}
             title="Ẩn / Hiện cài đặt bài viết bên phải"
           >
             <i className="fa-solid fa-gear text-xs"></i>
@@ -785,24 +778,10 @@ export function CmsPostEditor({
                 <option value="">-- Chọn chuyên mục --</option>
                 {categories.map((c) => (
                   <option key={c.id || c.slug} value={c.id || c.slug}>
-                    {c.post_schedule ? `[Thứ ${c.post_schedule + 1}] ` : ''}
                     {c.translations?.[activeLang]?.name || c.translations?.vi?.name || c.slug}
                   </option>
                 ))}
               </select>
-              {editingPost.category_id && (() => {
-                const selectedCat = categories.find((c) => (c.id || c.slug) === editingPost.category_id);
-                if (!selectedCat) return null;
-                const catColors = getCategoryColorClasses(selectedCat.color);
-                return (
-                  <div className="mt-2 flex items-center gap-1.5">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${catColors.badge}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${catColors.dotBg}`} />
-                      <span>{selectedCat.translations?.[activeLang]?.name || selectedCat.translations?.vi?.name || selectedCat.slug}</span>
-                    </span>
-                  </div>
-                );
-              })()}
             </div>
 
             {/* 2.3.4. Ngày Đăng Bài (Smart date recommendation) */}
@@ -950,9 +929,8 @@ export function CmsPostEditor({
               </div>
               <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className={`h-full transition-all duration-500 ${
-                    seoResult.score >= 80 ? 'bg-emerald-500' : seoResult.score >= 50 ? 'bg-amber-500' : 'bg-red-500'
-                  }`}
+                  className={`h-full transition-all duration-500 ${seoResult.score >= 80 ? 'bg-emerald-500' : seoResult.score >= 50 ? 'bg-amber-500' : 'bg-red-500'
+                    }`}
                   style={{ width: `${seoResult.score}%` }}
                 />
               </div>
@@ -1028,11 +1006,10 @@ export function CmsPostEditor({
                   {seoResult.checks.map((chk, i) => (
                     <div
                       key={i}
-                      className={`p-3 rounded-xl border flex items-start gap-2.5 ${
-                        chk.passed
-                          ? 'bg-emerald-50/60 border-emerald-200 text-emerald-900'
-                          : 'bg-amber-50/60 border-amber-200 text-amber-900'
-                      }`}
+                      className={`p-3 rounded-xl border flex items-start gap-2.5 ${chk.passed
+                        ? 'bg-emerald-50/60 border-emerald-200 text-emerald-900'
+                        : 'bg-amber-50/60 border-amber-200 text-amber-900'
+                        }`}
                     >
                       <span className="font-bold text-sm shrink-0">
                         {chk.passed ? (

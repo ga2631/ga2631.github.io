@@ -216,9 +216,8 @@ export function CmsCategories({
             return (
               <div
                 key={day.value}
-                className={`p-4 rounded-2xl border border-t-4 ${dayColors.borderTop} ${
-                  matched ? 'bg-white shadow-xs border-gray-200' : 'bg-gray-50/70 border-dashed border-gray-200'
-                } flex flex-col justify-between transition-all`}
+                className={`p-4 rounded-2xl border border-t-4 ${dayColors.borderTop} ${matched ? 'bg-white shadow-xs border-gray-200' : 'bg-gray-50/70 border-dashed border-gray-200'
+                  } flex flex-col justify-between transition-all`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
@@ -448,22 +447,20 @@ export function CmsCategories({
                     <button
                       type="button"
                       onClick={() => setActiveLangTab('vi')}
-                      className={`px-3 py-1 rounded-lg transition-all ${
-                        activeLangTab === 'vi'
-                          ? 'bg-white text-gray-900 shadow-2xs font-extrabold'
-                          : 'text-gray-500 hover:text-gray-800'
-                      }`}
+                      className={`px-3 py-1 rounded-lg transition-all ${activeLangTab === 'vi'
+                        ? 'bg-white text-gray-900 shadow-2xs font-extrabold'
+                        : 'text-gray-500 hover:text-gray-800'
+                        }`}
                     >
                       🇻🇳 Tiếng Việt
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveLangTab('en')}
-                      className={`px-3 py-1 rounded-lg transition-all ${
-                        activeLangTab === 'en'
-                          ? 'bg-white text-gray-900 shadow-2xs font-extrabold'
-                          : 'text-gray-500 hover:text-gray-800'
-                      }`}
+                      className={`px-3 py-1 rounded-lg transition-all ${activeLangTab === 'en'
+                        ? 'bg-white text-gray-900 shadow-2xs font-extrabold'
+                        : 'text-gray-500 hover:text-gray-800'
+                        }`}
                     >
                       🇬🇧 English
                     </button>
@@ -485,7 +482,7 @@ export function CmsCategories({
                           const val = e.target.value;
                           const trans = { ...editingCategory.translations };
                           trans.vi = { ...(trans.vi || { lang_code: 'vi' }), name: val };
-                          
+
                           // Auto update slug if it is a new category
                           if (!editingCategory.id && (!editingCategory.slug || editingCategory.slug.startsWith('chuyen-de-'))) {
                             setEditingCategory({
@@ -640,11 +637,10 @@ export function CmsCategories({
                           key={c.id}
                           type="button"
                           onClick={() => setEditingCategory({ ...editingCategory, color: c.id })}
-                          className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer ${c.dotBg} ${
-                            isSelected
-                              ? 'ring-2 ring-offset-2 ring-gray-900 scale-110 shadow-xs'
-                              : 'opacity-75 hover:opacity-100 hover:scale-105'
-                          }`}
+                          className={`w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer ${c.dotBg} ${isSelected
+                            ? 'ring-2 ring-offset-2 ring-gray-900 scale-110 shadow-xs'
+                            : 'opacity-75 hover:opacity-100 hover:scale-105'
+                            }`}
                           title={isEn ? c.nameEn : c.nameVi}
                           aria-label={c.nameVi}
                         >
