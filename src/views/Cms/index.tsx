@@ -17,8 +17,7 @@ import {
   AdminTag,
 } from '@/services/blogAdminService';
 import { getCvData, saveCvData } from '@/services/cvService';
-import { signInWithEmail, getCurrentUser, signOut } from '@/services/authService';
-import { isSupabaseConfigured } from '@/utils/supabase/client';
+import { getCurrentUser } from '@/services/authService';
 import { CVData } from '@/types';
 import { CmsTab } from '@/components/layouts/CmsLayout';
 import { CmsDashboard } from './components/CmsDashboard';
@@ -26,6 +25,7 @@ import { CmsCategories } from './components/CmsCategories';
 import { CmsTags } from './components/CmsTags';
 import { CmsPosts } from './components/CmsPosts';
 import { CmsCvEditor } from './components/CmsCvEditor';
+import { CmsLogin } from './components/CmsLogin';
 
 interface CmsViewProps {
   activeTab: CmsTab;
@@ -46,9 +46,6 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
 
   // Auth states
   const [currentUser, setCurrentUser] = useState<any | null>(null);
-  const [authEmail, setAuthEmail] = useState('');
-  const [authPassword, setAuthPassword] = useState('');
-  const [isAuthLoading, setIsAuthLoading] = useState(false);
 
   // Post Editor state
   const [editingPost, setEditingPost] = useState<AdminPost | null>(null);
@@ -87,20 +84,7 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
     setTimeout(() => setFeedback(null), 4000);
   };
 
-  // Auth handler
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsAuthLoading(true);
-    const { user, error } = await signInWithEmail(authEmail, authPassword);
-    setIsAuthLoading(false);
-    if (error) {
-      showNotification('error', `Đăng nhập thất bại: ${error}`);
-    } else {
-      setCurrentUser(user);
-      showNotification('success', 'Đăng nhập thành công!');
-      loadAllAdminData();
-    }
-  };
+
 
   // -------------------------------------------------------------
   // POST ACTIONS
@@ -332,67 +316,16 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
         />
       )}
 
-      {/* 6. SETTINGS & AUTH TAB */}
-      {activeTab === 'settings' && (
-        <div className="max-w-xl mx-auto space-y-6">
-          <div className="glass-panel p-6 rounded-3xl border border-gray-800 space-y-4">
-            <h2 className="text-lg font-bold text-white">Đăng nhập CMS Studio</h2>
-            <p className="text-xs text-gray-400">Đăng nhập tài khoản quản trị để lưu dữ liệu lên Supabase.</p>
-
-            {currentUser ? (
-              <div className="space-y-4 pt-2">
-                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-                  <i className="fa-solid fa-circle-check text-emerald-400"></i>
-                  <span>Bạn đang đăng nhập với tài khoản: <strong>{currentUser.email}</strong></span>
-                </div>
-                <button
-                  onClick={async () => {
-                    await signOut();
-                    setCurrentUser(null);
-                    showNotification('success', 'Đã đăng xuất.');
-                  }}
-                  className="w-full py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-400 text-xs font-bold border border-red-500/30 transition-colors"
-                >
-                  Đăng xuất
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleLogin} className="space-y-3 pt-2">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Email Quản Trị</label>
-                  <input
-                    type="email"
-                    required
-                    value={authEmail}
-                    onChange={(e) => setAuthEmail(e.target.value)}
-                    placeholder="admin@example.com"
-                    className="w-full px-3 py-2 rounded-xl bg-gray-950 border border-gray-800 text-xs text-white focus:outline-none focus:ring-1 focus:ring-red-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Mật Khẩu</label>
-                  <input
-                    type="password"
-                    required
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full px-3 py-2 rounded-xl bg-gray-950 border border-gray-800 text-xs text-white focus:outline-none focus:ring-1 focus:ring-red-500"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isAuthLoading}
-                  className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold shadow-md transition-colors disabled:opacity-50"
-                >
-                  {isAuthLoading ? 'Đang xử lý...' : 'Đăng Nhập'}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
+      {/* 6. LOGIN & AUTH TAB (Replaces Settings) */}
+      {(activeTab === 'login' || activeTab === 'settings') && (
+        <CmsLogin
+          currentUser={currentUser}
+          onUserChange={(user) => {
+            setCurrentUser(user);
+            if (user) loadAllAdminData();
+          }}
+          onSelectTab={onSelectTab}
+        />
       )}
 
     </div>

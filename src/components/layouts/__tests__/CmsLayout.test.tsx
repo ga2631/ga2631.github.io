@@ -48,7 +48,7 @@ describe('CmsLayout Top Navigation Bar', () => {
     expect(screen.getByText(/Chuyên Mục/i)).toBeDefined();
     expect(screen.getByText(/Thẻ Tag/i)).toBeDefined();
     expect(screen.getByText(/Hồ Sơ CV/i)).toBeDefined();
-    expect(screen.getByText(/Cài Đặt/i)).toBeDefined();
+    expect(screen.getByText(/Đăng Nhập/i)).toBeDefined();
 
     // Click on Dashboard tab
     const dashboardTab = screen.getByRole('button', { name: /Bảng Điều Khiển/i });

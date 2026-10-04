@@ -65,7 +65,7 @@ export async function signInWithGitHub(): Promise<{ error: string | null }> {
   try {
     const redirectTo =
       typeof window !== 'undefined'
-        ? `${window.location.origin}/admin`
+        ? window.location.href
         : undefined;
 
     const { data, error } = await supabase.auth.signInWithOAuth({

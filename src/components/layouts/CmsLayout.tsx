@@ -7,7 +7,7 @@ import { getCurrentUser, signOut, onAuthStateChange } from '@/services/authServi
 import { isSupabaseConfigured } from '@/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
 
-export type CmsTab = 'dashboard' | 'posts' | 'categories' | 'tags' | 'cv' | 'settings';
+export type CmsTab = 'dashboard' | 'posts' | 'categories' | 'tags' | 'cv' | 'login' | 'settings';
 
 interface CmsLayoutProps {
   children: React.ReactNode;
@@ -43,7 +43,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
     { id: 'categories', label: 'Chuyên Mục', iconClass: 'fa-solid fa-folder' },
     { id: 'tags', label: 'Thẻ Tag', iconClass: 'fa-solid fa-tags' },
     { id: 'cv', label: 'Hồ Sơ CV', iconClass: 'fa-solid fa-id-card' },
-    { id: 'settings', label: 'Cài Đặt', iconClass: 'fa-solid fa-gear' },
+    { id: 'login', label: 'Đăng Nhập', iconClass: 'fa-solid fa-right-to-bracket' },
   ];
 
   return (
@@ -76,7 +76,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
           {/* Desktop Navigation Tabs (Horizontal Top Nav) */}
           <nav className="hidden md:flex items-center gap-1 bg-gray-100/80 p-1 rounded-2xl border border-gray-200/60">
             {menuItems.map((item) => {
-              const isActive = activeTab === item.id;
+              const isActive = activeTab === item.id || (item.id === 'login' && activeTab === 'settings');
               return (
                 <button
                   key={item.id}
@@ -147,7 +147,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
           <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md px-4 py-3 space-y-3 animate-in fade-in">
             <div className="grid grid-cols-2 gap-2">
               {menuItems.map((item) => {
-                const isActive = activeTab === item.id;
+                const isActive = activeTab === item.id || (item.id === 'login' && activeTab === 'settings');
                 return (
                   <button
                     key={item.id}
