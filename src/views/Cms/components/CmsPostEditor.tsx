@@ -7,6 +7,7 @@ import {
   calculateReadingTime,
   analyzePostSeo,
   SeoAnalysisResult,
+  ReadingTimeResult,
 } from '@/utils/markdownRenderer';
 import { getCategoryColorClasses } from '@/utils/categoryColors';
 import 'katex/dist/katex.min.css';
@@ -101,6 +102,8 @@ export function CmsPostEditor({
   const [slashQuery, setSlashQuery] = useState('');
   const [showSeoDrawer, setShowSeoDrawer] = useState(false);
   const [showSidebar, setShowSidebar] = useState(true);
+  const [isAutoReadTime, setIsAutoReadTime] = useState(true);
+  const [showReadingCalcDetails, setShowReadingCalcDetails] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -113,17 +116,36 @@ export function CmsPostEditor({
     content_html: null,
   };
 
-  // Word count & Read time
-  const readingStats = useMemo(() => {
-    return calculateReadingTime(currentTrans.content_md || '');
-  }, [currentTrans.content_md]);
+  // Word count & Read time for both languages
+  const viReadingStats = useMemo<ReadingTimeResult>(() => {
+    return calculateReadingTime(editingPost.translations.vi?.content_md || '');
+  }, [editingPost.translations.vi?.content_md]);
 
-  // Sync auto calculated reading time into post if not manually altered
-  useEffect(() => {
-    if (readingStats.minutes && editingPost.read_time !== readingStats.minutes) {
-      setEditingPost((prev) => ({ ...prev, read_time: readingStats.minutes }));
+  const enReadingStats = useMemo<ReadingTimeResult>(() => {
+    return calculateReadingTime(editingPost.translations.en?.content_md || '');
+  }, [editingPost.translations.en?.content_md]);
+
+  const readingStats = activeLang === 'vi' ? viReadingStats : enReadingStats;
+
+  // Auto recommended read time: based on active language or primary VI content
+  const autoCalculatedMinutes = useMemo(() => {
+    if (activeLang === 'vi') {
+      return viReadingStats.minutes || 1;
     }
-  }, [readingStats.minutes]);
+    return enReadingStats.words > 0 ? enReadingStats.minutes : (viReadingStats.minutes || 1);
+  }, [activeLang, viReadingStats, enReadingStats]);
+
+  // Sync auto calculated reading time into post automatically when in auto mode
+  useEffect(() => {
+    if (isAutoReadTime && autoCalculatedMinutes && editingPost.read_time !== autoCalculatedMinutes) {
+      setEditingPost((prev) => ({ ...prev, read_time: autoCalculatedMinutes }));
+    }
+  }, [isAutoReadTime, autoCalculatedMinutes, editingPost.read_time]);
+
+  const handleRecalculateReadingTime = () => {
+    setIsAutoReadTime(true);
+    setEditingPost((prev) => ({ ...prev, read_time: autoCalculatedMinutes }));
+  };
 
   // Lock body and html scroll while editor is active to strictly ensure 1 single view with zero page drift
   useEffect(() => {
@@ -433,6 +455,18 @@ export function CmsPostEditor({
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2 flex-wrap ml-auto">
+          {/* Quick Reading Time Calculator Badge / Button */}
+          <button
+            type="button"
+            onClick={() => setShowReadingCalcDetails((prev) => !prev)}
+            className="px-3 py-1.5 rounded-xl border border-indigo-200/90 bg-indigo-50/70 hover:bg-indigo-100 text-xs font-bold text-indigo-900 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            title="Thời gian đọc được tính tự động từ nội dung bài viết. Bấm để xem chi tiết tính toán"
+          >
+            <i className="fa-solid fa-clock text-xs text-indigo-600"></i>
+            <span>{editingPost.read_time || autoCalculatedMinutes} phút</span>
+            <span className="text-[10px] text-indigo-600/80 font-mono hidden xl:inline">({readingStats.words} từ)</span>
+          </button>
+
           {/* SEO Score Button */}
           <button
             type="button"
@@ -1004,24 +1038,116 @@ export function CmsPostEditor({
               </span>
             </div>
 
-            {/* Thời Gian Đọc */}
-            <div>
-              <label className="block text-xs text-gray-700 font-bold mb-1.5">
-                Thời Gian Đọc (Phút)
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="1"
-                  max="60"
-                  value={editingPost.read_time}
-                  onChange={(e) => setEditingPost({ ...editingPost, read_time: Number(e.target.value) || 5 })}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors"
-                />
-                <span className="absolute right-3 top-2 text-[10px] text-gray-400 font-mono">
-                  {readingStats.words} từ
-                </span>
+            {/* ⏱️ Công Cụ Tính Thời Gian Đọc Tự Động */}
+            <div className="bg-gradient-to-br from-indigo-50/70 via-slate-50 to-gray-50/70 rounded-2xl p-3 border border-indigo-100/90 shadow-2xs space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <i className="fa-solid fa-calculator text-indigo-600 text-xs"></i>
+                  <span className="text-xs font-bold text-gray-800">Thời Gian Đọc</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {isAutoReadTime ? (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100/90 text-emerald-800 border border-emerald-200" title="Tự động tính từ độ dài và cấu trúc bài viết">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>Tự động</span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100/90 text-amber-800 border border-amber-200" title="Đang ở chế độ tùy chỉnh thủ công">
+                      <span>Thủ công</span>
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleRecalculateReadingTime}
+                    className="p-1 px-1.5 rounded-lg text-[10px] font-semibold text-indigo-700 hover:text-indigo-900 hover:bg-indigo-100/80 transition-colors cursor-pointer flex items-center gap-1"
+                    title="Tính toán lại thời gian đọc theo nội dung hiện tại"
+                  >
+                    <i className="fa-solid fa-rotate text-[10px]"></i>
+                    <span className="hidden sm:inline">Tính lại</span>
+                  </button>
+                </div>
               </div>
+
+              {/* Main Prominent Display */}
+              <div className="flex items-baseline justify-between bg-white rounded-xl p-2.5 border border-gray-200/90 shadow-2xs">
+                <div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-xl font-black text-gray-900 font-mono tracking-tight">
+                      {editingPost.read_time || autoCalculatedMinutes}
+                    </span>
+                    <span className="text-xs font-bold text-gray-600">phút đọc</span>
+                  </div>
+                  <div className="text-[10px] text-gray-500 mt-0.5 flex items-center gap-1 font-mono">
+                    <span>{readingStats.words} từ</span>
+                    <span>•</span>
+                    <span>{readingStats.characters} ký tự</span>
+                  </div>
+                </div>
+
+                {/* Toggle details button */}
+                <button
+                  type="button"
+                  onClick={() => setShowReadingCalcDetails(!showReadingCalcDetails)}
+                  className="text-[10px] text-indigo-600 hover:text-indigo-800 hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                >
+                  <span>{showReadingCalcDetails ? 'Thu gọn' : 'Chi tiết'}</span>
+                  <i className={`fa-solid fa-chevron-${showReadingCalcDetails ? 'up' : 'down'} text-[9px]`}></i>
+                </button>
+              </div>
+
+              {/* Detailed Breakdown Panel */}
+              {showReadingCalcDetails && (
+                <div className="p-2.5 bg-white/95 rounded-xl border border-gray-200/90 space-y-2 text-[11px] animate-in fade-in duration-150">
+                  <div className="grid grid-cols-2 gap-1.5 text-gray-600">
+                    <div className="flex items-center justify-between p-1 bg-gray-50 rounded-lg">
+                      <span>Tốc độ đọc:</span>
+                      <strong className="font-mono text-gray-800">200 từ/ph</strong>
+                    </div>
+                    <div className="flex items-center justify-between p-1 bg-gray-50 rounded-lg">
+                      <span>Khối Code:</span>
+                      <strong className="font-mono text-gray-800">{readingStats.codeBlocks}</strong>
+                    </div>
+                    <div className="flex items-center justify-between p-1 bg-gray-50 rounded-lg">
+                      <span>Sơ đồ Mermaid:</span>
+                      <strong className="font-mono text-gray-800">{readingStats.diagrams}</strong>
+                    </div>
+                    <div className="flex items-center justify-between p-1 bg-gray-50 rounded-lg">
+                      <span>Hình ảnh:</span>
+                      <strong className="font-mono text-gray-800">{readingStats.images}</strong>
+                    </div>
+                  </div>
+
+                  {/* Dual-language comparison */}
+                  <div className="pt-1.5 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500 font-mono">
+                    <span className={activeLang === 'vi' ? 'font-bold text-red-600' : ''}>
+                      🇻🇳 VI: {viReadingStats.minutes}p ({viReadingStats.words} từ)
+                    </span>
+                    <span className={activeLang === 'en' ? 'font-bold text-blue-600' : ''}>
+                      🇬🇧 EN: {enReadingStats.minutes}p ({enReadingStats.words} từ)
+                    </span>
+                  </div>
+
+                  {/* Manual Override Option */}
+                  <div className="pt-1.5 border-t border-gray-100 flex items-center justify-between">
+                    <label className="text-[10px] text-gray-500 font-medium">Tùy chỉnh thủ công:</label>
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="number"
+                        min="1"
+                        max="60"
+                        value={editingPost.read_time || autoCalculatedMinutes}
+                        onChange={(e) => {
+                          setIsAutoReadTime(false);
+                          setEditingPost({ ...editingPost, read_time: Number(e.target.value) || 1 });
+                        }}
+                        className="w-14 px-1.5 py-0.5 text-xs text-right font-mono rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        title="Nhập số phút tùy chỉnh nếu cần"
+                      />
+                      <span className="text-[10px] text-gray-500">phút</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* 2.3.3. Thẻ Kỹ Thuật (Tags) - Dạng Select theo yêu cầu của user */}

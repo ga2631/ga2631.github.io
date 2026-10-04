@@ -697,6 +697,54 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
       });
     });
 
+    it('automatically calculates reading time without manual input in CmsPostEditor', async () => {
+      const handleSave = vi.fn();
+      const content = `
+# Tiêu đề bài viết
+${'Nội dung phân tích kiến trúc hệ thống công nghệ cao. '.repeat(100)}
+
+\`\`\`typescript
+const a = 1;
+\`\`\`
+
+\`\`\`mermaid
+flowchart TD
+  A --> B
+\`\`\`
+`;
+      render(
+        <LanguageProvider>
+          <CmsPostEditor
+            post={{
+              ...mockPosts[0],
+              read_time: 1,
+              translations: {
+                vi: { ...mockPosts[0].translations.vi, content_md: content },
+                en: { ...mockPosts[0].translations.en, content_md: '' },
+              },
+            }}
+            categories={mockCategories}
+            tags={mockTags}
+            onSave={handleSave}
+            onCancel={vi.fn()}
+            currentLang="vi"
+            initialLang="vi"
+          />
+        </LanguageProvider>
+      );
+
+      // Verify the auto calculator badge and widget title are displayed
+      expect(screen.getByText('Thời Gian Đọc')).toBeDefined();
+      expect(screen.getByText('Tự động')).toBeDefined();
+      expect(screen.getByTitle(/Tính toán lại thời gian đọc/i)).toBeDefined();
+
+      // Toggle details
+      const detailBtn = screen.getByRole('button', { name: /^Chi tiết$/i });
+      fireEvent.click(detailBtn);
+      expect(screen.getByText(/200 từ\/ph/i)).toBeDefined();
+      expect(screen.getByText(/Khối Code/i)).toBeDefined();
+    });
+
     it('maps post_translations.slug correctly in mapDbPostToBlogPost per language', () => {
       const mockDbRow = {
         id: 'post-uuid-1',
@@ -753,6 +801,26 @@ $$`;
       const stats = calculateReadingTime(sampleText);
       expect(stats.words).toBe(400);
       expect(stats.minutes).toBe(2);
+    });
+
+    it('calculates reading time including code blocks, diagrams, and images', () => {
+      const complexText = `
+${'Từ vựng kỹ thuật '.repeat(50)}
+\`\`\`typescript
+const x = 1;
+\`\`\`
+\`\`\`mermaid
+flowchart LR
+  A --> B
+\`\`\`
+![Architecture](/arch.png)
+`;
+      const stats = calculateReadingTime(complexText);
+      expect(stats.words).toBe(200);
+      expect(stats.codeBlocks).toBe(2);
+      expect(stats.diagrams).toBe(1);
+      expect(stats.images).toBe(1);
+      expect(stats.minutes).toBeGreaterThanOrEqual(1);
     });
 
     it('analyzes SEO factors correctly (2.3.4.5)', () => {

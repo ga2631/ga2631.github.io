@@ -405,14 +405,77 @@ export function renderMarkdownToHtml(markdown: string): string {
 }
 
 /**
- * Calculates estimated read time (minutes) from text.
+ * Detailed reading time calculation result.
  */
-export function calculateReadingTime(text: string): { words: number; minutes: number; characters: number } {
-  if (!text) return { words: 0, minutes: 1, characters: 0 };
-  const words = text.trim().split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(1, Math.ceil(words / 200));
+export interface ReadingTimeResult {
+  words: number;
+  minutes: number;
+  characters: number;
+  seconds: number;
+  codeBlocks: number;
+  diagrams: number;
+  images: number;
+}
+
+/**
+ * Calculates estimated read time (minutes) from markdown text.
+ * Factors in average reading speed (200 wpm) plus inspection time for code blocks, diagrams, and images.
+ */
+export function calculateReadingTime(text: string, options?: { wpm?: number }): ReadingTimeResult {
+  if (!text || !text.trim()) {
+    return {
+      words: 0,
+      minutes: 1,
+      characters: 0,
+      seconds: 0,
+      codeBlocks: 0,
+      diagrams: 0,
+      images: 0,
+    };
+  }
+
+  const wpm = options?.wpm || 200;
+
+  // Detect code blocks (``` ... ```)
+  const codeBlocksMatches = text.match(/```[\s\S]*?```/g) || [];
+  const codeBlocksCount = codeBlocksMatches.length;
+
+  // Detect mermaid diagrams
+  const diagramsMatches = text.match(/```mermaid[\s\S]*?```/g) || [];
+  const diagramsCount = diagramsMatches.length;
+
+  // Detect markdown images (![alt](url))
+  const imagesMatches = text.match(/!\[.*?\]\(.*?\)/g) || [];
+  const imagesCount = imagesMatches.length;
+
+  // Strip code blocks and images to count body words accurately
+  const cleanText = text
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/!\[.*?\]\(.*?\)/g, ' ')
+    .replace(/<[^>]*>/g, ' ');
+
+  const words = cleanText.trim().split(/\s+/).filter(Boolean).length;
   const characters = text.length;
-  return { words, minutes, characters };
+
+  // Base reading time from words:
+  const textSeconds = (words / wpm) * 60;
+  const regularCodeCount = Math.max(0, codeBlocksCount - diagramsCount);
+  const codeSeconds = regularCodeCount * 15;
+  const diagramSeconds = diagramsCount * 20;
+  const imageSeconds = imagesCount * 10;
+
+  const totalSeconds = Math.round(textSeconds + codeSeconds + diagramSeconds + imageSeconds);
+  const minutes = Math.max(1, Math.ceil(totalSeconds / 60));
+
+  return {
+    words,
+    minutes,
+    characters,
+    seconds: totalSeconds,
+    codeBlocks: codeBlocksCount,
+    diagrams: diagramsCount,
+    images: imagesCount,
+  };
 }
 
 /**
