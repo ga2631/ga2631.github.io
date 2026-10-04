@@ -106,14 +106,16 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
               <span className="hidden xl:inline">Xem Website</span>
             </Link>
 
-            {/* User Profile / Sign Out */}
-            {currentUser && (
-              <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-gray-200 text-xs">
+            {/* User Profile / Auth Status Indicator */}
+            {currentUser ? (
+              <div className="flex items-center gap-2 pl-2 border-l border-gray-200 text-xs">
                 <span
-                  className="font-mono text-gray-600 text-[11px] truncate max-w-[130px]"
-                  title={currentUser.email}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium text-[11px]"
+                  title={`Đã xác thực: ${currentUser.email || 'Admin'}`}
                 >
-                  {currentUser.email}
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="hidden sm:inline font-mono truncate max-w-[130px]">{currentUser.email || 'Admin'}</span>
+                  <span className="sm:hidden font-bold">Admin</span>
                 </span>
                 <button
                   type="button"
@@ -122,6 +124,18 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                   title="Đăng xuất"
                 >
                   Đăng xuất
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 pl-2 border-l border-gray-200 text-xs">
+                <button
+                  type="button"
+                  onClick={() => onSelectTab('login')}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 font-semibold text-[11px] transition-colors cursor-pointer"
+                  title="Chưa đăng nhập. Bấm vào đây để tới trang đăng nhập"
+                >
+                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span>Chưa đăng nhập</span>
                 </button>
               </div>
             )}
@@ -176,13 +190,24 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                 <i className="fa-solid fa-globe text-xs"></i>
                 <span>Xem Website</span>
               </Link>
-              {currentUser && (
+              {currentUser ? (
                 <button
                   type="button"
                   onClick={handleSignOut}
                   className="text-red-600 font-bold hover:underline"
                 >
-                  Đăng xuất
+                  Đăng xuất ({currentUser.email || 'Admin'})
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onSelectTab('login');
+                    setIsMobileNavOpen(false);
+                  }}
+                  className="text-amber-700 font-bold hover:underline"
+                >
+                  Chưa đăng nhập (Đăng nhập ngay)
                 </button>
               )}
             </div>

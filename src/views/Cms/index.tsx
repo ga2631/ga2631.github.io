@@ -17,7 +17,7 @@ import {
   AdminTag,
 } from '@/services/blogAdminService';
 import { getCvData, saveCvData } from '@/services/cvService';
-import { getCurrentUser } from '@/services/authService';
+import { getCurrentUser, onAuthStateChange } from '@/services/authService';
 import { CVData } from '@/types';
 import { CmsTab } from '@/components/layouts/CmsLayout';
 import { CmsDashboard } from './components/CmsDashboard';
@@ -75,8 +75,16 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
   };
 
   useEffect(() => {
-    getCurrentUser().then(setCurrentUser);
+    getCurrentUser().then((user) => {
+      setCurrentUser(user);
+    });
     loadAllAdminData();
+
+    const unsubscribe = onAuthStateChange((_event, session) => {
+      setCurrentUser(session?.user || null);
+    });
+
+    return () => unsubscribe();
   }, [currentLang]);
 
   const showNotification = (type: 'success' | 'error', message: string) => {

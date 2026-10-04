@@ -9,6 +9,8 @@ import { User } from '@supabase/supabase-js';
 vi.mock('@/services/authService', () => ({
   signInWithGitHub: vi.fn(),
   signOut: vi.fn(),
+  getCurrentUser: vi.fn(),
+  onAuthStateChange: vi.fn(),
 }));
 
 vi.mock('@/utils/supabase/client', () => ({
@@ -19,16 +21,22 @@ describe('CmsLogin Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(supabaseClient.isSupabaseConfigured).mockReturnValue(true);
+    vi.mocked(authService.getCurrentUser).mockResolvedValue(null);
+    vi.mocked(authService.onAuthStateChange).mockReturnValue(() => {});
   });
 
   describe('Unauthenticated State (Single GitHub Login)', () => {
-    it('renders the GitHub login interface with title and security guarantee', () => {
+    it('renders the GitHub login interface with title, status badge, and security guarantee', async () => {
       render(<CmsLogin currentUser={null} />);
 
       expect(screen.getByText('Đăng Nhập CMS Studio')).toBeDefined();
       expect(screen.getByRole('button', { name: /Đăng nhập bằng GitHub/i })).toBeDefined();
       expect(screen.getByText(/Cơ chế xác thực bảo mật OAuth 2.0/i)).toBeDefined();
       expect(screen.getByText(/100% Không Cần Mật Khẩu/i)).toBeDefined();
+
+      await waitFor(() => {
+        expect(screen.getByText(/CHƯA ĐĂNG NHẬP/i)).toBeDefined();
+      });
     });
 
     it('triggers signInWithGitHub when clicking the GitHub login button', async () => {
@@ -68,6 +76,38 @@ describe('CmsLogin Component', () => {
         screen.getByText(/Chưa cấu hình biến môi trường Supabase/i)
       ).toBeDefined();
     });
+
+    it('allows manually re-checking auth status via refresh button', async () => {
+      render(<CmsLogin currentUser={null} />);
+
+      const refreshBtn = screen.getByRole('button', { name: /Kiểm tra lại/i });
+      fireEvent.click(refreshBtn);
+
+      await waitFor(() => {
+        expect(authService.getCurrentUser).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('OAuth Diagnostic Error from URL', () => {
+    it('detects and displays diagnostic guide when URL contains error_description', async () => {
+      // Mock window.location.search with OAuth error
+      delete (window as any).location;
+      (window as any).location = new URL(
+        'http://localhost:3000/vi/admin?error=server_error&error_description=Error+getting+user+profile+from+external+provider'
+      );
+
+      render(<CmsLogin currentUser={null} />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Error getting user profile from external provider/i)
+        ).toBeDefined();
+        expect(
+          screen.getByText(/Nguyên nhân và cách khắc phục lỗi này:/i)
+        ).toBeDefined();
+      });
+    });
   });
 
   describe('Authenticated State (User Profile & Management)', () => {
@@ -84,7 +124,8 @@ describe('CmsLogin Component', () => {
       email: 'admin@example.com',
     };
 
-    it('renders authenticated user profile with avatar, name, and admin status', () => {
+    it('renders authenticated user profile with avatar, name, and admin status', async () => {
+      vi.mocked(authService.getCurrentUser).mockResolvedValue(mockUser);
       render(<CmsLogin currentUser={mockUser} />);
 
       expect(screen.getByText('Tài Khoản Quản Trị CMS')).toBeDefined();
@@ -92,7 +133,10 @@ describe('CmsLogin Component', () => {
       expect(screen.getByText('@nguyenvana')).toBeDefined();
       expect(screen.getByText('admin@example.com')).toBeDefined();
       expect(screen.getByText('Admin')).toBeDefined();
-      expect(screen.getByText('Đã xác thực')).toBeDefined();
+
+      await waitFor(() => {
+        expect(screen.getByText(/ĐÃ ĐĂNG NHẬP/i)).toBeDefined();
+      });
     });
 
     it('navigates to dashboard when clicking "Vào Bảng Điều Khiển"', () => {
