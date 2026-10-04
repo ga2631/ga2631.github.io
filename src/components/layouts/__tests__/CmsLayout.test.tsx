@@ -51,8 +51,18 @@ describe('CmsLayout Top Navigation Bar', () => {
     expect(screen.getByRole('button', { name: /^Đăng Nhập/i })).toBeDefined();
     expect(screen.getByText(/Chưa đăng nhập/i)).toBeDefined();
 
-    // Click on Dashboard tab
+    // Initially unauthenticated: clicking Dashboard tab redirects to login (Auth Gate)
     const dashboardTab = screen.getByRole('button', { name: /Bảng Điều Khiển/i });
+    fireEvent.click(dashboardTab);
+    expect(handleSelectTab).toHaveBeenCalledWith('login');
+
+    // Wait for authenticated session to resolve
+    const { waitFor } = await import('@testing-library/react');
+    await waitFor(() => {
+      expect(screen.getByText(/admin@example.com/i)).toBeDefined();
+    });
+
+    // When authenticated: clicking Dashboard tab navigates to dashboard
     fireEvent.click(dashboardTab);
     expect(handleSelectTab).toHaveBeenCalledWith('dashboard');
 

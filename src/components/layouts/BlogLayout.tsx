@@ -167,17 +167,6 @@ export function BlogLayout({
                 </Link>
               </li>
 
-              <li>
-                <Link
-                  href={getLocalizedHref('admin')}
-                  onClick={() => handleNavClick('CMS', '/admin')}
-                  className="block py-2 px-3 text-gray-400 hover:text-red-600 lg:p-0 transition-colors"
-                  title="CMS Admin"
-                >
-                  {dict.nav.cms}
-                </Link>
-              </li>
-
               {/* Mobile Language Toggle */}
               <li className="lg:hidden pt-3 mt-2 border-t border-gray-200/80 flex items-center justify-between px-3">
                 <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">

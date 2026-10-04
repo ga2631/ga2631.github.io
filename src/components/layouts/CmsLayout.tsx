@@ -35,6 +35,15 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
   const handleSignOut = async () => {
     await signOut();
     setCurrentUser(null);
+    onSelectTab('login');
+  };
+
+  const handleTabClick = (tabId: CmsTab) => {
+    if (!currentUser && tabId !== 'login') {
+      onSelectTab('login');
+      return;
+    }
+    onSelectTab(tabId);
   };
 
   const menuItems: { id: CmsTab; label: string; iconClass: string }[] = [
@@ -43,7 +52,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
     { id: 'categories', label: 'Chuyên Mục', iconClass: 'fa-solid fa-folder' },
     { id: 'tags', label: 'Thẻ Tag', iconClass: 'fa-solid fa-tags' },
     { id: 'cv', label: 'Hồ Sơ CV', iconClass: 'fa-solid fa-id-card' },
-    { id: 'login', label: 'Đăng Nhập', iconClass: 'fa-solid fa-right-to-bracket' },
+    { id: 'login', label: currentUser ? 'Tài Khoản' : 'Đăng Nhập', iconClass: currentUser ? 'fa-solid fa-user-shield' : 'fa-solid fa-lock' },
   ];
 
   return (
@@ -77,18 +86,23 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
           <nav className="hidden md:flex items-center gap-1 bg-gray-100/80 p-1 rounded-2xl border border-gray-200/60">
             {menuItems.map((item) => {
               const isActive = activeTab === item.id || (item.id === 'login' && activeTab === 'settings');
+              const isLocked = !currentUser && item.id !== 'login';
               return (
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => onSelectTab(item.id)}
+                  onClick={() => handleTabClick(item.id)}
+                  title={isLocked ? 'Cần đăng nhập để mở tab này' : item.label}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${isActive
                     ? 'bg-white text-red-600 shadow-xs font-black'
+                    : isLocked
+                    ? 'text-gray-400 hover:text-gray-600 font-medium'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 font-semibold'
                     }`}
                 >
                   <i className={`${item.iconClass} text-xs`}></i>
                   <span>{item.label}</span>
+                  {isLocked && <i className="fa-solid fa-lock text-[9px] text-gray-400 ml-0.5"></i>}
                 </button>
               );
             })}
@@ -162,21 +176,27 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
             <div className="grid grid-cols-2 gap-2">
               {menuItems.map((item) => {
                 const isActive = activeTab === item.id || (item.id === 'login' && activeTab === 'settings');
+                const isLocked = !currentUser && item.id !== 'login';
                 return (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => {
-                      onSelectTab(item.id);
+                      handleTabClick(item.id);
                       setIsMobileNavOpen(false);
                     }}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs transition-all ${isActive
+                    className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all ${isActive
                       ? 'bg-red-50 text-red-600 border border-red-200 font-bold'
+                      : isLocked
+                      ? 'bg-gray-50/60 text-gray-400 font-medium'
                       : 'bg-gray-50 text-gray-700 hover:bg-gray-100 font-medium'
                       }`}
                   >
-                    <i className={`${item.iconClass} text-xs`}></i>
-                    <span>{item.label}</span>
+                    <div className="flex items-center gap-2">
+                      <i className={`${item.iconClass} text-xs`}></i>
+                      <span>{item.label}</span>
+                    </div>
+                    {isLocked && <i className="fa-solid fa-lock text-[10px] text-gray-400"></i>}
                   </button>
                 );
               })}
