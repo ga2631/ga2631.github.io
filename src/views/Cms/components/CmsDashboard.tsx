@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { AdminPost, AdminCategory, AdminTag } from '@/services/blogAdminService';
+import { AdminPost, AdminCategory, AdminTag, getScheduleDayOptions, getWeekdayDetails } from '@/services/blogAdminService';
 import { CmsTab } from '@/components/layouts/CmsLayout';
 import { GA_MEASUREMENT_ID, GTM_ID, APP_ENV, trackEvent } from '@/utils/analytics';
 import { isSupabaseConfigured } from '@/utils/supabase/client';
@@ -20,14 +20,6 @@ interface CmsDashboardProps {
   currentLang: string;
 }
 
-const CATEGORY_SCHEDULE_MAP: Record<number, { viDay: string; enDay: string; defaultName: string; color: string; borderTop: string; badge: string }> = {
-  1: { viDay: 'Thứ 2', enDay: 'Monday', defaultName: 'Kiến trúc Hệ thống', color: '#3B82F6', borderTop: 'border-t-blue-500', badge: 'bg-blue-50 text-blue-700 border-blue-200' },
-  2: { viDay: 'Thứ 3', enDay: 'Tuesday', defaultName: 'Thuật toán & Hiệu năng Core', color: '#10B981', borderTop: 'border-t-emerald-500', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  3: { viDay: 'Thứ 4', enDay: 'Wednesday', defaultName: 'Cơ sở Dữ liệu & Data Engineering', color: '#F59E0B', borderTop: 'border-t-amber-500', badge: 'bg-amber-50 text-amber-700 border-amber-200' },
-  4: { viDay: 'Thứ 5', enDay: 'Thursday', defaultName: 'Frontend & UI Tái sử dụng', color: '#8B5CF6', borderTop: 'border-t-purple-500', badge: 'bg-purple-50 text-purple-700 border-purple-200' },
-  5: { viDay: 'Thứ 6', enDay: 'Friday', defaultName: 'Tech Radar & Góc nhìn Nghề nghiệp', color: '#EC4899', borderTop: 'border-t-rose-500', badge: 'bg-rose-50 text-rose-700 border-rose-200' },
-};
-
 function getUpcomingWorkdays() {
   const now = new Date();
   const currentDayOfWeek = now.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
@@ -39,13 +31,6 @@ function getUpcomingWorkdays() {
   nextMonday.setHours(0, 0, 0, 0);
 
   const workdays = [];
-  const dayLabels = [
-    { schedule: 1, vi: 'Thứ 2', en: 'Monday' },
-    { schedule: 2, vi: 'Thứ 3', en: 'Tuesday' },
-    { schedule: 3, vi: 'Thứ 4', en: 'Wednesday' },
-    { schedule: 4, vi: 'Thứ 5', en: 'Thursday' },
-    { schedule: 5, vi: 'Thứ 6', en: 'Friday' },
-  ];
 
   for (let i = 0; i < 5; i++) {
     const d = new Date(nextMonday);
@@ -54,13 +39,14 @@ function getUpcomingWorkdays() {
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const year = d.getFullYear();
+    const weekday = getWeekdayDetails(i + 1);
 
     workdays.push({
       date: d,
       dateStr,
       daySchedule: i + 1,
-      dayNameVi: dayLabels[i].vi,
-      dayNameEn: dayLabels[i].en,
+      dayNameVi: weekday.viDay,
+      dayNameEn: weekday.enName,
       formattedDate: `${day}/${month}/${year}`,
     });
   }
@@ -81,6 +67,11 @@ export function CmsDashboard({
 }: CmsDashboardProps) {
   const isEn = currentLang === 'en';
   const [testPingStatus, setTestPingStatus] = useState<string | null>(null);
+
+  // Dynamic schedule day options loaded directly from database categories
+  const scheduleDayOptions = useMemo(() => {
+    return getScheduleDayOptions(categories);
+  }, [categories]);
 
   // 1. Thống kê bài viết (3.1)
   const stats = useMemo(() => {
@@ -351,23 +342,26 @@ export function CmsDashboard({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {[1, 2, 3, 4, 5].map((sched) => {
-              const info = CATEGORY_SCHEDULE_MAP[sched];
+            {scheduleDayOptions.slice(0, 5).map((schedOption) => {
+              const sched = schedOption.value;
               const matchedCat = categories.find((c) => c.post_schedule === sched);
               const postCount = matchedCat ? (stats.catCounts[matchedCat.id || matchedCat.slug] || 0) : 0;
               const catTitle = matchedCat
                 ? (matchedCat.translations?.[currentLang]?.name || matchedCat.translations?.vi?.name || matchedCat.slug)
-                : info.defaultName;
+                : (isEn ? 'Unassigned' : 'Chưa gán');
+              const catColors = matchedCat
+                ? getCategoryColorClasses(matchedCat.color)
+                : getCategoryColorClasses(schedOption.color);
 
               return (
                 <div
                   key={sched}
-                  className={`p-4 rounded-2xl border ${info.borderTop} border-t-4 border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between`}
+                  className={`p-4 rounded-2xl border ${catColors.borderTop} border-t-4 border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[11px] font-bold font-mono px-2 py-0.5 rounded-md bg-white border border-gray-200 text-gray-700">
-                        {isEn ? info.enDay : info.viDay}
+                        {isEn ? schedOption.enDay : schedOption.viDay}
                       </span>
                       <span className="text-xs font-black text-gray-900">
                         {postCount} bài
@@ -401,19 +395,21 @@ export function CmsDashboard({
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {upcomingWeekSlots.map((slot) => {
-            const schedInfo = CATEGORY_SCHEDULE_MAP[slot.daySchedule];
+            const schedInfo = scheduleDayOptions.find((s) => s.value === slot.daySchedule);
             const catName = slot.category
               ? (slot.category.translations?.[currentLang]?.name || slot.category.translations?.vi?.name || slot.category.slug)
-              : schedInfo.defaultName;
+              : (schedInfo ? (isEn ? schedInfo.categoryNameEn || 'Unassigned' : schedInfo.categoryNameVi || 'Chưa gán') : (isEn ? 'Unassigned' : 'Chưa gán'));
             const hasPost = Boolean(slot.scheduledPost);
             const post = slot.scheduledPost;
             const postTitle = post
               ? (post.translations?.[currentLang]?.title || post.translations?.vi?.title || post.translations?.en?.title || post.slug)
               : '';
 
-            const catColors = slot.category ? getCategoryColorClasses(slot.category.color) : null;
-            const borderTopClass = catColors ? catColors.borderTop : schedInfo.borderTop;
-            const badgeClass = catColors ? catColors.badge : schedInfo.badge;
+            const catColors = slot.category
+              ? getCategoryColorClasses(slot.category.color)
+              : (schedInfo ? getCategoryColorClasses(schedInfo.color) : getCategoryColorClasses('gray'));
+            const borderTopClass = catColors.borderTop;
+            const badgeClass = catColors.badge;
 
             return (
               <div

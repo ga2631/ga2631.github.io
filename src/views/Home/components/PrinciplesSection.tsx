@@ -8,12 +8,18 @@ interface PrinciplesSectionProps {
   principles?: PrincipleItem[];
 }
 
-const THEME_MAP = [
-  { borderClass: 'border-t-red-500 hover:border-red-500', textClass: 'text-red-500', bgClass: 'bg-red-50 text-red-500' },
-  { borderClass: 'border-t-blue-500 hover:border-blue-500', textClass: 'text-blue-500', bgClass: 'bg-blue-50 text-blue-500' },
-  { borderClass: 'border-t-emerald-500 hover:border-emerald-500', textClass: 'text-emerald-500', bgClass: 'bg-emerald-50 text-emerald-500' },
-  { borderClass: 'border-t-amber-500 hover:border-amber-500', textClass: 'text-amber-500', bgClass: 'bg-amber-50 text-amber-500' },
-];
+function getPrincipleTheme(idx: number) {
+  switch (idx % 4) {
+    case 0:
+      return { borderClass: 'border-t-red-500 hover:border-red-500', textClass: 'text-red-500', bgClass: 'bg-red-50 text-red-500' };
+    case 1:
+      return { borderClass: 'border-t-blue-500 hover:border-blue-500', textClass: 'text-blue-500', bgClass: 'bg-blue-50 text-blue-500' };
+    case 2:
+      return { borderClass: 'border-t-emerald-500 hover:border-emerald-500', textClass: 'text-emerald-500', bgClass: 'bg-emerald-50 text-emerald-500' };
+    default:
+      return { borderClass: 'border-t-amber-500 hover:border-amber-500', textClass: 'text-amber-500', bgClass: 'bg-amber-50 text-amber-500' };
+  }
+}
 
 export function PrinciplesSection({ principles = [] }: PrinciplesSectionProps) {
   const { dict } = useLanguage();
@@ -25,7 +31,7 @@ export function PrinciplesSection({ principles = [] }: PrinciplesSectionProps) {
   const items = principles.map((p, idx) => ({
     title: p.title,
     desc: p.description,
-    ...(THEME_MAP[idx % THEME_MAP.length]),
+    ...getPrincipleTheme(idx),
   }));
 
   return (

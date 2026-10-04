@@ -1,4 +1,5 @@
 import { ProjectItem } from '@/types';
+import { getSupabaseClient, isSupabaseConfigured } from '@/utils/supabase/client';
 import { requestClient } from './requestClient';
 
 export interface GitHubRepo {
@@ -18,54 +19,35 @@ export interface GitHubRepo {
 }
 
 /**
- * High quality fallback public projects from GitHub (ga2631)
+ * Loads public projects dynamically from Supabase cv_documents table when external GitHub API is unreachable.
+ * Avoids hardcoded static project constants in source code.
  */
-export const FALLBACK_PUBLIC_PROJECTS: ProjectItem[] = [
-  {
-    id: 'omni-recon',
-    title: 'Omni-Recon Platform',
-    category: 'Public',
-    projectType: 'public',
-    isPrivate: false,
-    description:
-      'Hệ thống đối soát tài chính đa kênh. Áp dụng kiến trúc Medallion xử lý dữ liệu với tốc độ cao, đảm bảo tính toàn vẹn và dễ dàng cài đặt.',
-    tags: ['Rust', 'DuckDB', 'Vue 3'],
-    githubUrl: 'https://github.com/ga2631',
-  },
-  {
-    id: 'portfolio-gen',
-    title: 'Portfolio Generator',
-    category: 'Public',
-    projectType: 'public',
-    isPrivate: false,
-    description:
-      'Hệ thống tạo SSG Blog từ file Markdown, kết hợp CI/CD Github Actions và Tracking Analytics chuẩn xác. Hiện đang được dùng cho chính trang web này.',
-    tags: ['Next.js', 'GA4', 'GTM'],
-    githubUrl: 'https://github.com/ga2631/ga2631.github.io',
-  },
-  {
-    id: 'word-solver',
-    title: 'Wordle Solver Microservice',
-    category: 'Public',
-    projectType: 'public',
-    isPrivate: false,
-    description:
-      'Production-ready full-stack Wordle solver microservice and dashboard built with Python (FastAPI), React (Vite), and Docker. Features optimal entropy-based puzzle resolution in 3–5 guesses.',
-    tags: ['Python', 'FastAPI', 'React', 'Docker'],
-    githubUrl: 'https://github.com/ga2631/word-solver',
-  },
-  {
-    id: 'bigquery-importer',
-    title: 'BigQuery Avro Importer',
-    category: 'Public',
-    projectType: 'public',
-    isPrivate: false,
-    description:
-      'High-performance importer for BigQuery Avro data into PostgreSQL via DuckDB, with automatic schema detection and nested JSON casting.',
-    tags: ['Python', 'DuckDB', 'PostgreSQL', 'Docker'],
-    githubUrl: 'https://github.com/ga2631/bigquery-importer',
-  },
-];
+async function getPublicProjectsFromSupabase(lang: string = 'vi'): Promise<ProjectItem[]> {
+  try {
+    if (!isSupabaseConfigured()) return [];
+    const supabase = getSupabaseClient();
+    if (!supabase) return [];
+
+    const { data, error } = await supabase
+      .from('cv_documents')
+      .select('projects')
+      .eq('lang_code', lang)
+      .maybeSingle();
+
+    if (error || !data || !Array.isArray(data.projects)) return [];
+
+    return data.projects
+      .filter((p: ProjectItem) => p.projectType === 'public' || p.isPrivate === false)
+      .map((p: ProjectItem) => ({
+        ...p,
+        category: 'Public',
+        projectType: 'public' as const,
+        isPrivate: false,
+      }));
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Format repository name to human-readable title
@@ -80,11 +62,12 @@ function formatRepoTitle(name: string): string {
 
 /**
  * Fetches public GitHub repositories for a given username, formatted as ProjectItems.
- * Applies RequestClient caching and handles rate limits gracefully.
+ * Applies RequestClient caching and falls back dynamically to Supabase database.
  */
 export async function getPublicGithubProjects(
   username: string = 'ga2631',
-  limit: number = 6
+  limit: number = 6,
+  lang: string = 'vi'
 ): Promise<ProjectItem[]> {
   try {
     return await requestClient.executeWithRetry<ProjectItem[]>(
@@ -102,14 +85,14 @@ export async function getPublicGithubProjects(
 
         if (!response.ok) {
           console.warn(
-            `[githubService] GitHub API responded with status ${response.status}. Using fallback.`
+            `[githubService] GitHub API responded with status ${response.status}. Loading public projects from Supabase.`
           );
-          return FALLBACK_PUBLIC_PROJECTS;
+          return await getPublicProjectsFromSupabase(lang);
         }
 
         const repos: GitHubRepo[] = await response.json();
         if (!Array.isArray(repos) || repos.length === 0) {
-          return FALLBACK_PUBLIC_PROJECTS;
+          return await getPublicProjectsFromSupabase(lang);
         }
 
         // Map GitHub repos to ProjectItem interface
@@ -142,12 +125,12 @@ export async function getPublicGithubProjects(
             };
           });
 
-        return projects.length > 0 ? projects : FALLBACK_PUBLIC_PROJECTS;
+        return projects.length > 0 ? projects : await getPublicProjectsFromSupabase(lang);
       },
       'GET'
     );
   } catch (error) {
-    console.warn('[githubService] Failed to fetch public repos, falling back:', error);
-    return FALLBACK_PUBLIC_PROJECTS;
+    console.warn('[githubService] Failed to fetch public repos, loading from Supabase:', error);
+    return await getPublicProjectsFromSupabase(lang);
   }
 }

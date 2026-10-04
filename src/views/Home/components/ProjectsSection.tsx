@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { ProjectItem } from '@/types';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { trackProjectModalOpen, trackProjectLinkClick } from '@/utils/analytics';
-import { getPublicGithubProjects, FALLBACK_PUBLIC_PROJECTS } from '@/services/githubService';
+import { getPublicGithubProjects } from '@/services/githubService';
 
 export interface ProjectsSectionProps {
   /**
@@ -57,7 +57,7 @@ export function ProjectsSection({
 
   // GitHub public projects
   const [fetchedGithubProjects, setFetchedGithubProjects] = useState<ProjectItem[]>(
-    publicProjects || FALLBACK_PUBLIC_PROJECTS
+    publicProjects || []
   );
 
   // Fetch public GitHub repositories
@@ -154,7 +154,7 @@ export function ProjectsSection({
         isPrivate: false,
       }));
     }
-    return FALLBACK_PUBLIC_PROJECTS;
+    return [];
   }, [publicProjects, fetchedGithubProjects]);
 
   // Combined project display list: Enterprise projects from Supabase first, followed by Public projects from GitHub

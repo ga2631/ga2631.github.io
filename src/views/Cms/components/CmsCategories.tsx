@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { AdminCategory, AdminPost } from '@/services/blogAdminService';
+import {
+  AdminCategory,
+  AdminPost,
+  getScheduleDayOptions,
+  getCategoryIconOptions,
+  getCategoryIconDetails,
+  ScheduleDayOption,
+  CategoryIconOption,
+} from '@/services/blogAdminService';
 import { CmsTab } from '@/components/layouts/CmsLayout';
 import {
   FLOWBITE_CATEGORY_COLORS,
@@ -19,24 +27,6 @@ interface CmsCategoriesProps {
   onSelectTab?: (tab: CmsTab) => void;
   currentLang: string;
 }
-
-const SCHEDULE_DAY_OPTIONS = [
-  { value: 1, vi: 'Thứ 2 (Hệ thống)', en: 'Monday (Architecture)', color: 'blue' as FlowbiteCategoryColor },
-  { value: 2, vi: 'Thứ 3 (Thuật toán)', en: 'Tuesday (Algorithms)', color: 'green' as FlowbiteCategoryColor },
-  { value: 3, vi: 'Thứ 4 (Cơ sở Dữ liệu)', en: 'Wednesday (Database)', color: 'yellow' as FlowbiteCategoryColor },
-  { value: 4, vi: 'Thứ 5 (Frontend UI)', en: 'Thursday (Frontend UI)', color: 'purple' as FlowbiteCategoryColor },
-  { value: 5, vi: 'Thứ 6 (Tech Radar)', en: 'Friday (Tech Radar)', color: 'pink' as FlowbiteCategoryColor },
-];
-
-const ICON_OPTIONS = [
-  { id: 'LayersIcon', label: 'Hệ thống / Layers', iconClass: 'fa-solid fa-layer-group' },
-  { id: 'DatabaseIcon', label: 'Cơ sở Dữ liệu / Data', iconClass: 'fa-solid fa-database' },
-  { id: 'CpuIcon', label: 'Thuật toán / CPU', iconClass: 'fa-solid fa-microchip' },
-  { id: 'SparklesIcon', label: 'Frontend / UI', iconClass: 'fa-solid fa-wand-magic-sparkles' },
-  { id: 'RadarIcon', label: 'Tech Radar / Xu hướng', iconClass: 'fa-solid fa-tower-broadcast' },
-  { id: 'BookOpenIcon', label: 'Tài liệu / Tổng hợp', iconClass: 'fa-solid fa-book-open' },
-  { id: 'TerminalIcon', label: 'Hệ thống / DevOps', iconClass: 'fa-solid fa-terminal' },
-];
 
 function generateSlug(text: string): string {
   return text
@@ -63,6 +53,15 @@ export function CmsCategories({
   const [isSaving, setIsSaving] = useState(false);
   const [activeLangTab, setActiveLangTab] = useState<'vi' | 'en'>('vi');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // Dynamic schedule day options and category icon options loaded directly from database categories
+  const scheduleDayOptions = useMemo<ScheduleDayOption[]>(() => {
+    return getScheduleDayOptions(categories);
+  }, [categories]);
+
+  const iconOptions = useMemo<CategoryIconOption[]>(() => {
+    return getCategoryIconOptions(categories);
+  }, [categories]);
 
   // Post counts per category
   const postCounts = useMemo(() => {
@@ -91,7 +90,7 @@ export function CmsCategories({
 
   const handleOpenCreateModal = () => {
     const nextSched = (categories.length % 5) + 1;
-    const defaultColor = SCHEDULE_DAY_OPTIONS.find((s) => s.value === nextSched)?.color || 'blue';
+    const defaultColor = scheduleDayOptions.find((s) => s.value === nextSched)?.color || 'blue';
     setEditingCategory({
       slug: `chuyen-de-${Date.now().toString().slice(-4)}`,
       post_schedule: nextSched,
@@ -203,7 +202,7 @@ export function CmsCategories({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {SCHEDULE_DAY_OPTIONS.map((day) => {
+          {scheduleDayOptions.map((day) => {
             const matched = categories.find((c) => c.post_schedule === day.value);
             const count = matched ? (postCounts[matched.id || matched.slug] || 0) : 0;
             const displayName = matched
@@ -222,7 +221,7 @@ export function CmsCategories({
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-[11px] font-bold font-mono px-2 py-0.5 rounded-md bg-gray-100 text-gray-700">
-                      {isEn ? day.en.split(' ')[0] : day.vi.split(' ')[0] + ' ' + day.vi.split(' ')[1]}
+                      {isEn ? day.enDay : day.viDay}
                     </span>
                     {matched && (
                       <span className="text-[11px] font-bold text-gray-900 font-mono">
@@ -313,13 +312,21 @@ export function CmsCategories({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCategories.map((cat) => {
             const count = postCounts[cat.id || cat.slug] || 0;
-            const schedInfo = SCHEDULE_DAY_OPTIONS.find((s) => s.value === cat.post_schedule) || SCHEDULE_DAY_OPTIONS[0];
+            const schedInfo = scheduleDayOptions.find((s) => s.value === cat.post_schedule) || {
+              value: cat.post_schedule,
+              vi: `Thứ ${cat.post_schedule + 1}`,
+              en: `Schedule #${cat.post_schedule}`,
+              viDay: `Thứ ${cat.post_schedule + 1}`,
+              enDay: `Schedule #${cat.post_schedule}`,
+              color: 'blue' as FlowbiteCategoryColor,
+              isAssigned: true,
+            };
             const catColors = getCategoryColorClasses(cat.color);
             const nameVi = cat.translations?.vi?.name || cat.slug;
             const nameEn = cat.translations?.en?.name || cat.slug;
             const descVi = cat.translations?.vi?.description || '';
             const descEn = cat.translations?.en?.description || '';
-            const matchedIcon = ICON_OPTIONS.find((i) => i.id === cat.icon) || ICON_OPTIONS[0];
+            const matchedIcon = getCategoryIconDetails(cat.icon);
 
             return (
               <div
@@ -600,7 +607,7 @@ export function CmsCategories({
                     value={editingCategory.post_schedule}
                     onChange={(e) => {
                       const sched = Number(e.target.value);
-                      const opt = SCHEDULE_DAY_OPTIONS.find((s) => s.value === sched);
+                      const opt = scheduleDayOptions.find((s) => s.value === sched);
                       setEditingCategory({
                         ...editingCategory,
                         post_schedule: sched,
@@ -609,7 +616,7 @@ export function CmsCategories({
                     }}
                     className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
                   >
-                    {SCHEDULE_DAY_OPTIONS.map((opt) => (
+                    {scheduleDayOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {isEn ? opt.en : opt.vi}
                       </option>
@@ -663,7 +670,7 @@ export function CmsCategories({
                     onChange={(e) => setEditingCategory({ ...editingCategory, icon: e.target.value })}
                     className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
                   >
-                    {ICON_OPTIONS.map((opt) => (
+                    {iconOptions.map((opt) => (
                       <option key={opt.id} value={opt.id}>
                         {opt.label}
                       </option>

@@ -13,32 +13,24 @@ interface LevelStyle {
   badge: string;
 }
 
-const LEVEL_MAP: Record<string | number, LevelStyle> = {
-  5: {
-    dot: 'bg-violet-500 shadow-violet-300',
-    badge: 'bg-violet-100 text-violet-700 border-violet-300',
-  },
-  4: {
-    dot: 'bg-blue-500 shadow-blue-300',
-    badge: 'bg-blue-100 text-blue-700 border-blue-300',
-  },
-  3: {
-    dot: 'bg-emerald-500 shadow-emerald-300',
-    badge: 'bg-emerald-100 text-emerald-700 border-emerald-300',
-  },
-  2: {
-    dot: 'bg-amber-500 shadow-amber-300',
-    badge: 'bg-amber-100 text-amber-700 border-amber-300',
-  },
-  1: {
-    dot: 'bg-gray-500 shadow-gray-300',
-    badge: 'bg-gray-100 text-gray-700 border-gray-300',
-  },
-};
+export function getLevelStyle(level: string | number | undefined): LevelStyle {
+  const num = typeof level === 'number' ? level : parseInt(String(level), 10);
+  switch (num) {
+    case 5:
+      return { dot: 'bg-violet-500 shadow-violet-300', badge: 'bg-violet-100 text-violet-700 border-violet-300' };
+    case 4:
+      return { dot: 'bg-blue-500 shadow-blue-300', badge: 'bg-blue-100 text-blue-700 border-blue-300' };
+    case 3:
+      return { dot: 'bg-emerald-500 shadow-emerald-300', badge: 'bg-emerald-100 text-emerald-700 border-emerald-300' };
+    case 2:
+      return { dot: 'bg-amber-500 shadow-amber-300', badge: 'bg-amber-100 text-amber-700 border-amber-300' };
+    default:
+      return { dot: 'bg-gray-500 shadow-gray-300', badge: 'bg-gray-100 text-gray-700 border-gray-300' };
+  }
+}
 
 export function getProficiencyStyle(level: string | number | undefined): string {
-  const numLevel = typeof level === 'number' ? level : parseInt(String(level), 10);
-  return (LEVEL_MAP[numLevel] || LEVEL_MAP[1]).badge;
+  return getLevelStyle(level).badge;
 }
 
 export function SkillsSection({ skillCategories = [] }: SkillsSectionProps) {
@@ -72,23 +64,23 @@ export function SkillsSection({ skillCategories = [] }: SkillsSectionProps) {
           </span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[5].dot}`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${getLevelStyle(5).dot}`} />
           <span className="text-sm font-medium text-gray-700">{dict.skills.expert}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[4].dot}`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${getLevelStyle(4).dot}`} />
           <span className="text-sm font-medium text-gray-700">{dict.skills.advanced}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[3].dot}`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${getLevelStyle(3).dot}`} />
           <span className="text-sm font-medium text-gray-700">{dict.skills.proficient}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[2].dot}`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${getLevelStyle(2).dot}`} />
           <span className="text-sm font-medium text-gray-700">{dict.skills.familiar}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <span className={`w-3 h-3 rounded-full shadow-sm ${LEVEL_MAP[1].dot}`} />
+          <span className={`w-3 h-3 rounded-full shadow-sm ${getLevelStyle(1).dot}`} />
           <span className="text-sm font-medium text-gray-700">{dict.skills.basic}</span>
         </div>
       </div>

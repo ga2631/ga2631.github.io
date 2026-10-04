@@ -36,10 +36,7 @@ export function LanguageProvider({
   const [, startTransition] = useTransition();
 
   const [currentLang, setCurrentLang] = useState<Locale>(initialLang);
-  const [languages, setLanguages] = useState<Language[]>([
-    { code: 'en', name: 'English', is_active: true },
-    { code: 'vi', name: 'Tiếng Việt', is_active: true },
-  ]);
+  const [languages, setLanguages] = useState<Language[]>([]);
   const [isLoadingLanguages, setIsLoadingLanguages] = useState<boolean>(true);
   const [isChangingLanguage, setIsChangingLanguage] = useState<boolean>(false);
   const [targetLoadingLang, setTargetLoadingLang] = useState<Locale | null>(null);
@@ -185,10 +182,7 @@ export function useLanguage(): LanguageContextType {
     const fallbackLang = defaultLocale;
     return {
       currentLang: fallbackLang,
-      languages: [
-        { code: 'en', name: 'English', is_active: true },
-        { code: 'vi', name: 'Tiếng Việt', is_active: true },
-      ],
+      languages: [],
       dict: getDictionary(fallbackLang),
       meta: localeMetadataMap[fallbackLang] || localeMetadataMap.en,
       changeLanguage: () => {},

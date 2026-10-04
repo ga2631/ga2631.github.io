@@ -2,6 +2,7 @@ import { BlogPost } from '../types/index';
 import { markdownToHtml } from '../utils/markdownParser';
 import { getSupabaseClient, isSupabaseConfigured } from '@/utils/supabase/client';
 import { requestClient } from './requestClient';
+import { getWeekdayDetails } from './blogAdminService';
 
 export interface BlogCategoryDef {
   id: string;
@@ -125,14 +126,6 @@ export function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
   };
 }
 
-const SCHEDULE_DAY_MAP: Record<number, { dayCode: string; viDay: string; enDay: string; viFull: string; enFull: string }> = {
-  1: { dayCode: 'MON', viDay: 'Thứ 2', enDay: 'Mon', viFull: 'Thứ 2 hàng tuần', enFull: 'Every Monday' },
-  2: { dayCode: 'TUE', viDay: 'Thứ 3', enDay: 'Tue', viFull: 'Thứ 3 hàng tuần', enFull: 'Every Tuesday' },
-  3: { dayCode: 'WED', viDay: 'Thứ 4', enDay: 'Wed', viFull: 'Thứ 4 hàng tuần', enFull: 'Every Wednesday' },
-  4: { dayCode: 'THU', viDay: 'Thứ 5', enDay: 'Thu', viFull: 'Thứ 5 hàng tuần', enFull: 'Every Thursday' },
-  5: { dayCode: 'FRI', viDay: 'Thứ 6', enDay: 'Fri', viFull: 'Thứ 6 hàng tuần', enFull: 'Every Friday' },
-};
-
 /**
  * Fetches all blog categories with multi-language translations from Supabase.
  * Retries up to 3 times (GET).
@@ -198,13 +191,7 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
         const viTrans = transList.find((t: any) => t.lang_code === 'vi') || {};
         const enTrans = transList.find((t: any) => t.lang_code === 'en') || {};
 
-        const scheduleInfo = SCHEDULE_DAY_MAP[cat.post_schedule || 1] || {
-          dayCode: 'ALL',
-          viDay: 'Hàng tuần',
-          enDay: 'Weekly',
-          viFull: 'Hàng tuần',
-          enFull: 'Weekly',
-        };
+        const scheduleInfo = getWeekdayDetails(Number(cat.post_schedule) || 1);
 
         return {
           id: cat.slug,

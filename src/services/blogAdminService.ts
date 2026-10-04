@@ -1,5 +1,182 @@
 import { getSupabaseClient, isSupabaseConfigured } from '@/utils/supabase/client';
 import { requestClient } from './requestClient';
+import { FlowbiteCategoryColor, normalizeCategoryColor } from '@/utils/categoryColors';
+
+export interface ScheduleDayOption {
+  value: number;
+  vi: string;
+  en: string;
+  viDay: string;
+  enDay: string;
+  color: FlowbiteCategoryColor;
+  categoryNameVi?: string;
+  categoryNameEn?: string;
+  isAssigned: boolean;
+}
+
+export interface CategoryIconOption {
+  id: string;
+  label: string;
+  iconClass: string;
+}
+
+export interface WeekdayDetails {
+  dayCode: string;
+  viDay: string;
+  enDay: string;
+  viFull: string;
+  enFull: string;
+  enName: string;
+}
+
+/**
+ * Resolves standard weekday representation dynamically without static config arrays.
+ */
+export function getWeekdayDetails(dayNumber: number): WeekdayDetails {
+  switch (dayNumber) {
+    case 1:
+      return { dayCode: 'MON', viDay: 'Thứ 2', enDay: 'Mon', viFull: 'Thứ 2 hàng tuần', enFull: 'Every Monday', enName: 'Monday' };
+    case 2:
+      return { dayCode: 'TUE', viDay: 'Thứ 3', enDay: 'Tue', viFull: 'Thứ 3 hàng tuần', enFull: 'Every Tuesday', enName: 'Tuesday' };
+    case 3:
+      return { dayCode: 'WED', viDay: 'Thứ 4', enDay: 'Wed', viFull: 'Thứ 4 hàng tuần', enFull: 'Every Wednesday', enName: 'Wednesday' };
+    case 4:
+      return { dayCode: 'THU', viDay: 'Thứ 5', enDay: 'Thu', viFull: 'Thứ 5 hàng tuần', enFull: 'Every Thursday', enName: 'Thursday' };
+    case 5:
+      return { dayCode: 'FRI', viDay: 'Thứ 6', enDay: 'Fri', viFull: 'Thứ 6 hàng tuần', enFull: 'Every Friday', enName: 'Friday' };
+    case 6:
+      return { dayCode: 'SAT', viDay: 'Thứ 7', enDay: 'Sat', viFull: 'Thứ 7 hàng tuần', enFull: 'Every Saturday', enName: 'Saturday' };
+    case 7:
+      return { dayCode: 'SUN', viDay: 'Chủ Nhật', enDay: 'Sun', viFull: 'Chủ nhật hàng tuần', enFull: 'Every Sunday', enName: 'Sunday' };
+    default:
+      return {
+        dayCode: 'ALL',
+        viDay: `Lịch #${dayNumber}`,
+        enDay: `Schedule #${dayNumber}`,
+        viFull: 'Hàng tuần',
+        enFull: 'Weekly',
+        enName: `Schedule #${dayNumber}`,
+      };
+  }
+}
+
+/**
+ * Resolves standard weekday label from day sequence number (1=Mon, 2=Tue, etc.)
+ */
+export function getWeekdayLabel(dayNumber: number): { vi: string; en: string } {
+  const details = getWeekdayDetails(dayNumber);
+  return { vi: details.viDay, en: details.enName };
+}
+
+/**
+ * Builds schedule day options dynamically from categories loaded from the Supabase database.
+ * No hardcoded schedule const arrays.
+ */
+export function getScheduleDayOptions(categories: AdminCategory[] = []): ScheduleDayOption[] {
+  const categoryScheduleMap = new Map<number, AdminCategory>();
+  categories.forEach((cat) => {
+    if (cat.post_schedule != null) {
+      categoryScheduleMap.set(Number(cat.post_schedule), cat);
+    }
+  });
+
+  // Base weekdays 1..5 plus any extra category schedules in database
+  const slots = new Set<number>([1, 2, 3, 4, 5]);
+  categoryScheduleMap.forEach((_, key) => slots.add(key));
+
+  return Array.from(slots)
+    .sort((a, b) => a - b)
+    .map((slot) => {
+      const weekday = getWeekdayLabel(slot);
+      const matched = categoryScheduleMap.get(slot);
+      if (matched) {
+        const nameVi = matched.translations?.vi?.name?.trim() || matched.slug;
+        const nameEn = matched.translations?.en?.name?.trim() || matched.slug;
+        const normColor = (normalizeCategoryColor(matched.color) || 'blue') as FlowbiteCategoryColor;
+        return {
+          value: slot,
+          vi: `${weekday.vi} (${nameVi})`,
+          en: `${weekday.en} (${nameEn})`,
+          viDay: weekday.vi,
+          enDay: weekday.en,
+          color: normColor,
+          categoryNameVi: nameVi,
+          categoryNameEn: nameEn,
+          isAssigned: true,
+        };
+      }
+      return {
+        value: slot,
+        vi: weekday.vi,
+        en: weekday.en,
+        viDay: weekday.vi,
+        enDay: weekday.en,
+        color: 'gray' as FlowbiteCategoryColor,
+        isAssigned: false,
+      };
+    });
+}
+
+/**
+ * Loads schedule day options directly from Supabase database.
+ */
+export async function fetchScheduleDayOptionsFromDb(): Promise<ScheduleDayOption[]> {
+  const categories = await getAllAdminCategories();
+  return getScheduleDayOptions(categories);
+}
+
+/**
+ * Formats icon name to FontAwesome icon class dynamically without static registry const
+ */
+export function getCategoryIconClass(iconId?: string): string {
+  if (!iconId) return 'fa-solid fa-folder';
+  if (iconId.startsWith('fa-')) return iconId;
+
+  const key = iconId.replace(/Icon$/, '').toLowerCase();
+  switch (key) {
+    case 'layers': return 'fa-solid fa-layer-group';
+    case 'cpu': return 'fa-solid fa-microchip';
+    case 'database': return 'fa-solid fa-database';
+    case 'component': return 'fa-solid fa-cubes';
+    case 'compass': return 'fa-solid fa-compass';
+    case 'sparkles': return 'fa-solid fa-wand-magic-sparkles';
+    case 'radar': return 'fa-solid fa-tower-broadcast';
+    case 'bookopen': case 'book': return 'fa-solid fa-book-open';
+    case 'terminal': return 'fa-solid fa-terminal';
+    case 'code': return 'fa-solid fa-code';
+    case 'server': return 'fa-solid fa-server';
+    case 'cloud': return 'fa-solid fa-cloud';
+    case 'shield': return 'fa-solid fa-shield-halved';
+    default: return 'fa-solid fa-folder';
+  }
+}
+
+/**
+ * Builds category icon options dynamically from the icons in the Supabase categories.
+ * No static registry const.
+ */
+export function getCategoryIconOptions(categories: AdminCategory[] = []): CategoryIconOption[] {
+  const iconSet = new Set<string>();
+  categories.forEach((cat) => {
+    if (cat.icon) iconSet.add(cat.icon);
+  });
+
+  return Array.from(iconSet).map((iconId) => ({
+    id: iconId,
+    label: iconId.replace(/Icon$/, ''),
+    iconClass: getCategoryIconClass(iconId),
+  }));
+}
+
+/**
+ * Resolves details for a specific icon ID with reliable fallback.
+ */
+export function getCategoryIconDetails(iconId?: string): { label: string; iconClass: string } {
+  return {
+    label: iconId ? iconId.replace(/Icon$/, '') : 'Chuyên mục',
+    iconClass: getCategoryIconClass(iconId),
+  };
+}
 
 export interface AdminCategoryTranslation {
   lang_code: string;

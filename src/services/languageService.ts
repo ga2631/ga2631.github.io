@@ -7,11 +7,6 @@ export interface Language {
   is_active: boolean;
 }
 
-const DEFAULT_LANGUAGES: Language[] = [
-  { code: 'vi', name: 'Tiếng Việt', is_active: true },
-  { code: 'en', name: 'English', is_active: true },
-];
-
 let cachedLanguages: Language[] | null = null;
 let cacheTimestamp = 0;
 const CACHE_TTL_MS = 60 * 1000; // 1 minute in-memory cache for SSR
@@ -27,14 +22,14 @@ export async function getActiveLanguages(): Promise<Language[]> {
   }
 
   if (!isSupabaseConfigured()) {
-    return DEFAULT_LANGUAGES;
+    return [];
   }
 
   return requestClient.executeWithRetry<Language[]>(
     'getActiveLanguages',
     async () => {
       const supabase = getSupabaseClient();
-      if (!supabase) return DEFAULT_LANGUAGES;
+      if (!supabase) return [];
 
       console.log('[Supabase 🌐 Languages] Querying active languages from table "languages"');
       const { data, error } = await supabase
@@ -44,8 +39,8 @@ export async function getActiveLanguages(): Promise<Language[]> {
         .order('code', { ascending: true });
 
       if (error || !data || data.length === 0) {
-        console.warn(`[languageService] Failed to load languages, using defaults: ${error?.message}`);
-        return DEFAULT_LANGUAGES;
+        console.warn(`[languageService] Failed to load languages from Supabase: ${error?.message}`);
+        return [];
       }
 
       cachedLanguages = data as Language[];

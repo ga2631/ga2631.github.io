@@ -233,6 +233,35 @@ describe('CMS Phase 2: Categories and Tags Management', () => {
         expect(handleDelete).toHaveBeenCalledWith('cat-1');
       });
     });
+
+    it('dynamically loads schedule day options and category icons from database categories', () => {
+      render(
+        <LanguageProvider>
+          <CmsCategories
+            categories={mockCategories}
+            posts={mockPosts}
+            isLoading={false}
+            onSaveCategory={vi.fn()}
+            onDeleteCategory={vi.fn()}
+            currentLang="vi"
+          />
+        </LanguageProvider>
+      );
+
+      // Open create modal
+      const createButton = screen.getByRole('button', { name: /\+ Thêm Chuyên Mục Mới/i });
+      fireEvent.click(createButton);
+
+      // Check that schedule select options and category badges reflect the database category names
+      const scheduleSelect = screen.getByRole('combobox', { name: /Lịch xuất bản trong tuần/i });
+      expect(scheduleSelect).toBeDefined();
+      expect(screen.getAllByText(/Thứ 2 \(Kiến trúc Hệ thống\)/i).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(/Thứ 3 \(Thuật toán & Hiệu năng Core\)/i).length).toBeGreaterThan(0);
+
+      // Check that icon options include icons
+      const iconSelect = screen.getByRole('combobox', { name: /Biểu tượng đại diện/i });
+      expect(iconSelect).toBeDefined();
+    });
   });
 
   describe('2.2 CmsTags Component', () => {
