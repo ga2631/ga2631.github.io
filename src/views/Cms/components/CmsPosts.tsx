@@ -34,7 +34,6 @@ export function CmsPosts({
   onSelectTab,
   currentLang,
 }: CmsPostsProps) {
-  const isEn = currentLang === 'en';
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'published' | 'scheduled' | 'draft'>('all');
@@ -137,7 +136,7 @@ export function CmsPosts({
   };
 
   const handleDelete = async (id: string, slug: string) => {
-    if (!confirm(isEn ? `Are you sure you want to delete article "${slug}"?` : `Bạn có chắc chắn muốn xóa bài viết "${slug}"?`)) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa bài viết "${slug}"?`)) {
       return;
     }
     setDeletingId(id);
@@ -166,20 +165,18 @@ export function CmsPosts({
   }
 
   return (
-    <div className="space-y-8" role="region" aria-label="Articles Management">
+    <div className="space-y-8" role="region" aria-label="Quản lý bài viết">
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse" />
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-              {isEn ? 'Article Management' : 'Quản Lý Bài Viết'}
+              2.3 Quản Lý Bài Viết
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-gray-500">
-            {isEn
-              ? 'Draft, schedule, and optimize technical articles with Notion-style tools, Mermaid & LaTeX.'
-              : 'Biên soạn, lên lịch phát hành và kiểm tra SEO cho các bài viết kỹ thuật chuyên sâu.'}
+            Biên soạn, lên lịch phát hành và kiểm tra SEO cho các bài viết kỹ thuật chuyên sâu.
           </p>
         </div>
 
@@ -189,7 +186,7 @@ export function CmsPosts({
           className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
         >
           <i className="fa-solid fa-plus text-xs"></i>
-          <span>{isEn ? 'Write New Article' : 'Viết Bài Viết Mới'}</span>
+          <span>Viết Bài Viết Mới</span>
         </button>
       </div>
 
@@ -205,7 +202,7 @@ export function CmsPosts({
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-              {isEn ? 'Total Articles' : 'Tổng Bài Viết'}
+              Tổng Bài Viết
             </span>
             <span className="text-xs text-blue-600"><i className="fa-solid fa-book-open"></i></span>
           </div>
@@ -223,7 +220,7 @@ export function CmsPosts({
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-              {isEn ? 'Published' : 'Đã Xuất Bản'}
+              Đã Xuất Bản
             </span>
             <span className="text-xs text-emerald-600"><i className="fa-solid fa-circle-check"></i></span>
           </div>
@@ -241,7 +238,7 @@ export function CmsPosts({
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-              {isEn ? 'Scheduled' : 'Đã Lên Lịch'}
+              Đã Lên Lịch
             </span>
             <span className="text-xs text-purple-600"><i className="fa-solid fa-calendar-days"></i></span>
           </div>
@@ -259,7 +256,7 @@ export function CmsPosts({
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-              {isEn ? 'Drafts' : 'Bản Nháp'}
+              Bản Nháp
             </span>
             <span className="text-xs text-amber-600"><i className="fa-solid fa-pen-to-square"></i></span>
           </div>
@@ -279,7 +276,7 @@ export function CmsPosts({
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder={isEn ? 'Search title or slug...' : 'Tìm kiếm theo tiêu đề hoặc slug...'}
+            placeholder="Tìm kiếm theo tiêu đề hoặc slug..."
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-2xs"
           />
           <i className="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-xs"></i>
@@ -301,7 +298,7 @@ export function CmsPosts({
         <div className="flex items-center gap-3 w-full md:w-auto flex-wrap">
           {/* Category Dropdown */}
           <select
-            aria-label={isEn ? 'Filter by category' : 'Lọc theo chuyên mục'}
+            aria-label="Lọc theo chuyên mục"
             value={selectedCategory}
             onChange={(e) => {
               setSelectedCategory(e.target.value);
@@ -309,17 +306,17 @@ export function CmsPosts({
             }}
             className="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
           >
-            <option value="all">{isEn ? 'All Categories' : 'Tất cả chuyên mục'}</option>
+            <option value="all">Tất cả chuyên mục</option>
             {categories.map((c) => (
               <option key={c.id || c.slug} value={c.id || c.slug}>
-                {c.translations?.[currentLang]?.name || c.translations?.vi?.name || c.slug}
+                {c.translations?.vi?.name || c.translations?.en?.name || c.slug}
               </option>
             ))}
           </select>
 
           {/* Status Dropdown */}
           <select
-            aria-label={isEn ? 'Filter by status' : 'Lọc theo trạng thái'}
+            aria-label="Lọc theo trạng thái"
             value={selectedStatus}
             onChange={(e) => {
               setSelectedStatus(e.target.value as any);
@@ -327,19 +324,19 @@ export function CmsPosts({
             }}
             className="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
           >
-            <option value="all">{isEn ? 'All Status' : 'Tất cả trạng thái'}</option>
-            <option value="published">{isEn ? 'Published' : 'Đã xuất bản'}</option>
-            <option value="scheduled">{isEn ? 'Scheduled' : 'Đã lên lịch'}</option>
-            <option value="draft">{isEn ? 'Draft' : 'Bản nháp'}</option>
+            <option value="all">Tất cả trạng thái</option>
+            <option value="published">Đã xuất bản</option>
+            <option value="scheduled">Đã lên lịch</option>
+            <option value="draft">Bản nháp</option>
           </select>
 
           {/* Page Size Selector */}
           <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
             <span className="text-xs text-gray-500 font-medium whitespace-nowrap">
-              {isEn ? 'Per page:' : 'Hiển thị:'}
+              Hiển thị:
             </span>
             <select
-              aria-label={isEn ? 'Articles per page' : 'Số bài viết mỗi trang'}
+              aria-label="Số bài viết mỗi trang"
               value={pageSize}
               onChange={(e) => {
                 setPageSize(Number(e.target.value));
@@ -354,7 +351,7 @@ export function CmsPosts({
           </div>
 
           <span className="text-xs text-gray-400 font-mono">
-            {filteredPosts.length} / {posts.length} {isEn ? 'articles' : 'bài'}
+            {filteredPosts.length} / {posts.length} bài
           </span>
         </div>
       </div>
@@ -367,10 +364,10 @@ export function CmsPosts({
               <i className="fa-solid fa-file-circle-question"></i>
             </span>
             <div className="text-sm font-bold text-gray-800">
-              {isEn ? 'No articles match your criteria' : 'Không có bài viết nào phù hợp bộ lọc'}
+              Không có bài viết nào phù hợp bộ lọc
             </div>
             <p className="text-xs text-gray-400 max-w-sm mx-auto">
-              {isEn ? 'Try adjusting your search query or create a new post.' : 'Hãy thử thay đổi điều kiện tìm kiếm hoặc bấm nút "Viết Bài Viết Mới".'}
+              Hãy thử thay đổi điều kiện tìm kiếm hoặc bấm nút "Viết Bài Viết Mới".
             </p>
           </div>
         ) : (
@@ -390,12 +387,12 @@ export function CmsPosts({
                 {paginatedPosts.map((p) => {
                   const titleVi = p.translations?.vi?.title;
                   const titleEn = p.translations?.en?.title;
-                  const displayTitle = (currentLang === 'en' ? titleEn || titleVi : titleVi || titleEn) || p.slug;
+                  const displayTitle = titleVi || titleEn || p.slug;
 
                   const cat = p.category_id ? categoryMap.get(p.category_id) : (p.category_slug ? categoryMap.get(p.category_slug) : undefined);
                   const catName = cat
-                    ? (cat.translations?.[currentLang]?.name || cat.translations?.vi?.name || cat.slug)
-                    : (p.category_slug || 'General');
+                    ? (cat.translations?.vi?.name || cat.translations?.en?.name || cat.slug)
+                    : (p.category_slug || 'Chung');
 
                   const todayStr = new Date().toISOString().substring(0, 10);
                   const isDraft = !p.published_at;
@@ -452,7 +449,7 @@ export function CmsPosts({
                             onClick={() => onSetEditingPost(p)}
                             className="px-3 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-semibold transition-colors cursor-pointer shadow-2xs"
                           >
-                            {isEn ? 'Edit' : 'Sửa'}
+                            Sửa
                           </button>
 
                           <Link
@@ -490,34 +487,25 @@ export function CmsPosts({
           <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Summary Count & Current Page Indicator */}
             <div className="text-xs text-gray-500">
-              {isEn ? (
-                <span>
-                  Showing <strong className="text-gray-900 font-semibold">{filteredPosts.length > 0 ? startIndex + 1 : 0}</strong> -{' '}
-                  <strong className="text-gray-900 font-semibold">{endIndex}</strong> of{' '}
-                  <strong className="text-gray-900 font-semibold">{filteredPosts.length}</strong> articles (Page{' '}
-                  <strong className="text-gray-900 font-semibold">{safeCurrentPage}</strong> / {totalPages})
-                </span>
-              ) : (
-                <span>
-                  Hiển thị <strong className="text-gray-900 font-semibold">{filteredPosts.length > 0 ? startIndex + 1 : 0}</strong> -{' '}
-                  <strong className="text-gray-900 font-semibold">{endIndex}</strong> trên tổng số{' '}
-                  <strong className="text-gray-900 font-semibold">{filteredPosts.length}</strong> bài viết (Trang{' '}
-                  <strong className="text-gray-900 font-semibold">{safeCurrentPage}</strong> / {totalPages})
-                </span>
-              )}
+              <span>
+                Hiển thị <strong className="text-gray-900 font-semibold">{filteredPosts.length > 0 ? startIndex + 1 : 0}</strong> -{' '}
+                <strong className="text-gray-900 font-semibold">{endIndex}</strong> trên tổng số{' '}
+                <strong className="text-gray-900 font-semibold">{filteredPosts.length}</strong> bài viết (Trang{' '}
+                <strong className="text-gray-900 font-semibold">{safeCurrentPage}</strong> / {totalPages})
+              </span>
             </div>
 
             {/* Navigation Controls */}
             {totalPages > 1 && (
-              <div className="flex items-center gap-1.5 flex-wrap justify-center" role="navigation" aria-label="Pagination">
+              <div className="flex items-center gap-1.5 flex-wrap justify-center" role="navigation" aria-label="Phân trang">
                 {/* First Page */}
                 <button
                   type="button"
                   onClick={() => setCurrentPage(1)}
                   disabled={safeCurrentPage === 1}
                   className="w-8 h-8 rounded-xl border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed text-xs flex items-center justify-center transition-colors cursor-pointer"
-                  title={isEn ? 'First page' : 'Trang đầu'}
-                  aria-label="First page"
+                  title="Trang đầu"
+                  aria-label="Trang đầu"
                 >
                   <i className="fa-solid fa-angles-left text-[10px]"></i>
                 </button>
@@ -528,10 +516,10 @@ export function CmsPosts({
                   onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                   disabled={safeCurrentPage === 1}
                   className="px-3 h-8 rounded-xl border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
-                  aria-label="Previous page"
+                  aria-label="Trang trước"
                 >
                   <i className="fa-solid fa-chevron-left text-[10px]"></i>
-                  <span>{isEn ? 'Prev' : 'Trước'}</span>
+                  <span>Trước</span>
                 </button>
 
                 {/* Numbered Page Buttons */}
@@ -569,9 +557,9 @@ export function CmsPosts({
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   disabled={safeCurrentPage === totalPages}
                   className="px-3 h-8 rounded-xl border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
-                  aria-label="Next page"
+                  aria-label="Trang sau"
                 >
-                  <span>{isEn ? 'Next' : 'Sau'}</span>
+                  <span>Sau</span>
                   <i className="fa-solid fa-chevron-right text-[10px]"></i>
                 </button>
 
@@ -581,8 +569,8 @@ export function CmsPosts({
                   onClick={() => setCurrentPage(totalPages)}
                   disabled={safeCurrentPage === totalPages}
                   className="w-8 h-8 rounded-xl border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed text-xs flex items-center justify-center transition-colors cursor-pointer"
-                  title={isEn ? 'Last page' : 'Trang cuối'}
-                  aria-label="Last page"
+                  title="Trang cuối"
+                  aria-label="Trang cuối"
                 >
                   <i className="fa-solid fa-angles-right text-[10px]"></i>
                 </button>

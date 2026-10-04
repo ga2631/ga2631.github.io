@@ -69,7 +69,6 @@ export function CmsPostEditor({
   onCancel,
   currentLang,
 }: CmsPostEditorProps) {
-  const isEn = currentLang === 'en';
   const [editingPost, setEditingPost] = useState<AdminPost>(() => ({
     ...post,
     translations: {
@@ -295,14 +294,14 @@ export function CmsPostEditor({
   // Handler: Save
   const handleSavePost = async () => {
     if (!editingPost.slug.trim()) {
-      alert(isEn ? 'Post slug cannot be empty.' : 'Slug URL không được để trống.');
+      alert('Slug URL không được để trống.');
       return;
     }
 
     const titleVi = editingPost.translations?.vi?.title?.trim();
     const titleEn = editingPost.translations?.en?.title?.trim();
     if (!titleVi && !titleEn) {
-      alert(isEn ? 'Please provide a title in Vietnamese or English.' : 'Vui lòng nhập tiêu đề bài viết (Tiếng Việt hoặc Tiếng Anh).');
+      alert('Vui lòng nhập tiêu đề bài viết (Tiếng Việt hoặc Tiếng Anh).');
       return;
     }
 
@@ -325,7 +324,7 @@ export function CmsPostEditor({
 
       await onSave(postWithHtml);
     } catch (err: any) {
-      alert((isEn ? 'Error saving article: ' : 'Lỗi khi lưu bài viết: ') + err.message);
+      alert('Lỗi khi lưu bài viết: ' + err.message);
     } finally {
       setIsSaving(false);
     }

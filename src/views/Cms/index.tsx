@@ -70,7 +70,7 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
         setCvJsonString(JSON.stringify(cv, null, 2));
       }
     } catch (err: any) {
-      setFeedback({ type: 'error', message: err.message || 'Error loading CMS data' });
+      setFeedback({ type: 'error', message: err.message || 'Lỗi khi tải dữ liệu CMS' });
     } finally {
       setIsLoading(false);
     }
@@ -322,7 +322,7 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-white">{dict.cms.cvEditor}</h2>
+              <h2 className="text-xl font-bold text-white">Quản Lý Hồ Sơ CV</h2>
               <p className="text-xs text-gray-400">
                 Chỉnh sửa dữ liệu hồ sơ CV cho ngôn ngữ: <strong className="text-red-400 uppercase">{currentLang}</strong>
               </p>
@@ -332,7 +332,7 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
               className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <i className="fa-solid fa-floppy-disk"></i>
-              <span>{dict.cms.save}</span>
+              <span>Lưu Hồ Sơ</span>
             </button>
           </div>
 
@@ -351,8 +351,8 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
       {activeTab === 'settings' && (
         <div className="max-w-xl mx-auto space-y-6">
           <div className="glass-panel p-6 rounded-3xl border border-gray-800 space-y-4">
-            <h2 className="text-lg font-bold text-white">{dict.cms.loginTitle}</h2>
-            <p className="text-xs text-gray-400">{dict.cms.loginSubtitle}</p>
+            <h2 className="text-lg font-bold text-white">Đăng nhập CMS Studio</h2>
+            <p className="text-xs text-gray-400">Đăng nhập tài khoản quản trị để lưu dữ liệu lên Supabase.</p>
 
             {currentUser ? (
               <div className="space-y-4 pt-2">
@@ -368,13 +368,13 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
                   }}
                   className="w-full py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-400 text-xs font-bold border border-red-500/30 transition-colors"
                 >
-                  {dict.cms.signOut}
+                  Đăng xuất
                 </button>
               </div>
             ) : (
               <form onSubmit={handleLogin} className="space-y-3 pt-2">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">{dict.cms.email}</label>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">Email Quản Trị</label>
                   <input
                     type="email"
                     required
@@ -386,7 +386,7 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">{dict.cms.password}</label>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">Mật Khẩu</label>
                   <input
                     type="password"
                     required
@@ -402,7 +402,7 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
                   disabled={isAuthLoading}
                   className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold shadow-md transition-colors disabled:opacity-50"
                 >
-                  {isAuthLoading ? dict.common.loading : dict.cms.signIn}
+                  {isAuthLoading ? 'Đang xử lý...' : 'Đăng Nhập'}
                 </button>
               </form>
             )}

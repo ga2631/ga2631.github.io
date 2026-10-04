@@ -38,12 +38,12 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
   };
 
   const menuItems: { id: CmsTab; label: string; iconClass: string }[] = [
-    { id: 'dashboard', label: dict.cms.dashboard, iconClass: 'fa-solid fa-chart-pie' },
-    { id: 'posts', label: dict.cms.posts, iconClass: 'fa-solid fa-file-lines' },
-    { id: 'categories', label: dict.cms.categories, iconClass: 'fa-solid fa-folder' },
-    { id: 'tags', label: dict.cms.tags, iconClass: 'fa-solid fa-tags' },
-    { id: 'cv', label: dict.cms.cvEditor, iconClass: 'fa-solid fa-id-card' },
-    { id: 'settings', label: dict.cms.settings, iconClass: 'fa-solid fa-gear' },
+    { id: 'dashboard', label: 'Bảng Điều Khiển', iconClass: 'fa-solid fa-chart-pie' },
+    { id: 'posts', label: 'Bài Viết', iconClass: 'fa-solid fa-file-lines' },
+    { id: 'categories', label: 'Chuyên Mục', iconClass: 'fa-solid fa-folder' },
+    { id: 'tags', label: 'Thẻ Tag', iconClass: 'fa-solid fa-tags' },
+    { id: 'cv', label: 'Hồ Sơ CV', iconClass: 'fa-solid fa-id-card' },
+    { id: 'settings', label: 'Cài Đặt', iconClass: 'fa-solid fa-gear' },
   ];
 
   return (
@@ -64,11 +64,11 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                 <span
                   className={`w-2 h-2 rounded-full ${isConfigured ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
                     }`}
-                  title={isConfigured ? dict.cms.connected : dict.cms.disconnected}
+                  title={isConfigured ? 'Đã kết nối Supabase' : 'Chưa kết nối Supabase'}
                 />
               </div>
               <div className="text-[10px] text-gray-400 font-mono hidden sm:block">
-                {isConfigured ? dict.cms.connected : dict.cms.disconnected}
+                {isConfigured ? 'Đã kết nối' : 'Chưa kết nối'}
               </div>
             </div>
           </div>
@@ -100,10 +100,10 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
             <Link
               href={getLocalizedHref('')}
               className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-200 transition-colors"
-              title={dict.cms.viewSite}
+              title="Xem Website"
             >
               <i className="fa-solid fa-globe text-xs"></i>
-              <span className="hidden xl:inline">{dict.cms.viewSite}</span>
+              <span className="hidden xl:inline">Xem Website</span>
             </Link>
 
             {/* User Profile / Sign Out */}
@@ -119,9 +119,9 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                   type="button"
                   onClick={handleSignOut}
                   className="px-2.5 py-1 text-[11px] font-bold text-red-600 hover:bg-red-50 rounded-lg border border-red-200 transition-colors cursor-pointer"
-                  title={dict.cms.signOut}
+                  title="Đăng xuất"
                 >
-                  {dict.cms.signOut}
+                  Đăng xuất
                 </button>
               </div>
             )}
@@ -131,7 +131,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
               type="button"
               onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
               className="md:hidden p-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 cursor-pointer"
-              aria-label="Toggle Navigation Menu"
+              aria-label="Mở menu điều hướng"
             >
               {isMobileNavOpen ? (
                 <i className="fa-solid fa-xmark text-sm"></i>
@@ -174,7 +174,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                 className="text-gray-600 font-medium hover:text-gray-900 flex items-center gap-1"
               >
                 <i className="fa-solid fa-globe text-xs"></i>
-                <span>{dict.cms.viewSite}</span>
+                <span>Xem Website</span>
               </Link>
               {currentUser && (
                 <button
@@ -182,7 +182,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                   onClick={handleSignOut}
                   className="text-red-600 font-bold hover:underline"
                 >
-                  {dict.cms.signOut}
+                  Đăng xuất
                 </button>
               )}
             </div>

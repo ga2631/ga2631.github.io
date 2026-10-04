@@ -65,7 +65,6 @@ export function CmsDashboard({
   onRefreshData,
   currentLang,
 }: CmsDashboardProps) {
-  const isEn = currentLang === 'en';
   const [testPingStatus, setTestPingStatus] = useState<string | null>(null);
 
   // Dynamic schedule day options loaded directly from database categories
@@ -199,13 +198,11 @@ export function CmsDashboard({
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-              {isEn ? 'CMS Studio Dashboard' : 'Bảng Điều Khiển CMS Studio'}
+              Bảng Điều Khiển CMS Studio
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-gray-500">
-            {isEn
-              ? 'Real-time overview of content publishing, weekly calendar, and telemetry.'
-              : 'Tổng quan xuất bản nội dung, kế hoạch tuần tới và hiệu quả vận hành.'}
+            Tổng quan xuất bản nội dung, kế hoạch tuần tới và hiệu quả vận hành.
           </p>
         </div>
 
@@ -226,7 +223,7 @@ export function CmsDashboard({
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            <span>{isEn ? 'Refresh' : 'Đồng bộ'}</span>
+            <span>Đồng bộ</span>
           </button>
 
           <button
@@ -234,7 +231,7 @@ export function CmsDashboard({
             onClick={() => onSelectTab('posts')}
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
           >
-            <span>+ {isEn ? 'New Article' : 'Viết bài mới'}</span>
+            <span>+ Viết bài mới</span>
           </button>
         </div>
       </div>
@@ -242,14 +239,14 @@ export function CmsDashboard({
       {/* 3.1. THỐNG KÊ SỐ LƯỢNG BÀI VIẾT (KPI Cards in Box Guideline) */}
       <section aria-labelledby="kpi-statistics-heading">
         <h2 id="kpi-statistics-heading" className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 ml-1">
-          {isEn ? '3.1 Content & Publishing Metrics' : '3.1 Thống kê Số lượng Bài viết & Xuất bản'}
+          3.1 Thống kê Số lượng Bài viết & Xuất bản
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Card 1: Total Posts */}
           <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-blue-500 hover:shadow-lg transition-all ease-in-out group">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                {isEn ? 'Total Posts' : 'Tổng Bài Viết'}
+                Tổng Bài Viết
               </span>
               <span className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">
                 <i className="fa-solid fa-book-open"></i>
@@ -269,7 +266,7 @@ export function CmsDashboard({
           <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-emerald-500 hover:shadow-lg transition-all ease-in-out group">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                {isEn ? 'Published' : 'Đã Xuất Bản'}
+                Đã Xuất Bản
               </span>
               <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">
                 <i className="fa-solid fa-circle-check"></i>
@@ -289,7 +286,7 @@ export function CmsDashboard({
           <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-purple-500 hover:shadow-lg transition-all ease-in-out group">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                {isEn ? 'Scheduled' : 'Đã Lên Lịch'}
+                Đã Lên Lịch
               </span>
               <span className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm font-bold">
                 <i className="fa-solid fa-calendar-days"></i>
@@ -309,7 +306,7 @@ export function CmsDashboard({
           <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-amber-500 hover:shadow-lg transition-all ease-in-out group">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                {isEn ? 'Drafts' : 'Bản Nháp'}
+                Bản Nháp
               </span>
               <span className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold">
                 <i className="fa-solid fa-pen-to-square"></i>
@@ -330,14 +327,14 @@ export function CmsDashboard({
         <div className="mt-5 bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-600">
-              {isEn ? 'Distribution by Weekly Publishing Category' : 'Phân bổ bài viết theo 5 Chuyên đề Thứ 2 – Thứ 6'}
+              Phân bổ bài viết theo 5 Chuyên đề Thứ 2 – Thứ 6
             </h3>
             <button
               type="button"
               onClick={() => onSelectTab('categories')}
               className="text-xs font-semibold text-red-600 hover:underline cursor-pointer"
             >
-              {isEn ? 'Manage Categories →' : 'Quản lý chuyên mục →'}
+              Quản lý chuyên mục →
             </button>
           </div>
 
@@ -347,8 +344,8 @@ export function CmsDashboard({
               const matchedCat = categories.find((c) => c.post_schedule === sched);
               const postCount = matchedCat ? (stats.catCounts[matchedCat.id || matchedCat.slug] || 0) : 0;
               const catTitle = matchedCat
-                ? (matchedCat.translations?.[currentLang]?.name || matchedCat.translations?.vi?.name || matchedCat.slug)
-                : (isEn ? 'Unassigned' : 'Chưa gán');
+                ? (matchedCat.translations?.vi?.name || matchedCat.translations?.en?.name || matchedCat.slug)
+                : 'Chưa gán';
               const catColors = matchedCat
                 ? getCategoryColorClasses(matchedCat.color)
                 : getCategoryColorClasses(schedOption.color);
@@ -361,7 +358,7 @@ export function CmsDashboard({
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[11px] font-bold font-mono px-2 py-0.5 rounded-md bg-white border border-gray-200 text-gray-700">
-                        {isEn ? schedOption.enDay : schedOption.viDay}
+                        {schedOption.viDay}
                       </span>
                       <span className="text-xs font-black text-gray-900">
                         {postCount} bài
@@ -383,12 +380,10 @@ export function CmsDashboard({
         <div className="flex items-center justify-between mb-3 ml-1">
           <div>
             <h2 id="upcoming-pipeline-heading" className="text-xs font-bold uppercase tracking-wider text-gray-500">
-              {isEn ? '3.3 Next Week Publishing Pipeline' : '3.3 Lịch Đăng Bài Tuần Tới (Thứ 2 – Thứ 6)'}
+              3.3 Lịch Đăng Bài Tuần Tới (Thứ 2 – Thứ 6)
             </h2>
             <p className="text-xs text-gray-400 mt-0.5">
-              {isEn
-                ? 'Automated weekday schedule. Click to create or edit articles for each slot.'
-                : 'Lộ trình phát hành tuần tới. Bấm để lên lịch nhanh bài viết vào ngày tương ứng.'}
+              Lộ trình phát hành tuần tới. Bấm để lên lịch nhanh bài viết vào ngày tương ứng.
             </p>
           </div>
         </div>
@@ -397,12 +392,12 @@ export function CmsDashboard({
           {upcomingWeekSlots.map((slot) => {
             const schedInfo = scheduleDayOptions.find((s) => s.value === slot.daySchedule);
             const catName = slot.category
-              ? (slot.category.translations?.[currentLang]?.name || slot.category.translations?.vi?.name || slot.category.slug)
-              : (schedInfo ? (isEn ? schedInfo.categoryNameEn || 'Unassigned' : schedInfo.categoryNameVi || 'Chưa gán') : (isEn ? 'Unassigned' : 'Chưa gán'));
+              ? (slot.category.translations?.vi?.name || slot.category.translations?.en?.name || slot.category.slug)
+              : (schedInfo ? schedInfo.categoryNameVi || 'Chưa gán' : 'Chưa gán');
             const hasPost = Boolean(slot.scheduledPost);
             const post = slot.scheduledPost;
             const postTitle = post
-              ? (post.translations?.[currentLang]?.title || post.translations?.vi?.title || post.translations?.en?.title || post.slug)
+              ? (post.translations?.vi?.title || post.translations?.en?.title || post.slug)
               : '';
 
             const catColors = slot.category
@@ -420,7 +415,7 @@ export function CmsDashboard({
                   {/* Slot Date & Weekday */}
                   <div className="flex items-center justify-between pb-2 border-b border-gray-100 mb-3">
                     <span className="text-xs font-bold text-gray-900">
-                      {isEn ? slot.dayNameEn : slot.dayNameVi}
+                      {slot.dayNameVi}
                     </span>
                     <span className="text-[11px] font-mono text-gray-500 bg-gray-50 px-2 py-0.5 rounded-md border border-gray-200">
                       {slot.formattedDate}
@@ -448,7 +443,7 @@ export function CmsDashboard({
                     <div className="py-4 text-center border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50 space-y-1">
                       <span className="text-base">⏳</span>
                       <div className="text-[11px] font-medium text-gray-500">
-                        {isEn ? 'Slot open' : 'Chưa có bài viết'}
+                        Chưa có bài viết
                       </div>
                     </div>
                   )}
@@ -462,7 +457,7 @@ export function CmsDashboard({
                       onClick={() => onEditPost(post)}
                       className="w-full py-1.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
                     >
-                      {isEn ? 'Edit Article' : 'Chỉnh sửa bài'}
+                      Chỉnh sửa bài
                     </button>
                   ) : (
                     <button
@@ -476,7 +471,7 @@ export function CmsDashboard({
                       }}
                       className="w-full py-1.5 rounded-xl bg-white hover:bg-gray-50 text-red-600 hover:text-red-700 text-xs font-semibold border border-red-200 shadow-2xs transition-colors cursor-pointer"
                     >
-                      + {isEn ? 'Schedule Post' : 'Lên lịch bài mới'}
+                      + Lên lịch bài mới
                     </button>
                   )}
                 </div>
@@ -492,21 +487,21 @@ export function CmsDashboard({
         <section className="lg:col-span-8 space-y-3" aria-labelledby="recent-posts-heading">
           <div className="flex items-center justify-between ml-1">
             <h2 id="recent-posts-heading" className="text-xs font-bold uppercase tracking-wider text-gray-500">
-              {isEn ? '3.2 Recent Articles' : '3.2 Bài Đăng Gần Đây'}
+              3.2 Bài Đăng Gần Đây
             </h2>
             <button
               type="button"
               onClick={() => onSelectTab('posts')}
               className="text-xs font-semibold text-red-600 hover:underline cursor-pointer"
             >
-              {isEn ? 'View all posts →' : 'Xem tất cả bài viết →'}
+              Xem tất cả bài viết →
             </button>
           </div>
 
           <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-red-500">
             {recentPosts.length === 0 ? (
               <div className="py-12 text-center text-xs text-gray-400">
-                {isEn ? 'No articles yet.' : 'Chưa có bài viết nào.'}
+                Chưa có bài viết nào.
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -524,11 +519,11 @@ export function CmsDashboard({
                     {recentPosts.map((p) => {
                       const titleVi = p.translations?.vi?.title;
                       const titleEn = p.translations?.en?.title;
-                      const displayTitle = (currentLang === 'en' ? titleEn || titleVi : titleVi || titleEn) || p.slug;
+                      const displayTitle = titleVi || titleEn || p.slug;
                       const cat = p.category_id ? categoryMap.get(p.category_id) : (p.category_slug ? categoryMap.get(p.category_slug) : undefined);
                       const catName = cat
-                        ? (cat.translations?.[currentLang]?.name || cat.translations?.vi?.name || cat.slug)
-                        : (p.category_slug || 'General');
+                        ? (cat.translations?.vi?.name || cat.translations?.en?.name || cat.slug)
+                        : (p.category_slug || 'Chung');
 
                       const isDraft = !p.published_at;
                       const isScheduled = p.published_at && p.published_at.substring(0, 10) > new Date().toISOString().substring(0, 10);
@@ -605,7 +600,7 @@ export function CmsDashboard({
         <section className="lg:col-span-4 space-y-3" aria-labelledby="ga4-metrics-heading">
           <div className="flex items-center justify-between ml-1">
             <h2 id="ga4-metrics-heading" className="text-xs font-bold uppercase tracking-wider text-gray-500">
-              {isEn ? '3.4 GA4 Telemetry & Metrics' : '3.4 Chỉ số GA4 & Hiệu quả'}
+              3.4 Chỉ số GA4 & Hiệu quả
             </h2>
             <span className="text-[11px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 font-semibold">
               Live GA4

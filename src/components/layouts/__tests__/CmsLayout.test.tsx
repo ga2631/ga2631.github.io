@@ -44,11 +44,11 @@ describe('CmsLayout Top Navigation Bar', () => {
     expect(screen.getByText('CMS Studio')).toBeDefined();
 
     // Verify Desktop Nav Tabs
-    expect(screen.getByText(/Quản Lý Bài Viết/i)).toBeDefined();
-    expect(screen.getByText(/Quản Lý Chuyên Mục/i)).toBeDefined();
-    expect(screen.getByText(/Quản Lý Thẻ/i)).toBeDefined();
-    expect(screen.getByText(/Chỉnh Sửa CV/i)).toBeDefined();
-    expect(screen.getByText(/Cấu Hình & Kết Nối/i)).toBeDefined();
+    expect(screen.getByText(/Bài Viết/i)).toBeDefined();
+    expect(screen.getByText(/Chuyên Mục/i)).toBeDefined();
+    expect(screen.getByText(/Thẻ Tag/i)).toBeDefined();
+    expect(screen.getByText(/Hồ Sơ CV/i)).toBeDefined();
+    expect(screen.getByText(/Cài Đặt/i)).toBeDefined();
 
     // Click on Dashboard tab
     const dashboardTab = screen.getByRole('button', { name: /Bảng Điều Khiển/i });
@@ -68,7 +68,7 @@ describe('CmsLayout Top Navigation Bar', () => {
       </LanguageProvider>
     );
 
-    const toggleBtn = screen.getByLabelText('Toggle Navigation Menu');
+    const toggleBtn = screen.getByLabelText(/Mở menu điều hướng/i);
     fireEvent.click(toggleBtn);
 
     // Should switch icon to fa-xmark

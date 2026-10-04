@@ -47,7 +47,6 @@ export function CmsCategories({
   onSelectTab,
   currentLang,
 }: CmsCategoriesProps) {
-  const isEn = currentLang === 'en';
   const [searchQuery, setSearchQuery] = useState('');
   const [editingCategory, setEditingCategory] = useState<AdminCategory | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -109,14 +108,14 @@ export function CmsCategories({
     if (!editingCategory) return;
 
     if (!editingCategory.slug.trim()) {
-      alert(isEn ? 'Category slug cannot be empty.' : 'Slug chuyên mục không được để trống.');
+      alert('Slug chuyên mục không được để trống.');
       return;
     }
 
     const nameVi = editingCategory.translations?.vi?.name?.trim();
     const nameEn = editingCategory.translations?.en?.name?.trim();
     if (!nameVi && !nameEn) {
-      alert(isEn ? 'Please provide at least a Vietnamese or English title.' : 'Vui lòng nhập tên chuyên mục (Tiếng Việt hoặc Tiếng Anh).');
+      alert('Vui lòng nhập tên chuyên mục (Tiếng Việt hoặc Tiếng Anh).');
       return;
     }
 
@@ -125,7 +124,7 @@ export function CmsCategories({
       await onSaveCategory(editingCategory);
       setEditingCategory(null);
     } catch (err: any) {
-      alert((isEn ? 'Error saving category: ' : 'Lỗi khi lưu chuyên mục: ') + err.message);
+      alert('Lỗi khi lưu chuyên mục: ' + err.message);
     } finally {
       setIsSaving(false);
     }
@@ -134,12 +133,8 @@ export function CmsCategories({
   const handleDelete = async (id: string, name: string) => {
     const count = postCounts[id] || 0;
     const confirmMsg = count > 0
-      ? isEn
-        ? `Warning: This category currently has ${count} articles. Deleting it will unassign those articles. Are you sure you want to delete "${name}"?`
-        : `Cảnh báo: Chuyên mục này đang có ${count} bài viết liên kết. Xóa chuyên mục sẽ gỡ bài viết khỏi chuyên mục này. Bạn có chắc muốn xóa "${name}"?`
-      : isEn
-        ? `Are you sure you want to delete category "${name}"?`
-        : `Bạn có chắc muốn xóa chuyên mục "${name}"?`;
+      ? `Cảnh báo: Chuyên mục này đang có ${count} bài viết liên kết. Xóa chuyên mục sẽ gỡ bài viết khỏi chuyên mục này. Bạn có chắc muốn xóa "${name}"?`
+      : `Bạn có chắc muốn xóa chuyên mục "${name}"?`;
 
     if (!confirm(confirmMsg)) return;
 
@@ -147,27 +142,25 @@ export function CmsCategories({
     try {
       await onDeleteCategory(id);
     } catch (err: any) {
-      alert((isEn ? 'Error deleting category: ' : 'Lỗi khi xóa chuyên mục: ') + err.message);
+      alert('Lỗi khi xóa chuyên mục: ' + err.message);
     } finally {
       setDeletingId(null);
     }
   };
 
   return (
-    <div className="space-y-8" role="region" aria-label="Category Management">
+    <div className="space-y-8" role="region" aria-label="Quản lý chuyên mục">
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-              {isEn ? '2.1 Category Management' : '2.1 Quản Lý Chuyên Mục'}
+              2.1 Quản Lý Chuyên Mục
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-gray-500">
-            {isEn
-              ? '5 core technical themes assigned to weekly publishing schedule (Monday to Friday).'
-              : '5 chuyên mục kỹ thuật gắn với lịch xuất bản đều đặn hàng tuần từ Thứ 2 đến Thứ 6.'}
+            5 chuyên mục kỹ thuật gắn với lịch xuất bản đều đặn hàng tuần từ Thứ 2 đến Thứ 6.
           </p>
         </div>
 
@@ -178,7 +171,7 @@ export function CmsCategories({
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
           >
             <span>+</span>
-            <span>{isEn ? 'New Category' : 'Thêm Chuyên Mục Mới'}</span>
+            <span>Thêm Chuyên Mục Mới</span>
           </button>
         </div>
       </div>
@@ -188,12 +181,10 @@ export function CmsCategories({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
           <div>
             <h2 className="text-xs font-bold uppercase tracking-wider text-gray-700">
-              {isEn ? 'Weekly Workday Schedule Coverage' : 'Độ Bao Phủ Lịch Xuất Bản Tuần (Thứ 2 – Thứ 6)'}
+              Độ Bao Phủ Lịch Xuất Bản Tuần (Thứ 2 – Thứ 6)
             </h2>
             <p className="text-[11px] text-gray-400 mt-0.5">
-              {isEn
-                ? 'Each weekday is assigned to one technical domain for predictable audience engagement.'
-                : 'Mỗi ngày làm việc trong tuần được bảo đảm bởi 1 chuyên đề cố định giúp duy trì nhịp đọc.'}
+              Mỗi ngày làm việc trong tuần được bảo đảm bởi 1 chuyên đề cố định giúp duy trì nhịp đọc.
             </p>
           </div>
           <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700">
@@ -206,7 +197,7 @@ export function CmsCategories({
             const matched = categories.find((c) => c.post_schedule === day.value);
             const count = matched ? (postCounts[matched.id || matched.slug] || 0) : 0;
             const displayName = matched
-              ? (matched.translations?.[currentLang]?.name || matched.translations?.vi?.name || matched.slug)
+              ? (matched.translations?.vi?.name || matched.translations?.en?.name || matched.slug)
               : null;
             const dayColors = matched
               ? getCategoryColorClasses(matched.color)
@@ -221,7 +212,7 @@ export function CmsCategories({
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-[11px] font-bold font-mono px-2 py-0.5 rounded-md bg-gray-100 text-gray-700">
-                      {isEn ? day.enDay : day.viDay}
+                      {day.viDay}
                     </span>
                     {matched && (
                       <span className="text-[11px] font-bold text-gray-900 font-mono">
@@ -232,7 +223,7 @@ export function CmsCategories({
                   <div className="text-xs font-bold text-gray-900 line-clamp-1">
                     {displayName || (
                       <span className="text-gray-400 italic font-normal">
-                        {isEn ? 'Not assigned' : 'Chưa gán chuyên mục'}
+                        Chưa gán chuyên mục
                       </span>
                     )}
                   </div>
@@ -245,7 +236,7 @@ export function CmsCategories({
                       onClick={() => setEditingCategory(matched)}
                       className="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer"
                     >
-                      {isEn ? 'Edit' : 'Chỉnh sửa'}
+                      Chỉnh sửa
                     </button>
                   ) : (
                     <button
@@ -256,7 +247,7 @@ export function CmsCategories({
                       }}
                       className="text-red-600 hover:text-red-800 font-semibold cursor-pointer"
                     >
-                      + {isEn ? 'Assign' : 'Gán lịch'}
+                      + Gán lịch
                     </button>
                   )}
                 </div>
@@ -273,7 +264,7 @@ export function CmsCategories({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={isEn ? 'Search category name or slug...' : 'Tìm kiếm theo tên hoặc slug...'}
+            placeholder="Tìm kiếm theo tên hoặc slug..."
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-2xs"
           />
           <i className="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-xs"></i>
@@ -289,7 +280,7 @@ export function CmsCategories({
         </div>
 
         <div className="text-xs text-gray-500 self-end sm:self-center font-mono">
-          {isEn ? `Showing ${filteredCategories.length} of ${categories.length} categories` : `Hiển thị ${filteredCategories.length} / ${categories.length} chuyên mục`}
+          Hiển thị {filteredCategories.length} / {categories.length} chuyên mục
         </div>
       </div>
 
@@ -300,12 +291,12 @@ export function CmsCategories({
             <i className="fa-solid fa-folder-open"></i>
           </span>
           <div className="text-sm font-bold text-gray-800">
-            {isEn ? 'No categories found' : 'Không tìm thấy chuyên mục nào'}
+            Không tìm thấy chuyên mục nào
           </div>
           <p className="text-xs text-gray-400 max-w-sm mx-auto">
             {searchQuery
-              ? (isEn ? 'Try adjusting your search keywords.' : 'Hãy thử thay đổi từ khoá tìm kiếm của bạn.')
-              : (isEn ? 'Create your first category to get started.' : 'Bắt đầu bằng cách tạo chuyên mục đầu tiên.')}
+              ? 'Hãy thử thay đổi từ khoá tìm kiếm của bạn.'
+              : 'Bắt đầu bằng cách tạo chuyên mục đầu tiên.'}
           </p>
         </div>
       ) : (
@@ -342,7 +333,7 @@ export function CmsCategories({
                       </span>
                       <div>
                         <span className={`inline-block text-[11px] font-bold px-2 py-0.5 rounded-md border ${catColors.badge}`}>
-                          {isEn ? schedInfo.en : schedInfo.vi}
+                          {schedInfo.vi}
                         </span>
                         <div className="text-[11px] font-mono text-gray-400 mt-0.5 truncate max-w-[160px]">
                           /{cat.slug}
@@ -361,15 +352,15 @@ export function CmsCategories({
                   {/* Title & Description */}
                   <div className="space-y-1.5 pt-1">
                     <h3 className={`text-base font-black text-gray-900 group-hover:${catColors.text} transition-colors leading-snug`}>
-                      {isEn ? nameEn : nameVi}
+                      {nameVi}
                     </h3>
-                    {nameVi !== nameEn && (
+                    {nameVi !== nameEn && nameEn && (
                       <div className="text-xs font-medium text-gray-400">
-                        {isEn ? nameVi : nameEn}
+                        {nameEn}
                       </div>
                     )}
                     <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed pt-1">
-                      {(isEn ? descEn || descVi : descVi || descEn) || (
+                      {descVi || descEn || (
                         <span className="italic text-gray-400">Chưa có mô tả chi tiết.</span>
                       )}
                     </p>
@@ -397,15 +388,15 @@ export function CmsCategories({
                       onClick={() => setEditingCategory(cat)}
                       className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold transition-colors cursor-pointer"
                     >
-                      {isEn ? 'Edit' : 'Sửa'}
+                      Sửa
                     </button>
                     {cat.id && (
                       <button
                         type="button"
-                        onClick={() => handleDelete(cat.id!, isEn ? nameEn : nameVi)}
+                        onClick={() => handleDelete(cat.id!, nameVi || nameEn)}
                         disabled={deletingId === cat.id}
                         className="px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
-                        title={isEn ? 'Delete category' : 'Xoá chuyên mục'}
+                        title="Xoá chuyên mục"
                       >
                         {deletingId === cat.id ? '...' : <i className="fa-solid fa-trash-can"></i>}
                       </button>
@@ -430,8 +421,8 @@ export function CmsCategories({
                 </span>
                 <h2 className="text-lg font-black text-gray-900 tracking-tight">
                   {editingCategory.id
-                    ? isEn ? 'Edit Category' : 'Chỉnh Sửa Chuyên Mục'
-                    : isEn ? 'Create New Category' : 'Thêm Chuyên Mục Mới'}
+                    ? 'Chỉnh Sửa Chuyên Mục'
+                    : 'Thêm Chuyên Mục Mới'}
                 </h2>
               </div>
               <button
@@ -448,7 +439,7 @@ export function CmsCategories({
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                    {isEn ? 'Bilingual Content' : 'Nội Dung Đa Ngôn Ngữ'}
+                    Nội Dung Song Ngữ
                   </label>
                   <div className="flex bg-gray-100 p-0.5 rounded-xl text-xs font-bold">
                     <button
@@ -618,7 +609,7 @@ export function CmsCategories({
                   >
                     {scheduleDayOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
-                        {isEn ? opt.en : opt.vi}
+                        {opt.vi}
                       </option>
                     ))}
                   </select>
@@ -648,7 +639,7 @@ export function CmsCategories({
                             ? 'ring-2 ring-offset-2 ring-gray-900 scale-110 shadow-xs'
                             : 'opacity-75 hover:opacity-100 hover:scale-105'
                             }`}
-                          title={isEn ? c.nameEn : c.nameVi}
+                          title={c.nameVi}
                           aria-label={c.nameVi}
                         >
                           {isSelected && (
@@ -687,7 +678,7 @@ export function CmsCategories({
                   disabled={isSaving}
                   className="px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 text-xs font-semibold transition-colors cursor-pointer"
                 >
-                  {isEn ? 'Cancel' : 'Hủy bỏ'}
+                  Hủy bỏ
                 </button>
                 <button
                   type="submit"
@@ -695,7 +686,7 @@ export function CmsCategories({
                   className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-500/25 transition-all cursor-pointer disabled:opacity-60 flex items-center gap-1.5"
                 >
                   {isSaving && <span className="animate-spin text-sm">⏳</span>}
-                  <span>{isEn ? 'Save Category' : 'Lưu Chuyên Mục'}</span>
+                  <span>Lưu Chuyên Mục</span>
                 </button>
               </div>
             </form>

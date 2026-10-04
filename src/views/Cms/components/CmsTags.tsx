@@ -33,7 +33,6 @@ export function CmsTags({
   onSelectTab,
   currentLang,
 }: CmsTagsProps) {
-  const isEn = currentLang === 'en';
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'cloud'>('grid');
   const [editingTag, setEditingTag] = useState<AdminTag | null>(null);
@@ -98,14 +97,14 @@ export function CmsTags({
     if (!editingTag) return;
 
     if (!editingTag.slug.trim()) {
-      alert(isEn ? 'Tag slug cannot be empty.' : 'Slug thẻ không được để trống.');
+      alert('Slug thẻ không được để trống.');
       return;
     }
 
     const nameVi = editingTag.translations?.vi?.name?.trim();
     const nameEn = editingTag.translations?.en?.name?.trim();
     if (!nameVi && !nameEn) {
-      alert(isEn ? 'Please provide at least a Vietnamese or English display name.' : 'Vui lòng nhập tên hiển thị cho thẻ (Tiếng Việt hoặc Tiếng Anh).');
+      alert('Vui lòng nhập tên hiển thị cho thẻ (Tiếng Việt hoặc Tiếng Anh).');
       return;
     }
 
@@ -114,7 +113,7 @@ export function CmsTags({
       await onSaveTag(editingTag);
       setEditingTag(null);
     } catch (err: any) {
-      alert((isEn ? 'Error saving tag: ' : 'Lỗi khi lưu thẻ: ') + err.message);
+      alert('Lỗi khi lưu thẻ: ' + err.message);
     } finally {
       setIsSaving(false);
     }
@@ -123,12 +122,8 @@ export function CmsTags({
   const handleDelete = async (id: string, slug: string) => {
     const count = tagStats.counts[id] || 0;
     const confirmMsg = count > 0
-      ? isEn
-        ? `Warning: Tag "#${slug}" is used in ${count} articles. Deleting it will remove this tag from those articles. Are you sure?`
-        : `Cảnh báo: Thẻ "#${slug}" đang được gắn trong ${count} bài viết. Xóa thẻ này sẽ gỡ khỏi các bài viết liên quan. Bạn có chắc chắn muốn xóa?`
-      : isEn
-        ? `Are you sure you want to delete tag "#${slug}"?`
-        : `Bạn có chắc muốn xóa thẻ "#${slug}"?`;
+      ? `Cảnh báo: Thẻ "#${slug}" đang được gắn trong ${count} bài viết. Xóa thẻ này sẽ gỡ khỏi các bài viết liên quan. Bạn có chắc chắn muốn xóa?`
+      : `Bạn có chắc muốn xóa thẻ "#${slug}"?`;
 
     if (!confirm(confirmMsg)) return;
 
@@ -136,27 +131,25 @@ export function CmsTags({
     try {
       await onDeleteTag(id);
     } catch (err: any) {
-      alert((isEn ? 'Error deleting tag: ' : 'Lỗi khi xóa thẻ: ') + err.message);
+      alert('Lỗi khi xóa thẻ: ' + err.message);
     } finally {
       setDeletingId(null);
     }
   };
 
   return (
-    <div className="space-y-8" role="region" aria-label="Tag Management">
+    <div className="space-y-8" role="region" aria-label="Quản lý thẻ">
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white backdrop-blur-sm border border-gray-100 rounded-3xl p-6 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse" />
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-              {isEn ? '2.2 Technical Tag Management' : '2.2 Quản Lý Thẻ Kỹ Thuật'}
+              2.2 Quản Lý Thẻ Kỹ Thuật
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-gray-500">
-            {isEn
-              ? 'Multi-language technical tags and keywords for fine-grained classification and SEO discovery.'
-              : 'Thẻ kỹ thuật đa ngôn ngữ hỗ trợ phân loại nội dung chi tiết và tối ưu hoá bộ lọc tìm kiếm.'}
+            Thẻ kỹ thuật đa ngôn ngữ hỗ trợ phân loại nội dung chi tiết và tối ưu hoá bộ lọc tìm kiếm.
           </p>
         </div>
 
@@ -167,7 +160,7 @@ export function CmsTags({
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
           >
             <span>+</span>
-            <span>{isEn ? 'New Tag' : 'Thêm Thẻ Mới'}</span>
+            <span>Thêm Thẻ Mới</span>
           </button>
         </div>
       </div>
@@ -176,7 +169,7 @@ export function CmsTags({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-purple-500 hover:shadow-lg transition-all">
           <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-            {isEn ? 'Total Tags' : 'Tổng Số Thẻ'}
+            Tổng Số Thẻ
           </div>
           <div className="text-3xl font-black text-gray-900">{tags.length}</div>
           <div className="text-[11px] text-gray-400 mt-1">Đồng bộ Supabase</div>
@@ -184,7 +177,7 @@ export function CmsTags({
 
         <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-emerald-500 hover:shadow-lg transition-all">
           <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-            {isEn ? 'In Use' : 'Đang Sử Dụng'}
+            Đang Sử Dụng
           </div>
           <div className="text-3xl font-black text-emerald-600">{tagStats.activeCount}</div>
           <div className="text-[11px] text-emerald-700 mt-1">Gắn trong bài viết</div>
@@ -192,7 +185,7 @@ export function CmsTags({
 
         <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-amber-500 hover:shadow-lg transition-all">
           <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-            {isEn ? 'Unassigned' : 'Chưa Có Bài Viết'}
+            Chưa Có Bài Viết
           </div>
           <div className="text-3xl font-black text-amber-600">{tagStats.unusedCount}</div>
           <div className="text-[11px] text-amber-700 mt-1">Sẵn sàng liên kết</div>
@@ -200,7 +193,7 @@ export function CmsTags({
 
         <div className="bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-blue-500 hover:shadow-lg transition-all">
           <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-            {isEn ? 'Top Tag' : 'Thẻ Dùng Nhiều Nhất'}
+            Thẻ Dùng Nhiều Nhất
           </div>
           <div className="text-base font-black text-blue-600 truncate mt-1">
             {tagStats.topTags[0] ? `#${tagStats.topTags[0].slug}` : '—'}
@@ -218,7 +211,7 @@ export function CmsTags({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={isEn ? 'Search tag by slug or name...' : 'Tìm kiếm thẻ theo slug hoặc tên...'}
+            placeholder="Tìm kiếm thẻ theo slug hoặc tên..."
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-2xs"
           />
           <i className="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-xs"></i>
@@ -243,7 +236,7 @@ export function CmsTags({
               }`}
             >
               <i className="fa-solid fa-table-cells-large text-[11px]"></i>
-              <span>{isEn ? 'Cards' : 'Dạng thẻ'}</span>
+              <span>Dạng thẻ</span>
             </button>
             <button
               type="button"
@@ -253,7 +246,7 @@ export function CmsTags({
               }`}
             >
               <i className="fa-solid fa-cloud text-[11px]"></i>
-              <span>{isEn ? 'Cloud' : 'Đám mây'}</span>
+              <span>Đám mây</span>
             </button>
           </div>
           <span className="text-xs text-gray-400 font-mono">
@@ -271,12 +264,12 @@ export function CmsTags({
                 <i className="fa-solid fa-tags"></i>
               </span>
               <div className="text-sm font-bold text-gray-800">
-                {isEn ? 'No tags found' : 'Không tìm thấy thẻ nào'}
+                Không tìm thấy thẻ nào
               </div>
               <p className="text-xs text-gray-400 max-w-sm mx-auto">
                 {searchQuery
-                  ? (isEn ? 'Try adjusting your search query.' : 'Hãy thử thay đổi từ khoá tìm kiếm.')
-                  : (isEn ? 'Create your first tag to start tagging articles.' : 'Tạo thẻ đầu tiên để gắn nhãn bài viết.')}
+                  ? 'Hãy thử thay đổi từ khoá tìm kiếm.'
+                  : 'Tạo thẻ đầu tiên để gắn nhãn bài viết.'}
               </p>
             </div>
           ) : (
@@ -285,7 +278,7 @@ export function CmsTags({
                 const count = tagStats.counts[tag.id || tag.slug] || 0;
                 const nameVi = tag.translations?.vi?.name;
                 const nameEn = tag.translations?.en?.name;
-                const displayName = (currentLang === 'en' ? nameEn || nameVi : nameVi || nameEn) || tag.slug;
+                const displayName = nameVi || nameEn || tag.slug;
 
                 return (
                   <div
@@ -309,7 +302,7 @@ export function CmsTags({
                       </div>
                       {nameVi && nameEn && nameVi !== nameEn && (
                         <div className="text-[11px] text-gray-400 line-clamp-1 mt-0.5">
-                          {currentLang === 'en' ? nameVi : nameEn}
+                          {nameEn}
                         </div>
                       )}
                     </div>
@@ -325,7 +318,7 @@ export function CmsTags({
                         }}
                         className="text-[11px] font-semibold text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                       >
-                        {isEn ? 'Filter posts →' : 'Xem bài viết →'}
+                        Xem bài viết →
                       </button>
 
                       <div className="flex items-center gap-1">
@@ -334,7 +327,7 @@ export function CmsTags({
                           onClick={() => setEditingTag(tag)}
                           className="px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-semibold transition-colors cursor-pointer"
                         >
-                          {isEn ? 'Edit' : 'Sửa'}
+                          Sửa
                         </button>
                         {tag.id && (
                           <button
@@ -342,7 +335,7 @@ export function CmsTags({
                             onClick={() => handleDelete(tag.id!, tag.slug)}
                             disabled={deletingId === tag.id}
                             className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-semibold transition-colors cursor-pointer disabled:opacity-50"
-                            title={isEn ? 'Delete tag' : 'Xoá thẻ'}
+                            title="Xoá thẻ"
                           >
                             {deletingId === tag.id ? '...' : <i className="fa-solid fa-trash-can"></i>}
                           </button>
@@ -365,7 +358,7 @@ export function CmsTags({
               const count = tagStats.counts[tag.id || tag.slug] || 0;
               const nameVi = tag.translations?.vi?.name;
               const nameEn = tag.translations?.en?.name;
-              const displayName = (currentLang === 'en' ? nameEn || nameVi : nameVi || nameEn) || tag.slug;
+              const displayName = nameVi || nameEn || tag.slug;
 
               return (
                 <div
@@ -381,7 +374,7 @@ export function CmsTags({
                     type="button"
                     onClick={() => setEditingTag(tag)}
                     className="text-gray-400 hover:text-gray-700 ml-1 cursor-pointer"
-                    title={isEn ? 'Edit tag' : 'Chỉnh sửa'}
+                    title="Chỉnh sửa"
                   >
                     <i className="fa-solid fa-pen text-[10px]"></i>
                   </button>
@@ -390,7 +383,7 @@ export function CmsTags({
                       type="button"
                       onClick={() => handleDelete(tag.id!, tag.slug)}
                       className="text-red-400 hover:text-red-600 cursor-pointer font-bold ml-0.5"
-                      title={isEn ? 'Delete tag' : 'Xoá'}
+                      title="Xoá"
                     >
                       <i className="fa-solid fa-trash-can text-[10px]"></i>
                     </button>
@@ -414,8 +407,8 @@ export function CmsTags({
                 </span>
                 <h2 className="text-base font-black text-gray-900 tracking-tight">
                   {editingTag.id
-                    ? isEn ? 'Edit Tag' : 'Chỉnh Sửa Thẻ'
-                    : isEn ? 'Create New Tag' : 'Thêm Thẻ Mới'}
+                    ? 'Chỉnh Sửa Thẻ'
+                    : 'Thêm Thẻ Mới'}
                 </h2>
               </div>
               <button
@@ -524,7 +517,7 @@ export function CmsTags({
                   disabled={isSaving}
                   className="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 text-xs font-semibold transition-colors cursor-pointer"
                 >
-                  {isEn ? 'Cancel' : 'Hủy bỏ'}
+                  Hủy bỏ
                 </button>
                 <button
                   type="submit"
@@ -532,7 +525,7 @@ export function CmsTags({
                   className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-500/25 transition-all cursor-pointer disabled:opacity-60 flex items-center gap-1.5"
                 >
                   {isSaving && <span className="animate-spin text-xs">⏳</span>}
-                  <span>{isEn ? 'Save Tag' : 'Lưu Thẻ'}</span>
+                  <span>Lưu Thẻ</span>
                 </button>
               </div>
             </form>

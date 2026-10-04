@@ -316,8 +316,8 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
         tags: ['microservices'],
         published_at: '2026-01-15T00:00:00Z',
         translations: {
-          vi: { lang_code: 'vi', title: `Bài Viết Số #${idx + 1}`, summary: `Tóm tắt #${idx + 1}` },
-          en: { lang_code: 'en', title: `Article Number #${idx + 1}`, summary: `Summary #${idx + 1}` },
+          vi: { lang_code: 'vi', title: `Bài Viết Số #${idx + 1}`, summary: `Tóm tắt #${idx + 1}`, content_md: '' },
+          en: { lang_code: 'en', title: `Article Number #${idx + 1}`, summary: `Summary #${idx + 1}`, content_md: '' },
         },
       }));
 
@@ -349,7 +349,7 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
       expect(screen.getByText(/Trang/i)).toBeDefined();
 
       // Click "Sau" (Next page)
-      const nextBtn = screen.getByRole('button', { name: /Next page/i });
+      const nextBtn = screen.getByRole('button', { name: /Trang sau|Sau/i });
       fireEvent.click(nextBtn);
 
       // Now page 2 should be displayed (11-20)
