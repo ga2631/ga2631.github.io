@@ -108,6 +108,7 @@ export interface BlogPost {
   author: string;
   category?: string;
   categoryName?: string;
+  categoryColor?: string;
   sections?: Record<string, string>;
   contentHtml: string;
   content?: string;

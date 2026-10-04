@@ -6,22 +6,28 @@ import { useLanguage } from '@/i18n/LanguageContext';
 import { getPostContentHtml, getBlogCategories } from '@/services/blogService';
 import { BlogPost } from '@/types';
 import { trackBlogPostView, trackTocHeadingClick } from '@/utils/analytics';
+import { getCategoryColorClasses } from '@/utils/categoryColors';
 
 function getCategoryColor(category?: string) {
   switch (category) {
     case 'kien-truc-he-thong':
     case 'architecture-system-design':
       return 'bg-blue-50 text-blue-700 border-blue-200';
+    case 'thuat-toan-va-hieu-nang-core':
+    case 'thuat-toan-hieu-nang':
     case 'ky-thuat-lap-trinh':
     case 'core-algorithms-series':
       return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    case 'co-so-du-lieu-va-data-engineering':
     case 'ky-thuat-va-phan-tich-du-lieu':
     case 'ky-thuat-du-lieu':
     case 'database-data-engineering':
       return 'bg-amber-50 text-amber-700 border-amber-200';
+    case 'frontend-va-ui-tai-su-dung':
     case 'devops-cloud-va-cong-cu':
     case 'dry-reusable-ui-components':
       return 'bg-purple-50 text-purple-700 border-purple-200';
+    case 'tech-radar-va-goc-nhin-nghe-nghiep':
     case 'tech-radar-va-goc-nhin':
     case 'tech-radar-career-insights':
       return 'bg-rose-50 text-rose-700 border-rose-200';
@@ -186,29 +192,69 @@ export function BlogPostDetailView({
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState<boolean>(false);
   const [isStickyDetailsOpen, setIsStickyDetailsOpen] = useState<boolean>(false);
   const [categoryTitle, setCategoryTitle] = useState<string>(post?.categoryName || '');
+  const [categoryColor, setCategoryColor] = useState<string>(post?.categoryColor || '');
   const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (post?.categoryName) {
       setCategoryTitle(post.categoryName);
-      return;
+    }
+    if (post?.categoryColor) {
+      setCategoryColor(post.categoryColor);
     }
     if (!post?.category) return;
+    const postCat = post.category;
     let isMounted = true;
-    getBlogCategories()
+    getBlogCategories(currentLang)
       .then((cats) => {
         if (!isMounted) return;
-        const cat = cats.find((c) => c.id === post.category);
+        const cat = cats.find((c) => c.id === postCat || Boolean(c.allSlugs?.includes(postCat)));
         if (cat) {
-          const title = cat.title[currentLang] || cat.title.vi;
+          const title = cat.title[currentLang] || cat.title.vi || cat.title.en;
           if (title) setCategoryTitle(title);
+          if (cat.color) setCategoryColor(cat.color);
         }
       })
       .catch(() => { });
     return () => {
       isMounted = false;
     };
-  }, [post?.category, post?.categoryName, currentLang]);
+  }, [post?.category, post?.categoryName, post?.categoryColor, currentLang]);
+
+  // Render Mermaid diagrams on the client
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let isMounted = true;
+    import('mermaid')
+      .then((m) => {
+        if (!isMounted) return;
+        m.default.initialize({
+          startOnLoad: false,
+          theme: 'neutral',
+          securityLevel: 'loose',
+          fontFamily: 'Roboto, sans-serif',
+        });
+
+        const containers = document.querySelectorAll('.mermaid-diagram');
+        containers.forEach(async (el, idx) => {
+          const rawCode = decodeURIComponent(el.getAttribute('data-mermaid') || '');
+          if (rawCode) {
+            try {
+              const uniqueId = `mermaid-detail-svg-${idx}-${Date.now()}`;
+              const { svg } = await m.default.render(uniqueId, rawCode);
+              el.innerHTML = svg;
+            } catch {
+              // keep fallback
+            }
+          }
+        });
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, [post?.content, post?.contentHtml]);
 
   useEffect(() => {
     if (!post) return;
@@ -299,9 +345,11 @@ export function BlogPostDetailView({
               <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 {post.category && (
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border shrink-0 hidden sm:inline-block ${getCategoryColor(
-                      post.category
-                    )}`}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border shrink-0 hidden sm:inline-block ${
+                      categoryColor
+                        ? getCategoryColorClasses(categoryColor).badge
+                        : getCategoryColor(post.category)
+                    }`}
                   >
                     {categoryTitle || post.category}
                   </span>
@@ -369,9 +417,11 @@ export function BlogPostDetailView({
         <div className="flex flex-wrap items-center gap-2">
           {post.category && (
             <span
-              className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getCategoryColor(
-                post.category
-              )}`}
+              className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
+                categoryColor
+                  ? getCategoryColorClasses(categoryColor).badge
+                  : getCategoryColor(post.category)
+              }`}
             >
               {categoryTitle || post.category}
             </span>

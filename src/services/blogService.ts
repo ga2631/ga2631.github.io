@@ -61,14 +61,16 @@ const htmlCache = new Map<string, string>();
  * Returns rendered HTML of a blog post, parsing Markdown and caching on demand.
  */
 export function getPostContentHtml(post: BlogPost): string {
-  if (post.contentHtml && post.contentHtml.length > 0) {
-    return post.contentHtml;
-  }
-  const cacheKey = `${post.slug || post.id || ''}_${post.title || ''}_${post.content?.length || 0}`;
+  const cacheKey = `${post.slug || post.id || ''}_${post.title || ''}_${post.content?.length || 0}_${post.contentHtml?.length || 0}`;
   if (htmlCache.has(cacheKey)) {
     return htmlCache.get(cacheKey)!;
   }
-  const html = markdownToHtml(post.content || '');
+  let html = '';
+  if (post.content && post.content.trim().length > 0) {
+    html = markdownToHtml(post.content);
+  } else if (post.contentHtml && post.contentHtml.length > 0) {
+    html = post.contentHtml;
+  }
   htmlCache.set(cacheKey, html);
   return html;
 }
@@ -85,13 +87,14 @@ export function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
     {};
 
   const categories = row.categories || {};
-  const categorySlug = categories.slug || '';
   const catTranslations = Array.isArray(categories.category_translations) ? categories.category_translations : [];
   const catTrans =
     catTranslations.find((ct: any) => ct.lang_code === lang) ||
     catTranslations.find((ct: any) => ct.lang_code === 'vi') ||
     catTranslations[0];
+  const categorySlug = catTrans?.slug || categories.slug || categories.id || '';
   const categoryName = catTrans?.name || '';
+  const categoryColor = categories.color || '';
 
   const postTags = Array.isArray(row.post_tags) ? row.post_tags : [];
   const tags: string[] = postTags
@@ -118,6 +121,7 @@ export function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
     summary: translation.summary || '',
     category: categorySlug,
     categoryName,
+    categoryColor,
     publishedAt,
     date: dateStr,
     readTime: readTimeStr,
@@ -197,7 +201,7 @@ export async function getBlogCategories(lang = 'vi'): Promise<BlogCategoryDef[]>
 
         const scheduleInfo = getWeekdayDetails(Number(cat.post_schedule) || 1);
         const resolvedSlug = activeTrans.slug || viTrans.slug || enTrans.slug || cat.slug || cat.id || '';
-        const allSlugs = Array.from(new Set([viTrans.slug, enTrans.slug, cat.slug, resolvedSlug].filter(Boolean)));
+        const allSlugs = Array.from(new Set([viTrans.slug, enTrans.slug, cat.slug, resolvedSlug, cat.id].filter(Boolean)));
 
         return {
           id: resolvedSlug,
@@ -391,17 +395,34 @@ export async function getBlogPostBySlug(slug: string, lang: string): Promise<Blo
       if (!supabase) throw new Error('[blogService] Supabase client unavailable.');
 
       console.log(`[Supabase 📖 Post Detail] Querying table "posts" WHERE slug = "${slug}" (lang: ${lang})`);
-      // 1. Find matching post_id in post_translations by localized slug
-      const { data: transMatch } = await supabase
+      const decodedSlug = decodeURIComponent(slug);
+      // 1. Find matching post_id in post_translations by localized slug and current lang
+      let transMatch: { post_id: string } | null = null;
+      const { data: langMatches } = await supabase
         .from('post_translations')
         .select('post_id')
-        .eq('slug', slug)
-        .maybeSingle();
+        .eq('slug', decodedSlug)
+        .eq('lang_code', lang)
+        .limit(1);
+
+      if (langMatches && langMatches.length > 0) {
+        transMatch = langMatches[0];
+      } else {
+        const { data: anyMatches } = await supabase
+          .from('post_translations')
+          .select('post_id')
+          .eq('slug', decodedSlug)
+          .limit(1);
+        if (anyMatches && anyMatches.length > 0) {
+          transMatch = anyMatches[0];
+        }
+      }
 
       const postId = transMatch?.post_id;
-      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedSlug);
+      const targetPostId = postId || (isUuid ? decodedSlug : null);
 
-      if (!postId && !isUuid) {
+      if (!targetPostId) {
         return null;
       }
 
@@ -444,7 +465,7 @@ export async function getBlogPostBySlug(slug: string, lang: string): Promise<Blo
             )
           )
         `)
-        .eq('id', postId || slug)
+        .eq('id', targetPostId)
         .maybeSingle();
 
       if (error) {
@@ -500,9 +521,15 @@ export function getBlogStatistics(posts: BlogPost[], categories: BlogCategoryDef
 
   categories.forEach((cat) => {
     if (cat.id !== 'all') {
-      categoryCounts[cat.id] = posts.filter(
+      const count = posts.filter(
         (p) => p.category === cat.id || Boolean(p.category && cat.allSlugs?.includes(p.category))
       ).length;
+      categoryCounts[cat.id] = count;
+      if (cat.allSlugs) {
+        cat.allSlugs.forEach((slug) => {
+          categoryCounts[slug] = count;
+        });
+      }
     }
   });
 

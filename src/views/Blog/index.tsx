@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useLanguage } from '@/i18n/LanguageContext';
 import { getBlogPosts, getBlogCategories, getBlogStatistics, BlogCategoryDef } from '@/services/blogService';
 import { BlogPost } from '@/types';
@@ -117,7 +118,15 @@ export function BlogView({
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(initialPosts.length === 0);
+  const searchParams = useSearchParams();
   const articlesContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const paramCat = searchParams?.get('category') || searchParams?.get('cat');
+    if (paramCat) {
+      setSelectedCategory(paramCat);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let isMounted = true;
@@ -128,7 +137,7 @@ export function BlogView({
       try {
         const [loadedPosts, loadedCats] = await Promise.all([
           getBlogPosts(currentLang),
-          getBlogCategories(),
+          getBlogCategories(currentLang),
         ]);
         if (isMounted) {
           setPosts(loadedPosts);
@@ -154,7 +163,9 @@ export function BlogView({
   // Filter posts based on category, tag, and search query
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
-      const matchedCat = categories.find((c) => c.id === selectedCategory);
+      const matchedCat = categories.find(
+        (c) => c.id === selectedCategory || c.allSlugs?.includes(selectedCategory)
+      );
       const matchCategory =
         selectedCategory === 'all' ||
         post.category === selectedCategory ||
@@ -170,7 +181,7 @@ export function BlogView({
 
       return matchCategory && matchTag && matchSearch;
     });
-  }, [posts, selectedCategory, selectedTag, searchQuery]);
+  }, [posts, selectedCategory, selectedTag, searchQuery, categories]);
 
   // Calculate pagination bounds
   const totalPages = Math.max(1, Math.ceil(filteredPosts.length / POSTS_PER_PAGE));
@@ -236,7 +247,12 @@ export function BlogView({
   // Map category slug to category metadata
   const categoryMap = useMemo(() => {
     const map = new Map<string, BlogCategoryDef>();
-    categories.forEach((c) => map.set(c.id, c));
+    categories.forEach((c) => {
+      map.set(c.id, c);
+      if (c.allSlugs) {
+        c.allSlugs.forEach((slug) => map.set(slug, c));
+      }
+    });
     return map;
   }, [categories]);
 
@@ -301,7 +317,7 @@ export function BlogView({
             ) : (
               <div className="space-y-1">
                 {categories.map((cat) => {
-                  const isSelected = selectedCategory === cat.id;
+                  const isSelected = selectedCategory === cat.id || Boolean(selectedCategory !== 'all' && cat.allSlugs?.includes(selectedCategory));
                   const title = cat.title[currentLang] || cat.title.vi || cat.id;
                   const description = cat.description[currentLang] || cat.description.vi || '';
                   const scheduleFull = cat.scheduleFull[currentLang] || cat.scheduleFull.vi || '';
@@ -613,7 +629,9 @@ export function BlogView({
                     catDef?.title.vi ||
                     post.category ||
                     '';
-                  const catColors = catDef?.color ? getCategoryColorClasses(catDef.color) : getCategoryColor(catDef?.dayCode);
+                  const catColors = (catDef?.color || post.categoryColor)
+                    ? getCategoryColorClasses(catDef?.color || post.categoryColor)
+                    : getCategoryColor(catDef?.dayCode);
 
                   return (
                     <article

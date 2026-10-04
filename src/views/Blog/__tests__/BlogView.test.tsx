@@ -212,6 +212,36 @@ describe('Blog Components', () => {
     expect(postEn.category).toBe('tech-radar-career-insights');
   });
 
+  it('maps Supabase post with localized category slugs from category_translations without categories.slug', () => {
+    const postWithLocalizedCategory = {
+      id: 'post-2',
+      read_time: 5,
+      published_at: '2026-10-01T00:00:00.000Z',
+      categories: {
+        id: 'cat-arch',
+        category_translations: [
+          { lang_code: 'vi', slug: 'kien-truc-he-thong', name: 'Kiến trúc Hệ thống' },
+          { lang_code: 'en', slug: 'architecture-system-design', name: 'Architecture & System Design' },
+        ],
+      },
+      post_translations: [
+        { lang_code: 'vi', slug: 'bai-viet-kien-truc', title: 'Bài viết Kiến trúc', summary: 'Tóm tắt VI' },
+        { lang_code: 'en', slug: 'architecture-article', title: 'Architecture Article', summary: 'Summary EN' },
+      ],
+      post_tags: [],
+    };
+
+    const postVi = mapDbPostToBlogPost(postWithLocalizedCategory, 'vi');
+    expect(postVi.category).toBe('kien-truc-he-thong');
+    expect(postVi.categoryName).toBe('Kiến trúc Hệ thống');
+    expect(postVi.slug).toBe('bai-viet-kien-truc');
+
+    const postEn = mapDbPostToBlogPost(postWithLocalizedCategory, 'en');
+    expect(postEn.category).toBe('architecture-system-design');
+    expect(postEn.categoryName).toBe('Architecture & System Design');
+    expect(postEn.slug).toBe('architecture-article');
+  });
+
   it('renders human-readable category title instead of slug tech-radar-career-insights in BlogPostDetailView', () => {
     const techRadarPostVi: BlogPost = {
       id: 'post-tr-1',
@@ -351,6 +381,97 @@ describe('Blog Components', () => {
 
     // No modal dialog
     expect(queryByRole('dialog')).toBeNull();
+  });
+
+  it('handles localized category slugs and matches cross-language allSlugs', () => {
+    const localizedCategories: BlogCategoryDef[] = [
+      {
+        id: 'all',
+        allSlugs: ['all'],
+        dayCode: 'ALL',
+        scheduleDay: { vi: 'T2 - T6', en: 'Mon - Fri' },
+        scheduleFull: { vi: 'Thứ 2 – Thứ 6', en: 'Mon - Fri' },
+        title: { vi: 'Tất cả', en: 'All' },
+        description: { vi: 'Tất cả bài', en: 'All posts' },
+        iconName: 'BookOpenIcon',
+      },
+      {
+        id: 'kien-truc-he-thong',
+        allSlugs: ['kien-truc-he-thong', 'architecture-system-design', 'cat-uuid-1'],
+        dayCode: 'MON',
+        scheduleDay: { vi: 'Thứ 2', en: 'Mon' },
+        scheduleFull: { vi: 'Thứ 2 hàng tuần', en: 'Every Monday' },
+        title: { vi: 'Kiến trúc Hệ thống', en: 'Architecture & System Design' },
+        description: { vi: 'Thiết kế hệ thống', en: 'System architecture' },
+        iconName: 'LayersIcon',
+        color: 'blue',
+      },
+    ];
+
+    const localizedPosts: BlogPost[] = [
+      {
+        id: 'p-1',
+        slug: 'bai-viet-kien-truc',
+        title: 'Bí quyết scale kiến trúc microservices',
+        summary: 'Tóm tắt bí quyết scale kiến trúc.',
+        category: 'architecture-system-design', // EN slug on post, but VI slug on category.id
+        categoryColor: 'blue',
+        publishedAt: '2026-10-01T00:00:00.000Z',
+        date: '2026-10-01',
+        readTime: '7 phút đọc',
+        tags: ['Architecture'],
+        author: 'Huỳnh Nhật Tân',
+        contentHtml: '',
+        content: '## Nội dung\nCông thức $E = mc^2$ và $$\int_0^1 x dx$$',
+      },
+    ];
+
+    const { getByText, getAllByText } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogView initialPosts={localizedPosts} initialCategories={localizedCategories} />
+      </LanguageProvider>
+    );
+
+    // The post should be visible and category pill resolved via allSlugs
+    expect(getByText('Bí quyết scale kiến trúc microservices')).toBeDefined();
+    expect(getAllByText('Kiến trúc Hệ thống').length).toBeGreaterThanOrEqual(1);
+
+    // Filter by category
+    const catBtn = getAllByText('Kiến trúc Hệ thống')[0].closest('button')!;
+    fireEvent.click(catBtn);
+
+    // Still matches because allSlugs includes 'architecture-system-design'
+    expect(getByText('Bí quyết scale kiến trúc microservices')).toBeDefined();
+  });
+
+  it('renders BlogPostDetailView with dynamic categoryColor and parsed KaTeX math', () => {
+    const postWithMath: BlogPost = {
+      id: 'p-math',
+      slug: 'bai-viet-toan-hoc',
+      title: 'Ứng dụng Giải thuật và Toán học',
+      summary: 'Phân tích độ phức tạp thuật toán.',
+      category: 'thuat-toan',
+      categoryName: 'Thuật toán & Hiệu năng',
+      categoryColor: 'green',
+      publishedAt: '2026-10-02T00:00:00.000Z',
+      date: '2026-10-02',
+      readTime: '5 phút đọc',
+      tags: ['Algorithms', 'Math'],
+      author: 'Huỳnh Nhật Tân',
+      contentHtml: '',
+      content: '## Phân tích độ phức tạp\n\nĐộ phức tạp là $O(n \\log n)$.',
+    };
+
+    const { getAllByText, container } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogPostDetailView post={postWithMath} />
+      </LanguageProvider>
+    );
+
+    expect(getAllByText('Ứng dụng Giải thuật và Toán học').length).toBeGreaterThanOrEqual(1);
+    expect(getAllByText('Thuật toán & Hiệu năng').length).toBeGreaterThanOrEqual(1);
+    // KaTeX should render katex html classes
+    expect(container.innerHTML).toContain('katex');
   });
 });
 
