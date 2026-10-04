@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AdminPost, AdminCategory, AdminTag } from '@/services/blogAdminService';
 import { CmsPostEditor } from './CmsPostEditor';
 import { CmsTab } from '@/components/layouts/CmsLayout';
@@ -34,6 +35,7 @@ export function CmsPosts({
   onSelectTab,
   currentLang,
 }: CmsPostsProps) {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'published' | 'scheduled' | 'draft'>('all');
@@ -145,7 +147,10 @@ export function CmsPosts({
 
   const handleOpenEditor = (post: AdminPost, lang: 'vi' | 'en' = 'vi') => {
     setEditorInitialLang(lang);
-    onSetEditingPost(post);
+    if (onSetEditingPost) {
+      onSetEditingPost(post);
+    }
+    router.push(`/admin/blogs/edit?slug=${encodeURIComponent(post.slug)}${lang === 'en' ? '&lang=en' : ''}`);
   };
 
   const handleDelete = async (id: string, slug: string) => {
@@ -202,7 +207,8 @@ export function CmsPosts({
           type="button"
           onClick={() => {
             setEditorInitialLang('vi');
-            onCreateNewPost();
+            if (onCreateNewPost) onCreateNewPost();
+            router.push('/admin/blogs/new');
           }}
           className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
         >

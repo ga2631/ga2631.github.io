@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 
 let mockPathname = '/admin';
+let mockSearchParams = new URLSearchParams();
 const mockPush = vi.fn();
 const mockReplace = vi.fn();
 
@@ -16,11 +17,25 @@ vi.mock('next/navigation', () => ({
     prefetch: vi.fn(),
   }),
   usePathname: () => mockPathname,
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => mockSearchParams,
+  useParams: () => ({ slug: mockSearchParams.get('slug') || '' }),
 }));
 
 let mockUser: any = null;
 let authListenerCallback: any = null;
+
+const { samplePost } = vi.hoisted(() => ({
+  samplePost: {
+    id: 'post-123',
+    slug: 'test-edit-post',
+    read_time: 5,
+    published_at: '2026-10-04',
+    translations: {
+      vi: { lang_code: 'vi', title: 'Bài viết chỉnh sửa mẫu', summary: 'Tóm tắt', content_md: 'Nội dung' },
+      en: { lang_code: 'en', title: 'Sample Edited Post', summary: 'Summary', content_md: 'Content' },
+    },
+  },
+}));
 
 vi.mock('@/services/authService', () => ({
   getCurrentUser: vi.fn().mockImplementation(() => Promise.resolve(mockUser)),
@@ -44,7 +59,7 @@ vi.mock('@/services/blogAdminService', async (importOriginal) => {
   const actual = await importOriginal<any>();
   return {
     ...actual,
-    getAllAdminPosts: vi.fn().mockResolvedValue([]),
+    getAllAdminPosts: vi.fn().mockResolvedValue([samplePost]),
     getAllAdminCategories: vi.fn().mockResolvedValue([]),
     getAllAdminTags: vi.fn().mockResolvedValue([]),
     saveAdminPost: vi.fn().mockResolvedValue({}),
@@ -73,6 +88,8 @@ import AdminLoginPage from '../login/page';
 import AuthenticatedCmsLayout from '../(authenticated)/layout';
 import AdminDashboardPage from '../(authenticated)/page';
 import AdminBlogsPage from '../(authenticated)/blogs/page';
+import AdminNewBlogPage from '../(authenticated)/blogs/new/page';
+import AdminEditBlogPage from '../(authenticated)/blogs/edit/page';
 import AdminCategoriesPage from '../(authenticated)/categories/page';
 import AdminTagsPage from '../(authenticated)/tags/page';
 import AdminCvPage from '../(authenticated)/cv/page';
@@ -83,6 +100,7 @@ describe('CMS Route Restructuring & Authentication Guard', () => {
     vi.clearAllMocks();
     mockUser = null;
     mockPathname = '/admin';
+    mockSearchParams = new URLSearchParams();
   });
 
   describe('Independent Standalone Login Page (/admin/login)', () => {
@@ -279,6 +297,83 @@ describe('CMS Route Restructuring & Authentication Guard', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Hồ Sơ Năng Lực & CV/i)).toBeDefined();
+      });
+    });
+  });
+
+  describe('Post Creation and Editing Routes (/admin/blogs/new, /admin/blogs/edit)', () => {
+    beforeEach(() => {
+      mockUser = { id: 'usr-1', email: 'admin@google.com' };
+    });
+
+    it('renders New Post Editor on /admin/blogs/new and navigates back to /admin/blogs on cancel', async () => {
+      mockPathname = '/admin/blogs/new';
+      render(
+        <LanguageProvider>
+          <AuthenticatedCmsLayout>
+            <AdminNewBlogPage />
+          </AuthenticatedCmsLayout>
+        </LanguageProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByPlaceholderText(/Tiêu đề bài viết kỹ thuật/i)).toBeDefined();
+      });
+
+      // Verify Back/Cancel button navigates to /admin/blogs
+      const cancelBtn = screen.getByRole('button', { name: /Quay lại/i });
+      fireEvent.click(cancelBtn);
+      expect(mockPush).toHaveBeenCalledWith('/admin/blogs');
+    });
+
+    it('renders Edit Post Editor on /admin/blogs/edit?slug=test-edit-post preloaded with post data', async () => {
+      mockPathname = '/admin/blogs/edit';
+      mockSearchParams = new URLSearchParams({ slug: 'test-edit-post' });
+
+      render(
+        <LanguageProvider>
+          <AuthenticatedCmsLayout>
+            <AdminEditBlogPage />
+          </AuthenticatedCmsLayout>
+        </LanguageProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Bài viết chỉnh sửa mẫu')).toBeDefined();
+      });
+    });
+
+    it('renders "Không tìm thấy bài viết" on /admin/blogs/edit with nonexistent slug', async () => {
+      mockPathname = '/admin/blogs/edit';
+      mockSearchParams = new URLSearchParams({ slug: 'nonexistent-slug' });
+
+      render(
+        <LanguageProvider>
+          <AuthenticatedCmsLayout>
+            <AdminEditBlogPage />
+          </AuthenticatedCmsLayout>
+        </LanguageProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /Không tìm thấy bài viết/i })).toBeDefined();
+      });
+    });
+
+    it('renders "Chưa chọn bài viết" guidance state when visiting /admin/blogs/edit without query param', async () => {
+      mockPathname = '/admin/blogs/edit';
+      mockSearchParams = new URLSearchParams();
+
+      render(
+        <LanguageProvider>
+          <AuthenticatedCmsLayout>
+            <AdminEditBlogPage />
+          </AuthenticatedCmsLayout>
+        </LanguageProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/Chưa chọn bài viết/i)).toBeDefined();
       });
     });
   });

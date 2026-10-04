@@ -153,24 +153,22 @@ export function CmsLogin({ currentUser, onUserChange, onSelectTab }: CmsLoginPro
     <div className="max-w-2xl mx-auto py-4 sm:py-8 space-y-6" role="region" aria-label="Đăng nhập CMS">
       {/* 1. REAL-TIME AUTH STATUS HERO CARD */}
       <div
-        className={`p-4 sm:p-5 rounded-3xl border transition-all ${
-          isCheckingAuth
+        className={`p-4 sm:p-5 rounded-3xl border transition-all ${isCheckingAuth
             ? 'bg-blue-50/80 border-blue-200 text-blue-900'
             : currentUser
-            ? 'bg-emerald-50/90 border-emerald-200 text-emerald-950 shadow-sm'
-            : 'bg-amber-50/90 border-amber-200 text-amber-950'
-        }`}
+              ? 'bg-emerald-50/90 border-emerald-200 text-emerald-950 shadow-sm'
+              : 'bg-amber-50/90 border-amber-200 text-amber-950'
+          }`}
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div
-              className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
-                isCheckingAuth
+              className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${isCheckingAuth
                   ? 'bg-blue-500 text-white animate-spin'
                   : currentUser
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-amber-500 text-white'
-              }`}
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-amber-500 text-white'
+                }`}
             >
               {isCheckingAuth ? (
                 <i className="fa-solid fa-circle-notch text-base"></i>
@@ -187,28 +185,26 @@ export function CmsLogin({ currentUser, onUserChange, onSelectTab }: CmsLoginPro
                   Trạng thái hiện tại:
                 </span>
                 <span
-                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-black ${
-                    isCheckingAuth
+                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-black ${isCheckingAuth
                       ? 'bg-blue-200/70 text-blue-800'
                       : currentUser
-                      ? 'bg-emerald-200/70 text-emerald-800'
-                      : 'bg-amber-200/70 text-amber-800'
-                  }`}
+                        ? 'bg-emerald-200/70 text-emerald-800'
+                        : 'bg-amber-200/70 text-amber-800'
+                    }`}
                 >
                   <span
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      isCheckingAuth
+                    className={`w-1.5 h-1.5 rounded-full ${isCheckingAuth
                         ? 'bg-blue-600 animate-ping'
                         : currentUser
-                        ? 'bg-emerald-600'
-                        : 'bg-amber-600'
-                    }`}
+                          ? 'bg-emerald-600'
+                          : 'bg-amber-600'
+                      }`}
                   />
                   {isCheckingAuth
                     ? 'Đang kiểm tra...'
                     : currentUser
-                    ? 'ĐÃ ĐĂNG NHẬP'
-                    : 'CHƯA ĐĂNG NHẬP'}
+                      ? 'ĐÃ ĐĂNG NHẬP'
+                      : 'CHƯA ĐĂNG NHẬP'}
                 </span>
               </div>
 
@@ -216,8 +212,8 @@ export function CmsLogin({ currentUser, onUserChange, onSelectTab }: CmsLoginPro
                 {isCheckingAuth
                   ? 'Đang đồng bộ phiên làm việc từ Supabase Auth...'
                   : currentUser
-                  ? `Đang quản trị với tài khoản Google: ${displayName} (${userEmail})`
-                  : 'Chưa có phiên xác thực nào. Bấm nút đăng nhập bằng Google bên dưới.'}
+                    ? `Đang quản trị với tài khoản Google: ${displayName} (${userEmail})`
+                    : 'Chưa có phiên xác thực nào. Bấm nút đăng nhập bằng Google bên dưới.'}
               </p>
             </div>
           </div>
@@ -365,10 +361,10 @@ export function CmsLogin({ currentUser, onUserChange, onSelectTab }: CmsLoginPro
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-white border border-gray-200 shadow-lg shadow-gray-200/50 mb-2 group">
             <svg className="w-8 h-8 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
             </svg>
           </div>
 
@@ -468,10 +464,10 @@ export function CmsLogin({ currentUser, onUserChange, onSelectTab }: CmsLoginPro
                 ) : (
                   <>
                     <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                     </svg>
                     <span>Đăng nhập bằng Google</span>
                   </>

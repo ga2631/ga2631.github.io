@@ -62,7 +62,6 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
     { id: 'categories', label: 'Chuyên Mục', iconClass: 'fa-solid fa-folder' },
     { id: 'tags', label: 'Thẻ Tag', iconClass: 'fa-solid fa-tags' },
     { id: 'cv', label: 'Hồ Sơ CV', iconClass: 'fa-solid fa-id-card' },
-    { id: 'login', label: currentUser ? 'Tài Khoản' : 'Đăng Nhập', iconClass: currentUser ? 'fa-solid fa-user-shield' : 'fa-solid fa-lock' },
   ];
 
   return (
@@ -106,8 +105,8 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${isActive
                     ? 'bg-white text-red-600 shadow-xs font-black'
                     : isLocked
-                    ? 'text-gray-400 hover:text-gray-600 font-medium'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 font-semibold'
+                      ? 'text-gray-400 hover:text-gray-600 font-medium'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 font-semibold'
                     }`}
                 >
                   <i className={`${item.iconClass} text-xs`}></i>
@@ -155,6 +154,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                 <button
                   type="button"
                   onClick={() => onSelectTab('login')}
+                  aria-label="Đăng Nhập"
                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 font-semibold text-[11px] transition-colors cursor-pointer"
                   title="Chưa đăng nhập. Bấm vào đây để tới trang đăng nhập"
                 >
@@ -198,8 +198,8 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                     className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all ${isActive
                       ? 'bg-red-50 text-red-600 border border-red-200 font-bold'
                       : isLocked
-                      ? 'bg-gray-50/60 text-gray-400 font-medium'
-                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100 font-medium'
+                        ? 'bg-gray-50/60 text-gray-400 font-medium'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 font-medium'
                       }`}
                   >
                     <div className="flex items-center gap-2">

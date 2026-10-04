@@ -107,7 +107,7 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       },
     };
     setEditingPost(newPost);
-    router.push('/admin/blogs');
+    router.push('/admin/blogs/new');
   };
 
   const handleCreatePostWithSchedule = (categoryId?: string, dateStr?: string) => {
@@ -125,12 +125,16 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       },
     };
     setEditingPost(newPost);
-    router.push('/admin/blogs');
+    const query = new URLSearchParams();
+    if (categoryId) query.set('category', categoryId);
+    if (dateStr) query.set('date', dateStr);
+    const queryStr = query.toString() ? `?${query.toString()}` : '';
+    router.push(`/admin/blogs/new${queryStr}`);
   };
 
   const handleEditPostFromDashboard = (post: AdminPost) => {
     setEditingPost(post);
-    router.push('/admin/blogs');
+    router.push(`/admin/blogs/edit?slug=${encodeURIComponent(post.slug)}`);
   };
 
   const handleSavePost = async (postToSave?: AdminPost) => {
