@@ -9,6 +9,16 @@ import { User } from '@supabase/supabase-js';
 
 export type CmsTab = 'dashboard' | 'posts' | 'categories' | 'tags' | 'cv' | 'login' | 'settings';
 
+export const CMS_TAB_ROUTES: Record<CmsTab, string> = {
+  dashboard: '/admin',
+  posts: '/admin/blogs',
+  categories: '/admin/categories',
+  tags: '/admin/tags',
+  cv: '/admin/cv',
+  login: '/admin/login',
+  settings: '/admin/login',
+};
+
 interface CmsLayoutProps {
   children: React.ReactNode;
   activeTab: CmsTab;
@@ -61,13 +71,13 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
           {/* Brand Logo & Connection Status */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center font-black text-white text-base shadow-md shadow-red-500/20 shrink-0">
+          <Link href="/admin" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center font-black text-white text-base shadow-md shadow-red-500/20 shrink-0 group-hover:scale-105 transition-transform">
               <i className="fa-solid fa-bolt text-sm"></i>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-black text-sm tracking-tight text-gray-900">
+                <span className="font-black text-sm tracking-tight text-gray-900 group-hover:text-red-600 transition-colors">
                   CMS Studio
                 </span>
                 <span
@@ -80,7 +90,7 @@ export function CmsLayout({ children, activeTab, onSelectTab }: CmsLayoutProps) 
                 {isConfigured ? 'Đã kết nối' : 'Chưa kết nối'}
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation Tabs (Horizontal Top Nav) */}
           <nav className="hidden md:flex items-center gap-1 bg-gray-100/80 p-1 rounded-2xl border border-gray-200/60">

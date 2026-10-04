@@ -96,7 +96,7 @@ export async function signInWithGitHub(): Promise<{ error: string | null }> {
 /**
  * Signs in via Supabase Google OAuth
  */
-export async function signInWithGoogle(): Promise<{ error: string | null }> {
+export async function signInWithGoogle(customRedirectTo?: string): Promise<{ error: string | null }> {
   if (!isSupabaseConfigured()) {
     return {
       error:
@@ -111,9 +111,10 @@ export async function signInWithGoogle(): Promise<{ error: string | null }> {
 
   try {
     const redirectTo =
-      typeof window !== 'undefined'
-        ? `${window.location.origin}${window.location.pathname}`
-        : undefined;
+      customRedirectTo ||
+      (typeof window !== 'undefined'
+        ? `${window.location.origin}/admin`
+        : undefined);
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
