@@ -20,6 +20,7 @@ import { LanguageProvider } from '@/i18n/LanguageContext';
 import { CmsPosts } from '../components/CmsPosts';
 import { CmsPostEditor } from '../components/CmsPostEditor';
 import { AdminPost, AdminCategory, AdminTag } from '@/services/blogAdminService';
+import { mapDbPostToBlogPost } from '@/services/blogService';
 import { renderMarkdownToHtml, analyzePostSeo, calculateReadingTime } from '@/utils/markdownRenderer';
 
 describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
@@ -650,6 +651,71 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
       expect(screen.getByText(/Bản Tiếng Anh \(English Translation\)/i)).toBeDefined();
       const titleInput = screen.getByDisplayValue('Microservices Architecture in Practice');
       expect(titleInput).toBeDefined();
+    });
+
+    it('manages localized slugs per language translation and saves them correctly', async () => {
+      const handleSave = vi.fn().mockResolvedValue(undefined);
+      render(
+        <LanguageProvider>
+          <CmsPostEditor
+            post={{
+              ...mockPosts[0],
+              translations: {
+                vi: { ...mockPosts[0].translations.vi, slug: 'kien-truc-microservices' },
+                en: { ...mockPosts[0].translations.en, slug: 'microservices-architecture' },
+              },
+            }}
+            categories={mockCategories}
+            tags={mockTags}
+            onSave={handleSave}
+            onCancel={vi.fn()}
+            currentLang="vi"
+            initialLang="en"
+          />
+        </LanguageProvider>
+      );
+
+      // Verify English slug is rendered in input
+      const slugInput = screen.getByDisplayValue('microservices-architecture');
+      expect(slugInput).toBeDefined();
+
+      // Change English slug
+      fireEvent.change(slugInput, { target: { value: 'microservices-in-depth' } });
+
+      // Save
+      const saveBtn = screen.getByRole('button', { name: /Lưu Bài Viết/i });
+      fireEvent.click(saveBtn);
+
+      await waitFor(() => {
+        expect(handleSave).toHaveBeenCalledWith(expect.objectContaining({
+          translations: expect.objectContaining({
+            en: expect.objectContaining({
+              slug: 'microservices-in-depth',
+            }),
+          }),
+        }));
+      });
+    });
+
+    it('maps post_translations.slug correctly in mapDbPostToBlogPost per language', () => {
+      const mockDbRow = {
+        id: 'post-uuid-1',
+        category_id: 'cat-1',
+        read_time: 7,
+        published_at: '2026-05-01T00:00:00Z',
+        post_translations: [
+          { lang_code: 'vi', slug: 'kien-truc-he-thong-vi', title: 'Tiêu đề VI', content_md: 'Nội dung VI' },
+          { lang_code: 'en', slug: 'system-architecture-en', title: 'Title EN', content_md: 'Content EN' },
+        ],
+      };
+
+      const viPost = mapDbPostToBlogPost(mockDbRow, 'vi');
+      expect(viPost.slug).toBe('kien-truc-he-thong-vi');
+      expect(viPost.title).toBe('Tiêu đề VI');
+
+      const enPost = mapDbPostToBlogPost(mockDbRow, 'en');
+      expect(enPost.slug).toBe('system-architecture-en');
+      expect(enPost.title).toBe('Title EN');
     });
   });
 

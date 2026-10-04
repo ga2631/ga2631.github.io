@@ -40,7 +40,6 @@ ON CONFLICT (code) DO UPDATE SET name = EXCLUDED.name;
 -- ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    slug TEXT UNIQUE NOT NULL,
     post_schedule INT,               -- Schedule day code / sequence (e.g. 1=Mon, 2=Tue, ...)
     icon TEXT,                       -- Lucide / custom icon name
     color TEXT,                      -- Hex or CSS color string
@@ -55,6 +54,7 @@ CREATE TRIGGER trg_categories_updated_at
 CREATE TABLE IF NOT EXISTS category_translations (
     category_id UUID NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
     lang_code TEXT NOT NULL REFERENCES languages(code) ON DELETE CASCADE,
+    slug TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
     PRIMARY KEY (category_id, lang_code)
@@ -87,7 +87,6 @@ CREATE TABLE IF NOT EXISTS tag_translations (
 CREATE TABLE IF NOT EXISTS posts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
-    slug TEXT UNIQUE NOT NULL,
     read_time INT NOT NULL DEFAULT 5,
     created_at TIMESTAMPTZ NOT NULL DEFAULT TIMEZONE('utc'::text, NOW()),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT TIMEZONE('utc'::text, NOW()),
@@ -107,6 +106,7 @@ CREATE TABLE IF NOT EXISTS post_tags (
 CREATE TABLE IF NOT EXISTS post_translations (
     post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
     lang_code TEXT NOT NULL REFERENCES languages(code) ON DELETE CASCADE,
+    slug TEXT NOT NULL,
     title TEXT NOT NULL,
     summary TEXT,
     content_md TEXT NOT NULL,
@@ -138,16 +138,18 @@ CREATE TRIGGER trg_cv_documents_updated_at
 -- 7. High-Performance Indexes
 -- ------------------------------------------------------------------------------
 -- Posts & Categories
-CREATE INDEX IF NOT EXISTS idx_posts_slug ON posts(slug);
 CREATE INDEX IF NOT EXISTS idx_posts_published_at ON posts(published_at DESC NULLS LAST);
 CREATE INDEX IF NOT EXISTS idx_posts_category_id ON posts(category_id);
-CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
 CREATE INDEX IF NOT EXISTS idx_tags_slug ON tags(slug);
 
 -- Post Tags Junction
 CREATE INDEX IF NOT EXISTS idx_post_tags_tag_id ON post_tags(tag_id);
 
--- Translations Indexes
+-- Translations Indexes & Localized Slugs
+CREATE UNIQUE INDEX IF NOT EXISTS idx_post_translations_lang_slug ON post_translations(lang_code, slug);
+CREATE INDEX IF NOT EXISTS idx_post_translations_slug ON post_translations(slug);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_category_translations_lang_slug ON category_translations(lang_code, slug);
+CREATE INDEX IF NOT EXISTS idx_category_translations_slug ON category_translations(slug);
 CREATE INDEX IF NOT EXISTS idx_category_translations_lang ON category_translations(lang_code);
 CREATE INDEX IF NOT EXISTS idx_tag_translations_lang ON tag_translations(lang_code);
 CREATE INDEX IF NOT EXISTS idx_post_translations_lang ON post_translations(lang_code);

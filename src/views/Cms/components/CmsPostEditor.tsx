@@ -76,6 +76,7 @@ export function CmsPostEditor({
     translations: {
       vi: {
         lang_code: 'vi',
+        slug: post.translations?.vi?.slug || post.slug || '',
         title: post.translations?.vi?.title || '',
         summary: post.translations?.vi?.summary || '',
         content_md: post.translations?.vi?.content_md || '',
@@ -83,6 +84,7 @@ export function CmsPostEditor({
       },
       en: {
         lang_code: 'en',
+        slug: post.translations?.en?.slug || '',
         title: post.translations?.en?.title || '',
         summary: post.translations?.en?.summary || '',
         content_md: post.translations?.en?.content_md || '',
@@ -223,22 +225,33 @@ export function CmsPostEditor({
   }, [previewHtml, editorMode]);
 
   // Handler: Update translation fields
-  const updateTransField = (field: 'title' | 'summary' | 'content_md', value: string) => {
+  const updateTransField = (field: 'title' | 'summary' | 'content_md' | 'slug', value: string) => {
     setEditingPost((prev) => {
       const trans = { ...prev.translations };
+      const current = trans[activeLang] || { lang_code: activeLang, title: '', summary: '', content_md: '' };
       trans[activeLang] = {
-        ...(trans[activeLang] || { lang_code: activeLang, title: '', summary: '', content_md: '' }),
+        ...current,
         [field]: value,
       };
 
       // Auto update slug if it's empty or auto-generated
-      let nextSlug = prev.slug;
-      if (field === 'title' && (!prev.slug || prev.slug.startsWith('post-') || prev.slug.startsWith('new-post-'))) {
+      let nextBaseSlug = prev.slug;
+      if (field === 'title') {
         const auto = generateSlug(value);
-        if (auto) nextSlug = auto;
+        if (auto && (!trans[activeLang].slug || trans[activeLang].slug.startsWith('post-') || trans[activeLang].slug.startsWith('new-post-'))) {
+          trans[activeLang] = {
+            ...trans[activeLang],
+            slug: auto,
+          };
+        }
+        if (activeLang === 'vi' && auto && (!prev.slug || prev.slug.startsWith('post-') || prev.slug.startsWith('new-post-'))) {
+          nextBaseSlug = auto;
+        }
+      } else if (field === 'slug' && activeLang === 'vi') {
+        nextBaseSlug = value;
       }
 
-      return { ...prev, slug: nextSlug, translations: trans };
+      return { ...prev, slug: nextBaseSlug, translations: trans };
     });
   };
 
@@ -324,15 +337,18 @@ export function CmsPostEditor({
 
   // Handler: Save
   const handleSavePost = async () => {
-    if (!editingPost.slug.trim()) {
-      alert('Slug URL không được để trống.');
-      return;
-    }
-
     const titleVi = editingPost.translations?.vi?.title?.trim();
     const titleEn = editingPost.translations?.en?.title?.trim();
     if (!titleVi && !titleEn) {
       alert('Vui lòng nhập tiêu đề bài viết (Tiếng Việt hoặc Tiếng Anh).');
+      return;
+    }
+
+    const viSlug = editingPost.translations?.vi?.slug?.trim() || editingPost.slug.trim() || generateSlug(titleVi || '');
+    const enSlug = editingPost.translations?.en?.slug?.trim() || generateSlug(titleEn || '') || viSlug;
+
+    if (!viSlug && !enSlug) {
+      alert('Slug URL không được để trống.');
       return;
     }
 
@@ -341,13 +357,16 @@ export function CmsPostEditor({
       // Also generate rendered HTML for storage
       const postWithHtml: AdminPost = {
         ...editingPost,
+        slug: viSlug || enSlug || editingPost.slug,
         translations: {
           vi: {
             ...editingPost.translations.vi,
+            slug: viSlug,
             content_html: renderMarkdownToHtml(editingPost.translations.vi.content_md || ''),
           },
           en: {
             ...editingPost.translations.en,
+            slug: enSlug,
             content_html: renderMarkdownToHtml(editingPost.translations.en.content_md || ''),
           },
         },
@@ -967,13 +986,16 @@ export function CmsPostEditor({
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-xs text-gray-700 font-bold">
-                  Slug (Đường Dẫn) <span className="text-red-500">*</span>
+                  Slug ({activeLang.toUpperCase()}) <span className="text-red-500">*</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => {
                     const baseTitle = currentTrans.title || '';
-                    if (baseTitle) setEditingPost({ ...editingPost, slug: generateSlug(baseTitle) });
+                    if (baseTitle) {
+                      const newSlug = generateSlug(baseTitle);
+                      updateTransField('slug', newSlug);
+                    }
                   }}
                   className="text-[11px] text-blue-600 hover:text-blue-700 hover:underline font-semibold cursor-pointer"
                 >
@@ -983,11 +1005,14 @@ export function CmsPostEditor({
               <input
                 type="text"
                 required
-                value={editingPost.slug}
-                onChange={(e) => setEditingPost({ ...editingPost, slug: generateSlug(e.target.value) })}
-                placeholder="slug-url-bai-viet"
+                value={currentTrans.slug || (activeLang === 'vi' ? editingPost.slug : '')}
+                onChange={(e) => updateTransField('slug', generateSlug(e.target.value))}
+                placeholder={`slug-url-${activeLang}`}
                 className="w-full px-3.5 py-2 text-xs rounded-xl bg-white border border-gray-200 text-gray-900 font-mono focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors"
               />
+              <span className="text-[10px] text-gray-400 mt-1 block font-mono">
+                /{activeLang}/blog/{currentTrans.slug || (activeLang === 'vi' ? editingPost.slug : 'url-slug')}
+              </span>
             </div>
 
             {/* Thời Gian Đọc */}

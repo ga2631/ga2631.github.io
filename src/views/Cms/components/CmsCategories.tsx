@@ -87,17 +87,39 @@ export function CmsCategories({
     });
   }, [categories, searchQuery]);
 
+  const handleOpenEditModal = (cat: AdminCategory) => {
+    setEditingCategory({
+      ...cat,
+      translations: {
+        vi: {
+          lang_code: 'vi',
+          name: cat.translations?.vi?.name || '',
+          slug: cat.translations?.vi?.slug || cat.slug || '',
+          description: cat.translations?.vi?.description || '',
+        },
+        en: {
+          lang_code: 'en',
+          name: cat.translations?.en?.name || '',
+          slug: cat.translations?.en?.slug || '',
+          description: cat.translations?.en?.description || '',
+        },
+      },
+    });
+    setActiveLangTab('vi');
+  };
+
   const handleOpenCreateModal = () => {
     const nextSched = (categories.length % 5) + 1;
     const defaultColor = scheduleDayOptions.find((s) => s.value === nextSched)?.color || 'blue';
+    const initSlug = `chuyen-de-${Date.now().toString().slice(-4)}`;
     setEditingCategory({
-      slug: `chuyen-de-${Date.now().toString().slice(-4)}`,
+      slug: initSlug,
       post_schedule: nextSched,
       color: defaultColor,
       icon: 'LayersIcon',
       translations: {
-        vi: { lang_code: 'vi', name: '', description: '' },
-        en: { lang_code: 'en', name: '', description: '' },
+        vi: { lang_code: 'vi', slug: initSlug, name: '', description: '' },
+        en: { lang_code: 'en', slug: '', name: '', description: '' },
       },
     });
     setActiveLangTab('vi');
@@ -107,11 +129,6 @@ export function CmsCategories({
     e.preventDefault();
     if (!editingCategory) return;
 
-    if (!editingCategory.slug.trim()) {
-      alert('Slug chuyên mục không được để trống.');
-      return;
-    }
-
     const nameVi = editingCategory.translations?.vi?.name?.trim();
     const nameEn = editingCategory.translations?.en?.name?.trim();
     if (!nameVi && !nameEn) {
@@ -119,9 +136,40 @@ export function CmsCategories({
       return;
     }
 
+    const viSlug =
+      editingCategory.translations?.vi?.slug?.trim() ||
+      (nameVi ? generateSlug(nameVi) : '') ||
+      editingCategory.slug?.trim();
+
+    const enSlug =
+      editingCategory.translations?.en?.slug?.trim() ||
+      (nameEn ? generateSlug(nameEn) : '') ||
+      viSlug;
+
+    const primarySlug = viSlug || enSlug || editingCategory.slug?.trim();
+    if (!primarySlug) {
+      alert('Slug chuyên mục không được để trống.');
+      return;
+    }
+
+    const updatedCategory: AdminCategory = {
+      ...editingCategory,
+      slug: primarySlug,
+      translations: {
+        vi: {
+          ...(editingCategory.translations?.vi || { lang_code: 'vi', name: '' }),
+          slug: viSlug,
+        },
+        en: {
+          ...(editingCategory.translations?.en || { lang_code: 'en', name: '' }),
+          slug: enSlug,
+        },
+      },
+    };
+
     setIsSaving(true);
     try {
-      await onSaveCategory(editingCategory);
+      await onSaveCategory(updatedCategory);
       setEditingCategory(null);
     } catch (err: any) {
       alert('Lỗi khi lưu chuyên mục: ' + err.message);
@@ -233,7 +281,7 @@ export function CmsCategories({
                   {matched ? (
                     <button
                       type="button"
-                      onClick={() => setEditingCategory(matched)}
+                      onClick={() => handleOpenEditModal(matched)}
                       className="text-blue-600 hover:text-blue-800 font-semibold cursor-pointer"
                     >
                       Chỉnh sửa
@@ -385,7 +433,7 @@ export function CmsCategories({
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
-                      onClick={() => setEditingCategory(cat)}
+                      onClick={() => handleOpenEditModal(cat)}
                       className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold transition-colors cursor-pointer"
                     >
                       Sửa
@@ -479,22 +527,62 @@ export function CmsCategories({
                         onChange={(e) => {
                           const val = e.target.value;
                           const trans = { ...editingCategory.translations };
-                          trans.vi = { ...(trans.vi || { lang_code: 'vi' }), name: val };
+                          const currentSlug = trans.vi?.slug;
+                          const autoSlug = generateSlug(val);
+                          const shouldUpdateSlug = !editingCategory.id && (!currentSlug || currentSlug.startsWith('chuyen-de-'));
+                          trans.vi = {
+                            ...(trans.vi || { lang_code: 'vi' }),
+                            name: val,
+                            ...(shouldUpdateSlug && autoSlug ? { slug: autoSlug } : {}),
+                          };
 
-                          // Auto update slug if it is a new category
-                          if (!editingCategory.id && (!editingCategory.slug || editingCategory.slug.startsWith('chuyen-de-'))) {
-                            setEditingCategory({
-                              ...editingCategory,
-                              slug: generateSlug(val) || editingCategory.slug,
-                              translations: trans,
-                            });
-                          } else {
-                            setEditingCategory({ ...editingCategory, translations: trans });
-                          }
+                          setEditingCategory({
+                            ...editingCategory,
+                            ...(shouldUpdateSlug && autoSlug ? { slug: autoSlug } : {}),
+                            translations: trans,
+                          });
                         }}
                         placeholder="Ví dụ: Kiến trúc Hệ thống"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
                       />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs font-semibold text-gray-700">
+                          Slug URL (Tiếng Việt) <span className="text-red-500">*</span>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const base = editingCategory.translations?.vi?.name || '';
+                            if (base) {
+                              const newSlug = generateSlug(base);
+                              const trans = { ...editingCategory.translations };
+                              trans.vi = { ...(trans.vi || { lang_code: 'vi' }), slug: newSlug };
+                              setEditingCategory({ ...editingCategory, slug: newSlug, translations: trans });
+                            }
+                          }}
+                          className="text-[11px] text-blue-600 hover:underline cursor-pointer"
+                        >
+                          Tạo từ tên
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={editingCategory.translations?.vi?.slug ?? editingCategory.slug}
+                        onChange={(e) => {
+                          const newSlug = generateSlug(e.target.value);
+                          const trans = { ...editingCategory.translations };
+                          trans.vi = { ...(trans.vi || { lang_code: 'vi' }), slug: newSlug };
+                          setEditingCategory({ ...editingCategory, slug: newSlug, translations: trans });
+                        }}
+                        placeholder="kien-truc-he-thong"
+                        className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-mono text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                      />
+                      <span className="text-[11px] text-gray-400 font-mono mt-1 block">
+                        Đường dẫn: /vi/blog?category={editingCategory.translations?.vi?.slug || editingCategory.slug || 'slug'}
+                      </span>
                     </div>
 
                     <div>
@@ -527,13 +615,59 @@ export function CmsCategories({
                         type="text"
                         value={editingCategory.translations?.en?.name || ''}
                         onChange={(e) => {
+                          const val = e.target.value;
                           const trans = { ...editingCategory.translations };
-                          trans.en = { ...(trans.en || { lang_code: 'en' }), name: e.target.value };
+                          const currentSlug = trans.en?.slug;
+                          const autoSlug = generateSlug(val);
+                          const shouldUpdateSlug = !currentSlug;
+                          trans.en = {
+                            ...(trans.en || { lang_code: 'en' }),
+                            name: val,
+                            ...(shouldUpdateSlug && autoSlug ? { slug: autoSlug } : {}),
+                          };
                           setEditingCategory({ ...editingCategory, translations: trans });
                         }}
                         placeholder="E.g., System Architecture & Distributed Core"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gray-200 text-xs text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
                       />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs font-semibold text-gray-700">
+                          Slug URL (English)
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const base = editingCategory.translations?.en?.name || '';
+                            if (base) {
+                              const newSlug = generateSlug(base);
+                              const trans = { ...editingCategory.translations };
+                              trans.en = { ...(trans.en || { lang_code: 'en' }), slug: newSlug };
+                              setEditingCategory({ ...editingCategory, translations: trans });
+                            }
+                          }}
+                          className="text-[11px] text-blue-600 hover:underline cursor-pointer"
+                        >
+                          Tạo từ tên
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={editingCategory.translations?.en?.slug || ''}
+                        onChange={(e) => {
+                          const newSlug = generateSlug(e.target.value);
+                          const trans = { ...editingCategory.translations };
+                          trans.en = { ...(trans.en || { lang_code: 'en' }), slug: newSlug };
+                          setEditingCategory({ ...editingCategory, translations: trans });
+                        }}
+                        placeholder="system-architecture"
+                        className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-mono text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
+                      />
+                      <span className="text-[11px] text-gray-400 font-mono mt-1 block">
+                        Đường dẫn: /en/blog?category={editingCategory.translations?.en?.slug || 'slug'}
+                      </span>
                     </div>
 
                     <div>
@@ -556,67 +690,34 @@ export function CmsCategories({
                 )}
               </div>
 
-              {/* Technical Config: Slug & Weekday Schedule */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-semibold text-gray-700">
-                      Slug URL <span className="text-red-500">*</span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const base = editingCategory.translations?.vi?.name || editingCategory.translations?.en?.name || '';
-                        if (base) {
-                          setEditingCategory({ ...editingCategory, slug: generateSlug(base) });
-                        }
-                      }}
-                      className="text-[11px] text-blue-600 hover:underline cursor-pointer"
-                    >
-                      Tạo từ tên
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    value={editingCategory.slug}
-                    onChange={(e) => setEditingCategory({ ...editingCategory, slug: generateSlug(e.target.value) })}
-                    placeholder="kien-truc-he-thong"
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-mono text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500"
-                  />
-                  <span className="text-[11px] text-gray-400 font-mono mt-1 block">
-                    Đường dẫn: /blog?cat={editingCategory.slug || 'slug'}
-                  </span>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    Lịch xuất bản trong tuần <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    aria-label="Lịch xuất bản trong tuần"
-                    value={editingCategory.post_schedule}
-                    onChange={(e) => {
-                      const sched = Number(e.target.value);
-                      const opt = scheduleDayOptions.find((s) => s.value === sched);
-                      setEditingCategory({
-                        ...editingCategory,
-                        post_schedule: sched,
-                        color: opt?.color || editingCategory.color,
-                      });
-                    }}
-                    className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
-                  >
-                    {scheduleDayOptions.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.vi}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="text-[11px] text-gray-400 mt-1 block">
-                    Khớp với luồng đăng bài tự động trên Dashboard
-                  </span>
-                </div>
+              {/* Technical Config: Weekday Schedule */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Lịch xuất bản trong tuần <span className="text-red-500">*</span>
+                </label>
+                <select
+                  aria-label="Lịch xuất bản trong tuần"
+                  value={editingCategory.post_schedule}
+                  onChange={(e) => {
+                    const sched = Number(e.target.value);
+                    const opt = scheduleDayOptions.find((s) => s.value === sched);
+                    setEditingCategory({
+                      ...editingCategory,
+                      post_schedule: sched,
+                      color: opt?.color || editingCategory.color,
+                    });
+                  }}
+                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
+                >
+                  {scheduleDayOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.vi}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-[11px] text-gray-400 mt-1 block">
+                  Khớp với luồng đăng bài tự động trên Dashboard
+                </span>
               </div>
 
               {/* Color & Icon Settings */}

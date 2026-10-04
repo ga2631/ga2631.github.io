@@ -143,8 +143,8 @@ const CATEGORY_DEFINITIONS = [
     icon: 'LayersIcon',
     color: '#3B82F6',
     translations: {
-      vi: { name: 'Kiến trúc Hệ thống', description: 'Thiết kế phân tán, High Load, Microservices và Cơ sở dữ liệu quy mô lớn.' },
-      en: { name: 'Architecture & System Design', description: 'Distributed systems, High Load, Microservices, and Large-Scale DBs.' }
+      vi: { slug: 'kien-truc-he-thong', name: 'Kiến trúc Hệ thống', description: 'Thiết kế phân tán, High Load, Microservices và Cơ sở dữ liệu quy mô lớn.' },
+      en: { slug: 'architecture-system-design', name: 'Architecture & System Design', description: 'Distributed systems, High Load, Microservices, and Large-Scale DBs.' }
     }
   },
   {
@@ -153,8 +153,8 @@ const CATEGORY_DEFINITIONS = [
     icon: 'CpuIcon',
     color: '#10B981',
     translations: {
-      vi: { name: 'Thuật toán & Hiệu năng Core', description: 'Giải thuật cốt lõi, tối ưu hoá bộ nhớ và cấu trúc dữ liệu hiệu năng cao.' },
-      en: { name: 'Core Algorithms & Performance', description: 'Core algorithms, memory optimizations, and high-performance data structures.' }
+      vi: { slug: 'thuat-toan-va-hieu-nang-core', name: 'Thuật toán & Hiệu năng Core', description: 'Giải thuật cốt lõi, tối ưu hoá bộ nhớ và cấu trúc dữ liệu hiệu năng cao.' },
+      en: { slug: 'core-algorithms-series', name: 'Core Algorithms & Performance', description: 'Core algorithms, memory optimizations, and high-performance data structures.' }
     }
   },
   {
@@ -163,8 +163,8 @@ const CATEGORY_DEFINITIONS = [
     icon: 'DatabaseIcon',
     color: '#F59E0B',
     translations: {
-      vi: { name: 'Cơ sở Dữ liệu & Data Engineering', description: 'CDC, PostgreSQL, DuckDB, Medallion Architecture và tối ưu hóa truy vấn.' },
-      en: { name: 'Databases & Data Engineering', description: 'CDC, PostgreSQL, DuckDB, Medallion Architecture, and query tuning.' }
+      vi: { slug: 'co-so-du-lieu-va-data-engineering', name: 'Cơ sở Dữ liệu & Data Engineering', description: 'CDC, PostgreSQL, DuckDB, Medallion Architecture và tối ưu hóa truy vấn.' },
+      en: { slug: 'database-data-engineering', name: 'Databases & Data Engineering', description: 'CDC, PostgreSQL, DuckDB, Medallion Architecture, and query tuning.' }
     }
   },
   {
@@ -173,8 +173,8 @@ const CATEGORY_DEFINITIONS = [
     icon: 'ComponentIcon',
     color: '#8B5CF6',
     translations: {
-      vi: { name: 'Frontend & UI Tái sử dụng', description: 'Thiết kế Component tái sử dụng cao, CSS Modular và tối ưu UX.' },
-      en: { name: 'Frontend & Reusable UI', description: 'Highly reusable components, Modular CSS, and UX optimization.' }
+      vi: { slug: 'frontend-va-ui-tai-su-dung', name: 'Frontend & UI Tái sử dụng', description: 'Thiết kế Component tái sử dụng cao, CSS Modular và tối ưu UX.' },
+      en: { slug: 'dry-reusable-ui-components', name: 'Frontend & Reusable UI', description: 'Highly reusable components, Modular CSS, and UX optimization.' }
     }
   },
   {
@@ -183,8 +183,8 @@ const CATEGORY_DEFINITIONS = [
     icon: 'CompassIcon',
     color: '#EC4899',
     translations: {
-      vi: { name: 'Tech Radar & Góc nhìn Nghề nghiệp', description: 'Xu hướng công nghệ, tư duy kỹ sư và bài học lãnh đạo kỹ thuật.' },
-      en: { name: 'Tech Radar & Career Insights', description: 'Technology radar, engineering mindset, and technical leadership insights.' }
+      vi: { slug: 'tech-radar-va-goc-nhin-nghe-nghiep', name: 'Tech Radar & Góc nhìn Nghề nghiệp', description: 'Xu hướng công nghệ, tư duy kỹ sư và bài học lãnh đạo kỹ thuật.' },
+      en: { slug: 'tech-radar-career-insights', name: 'Tech Radar & Career Insights', description: 'Technology radar, engineering mindset, and technical leadership insights.' }
     }
   }
 ];
@@ -194,32 +194,69 @@ async function seedCategories() {
   const categoryMap = new Map(); // slug -> id
 
   for (const cat of CATEGORY_DEFINITIONS) {
-    // 1. Upsert category
-    const { data, error } = await supabase
+    let catId = null;
+
+    // Check if category exists by post_schedule
+    const { data: existingCat } = await supabase
       .from('categories')
-      .upsert({
-        slug: cat.slug,
+      .select('id')
+      .eq('post_schedule', cat.post_schedule)
+      .maybeSingle();
+
+    if (existingCat?.id) {
+      catId = existingCat.id;
+      await supabase
+        .from('categories')
+        .update({
+          icon: cat.icon,
+          color: cat.color,
+        })
+        .eq('id', catId);
+    } else {
+      const payload = {
         post_schedule: cat.post_schedule,
         icon: cat.icon,
         color: cat.color,
-      }, { onConflict: 'slug' })
-      .select('id, slug')
-      .single();
+      };
 
-    if (error) {
-      console.error(`  ❌ Error seeding category [${cat.slug}]:`, error.message);
-      continue;
+      // Try inserting with slug first (if pre-migration schema)
+      try {
+        const { data: insData, error: insErr } = await supabase
+          .from('categories')
+          .insert({ ...payload, slug: cat.slug })
+          .select('id')
+          .single();
+        if (!insErr && insData) catId = insData.id;
+      } catch (_) {}
+
+      // If that failed or column slug does not exist, insert without slug
+      if (!catId) {
+        const { data: insData, error: insErr } = await supabase
+          .from('categories')
+          .insert(payload)
+          .select('id')
+          .single();
+        if (insErr) {
+          console.error(`  ❌ Error seeding category [${cat.slug}]:`, insErr.message);
+          continue;
+        }
+        catId = insData.id;
+      }
     }
 
-    categoryMap.set(cat.slug, data.id);
+    categoryMap.set(cat.slug, catId);
 
-    // 2. Upsert translations
+    // 2. Upsert translations with localized slug
     for (const [langCode, trans] of Object.entries(cat.translations)) {
+      const transSlug = trans.slug || cat.slug;
+      categoryMap.set(transSlug, catId);
+
       const { error: transErr } = await supabase
         .from('category_translations')
         .upsert({
-          category_id: data.id,
+          category_id: catId,
           lang_code: langCode,
+          slug: transSlug,
           name: trans.name,
           description: trans.description,
         }, { onConflict: 'category_id,lang_code' });
@@ -228,7 +265,7 @@ async function seedCategories() {
     }
   }
 
-  console.log(`  ✅ Categories & Translations seeded (${categoryMap.size} categories)`);
+  console.log(`  ✅ Categories & Translations seeded (${categoryMap.size} category references)`);
   return categoryMap;
 }
 
@@ -300,20 +337,50 @@ async function seedPostsAndTags(categoryMap) {
     const publishedAt = primary.frontmatter.publishedAt || primary.frontmatter.date || new Date().toISOString();
 
     // 1. Upsert Post
-    const { data: post, error: postErr } = await supabase
-      .from('posts')
-      .upsert({
-        slug,
+    const { data: existingTrans } = await supabase
+      .from('post_translations')
+      .select('post_id')
+      .eq('slug', slug)
+      .maybeSingle();
+
+    let postId = existingTrans?.post_id;
+    if (postId) {
+      await supabase
+        .from('posts')
+        .update({
+          category_id: categoryId,
+          read_time: readTime,
+          published_at: new Date(publishedAt).toISOString(),
+        })
+        .eq('id', postId);
+    } else {
+      const payload = {
         category_id: categoryId,
         read_time: readTime,
         published_at: new Date(publishedAt).toISOString(),
-      }, { onConflict: 'slug' })
-      .select('id')
-      .single();
+      };
 
-    if (postErr) {
-      console.error(`  ❌ Error creating post [${slug}]:`, postErr.message);
-      continue;
+      try {
+        const { data: insData, error: insErr } = await supabase
+          .from('posts')
+          .insert({ ...payload, slug })
+          .select('id')
+          .single();
+        if (!insErr && insData) postId = insData.id;
+      } catch (_) {}
+
+      if (!postId) {
+        const { data: insData, error: insErr } = await supabase
+          .from('posts')
+          .insert(payload)
+          .select('id')
+          .single();
+        if (insErr) {
+          console.error(`  ❌ Error creating post [${slug}]:`, insErr.message);
+          continue;
+        }
+        postId = insData.id;
+      }
     }
 
     // 2. Link Tags
@@ -322,7 +389,7 @@ async function seedPostsAndTags(categoryMap) {
       const tagId = await getOrCreateTag(tagName);
       if (tagId) {
         await supabase.from('post_tags').upsert({
-          post_id: post.id,
+          post_id: postId,
           tag_id: tagId,
         }, { onConflict: 'post_id,tag_id' });
       }
@@ -332,11 +399,13 @@ async function seedPostsAndTags(categoryMap) {
     for (const lang of ['vi', 'en']) {
       const item = pair[lang];
       if (item) {
+        const langSlug = item.frontmatter.slug || slugify(item.frontmatter.title) || slug;
         const { error: transErr } = await supabase
           .from('post_translations')
           .upsert({
-            post_id: post.id,
+            post_id: postId,
             lang_code: lang,
+            slug: langSlug,
             title: item.frontmatter.title || 'Untitled',
             summary: item.frontmatter.summary || '',
             content_md: item.body.trim(),

@@ -208,6 +208,65 @@ describe('CMS Phase 2: Categories and Tags Management', () => {
       });
     });
 
+    it('supports localized category slugs in Vietnamese and English tabs', async () => {
+      const handleSave = vi.fn().mockResolvedValue(undefined);
+
+      render(
+        <LanguageProvider>
+          <CmsCategories
+            categories={mockCategories}
+            posts={mockPosts}
+            isLoading={false}
+            onSaveCategory={handleSave}
+            onDeleteCategory={vi.fn()}
+            currentLang="vi"
+          />
+        </LanguageProvider>
+      );
+
+      // Open modal
+      const createButton = screen.getByRole('button', { name: /\+ Thêm Chuyên Mục Mới/i });
+      fireEvent.click(createButton);
+
+      // VI Tab: Name and custom slug
+      const nameInputVi = screen.getByPlaceholderText(/Ví dụ: Kiến trúc Hệ thống/i);
+      fireEvent.change(nameInputVi, { target: { value: 'Kiến trúc Phân tán' } });
+
+      const slugInputVi = screen.getByPlaceholderText('kien-truc-he-thong');
+      fireEvent.change(slugInputVi, { target: { value: 'kien-truc-phan-tan' } });
+
+      // Switch to EN Tab
+      const enTabButton = screen.getByRole('button', { name: /English/i });
+      fireEvent.click(enTabButton);
+
+      // EN Tab: Name and custom slug
+      const nameInputEn = screen.getByPlaceholderText(/E.g., System Architecture/i);
+      fireEvent.change(nameInputEn, { target: { value: 'Distributed Architecture' } });
+
+      const slugInputEn = screen.getByPlaceholderText('system-architecture');
+      fireEvent.change(slugInputEn, { target: { value: 'distributed-architecture' } });
+
+      // Save
+      const submitButton = screen.getByRole('button', { name: /Lưu Chuyên Mục/i });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(handleSave).toHaveBeenCalledWith(expect.objectContaining({
+          slug: 'kien-truc-phan-tan',
+          translations: expect.objectContaining({
+            vi: expect.objectContaining({
+              name: 'Kiến trúc Phân tán',
+              slug: 'kien-truc-phan-tan',
+            }),
+            en: expect.objectContaining({
+              name: 'Distributed Architecture',
+              slug: 'distributed-architecture',
+            }),
+          }),
+        }));
+      });
+    });
+
     it('calls onDeleteCategory when delete is clicked and confirmed', async () => {
       const handleDelete = vi.fn().mockResolvedValue(undefined);
       vi.spyOn(window, 'confirm').mockReturnValue(true);

@@ -6,6 +6,7 @@ import { getWeekdayDetails } from './blogAdminService';
 
 export interface BlogCategoryDef {
   id: string;
+  allSlugs?: string[];
   dayCode: 'ALL' | 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | string;
   scheduleDay: {
     vi: string;
@@ -108,10 +109,11 @@ export function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
   const publishedAt = row.published_at || row.created_at || new Date().toISOString();
   const dateStr = publishedAt ? publishedAt.substring(0, 10) : '';
   const readTimeStr = `${row.read_time || 5} ${lang === 'vi' ? 'phút đọc' : 'min read'}`;
+  const postSlug = translation.slug || row.slug || '';
 
   return {
-    id: row.id || row.slug,
-    slug: row.slug,
+    id: row.id || postSlug,
+    slug: postSlug,
     title: translation.title || 'Untitled',
     summary: translation.summary || '',
     category: categorySlug,
@@ -130,9 +132,9 @@ export function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
  * Fetches all blog categories with multi-language translations from Supabase.
  * Retries up to 3 times (GET).
  */
-export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
+export async function getBlogCategories(lang = 'vi'): Promise<BlogCategoryDef[]> {
   return requestClient.executeWithRetry<BlogCategoryDef[]>(
-    'getBlogCategories',
+    `getBlogCategories[${lang}]`,
     async () => {
       if (!isSupabaseConfigured()) {
         return [];
@@ -145,12 +147,12 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
         .from('categories')
         .select(`
           id,
-          slug,
           post_schedule,
           icon,
           color,
           category_translations (
             lang_code,
+            slug,
             name,
             description
           )
@@ -165,6 +167,7 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
 
       const allCategory: BlogCategoryDef = {
         id: 'all',
+        allSlugs: ['all'],
         dayCode: 'ALL',
         scheduleDay: {
           vi: 'T2 - T6',
@@ -190,11 +193,15 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
         const transList = Array.isArray(cat.category_translations) ? cat.category_translations : [];
         const viTrans = transList.find((t: any) => t.lang_code === 'vi') || {};
         const enTrans = transList.find((t: any) => t.lang_code === 'en') || {};
+        const activeTrans = transList.find((t: any) => t.lang_code === lang) || viTrans || enTrans || {};
 
         const scheduleInfo = getWeekdayDetails(Number(cat.post_schedule) || 1);
+        const resolvedSlug = activeTrans.slug || viTrans.slug || enTrans.slug || cat.slug || cat.id || '';
+        const allSlugs = Array.from(new Set([viTrans.slug, enTrans.slug, cat.slug, resolvedSlug].filter(Boolean)));
 
         return {
-          id: cat.slug,
+          id: resolvedSlug,
+          allSlugs,
           dayCode: scheduleInfo.dayCode,
           scheduleDay: {
             vi: scheduleInfo.viDay,
@@ -205,8 +212,8 @@ export async function getBlogCategories(): Promise<BlogCategoryDef[]> {
             en: scheduleInfo.enFull,
           },
           title: {
-            vi: viTrans.name || cat.slug,
-            en: enTrans.name || cat.slug,
+            vi: viTrans.name || resolvedSlug,
+            en: enTrans.name || resolvedSlug,
           },
           description: {
             vi: viTrans.description || '',
@@ -299,25 +306,25 @@ export async function getBlogPosts(
         .from('posts')
         .select(`
           id,
-          slug,
           read_time,
           published_at,
           created_at,
           updated_at,
           categories (
             id,
-            slug,
             post_schedule,
             icon,
             color,
             category_translations (
               lang_code,
+              slug,
               name,
               description
             )
           ),
           post_translations (
             lang_code,
+            slug,
             title,
             summary,
             content_md,
@@ -384,29 +391,43 @@ export async function getBlogPostBySlug(slug: string, lang: string): Promise<Blo
       if (!supabase) throw new Error('[blogService] Supabase client unavailable.');
 
       console.log(`[Supabase 📖 Post Detail] Querying table "posts" WHERE slug = "${slug}" (lang: ${lang})`);
+      // 1. Find matching post_id in post_translations by localized slug
+      const { data: transMatch } = await supabase
+        .from('post_translations')
+        .select('post_id')
+        .eq('slug', slug)
+        .maybeSingle();
+
+      const postId = transMatch?.post_id;
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
+
+      if (!postId && !isUuid) {
+        return null;
+      }
+
       const { data, error } = await supabase
         .from('posts')
         .select(`
           id,
-          slug,
           read_time,
           published_at,
           created_at,
           updated_at,
           categories (
             id,
-            slug,
             post_schedule,
             icon,
             color,
             category_translations (
               lang_code,
+              slug,
               name,
               description
             )
           ),
           post_translations (
             lang_code,
+            slug,
             title,
             summary,
             content_md,
@@ -423,7 +444,7 @@ export async function getBlogPostBySlug(slug: string, lang: string): Promise<Blo
             )
           )
         `)
-        .eq('slug', slug)
+        .eq('id', postId || slug)
         .maybeSingle();
 
       if (error) {
@@ -479,7 +500,9 @@ export function getBlogStatistics(posts: BlogPost[], categories: BlogCategoryDef
 
   categories.forEach((cat) => {
     if (cat.id !== 'all') {
-      categoryCounts[cat.id] = posts.filter((p) => p.category === cat.id).length;
+      categoryCounts[cat.id] = posts.filter(
+        (p) => p.category === cat.id || Boolean(p.category && cat.allSlugs?.includes(p.category))
+      ).length;
     }
   });
 

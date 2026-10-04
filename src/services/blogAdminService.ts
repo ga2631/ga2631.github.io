@@ -180,6 +180,7 @@ export function getCategoryIconDetails(iconId?: string): { label: string; iconCl
 
 export interface AdminCategoryTranslation {
   lang_code: string;
+  slug?: string;
   name: string;
   description?: string;
 }
@@ -206,6 +207,7 @@ export interface AdminTag {
 
 export interface AdminPostTranslation {
   lang_code: string;
+  slug?: string;
   title: string;
   summary?: string;
   content_md: string;
@@ -244,12 +246,12 @@ export async function getAllAdminCategories(): Promise<AdminCategory[]> {
         .from('categories')
         .select(`
           id,
-          slug,
           post_schedule,
           icon,
           color,
           category_translations (
             lang_code,
+            slug,
             name,
             description
           )
@@ -262,17 +264,27 @@ export async function getAllAdminCategories(): Promise<AdminCategory[]> {
       return data.map((cat: any) => {
         const transMap: Record<string, AdminCategoryTranslation> = {};
         const transList = Array.isArray(cat.category_translations) ? cat.category_translations : [];
+        let primarySlug = cat.slug || '';
         transList.forEach((t: any) => {
           transMap[t.lang_code] = {
             lang_code: t.lang_code,
+            slug: t.slug || '',
             name: t.name,
             description: t.description || '',
           };
+          if (!primarySlug && t.slug) {
+            primarySlug = t.slug;
+          }
         });
+        if (!primarySlug && transMap['vi']?.slug) {
+          primarySlug = transMap['vi'].slug;
+        } else if (!primarySlug && transMap['en']?.slug) {
+          primarySlug = transMap['en'].slug;
+        }
 
         return {
           id: cat.id,
-          slug: cat.slug,
+          slug: primarySlug,
           post_schedule: cat.post_schedule ?? 1,
           icon: cat.icon || 'LayersIcon',
           color: cat.color || 'blue',
@@ -293,7 +305,6 @@ export async function saveAdminCategory(category: AdminCategory): Promise<{ succ
 
       // 1. Upsert Category
       const payload: any = {
-        slug: category.slug.trim(),
         post_schedule: Number(category.post_schedule) || 1,
         icon: category.icon || 'LayersIcon',
         color: category.color || 'blue',
@@ -301,24 +312,56 @@ export async function saveAdminCategory(category: AdminCategory): Promise<{ succ
       if (category.id) {
         payload.id = category.id;
       }
+      if (category.slug) {
+        payload.slug = category.slug.trim();
+      }
 
-      const { data: catData, error: catErr } = await supabase
-        .from('categories')
-        .upsert(payload, { onConflict: 'slug' })
-        .select('id')
-        .single();
+      const upsertConfig = category.id ? { onConflict: 'id' } : (payload.slug ? { onConflict: 'slug' } : undefined);
+      let catData: any;
+      let catErr: any;
 
-      if (catErr) throw new Error(catErr.message);
+      if (upsertConfig) {
+        const res = await supabase
+          .from('categories')
+          .upsert(payload, upsertConfig)
+          .select('id')
+          .single();
+        catData = res.data;
+        catErr = res.error;
+      } else {
+        const res = await supabase
+          .from('categories')
+          .insert(payload)
+          .select('id')
+          .single();
+        catData = res.data;
+        catErr = res.error;
+      }
+
+      // If categories table already migrated and dropped column 'slug', retry without 'slug'
+      if (catErr && catErr.message && catErr.message.includes('slug')) {
+        delete payload.slug;
+        const fallbackConfig = category.id ? { onConflict: 'id' } : undefined;
+        const res = fallbackConfig
+          ? await supabase.from('categories').upsert(payload, fallbackConfig).select('id').single()
+          : await supabase.from('categories').insert(payload).select('id').single();
+        catData = res.data;
+        catErr = res.error;
+      }
+
+      if (catErr || !catData) throw new Error(catErr?.message || 'Failed to save category');
       const categoryId = catData.id;
 
-      // 2. Upsert Translations
+      // 2. Upsert Translations with localized slug
       for (const [langCode, trans] of Object.entries(category.translations)) {
         if (trans.name) {
+          const transSlug = trans.slug?.trim() || category.slug?.trim() || '';
           const { error: transErr } = await supabase
             .from('category_translations')
             .upsert({
               category_id: categoryId,
               lang_code: langCode,
+              slug: transSlug,
               name: trans.name,
               description: trans.description || '',
             }, { onConflict: 'category_id,lang_code' });
@@ -476,7 +519,6 @@ export async function getAllAdminPosts(): Promise<AdminPost[]> {
         .from('posts')
         .select(`
           id,
-          slug,
           read_time,
           published_at,
           created_at,
@@ -484,10 +526,15 @@ export async function getAllAdminPosts(): Promise<AdminPost[]> {
           category_id,
           categories (
             id,
-            slug
+            category_translations (
+              lang_code,
+              slug,
+              name
+            )
           ),
           post_translations (
             lang_code,
+            slug,
             title,
             summary,
             content_md,
@@ -516,6 +563,7 @@ export async function getAllAdminPosts(): Promise<AdminPost[]> {
         transList.forEach((t: any) => {
           transMap[t.lang_code] = {
             lang_code: t.lang_code,
+            slug: t.slug || row.slug || '',
             title: t.title || '',
             summary: t.summary || '',
             content_md: t.content_md || '',
@@ -526,12 +574,17 @@ export async function getAllAdminPosts(): Promise<AdminPost[]> {
         const postTags = Array.isArray(row.post_tags) ? row.post_tags : [];
         const tag_ids = postTags.map((pt: any) => pt.tag_id).filter(Boolean);
         const tags = postTags.map((pt: any) => pt.tags?.slug).filter(Boolean);
+        const resolvedSlug = transMap['vi']?.slug || transMap['en']?.slug || row.slug || '';
+
+        const catTrans = Array.isArray(row.categories?.category_translations) ? row.categories.category_translations : [];
+        const viCatTrans = catTrans.find((ct: any) => ct.lang_code === 'vi');
+        const resolvedCategorySlug = viCatTrans?.slug || catTrans[0]?.slug || row.categories?.slug || '';
 
         return {
           id: row.id,
-          slug: row.slug,
+          slug: resolvedSlug,
           category_id: row.category_id || row.categories?.id || null,
-          category_slug: row.categories?.slug || '',
+          category_slug: resolvedCategorySlug,
           read_time: row.read_time ?? 5,
           published_at: row.published_at || null,
           created_at: row.created_at,
@@ -558,7 +611,6 @@ export async function saveAdminPost(post: AdminPost): Promise<{ success: boolean
 
       // 1. Upsert Post
       const payload: any = {
-        slug: post.slug.trim(),
         category_id: post.category_id || null,
         read_time: Number(post.read_time) || 5,
         published_at: post.published_at ? new Date(post.published_at).toISOString() : null,
@@ -567,13 +619,37 @@ export async function saveAdminPost(post: AdminPost): Promise<{ success: boolean
         payload.id = post.id;
       }
 
-      const { data: postData, error: postErr } = await supabase
-        .from('posts')
-        .upsert(payload, { onConflict: 'slug' })
-        .select('id')
-        .single();
+      let postData: any;
+      let postErr: any;
 
-      if (postErr) throw new Error(postErr.message);
+      if (post.id) {
+        const res = await supabase
+          .from('posts')
+          .upsert(payload, { onConflict: 'id' })
+          .select('id')
+          .single();
+        postData = res.data;
+        postErr = res.error;
+      } else {
+        const res = await supabase
+          .from('posts')
+          .insert(payload)
+          .select('id')
+          .single();
+        postData = res.data;
+        postErr = res.error;
+      }
+
+      // If DB is pre-migration and requires posts.slug NOT NULL, retry with post.slug
+      if (postErr && postErr.message && postErr.message.includes('slug') && post.slug) {
+        payload.slug = post.slug.trim();
+        const fallbackConfig = post.id ? { onConflict: 'id' } : { onConflict: 'slug' };
+        const res = await supabase.from('posts').upsert(payload, fallbackConfig).select('id').single();
+        postData = res.data;
+        postErr = res.error;
+      }
+
+      if (postErr || !postData) throw new Error(postErr?.message || 'Failed to save post');
       const postId = postData.id;
 
       // 2. Link Tags (delete existing and re-insert)
@@ -587,14 +663,16 @@ export async function saveAdminPost(post: AdminPost): Promise<{ success: boolean
         if (tagInsertErr) throw new Error(tagInsertErr.message);
       }
 
-      // 3. Upsert Translations
+      // 3. Upsert Translations with localized slug
       for (const [langCode, trans] of Object.entries(post.translations)) {
         if (trans.title || trans.content_md) {
+          const transSlug = trans.slug?.trim() || (langCode === 'vi' ? post.slug.trim() : post.slug.trim());
           const { error: transErr } = await supabase
             .from('post_translations')
             .upsert({
               post_id: postId,
               lang_code: langCode,
+              slug: transSlug,
               title: trans.title || 'Untitled',
               summary: trans.summary || '',
               content_md: trans.content_md || '',

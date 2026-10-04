@@ -154,8 +154,11 @@ export function BlogView({
   // Filter posts based on category, tag, and search query
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
+      const matchedCat = categories.find((c) => c.id === selectedCategory);
       const matchCategory =
-        selectedCategory === 'all' || post.category === selectedCategory;
+        selectedCategory === 'all' ||
+        post.category === selectedCategory ||
+        Boolean(post.category && matchedCat?.allSlugs?.includes(post.category));
       const matchTag =
         selectedTag === 'all' || (post.tags && post.tags.includes(selectedTag));
       const query = searchQuery.trim().toLowerCase();
