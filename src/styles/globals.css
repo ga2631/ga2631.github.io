@@ -164,3 +164,15 @@ select option {
   padding: 8px 12px;
 }
 
+/* KaTeX Formula Display Enhancements */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+  margin: 0.5rem 0 !important;
+}
+
+.katex {
+  font-size: 1.1em;
+}
+

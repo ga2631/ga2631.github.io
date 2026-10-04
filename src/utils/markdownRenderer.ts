@@ -16,31 +16,55 @@ function escapeHtml(text: string): string {
  * Parses inline formatting: bold, italic, strikethrough, inline code, inline math, links.
  */
 export function parseInlineMarkdown(text: string): string {
-  // 1. Inline KaTeX math: $...$
+  // 1. Protect inline code: `code` first so math regex doesn't match inside code
+  const codeSnippets: string[] = [];
+  text = text.replace(/`([^`]+)`/g, (_m, code) => {
+    const placeholder = `___INLINE_CODE_${codeSnippets.length}___`;
+    codeSnippets.push(`<code class="bg-gray-100 text-red-600 px-1.5 py-0.5 rounded text-xs font-mono">${escapeHtml(code)}</code>`);
+    return placeholder;
+  });
+
+  // 2. Inline KaTeX display math: $$...$$
+  text = text.replace(/\$\$([^\$\n]+?)\$\$/g, (_match, math) => {
+    try {
+      return katex.renderToString(math.trim(), {
+        displayMode: true,
+        throwOnError: false,
+        strict: false,
+      });
+    } catch {
+      return `<code class="katex-error text-red-500 font-mono text-xs">$$${escapeHtml(math)}$$</code>`;
+    }
+  });
+
+  // 3. Inline KaTeX math: $...$
   text = text.replace(/\$([^\$\n]+?)\$/g, (_match, math) => {
     try {
       return katex.renderToString(math.trim(), {
         displayMode: false,
         throwOnError: false,
+        strict: false,
       });
     } catch {
       return `<code class="katex-error text-red-500 font-mono text-xs">$${escapeHtml(math)}$</code>`;
     }
   });
 
-  // 2. Inline code: `code`
-  text = text.replace(/`([^`]+)`/g, '<code class="bg-gray-100 text-red-600 px-1.5 py-0.5 rounded text-xs font-mono">$1</code>');
+  // 4. Restore inline code
+  text = text.replace(/___INLINE_CODE_(\d+)___/g, (_m, index) => {
+    return codeSnippets[Number(index)] || '';
+  });
 
-  // 3. Bold: **text** or __text__
+  // 5. Bold: **text** or __text__
   text = text.replace(/(\*\*|__)(.*?)\1/g, '<strong class="font-bold text-gray-900">$2</strong>');
 
-  // 4. Italic: *text* or _text_
+  // 6. Italic: *text* or _text_
   text = text.replace(/(\*|_)(.*?)\1/g, '<em class="italic text-gray-800">$2</em>');
 
-  // 5. Strikethrough: ~~text~~
+  // 7. Strikethrough: ~~text~~
   text = text.replace(/~~(.*?)~~/g, '<del class="line-through text-gray-400">$1</del>');
 
-  // 6. Links: [label](url)
+  // 8. Links: [label](url)
   text = text.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-red-600 hover:text-red-700 underline font-medium">$1</a>'
@@ -52,7 +76,7 @@ export function parseInlineMarkdown(text: string): string {
 /**
  * Converts markdown text into rich HTML with support for:
  * - Mermaid diagrams (```mermaid ... ```)
- * - KaTeX block & inline math ($$ ... $$)
+ * - KaTeX block & inline math ($$ ... $$, multi-line $$, ```latex, ```math, ```katex)
  * - Headings (#, ##, ###, ####)
  * - Code blocks
  * - Blockquotes & callouts
@@ -68,6 +92,8 @@ export function renderMarkdownToHtml(markdown: string): string {
   let inCodeBlock = false;
   let codeBlockLang = '';
   let codeBlockContent: string[] = [];
+  let inMathBlock = false;
+  let mathBlockContent: string[] = [];
   let inList: 'ul' | 'ol' | null = null;
   let inTable = false;
   let tableHeaderProcessed = false;
@@ -91,6 +117,32 @@ export function renderMarkdownToHtml(markdown: string): string {
     const rawLine = lines[i];
     const trimmed = rawLine.trim();
 
+    // 0. Inside multi-line KaTeX block ($$ ... $$)
+    if (inMathBlock) {
+      if (trimmed === '$$' || (trimmed.endsWith('$$') && !trimmed.startsWith('\\$'))) {
+        const remaining = trimmed === '$$' ? '' : trimmed.slice(0, -2).trim();
+        if (remaining) {
+          mathBlockContent.push(remaining);
+        }
+        const math = mathBlockContent.join('\n').trim();
+        try {
+          const renderedMath = katex.renderToString(math, {
+            displayMode: true,
+            throwOnError: false,
+            strict: false,
+          });
+          htmlParts.push(`<div class="my-5 p-4 rounded-2xl bg-gray-50/80 border border-gray-100 overflow-x-auto text-center">${renderedMath}</div>`);
+        } catch {
+          htmlParts.push(`<div class="my-5 p-3 rounded-xl bg-red-50 text-red-600 font-mono text-xs overflow-x-auto">$$ ${escapeHtml(math)} $$</div>`);
+        }
+        inMathBlock = false;
+        mathBlockContent = [];
+      } else {
+        mathBlockContent.push(rawLine);
+      }
+      continue;
+    }
+
     // 1. Fenced Code Blocks (```lang ... ```)
     if (trimmed.startsWith('```')) {
       closeListIfOpen();
@@ -99,7 +151,9 @@ export function renderMarkdownToHtml(markdown: string): string {
       if (inCodeBlock) {
         // End of code block
         const codeText = codeBlockContent.join('\n');
-        if (codeBlockLang.toLowerCase() === 'mermaid') {
+        const lang = codeBlockLang.toLowerCase();
+
+        if (lang === 'mermaid') {
           // Mermaid block placeholder for client rendering
           const diagramId = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
           htmlParts.push(
@@ -112,6 +166,22 @@ export function renderMarkdownToHtml(markdown: string): string {
               </div>
             </div>`
           );
+        } else if (lang === 'latex' || lang === 'math' || lang === 'katex') {
+          // Fenced KaTeX LaTeX block: ```latex ... ``` or ```math ... ```
+          try {
+            const renderedMath = katex.renderToString(codeText.trim(), {
+              displayMode: true,
+              throwOnError: false,
+              strict: false,
+            });
+            htmlParts.push(
+              `<div class="my-5 p-4 rounded-2xl bg-gray-50/80 border border-gray-100 overflow-x-auto text-center">${renderedMath}</div>`
+            );
+          } catch {
+            htmlParts.push(
+              `<div class="my-5 p-3 rounded-xl bg-red-50 text-red-600 font-mono text-xs overflow-x-auto">$$ ${escapeHtml(codeText)} $$</div>`
+            );
+          }
         } else {
           // Standard syntax code block
           htmlParts.push(
@@ -140,19 +210,33 @@ export function renderMarkdownToHtml(markdown: string): string {
       continue;
     }
 
-    // 2. KaTeX Block Math ($$ ... $$)
-    if (trimmed.startsWith('$$') && trimmed.endsWith('$$') && trimmed.length > 4) {
+    // 2. KaTeX Block Math ($$)
+    if (trimmed.startsWith('$$')) {
       closeListIfOpen();
       closeTableIfOpen();
-      const math = trimmed.substring(2, trimmed.length - 2).trim();
-      try {
-        const renderedMath = katex.renderToString(math, {
-          displayMode: true,
-          throwOnError: false,
-        });
-        htmlParts.push(`<div class="my-5 p-4 rounded-2xl bg-gray-50/80 border border-gray-100 overflow-x-auto text-center">${renderedMath}</div>`);
-      } catch {
-        htmlParts.push(`<div class="my-5 p-3 rounded-xl bg-red-50 text-red-600 font-mono text-xs overflow-x-auto">$$ ${escapeHtml(math)} $$</div>`);
+
+      // Case 2a: Single-line $$ ... $$
+      if (trimmed.length > 2 && trimmed.endsWith('$$')) {
+        const math = trimmed.slice(2, -2).trim();
+        try {
+          const renderedMath = katex.renderToString(math, {
+            displayMode: true,
+            throwOnError: false,
+            strict: false,
+          });
+          htmlParts.push(`<div class="my-5 p-4 rounded-2xl bg-gray-50/80 border border-gray-100 overflow-x-auto text-center">${renderedMath}</div>`);
+        } catch {
+          htmlParts.push(`<div class="my-5 p-3 rounded-xl bg-red-50 text-red-600 font-mono text-xs overflow-x-auto">$$ ${escapeHtml(math)} $$</div>`);
+        }
+        continue;
+      }
+
+      // Case 2b: Multi-line $$ start
+      inMathBlock = true;
+      mathBlockContent = [];
+      const contentOnFirstLine = trimmed.slice(2).trim();
+      if (contentOnFirstLine) {
+        mathBlockContent.push(contentOnFirstLine);
       }
       continue;
     }
@@ -296,6 +380,26 @@ export function renderMarkdownToHtml(markdown: string): string {
 
   closeListIfOpen();
   closeTableIfOpen();
+
+  if (inMathBlock && mathBlockContent.length > 0) {
+    const math = mathBlockContent.join('\n').trim();
+    try {
+      const renderedMath = katex.renderToString(math, {
+        displayMode: true,
+        throwOnError: false,
+        strict: false,
+      });
+      htmlParts.push(
+        `<div class="my-5 p-4 rounded-2xl bg-gray-50/80 border border-gray-100 overflow-x-auto text-center">${renderedMath}</div>`
+      );
+    } catch {
+      htmlParts.push(
+        `<div class="my-5 p-3 rounded-xl bg-red-50 text-red-600 font-mono text-xs overflow-x-auto">$$ ${escapeHtml(math)} $$</div>`
+      );
+    }
+    inMathBlock = false;
+    mathBlockContent = [];
+  }
 
   return htmlParts.join('\n');
 }

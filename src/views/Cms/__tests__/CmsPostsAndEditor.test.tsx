@@ -598,9 +598,24 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
 
   describe('Markdown, KaTeX, and SEO Utilities', () => {
     it('renders LaTeX equations with KaTeX (2.3.4.2)', () => {
+      // 1. Single line & inline
       const mathMarkdown = 'Phương trình: $$ E = mc^2 $$ và inline $ a^2 + b^2 = c^2 $.';
       const html = renderMarkdownToHtml(mathMarkdown);
       expect(html).toContain('katex');
+
+      // 2. Multi-line LaTeX block ($$ ... $$)
+      const multiLineMath = `$$
+\\mathcal{O}(n \\log n) \\quad \\text{và} \\quad E = mc^2 \\quad \\sum_{i=1}^{n} \\frac{1}{i} \\approx \\ln(n) + \\gamma
+$$`;
+      const htmlMulti = renderMarkdownToHtml(multiLineMath);
+      expect(htmlMulti).toContain('katex');
+      expect(htmlMulti).toContain('katex-display');
+
+      // 3. Fenced LaTeX code block (```latex ... ```)
+      const fencedMath = '```latex\n\\int_0^1 x^2 dx = \\frac{1}{3}\n```';
+      const htmlFenced = renderMarkdownToHtml(fencedMath);
+      expect(htmlFenced).toContain('katex');
+      expect(htmlFenced).toContain('katex-display');
     });
 
     it('renders Mermaid diagram blocks (2.3.4.1)', () => {

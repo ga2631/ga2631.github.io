@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
+import 'katex/dist/katex.min.css';
 import { Roboto } from 'next/font/google';
 import { LanguageProvider } from '@/i18n/LanguageContext';
 import { FlowbiteInit } from '@/components/common/FlowbiteInit';
@@ -41,6 +42,11 @@ export default function RootLayout({
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"
+          crossOrigin="anonymous"
         />
       </head>
       <body className="bg-[#fafafa] min-h-screen text-gray-800 font-sans antialiased relative flex flex-col">

@@ -25,6 +25,7 @@ import { CmsDashboard } from './components/CmsDashboard';
 import { CmsCategories } from './components/CmsCategories';
 import { CmsTags } from './components/CmsTags';
 import { CmsPosts } from './components/CmsPosts';
+import { CmsCvEditor } from './components/CmsCvEditor';
 
 interface CmsViewProps {
   activeTab: CmsTab;
@@ -230,14 +231,17 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
   // -------------------------------------------------------------
   // CV ACTIONS
   // -------------------------------------------------------------
-  const handleSaveCv = async () => {
+  const handleSaveCv = async (targetLang: string, updatedData: CVData) => {
     try {
-      const parsed: CVData = JSON.parse(cvJsonString);
-      await saveCvData(currentLang, parsed);
-      setCvData(parsed);
-      showNotification('success', `Đã cập nhật hồ sơ CV (${currentLang.toUpperCase()}) thành công lên Supabase!`);
+      await saveCvData(targetLang, updatedData);
+      if (targetLang === currentLang) {
+        setCvData(updatedData);
+        setCvJsonString(JSON.stringify(updatedData, null, 2));
+      }
+      showNotification('success', `Đã cập nhật hồ sơ CV (${targetLang.toUpperCase()}) thành công lên Supabase!`);
     } catch (err: any) {
-      showNotification('error', `JSON không hợp lệ hoặc lỗi lưu: ${err.message}`);
+      showNotification('error', `Lỗi khi lưu hồ sơ CV: ${err.message}`);
+      throw err;
     }
   };
 
@@ -319,32 +323,13 @@ export function CmsView({ activeTab, onSelectTab }: CmsViewProps) {
 
       {/* 5. CV EDITOR TAB */}
       {activeTab === 'cv' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-white">Quản Lý Hồ Sơ CV</h2>
-              <p className="text-xs text-gray-400">
-                Chỉnh sửa dữ liệu hồ sơ CV cho ngôn ngữ: <strong className="text-red-400 uppercase">{currentLang}</strong>
-              </p>
-            </div>
-            <button
-              onClick={handleSaveCv}
-              className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow transition-colors flex items-center gap-1.5 cursor-pointer"
-            >
-              <i className="fa-solid fa-floppy-disk"></i>
-              <span>Lưu Hồ Sơ</span>
-            </button>
-          </div>
-
-          <div className="glass-panel p-4 rounded-2xl border border-gray-800">
-            <textarea
-              value={cvJsonString}
-              onChange={(e) => setCvJsonString(e.target.value)}
-              rows={22}
-              className="w-full bg-gray-950 p-4 rounded-xl border border-gray-800 text-xs font-mono text-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-          </div>
-        </div>
+        <CmsCvEditor
+          cvData={cvData}
+          isLoading={isLoading}
+          currentLang={currentLang}
+          onSave={handleSaveCv}
+          onReload={loadAllAdminData}
+        />
       )}
 
       {/* 6. SETTINGS & AUTH TAB */}
