@@ -158,9 +158,9 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
         </LanguageProvider>
       );
 
-      expect(screen.getByText('2.3 Quản Lý Bài Viết')).toBeDefined();
+      expect(screen.getByText(/Quản Lý Bài Viết/i)).toBeDefined();
       expect(screen.getByText('Tổng Bài Viết')).toBeDefined();
-      expect(screen.getByText('3')).toBeDefined();
+      expect(screen.getAllByText('3').length).toBeGreaterThan(0);
 
       // Check article titles rendered
       expect(screen.getByText('Kiến trúc Microservices Thực Chiến')).toBeDefined();
@@ -304,6 +304,68 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
       );
 
       expect(screen.getByText(/Quản Lý Bài Viết/i)).toBeDefined();
+    });
+
+    it('supports pagination, page navigation, and page size switching in articles table', () => {
+      const manyPosts: AdminPost[] = Array.from({ length: 25 }, (_, idx) => ({
+        id: `post-page-${idx + 1}`,
+        slug: `post-page-${idx + 1}`,
+        read_time: 5,
+        category_id: 'cat-1',
+        tag_ids: ['tag-1'],
+        tags: ['microservices'],
+        published_at: '2026-01-15T00:00:00Z',
+        translations: {
+          vi: { lang_code: 'vi', title: `Bài Viết Số #${idx + 1}`, summary: `Tóm tắt #${idx + 1}` },
+          en: { lang_code: 'en', title: `Article Number #${idx + 1}`, summary: `Summary #${idx + 1}` },
+        },
+      }));
+
+      render(
+        <LanguageProvider>
+          <CmsPosts
+            posts={manyPosts}
+            categories={mockCategories}
+            tags={mockTags}
+            isLoading={false}
+            editingPost={null}
+            onSetEditingPost={vi.fn()}
+            onSavePost={vi.fn()}
+            onDeletePost={vi.fn()}
+            onCreateNewPost={vi.fn()}
+            currentLang="vi"
+          />
+        </LanguageProvider>
+      );
+
+      // Verify page 1 items are shown (1-10) and page 2 items are not
+      expect(screen.getByText('Bài Viết Số #1')).toBeDefined();
+      expect(screen.getByText('Bài Viết Số #10')).toBeDefined();
+      expect(screen.queryByText('Bài Viết Số #11')).toBeNull();
+
+      // Verify pagination summary indicator
+      expect(screen.getAllByText(/Hiển thị/i).length).toBeGreaterThan(0);
+      expect(screen.getByText(/trên tổng số/i)).toBeDefined();
+      expect(screen.getByText(/Trang/i)).toBeDefined();
+
+      // Click "Sau" (Next page)
+      const nextBtn = screen.getByRole('button', { name: /Next page/i });
+      fireEvent.click(nextBtn);
+
+      // Now page 2 should be displayed (11-20)
+      expect(screen.queryByText('Bài Viết Số #1')).toBeNull();
+      expect(screen.getByText('Bài Viết Số #11')).toBeDefined();
+      expect(screen.getByText('Bài Viết Số #20')).toBeDefined();
+      expect(screen.queryByText('Bài Viết Số #21')).toBeNull();
+
+      // Change page size to 20
+      const pageSizeSelect = screen.getByRole('combobox', { name: /Số bài viết mỗi trang/i });
+      fireEvent.change(pageSizeSelect, { target: { value: '20' } });
+
+      // Automatically reset to page 1 with 20 items
+      expect(screen.getByText('Bài Viết Số #1')).toBeDefined();
+      expect(screen.getByText('Bài Viết Số #20')).toBeDefined();
+      expect(screen.queryByText('Bài Viết Số #21')).toBeNull();
     });
   });
 

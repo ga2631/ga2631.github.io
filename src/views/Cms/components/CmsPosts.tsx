@@ -39,6 +39,8 @@ export function CmsPosts({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'published' | 'scheduled' | 'draft'>('all');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   // Category map for instant lookup
   const categoryMap = useMemo(() => {
@@ -111,6 +113,29 @@ export function CmsPosts({
     });
   }, [posts, searchQuery, selectedCategory, selectedStatus]);
 
+  // Pagination bounds and calculations
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / pageSize));
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+  const startIndex = (safeCurrentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, filteredPosts.length);
+
+  const paginatedPosts = useMemo(() => {
+    return filteredPosts.slice(startIndex, endIndex);
+  }, [filteredPosts, startIndex, endIndex]);
+
+  const getPageNumbers = () => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (safeCurrentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', totalPages];
+    }
+    if (safeCurrentPage >= totalPages - 3) {
+      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [1, '...', safeCurrentPage - 1, safeCurrentPage, safeCurrentPage + 1, '...', totalPages];
+  };
+
   const handleDelete = async (id: string, slug: string) => {
     if (!confirm(isEn ? `Are you sure you want to delete article "${slug}"?` : `Bạn có chắc chắn muốn xóa bài viết "${slug}"?`)) {
       return;
@@ -148,7 +173,7 @@ export function CmsPosts({
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse" />
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-              {isEn ? '2.3 Article Management' : '2.3 Quản Lý Bài Viết'}
+              {isEn ? 'Article Management' : 'Quản Lý Bài Viết'}
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-gray-500">
@@ -171,10 +196,12 @@ export function CmsPosts({
       {/* KPI Cards (Box Guideline) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div
-          onClick={() => setSelectedStatus('all')}
-          className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-blue-500 hover:shadow-lg transition-all cursor-pointer ${
-            selectedStatus === 'all' ? 'ring-2 ring-blue-500/30' : ''
-          }`}
+          onClick={() => {
+            setSelectedStatus('all');
+            setCurrentPage(1);
+          }}
+          className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-blue-500 hover:shadow-lg transition-all cursor-pointer ${selectedStatus === 'all' ? 'ring-2 ring-blue-500/30' : ''
+            }`}
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -187,10 +214,12 @@ export function CmsPosts({
         </div>
 
         <div
-          onClick={() => setSelectedStatus('published')}
-          className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-emerald-500 hover:shadow-lg transition-all cursor-pointer ${
-            selectedStatus === 'published' ? 'ring-2 ring-emerald-500/30' : ''
-          }`}
+          onClick={() => {
+            setSelectedStatus('published');
+            setCurrentPage(1);
+          }}
+          className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-emerald-500 hover:shadow-lg transition-all cursor-pointer ${selectedStatus === 'published' ? 'ring-2 ring-emerald-500/30' : ''
+            }`}
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -203,10 +232,12 @@ export function CmsPosts({
         </div>
 
         <div
-          onClick={() => setSelectedStatus('scheduled')}
-          className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-purple-500 hover:shadow-lg transition-all cursor-pointer ${
-            selectedStatus === 'scheduled' ? 'ring-2 ring-purple-500/30' : ''
-          }`}
+          onClick={() => {
+            setSelectedStatus('scheduled');
+            setCurrentPage(1);
+          }}
+          className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-purple-500 hover:shadow-lg transition-all cursor-pointer ${selectedStatus === 'scheduled' ? 'ring-2 ring-purple-500/30' : ''
+            }`}
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -219,10 +250,12 @@ export function CmsPosts({
         </div>
 
         <div
-          onClick={() => setSelectedStatus('draft')}
-          className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-amber-500 hover:shadow-lg transition-all cursor-pointer ${
-            selectedStatus === 'draft' ? 'ring-2 ring-amber-500/30' : ''
-          }`}
+          onClick={() => {
+            setSelectedStatus('draft');
+            setCurrentPage(1);
+          }}
+          className={`bg-white backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-gray-100 border-t-4 border-t-amber-500 hover:shadow-lg transition-all cursor-pointer ${selectedStatus === 'draft' ? 'ring-2 ring-amber-500/30' : ''
+            }`}
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -242,7 +275,10 @@ export function CmsPosts({
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             placeholder={isEn ? 'Search title or slug...' : 'Tìm kiếm theo tiêu đề hoặc slug...'}
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all shadow-2xs"
           />
@@ -250,7 +286,10 @@ export function CmsPosts({
           {searchQuery && (
             <button
               type="button"
-              onClick={() => setSearchQuery('')}
+              onClick={() => {
+                setSearchQuery('');
+                setCurrentPage(1);
+              }}
               className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-xs cursor-pointer"
             >
               <i className="fa-solid fa-xmark"></i>
@@ -264,7 +303,10 @@ export function CmsPosts({
           <select
             aria-label={isEn ? 'Filter by category' : 'Lọc theo chuyên mục'}
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              setCurrentPage(1);
+            }}
             className="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
           >
             <option value="all">{isEn ? 'All Categories' : 'Tất cả chuyên mục'}</option>
@@ -279,7 +321,10 @@ export function CmsPosts({
           <select
             aria-label={isEn ? 'Filter by status' : 'Lọc theo trạng thái'}
             value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value as any)}
+            onChange={(e) => {
+              setSelectedStatus(e.target.value as any);
+              setCurrentPage(1);
+            }}
             className="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
           >
             <option value="all">{isEn ? 'All Status' : 'Tất cả trạng thái'}</option>
@@ -288,8 +333,28 @@ export function CmsPosts({
             <option value="draft">{isEn ? 'Draft' : 'Bản nháp'}</option>
           </select>
 
-          <span className="text-xs text-gray-400 font-mono ml-auto">
-            {filteredPosts.length} / {posts.length} bài
+          {/* Page Size Selector */}
+          <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
+            <span className="text-xs text-gray-500 font-medium whitespace-nowrap">
+              {isEn ? 'Per page:' : 'Hiển thị:'}
+            </span>
+            <select
+              aria-label={isEn ? 'Articles per page' : 'Số bài viết mỗi trang'}
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="px-2.5 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+
+          <span className="text-xs text-gray-400 font-mono">
+            {filteredPosts.length} / {posts.length} {isEn ? 'articles' : 'bài'}
           </span>
         </div>
       </div>
@@ -322,7 +387,7 @@ export function CmsPosts({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50 text-gray-700">
-                {filteredPosts.map((p) => {
+                {paginatedPosts.map((p) => {
                   const titleVi = p.translations?.vi?.title;
                   const titleEn = p.translations?.en?.title;
                   const displayTitle = (currentLang === 'en' ? titleEn || titleVi : titleVi || titleEn) || p.slug;
@@ -417,6 +482,112 @@ export function CmsPosts({
                 })}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {filteredPosts.length > 0 && (
+          <div className="mt-6 pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Summary Count & Current Page Indicator */}
+            <div className="text-xs text-gray-500">
+              {isEn ? (
+                <span>
+                  Showing <strong className="text-gray-900 font-semibold">{filteredPosts.length > 0 ? startIndex + 1 : 0}</strong> -{' '}
+                  <strong className="text-gray-900 font-semibold">{endIndex}</strong> of{' '}
+                  <strong className="text-gray-900 font-semibold">{filteredPosts.length}</strong> articles (Page{' '}
+                  <strong className="text-gray-900 font-semibold">{safeCurrentPage}</strong> / {totalPages})
+                </span>
+              ) : (
+                <span>
+                  Hiển thị <strong className="text-gray-900 font-semibold">{filteredPosts.length > 0 ? startIndex + 1 : 0}</strong> -{' '}
+                  <strong className="text-gray-900 font-semibold">{endIndex}</strong> trên tổng số{' '}
+                  <strong className="text-gray-900 font-semibold">{filteredPosts.length}</strong> bài viết (Trang{' '}
+                  <strong className="text-gray-900 font-semibold">{safeCurrentPage}</strong> / {totalPages})
+                </span>
+              )}
+            </div>
+
+            {/* Navigation Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center gap-1.5 flex-wrap justify-center" role="navigation" aria-label="Pagination">
+                {/* First Page */}
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage(1)}
+                  disabled={safeCurrentPage === 1}
+                  className="w-8 h-8 rounded-xl border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed text-xs flex items-center justify-center transition-colors cursor-pointer"
+                  title={isEn ? 'First page' : 'Trang đầu'}
+                  aria-label="First page"
+                >
+                  <i className="fa-solid fa-angles-left text-[10px]"></i>
+                </button>
+
+                {/* Previous Page */}
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                  disabled={safeCurrentPage === 1}
+                  className="px-3 h-8 rounded-xl border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                  aria-label="Previous page"
+                >
+                  <i className="fa-solid fa-chevron-left text-[10px]"></i>
+                  <span>{isEn ? 'Prev' : 'Trước'}</span>
+                </button>
+
+                {/* Numbered Page Buttons */}
+                <div className="flex items-center gap-1">
+                  {getPageNumbers().map((p, idx) => {
+                    if (p === '...') {
+                      return (
+                        <span key={`ellipsis-${idx}`} className="w-8 h-8 flex items-center justify-center text-gray-400 font-mono text-xs">
+                          ...
+                        </span>
+                      );
+                    }
+                    const pageNum = p as number;
+                    const isActive = pageNum === safeCurrentPage;
+                    return (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        onClick={() => setCurrentPage(pageNum)}
+                        aria-current={isActive ? 'page' : undefined}
+                        className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${isActive
+                          ? 'bg-red-600 text-white shadow-sm shadow-red-500/30'
+                          : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'
+                          }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Next Page */}
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                  disabled={safeCurrentPage === totalPages}
+                  className="px-3 h-8 rounded-xl border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                  aria-label="Next page"
+                >
+                  <span>{isEn ? 'Next' : 'Sau'}</span>
+                  <i className="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+
+                {/* Last Page */}
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={safeCurrentPage === totalPages}
+                  className="w-8 h-8 rounded-xl border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed text-xs flex items-center justify-center transition-colors cursor-pointer"
+                  title={isEn ? 'Last page' : 'Trang cuối'}
+                  aria-label="Last page"
+                >
+                  <i className="fa-solid fa-angles-right text-[10px]"></i>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
