@@ -37,6 +37,8 @@ export function CmsPosts({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'published' | 'scheduled' | 'draft'>('all');
+  const [selectedLanguage, setSelectedLanguage] = useState<'all' | 'vi' | 'en' | 'bilingual' | 'missing_en'>('all');
+  const [editorInitialLang, setEditorInitialLang] = useState<'vi' | 'en'>('vi');
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -76,7 +78,7 @@ export function CmsPosts({
     };
   }, [posts]);
 
-  // Filtered posts
+  // Filtered posts (prioritizing Vietnamese articles by default)
   const filteredPosts = useMemo(() => {
     const todayStr = new Date().toISOString().substring(0, 10);
     const q = searchQuery.toLowerCase().trim();
@@ -108,9 +110,15 @@ export function CmsPosts({
         if (!p.published_at || p.published_at.substring(0, 10) > todayStr) return false;
       }
 
+      // 4. Language Filter
+      if (selectedLanguage === 'vi' && !p.translations?.vi?.title) return false;
+      if (selectedLanguage === 'en' && !p.translations?.en?.title) return false;
+      if (selectedLanguage === 'bilingual' && (!p.translations?.vi?.title || !p.translations?.en?.title)) return false;
+      if (selectedLanguage === 'missing_en' && p.translations?.en?.title) return false;
+
       return true;
     });
-  }, [posts, searchQuery, selectedCategory, selectedStatus]);
+  }, [posts, searchQuery, selectedCategory, selectedStatus, selectedLanguage]);
 
   // Pagination bounds and calculations
   const totalPages = Math.max(1, Math.ceil(filteredPosts.length / pageSize));
@@ -135,6 +143,11 @@ export function CmsPosts({
     return [1, '...', safeCurrentPage - 1, safeCurrentPage, safeCurrentPage + 1, '...', totalPages];
   };
 
+  const handleOpenEditor = (post: AdminPost, lang: 'vi' | 'en' = 'vi') => {
+    setEditorInitialLang(lang);
+    onSetEditingPost(post);
+  };
+
   const handleDelete = async (id: string, slug: string) => {
     if (!confirm(`Bạn có chắc chắn muốn xóa bài viết "${slug}"?`)) {
       return;
@@ -154,11 +167,16 @@ export function CmsPosts({
         post={editingPost}
         categories={categories}
         tags={tags}
+        initialLang={editorInitialLang}
         onSave={async (savedPost) => {
           await onSavePost(savedPost);
           onSetEditingPost(null);
+          setEditorInitialLang('vi');
         }}
-        onCancel={() => onSetEditingPost(null)}
+        onCancel={() => {
+          onSetEditingPost(null);
+          setEditorInitialLang('vi');
+        }}
         currentLang={currentLang}
       />
     );
@@ -182,7 +200,10 @@ export function CmsPosts({
 
         <button
           type="button"
-          onClick={onCreateNewPost}
+          onClick={() => {
+            setEditorInitialLang('vi');
+            onCreateNewPost();
+          }}
           className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/35 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
         >
           <i className="fa-solid fa-plus text-xs"></i>
@@ -330,6 +351,23 @@ export function CmsPosts({
             <option value="draft">Bản nháp</option>
           </select>
 
+          {/* Language Dropdown */}
+          <select
+            aria-label="Lọc theo ngôn ngữ"
+            value={selectedLanguage}
+            onChange={(e) => {
+              setSelectedLanguage(e.target.value as any);
+              setCurrentPage(1);
+            }}
+            className="px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
+          >
+            <option value="all">Ngôn ngữ: Tất cả (Mặc định VI)</option>
+            <option value="bilingual">Song ngữ (VI + EN)</option>
+            <option value="vi">Có bài Tiếng Việt</option>
+            <option value="en">Có bài Tiếng Anh</option>
+            <option value="missing_en">Chưa có bản Tiếng Anh</option>
+          </select>
+
           {/* Page Size Selector */}
           <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
             <span className="text-xs text-gray-500 font-medium whitespace-nowrap">
@@ -377,6 +415,7 @@ export function CmsPosts({
                 <tr className="border-b border-gray-100 text-gray-400 font-mono text-[11px] pb-3">
                   <th className="pb-3 font-semibold">Tiêu đề bài viết & Slug</th>
                   <th className="pb-3 font-semibold">Chuyên đề</th>
+                  <th className="pb-3 font-semibold">Ngôn ngữ</th>
                   <th className="pb-3 font-semibold">Trạng thái</th>
                   <th className="pb-3 font-semibold">Ngày đăng</th>
                   <th className="pb-3 font-semibold">Thời gian đọc</th>
@@ -385,9 +424,9 @@ export function CmsPosts({
               </thead>
               <tbody className="divide-y divide-gray-50 text-gray-700">
                 {paginatedPosts.map((p) => {
-                  const titleVi = p.translations?.vi?.title;
-                  const titleEn = p.translations?.en?.title;
-                  const displayTitle = titleVi || titleEn || p.slug;
+                  const titleVi = p.translations?.vi?.title?.trim();
+                  const titleEn = p.translations?.en?.title?.trim();
+                  const displayTitle = titleVi || (titleEn ? `${titleEn} (Bản tiếng Anh)` : p.slug);
 
                   const cat = p.category_id ? categoryMap.get(p.category_id) : (p.category_slug ? categoryMap.get(p.category_slug) : undefined);
                   const catName = cat
@@ -414,6 +453,46 @@ export function CmsPosts({
                         <span className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border ${getCategoryColorClasses(cat?.color).badge}`}>
                           {catName}
                         </span>
+                      </td>
+
+                      <td className="py-4 pr-3 whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1.5">
+                          {titleVi ? (
+                            <span
+                              className="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200"
+                              title="Đã có bài viết Tiếng Việt (Mặc định)"
+                            >
+                              VI
+                            </span>
+                          ) : (
+                            <span
+                              className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-gray-50 text-gray-400 border border-dashed border-gray-300"
+                              title="Chưa có bản Tiếng Việt"
+                            >
+                              — VI
+                            </span>
+                          )}
+
+                          {titleEn ? (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditor(p, 'en')}
+                              className="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-colors cursor-pointer"
+                              title="Đã có bản Tiếng Anh — Bấm để mở sửa trực tiếp bản EN"
+                            >
+                              EN
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEditor(p, 'en')}
+                              className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold text-gray-400 hover:text-blue-700 border border-dashed border-gray-300 hover:border-blue-300 hover:bg-blue-50/60 transition-colors cursor-pointer"
+                              title="Chưa có bản Tiếng Anh — Bấm để thêm nhanh bản EN"
+                            >
+                              + EN
+                            </button>
+                          )}
+                        </div>
                       </td>
 
                       <td className="py-4 pr-3 whitespace-nowrap">
@@ -446,16 +525,17 @@ export function CmsPosts({
                         <div className="inline-flex items-center gap-1.5">
                           <button
                             type="button"
-                            onClick={() => onSetEditingPost(p)}
+                            onClick={() => handleOpenEditor(p, 'vi')}
                             className="px-3 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-semibold transition-colors cursor-pointer shadow-2xs"
                           >
                             Sửa
                           </button>
 
                           <Link
-                            href={`/${currentLang}/blog/${p.slug}`}
+                            href={`/vi/blog/${p.slug}`}
                             target="_blank"
                             className="px-2.5 py-1 rounded-lg bg-white hover:bg-red-50 text-red-600 text-[11px] font-semibold border border-red-200 transition-colors flex items-center gap-1"
+                            title="Xem bài viết (Bản Tiếng Việt)"
                           >
                             <span>Xem</span>
                             <i className="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>

@@ -594,6 +594,63 @@ describe('CMS Phase 3: Articles Management & Notion-Style Rich Editor', () => {
         }));
       });
     });
+
+    it('defaults to Vietnamese and shows English translation aids when English is selected', () => {
+      render(
+        <LanguageProvider>
+          <CmsPostEditor
+            post={mockPosts[0]}
+            categories={mockCategories}
+            tags={mockTags}
+            onSave={vi.fn()}
+            onCancel={vi.fn()}
+            currentLang="vi"
+          />
+        </LanguageProvider>
+      );
+
+      // Default active is Vietnamese
+      expect(screen.getByText('Bản Tiếng Việt')).toBeDefined();
+      expect(screen.getByText('(Mặc định hiển thị)')).toBeDefined();
+
+      // Switch to English
+      const enTab = screen.getByRole('button', { name: 'EN' });
+      fireEvent.click(enTab);
+
+      // English translation banner appears
+      expect(screen.getByText(/Bản Tiếng Anh \(English Translation\)/i)).toBeDefined();
+      expect(screen.getByText('Sao chép sườn từ bản Tiếng Việt')).toBeDefined();
+
+      // Toggle Vietnamese reference panel
+      const toggleRefBtn = screen.getByRole('button', { name: /Đối chiếu bản Tiếng Việt/i });
+      fireEvent.click(toggleRefBtn);
+
+      // Verify Vietnamese reference drawer is visible
+      expect(screen.getByText(/Đối chiếu bản Tiếng Việt gốc/i)).toBeDefined();
+      expect(screen.getAllByText('Kiến trúc Microservices Thực Chiến').length).toBeGreaterThan(0);
+      expect(screen.getByText('Hướng dẫn thiết kế hệ thống chịu tải cao với Event-Driven.')).toBeDefined();
+    });
+
+    it('opens editor with English directly when initialLang is en', () => {
+      render(
+        <LanguageProvider>
+          <CmsPostEditor
+            post={mockPosts[0]}
+            categories={mockCategories}
+            tags={mockTags}
+            onSave={vi.fn()}
+            onCancel={vi.fn()}
+            currentLang="vi"
+            initialLang="en"
+          />
+        </LanguageProvider>
+      );
+
+      // Verify active language is directly English
+      expect(screen.getByText(/Bản Tiếng Anh \(English Translation\)/i)).toBeDefined();
+      const titleInput = screen.getByDisplayValue('Microservices Architecture in Practice');
+      expect(titleInput).toBeDefined();
+    });
   });
 
   describe('Markdown, KaTeX, and SEO Utilities', () => {

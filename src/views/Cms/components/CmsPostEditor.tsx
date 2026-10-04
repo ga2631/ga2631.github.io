@@ -18,6 +18,7 @@ interface CmsPostEditorProps {
   onSave: (post: AdminPost) => Promise<void>;
   onCancel: () => void;
   currentLang: string;
+  initialLang?: 'vi' | 'en';
 }
 
 const MERMAID_SAMPLE = `\`\`\`mermaid
@@ -68,6 +69,7 @@ export function CmsPostEditor({
   onSave,
   onCancel,
   currentLang,
+  initialLang = 'vi',
 }: CmsPostEditorProps) {
   const [editingPost, setEditingPost] = useState<AdminPost>(() => ({
     ...post,
@@ -89,7 +91,8 @@ export function CmsPostEditor({
     },
   }));
 
-  const [activeLang, setActiveLang] = useState<'vi' | 'en'>('vi');
+  const [activeLang, setActiveLang] = useState<'vi' | 'en'>(initialLang || 'vi');
+  const [showViReference, setShowViReference] = useState(false);
   const [editorMode, setEditorMode] = useState<'write' | 'split' | 'preview'>('split');
   const [isSaving, setIsSaving] = useState(false);
   const [showSlashMenu, setShowSlashMenu] = useState(false);
@@ -237,6 +240,34 @@ export function CmsPostEditor({
 
       return { ...prev, slug: nextSlug, translations: trans };
     });
+  };
+
+  // Helper: Copy structure and content from Vietnamese to English translation
+  const handleCopyFromVietnamese = () => {
+    const vi = editingPost.translations?.vi;
+    if (!vi || !vi.content_md) {
+      alert('Bản Tiếng Việt chưa có nội dung để sao chép.');
+      return;
+    }
+    if (
+      editingPost.translations?.en?.content_md &&
+      !confirm('Bản Tiếng Anh hiện đã có nội dung. Bạn có chắc muốn sao chép đè sườn từ bản Tiếng Việt không?')
+    ) {
+      return;
+    }
+    setEditingPost((prev) => ({
+      ...prev,
+      translations: {
+        ...prev.translations,
+        en: {
+          lang_code: 'en',
+          title: prev.translations?.en?.title || (vi.title ? `[EN] ${vi.title}` : ''),
+          summary: prev.translations?.en?.summary || vi.summary || '',
+          content_md: vi.content_md || '',
+          content_html: null,
+        },
+      },
+    }));
   };
 
   // Handler: Smart Schedule date recommendation
@@ -436,22 +467,33 @@ export function CmsPostEditor({
           </div>
 
           {/* Bilingual Switcher (VI / EN) */}
-          <div className="flex bg-gray-100 p-0.5 rounded-xl text-xs font-bold">
+          <div className="flex bg-gray-100 p-0.5 rounded-xl text-xs font-bold border border-gray-200/60">
             <button
               type="button"
+              aria-label="VI"
               onClick={() => setActiveLang('vi')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${activeLang === 'vi' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600'
-                }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                activeLang === 'vi' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600 hover:text-gray-900'
+              }`}
+              title="Bản Tiếng Việt (Mặc định)"
             >
-              VI
+              <span>VI</span>
+              <span className="hidden sm:inline text-[10px] opacity-80">(Mặc định)</span>
             </button>
             <button
               type="button"
+              aria-label="EN"
               onClick={() => setActiveLang('en')}
-              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${activeLang === 'en' ? 'bg-red-600 text-white shadow-2xs font-extrabold' : 'text-gray-600'
-                }`}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                activeLang === 'en' ? 'bg-blue-600 text-white shadow-2xs font-extrabold' : 'text-gray-600 hover:text-gray-900'
+              }`}
+              title="Bản Tiếng Anh (Khi chọn)"
             >
-              EN
+              <span>EN</span>
+              <span className="hidden sm:inline text-[10px] opacity-80">(Khi chọn)</span>
+              {editingPost.translations?.en?.title ? (
+                <span className={`w-1.5 h-1.5 rounded-full ${activeLang === 'en' ? 'bg-white' : 'bg-blue-500'}`} />
+              ) : null}
             </button>
           </div>
 
@@ -493,6 +535,120 @@ export function CmsPostEditor({
       <div className="flex-1 min-h-0 flex flex-row items-stretch gap-3 sm:gap-4 pt-2 overflow-hidden">
         {/* LEFT COLUMN: Main Writing Canvas */}
         <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden space-y-2">
+          {/* Active Language Mode Status Bar */}
+          {activeLang === 'en' ? (
+            <div className="shrink-0 bg-blue-50/90 border border-blue-200 rounded-2xl p-2.5 px-3 flex flex-wrap items-center justify-between gap-2 text-xs shadow-2xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-blue-900">
+                    Bản Tiếng Anh (English Translation)
+                  </span>
+                  {!editingPost.translations?.en?.title && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                      Chưa có nội dung
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyFromVietnamese}
+                  className="px-2.5 py-1 rounded-xl bg-white hover:bg-blue-100/60 text-blue-700 font-bold border border-blue-200 flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors text-[11px]"
+                  title="Sao chép tiêu đề, tóm tắt và nội dung từ bản Tiếng Việt để dịch nhanh"
+                >
+                  <i className="fa-solid fa-clone text-xs"></i>
+                  <span>Sao chép sườn từ bản Tiếng Việt</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowViReference(!showViReference)}
+                  className={`px-2.5 py-1 rounded-xl font-bold border flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors text-[11px] ${
+                    showViReference
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white hover:bg-blue-100/60 text-blue-700 border-blue-200'
+                  }`}
+                  title="Mở bảng đối chiếu nội dung Tiếng Việt gốc"
+                >
+                  <i className="fa-solid fa-columns text-xs"></i>
+                  <span>{showViReference ? 'Ẩn đối chiếu VI' : 'Đối chiếu bản Tiếng Việt'}</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="shrink-0 bg-white/80 border border-gray-200/80 rounded-2xl p-2 px-3 flex items-center justify-between text-xs text-gray-600 shadow-2xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-600" />
+                <span className="font-bold text-gray-900">Bản Tiếng Việt</span>
+                <span className="text-[11px] text-gray-400 font-medium">(Mặc định hiển thị)</span>
+              </div>
+              <div className="flex items-center gap-2 text-[11px]">
+                <span className="text-gray-500 hidden sm:inline">
+                  Bản Tiếng Anh:{' '}
+                  {editingPost.translations?.en?.title ? (
+                    <strong className="text-emerald-700 font-semibold">Đã có</strong>
+                  ) : (
+                    <strong className="text-amber-600 font-semibold">Chưa có</strong>
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveLang('en')}
+                  className="px-2.5 py-1 rounded-xl bg-gray-100 hover:bg-blue-50 text-blue-700 font-bold border border-gray-200 hover:border-blue-300 transition-colors cursor-pointer"
+                >
+                  Chuyển sang bản Tiếng Anh &rarr;
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Collapsible Vietnamese Reference Drawer when activeLang === 'en' */}
+          {activeLang === 'en' && showViReference && (
+            <div className="shrink-0 bg-amber-50/80 border border-amber-200 rounded-2xl p-3 text-xs max-h-48 overflow-y-auto space-y-2 shadow-sm animate-in fade-in custom-scrollbar">
+              <div className="flex items-center justify-between text-amber-900 font-bold border-b border-amber-200/70 pb-1.5">
+                <span className="flex items-center gap-1.5 text-xs">
+                  <i className="fa-solid fa-language text-amber-700 text-sm"></i>
+                  <span>Đối chiếu bản Tiếng Việt gốc (Để tham khảo khi dịch)</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowViReference(false)}
+                  className="text-amber-700 hover:text-amber-900 cursor-pointer p-0.5"
+                  title="Đóng bảng đối chiếu"
+                >
+                  <i className="fa-solid fa-xmark text-sm"></i>
+                </button>
+              </div>
+              <div>
+                <span className="font-bold text-gray-700 text-[11px]">Tiêu đề gốc: </span>
+                <span className="text-gray-900 font-semibold">
+                  {editingPost.translations?.vi?.title || '(Chưa có tiêu đề Tiếng Việt)'}
+                </span>
+              </div>
+              {editingPost.translations?.vi?.summary && (
+                <div>
+                  <span className="font-bold text-gray-700 text-[11px]">Tóm tắt gốc: </span>
+                  <span className="text-gray-800 italic">
+                    {editingPost.translations.vi.summary}
+                  </span>
+                </div>
+              )}
+              {editingPost.translations?.vi?.content_md && (
+                <div>
+                  <span className="font-bold text-gray-700 text-[11px] block mb-1">
+                    Nội dung Markdown Tiếng Việt:
+                  </span>
+                  <pre className="p-2.5 bg-white/90 border border-amber-200 rounded-xl text-[11px] font-mono text-gray-800 whitespace-pre-wrap max-h-24 overflow-y-auto custom-scrollbar">
+                    {editingPost.translations.vi.content_md}
+                  </pre>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Article Title & Summary Inputs (Compact, shrink-0) */}
           <div className="shrink-0 bg-white border border-gray-100 rounded-2xl p-2.5 sm:px-4 sm:py-2 shadow-xs space-y-1">
             <div>
