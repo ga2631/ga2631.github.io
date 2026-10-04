@@ -36,9 +36,17 @@ export async function generateMetadata({
   try {
     const post = await getBlogPostBySlug(slug, lang);
     if (post) {
+      const alternatePaths: Record<string, string> = {};
+      if (post.slugs) {
+        for (const [l, s] of Object.entries(post.slugs)) {
+          alternatePaths[l] = `blog/${s}`;
+        }
+      }
+
       return buildDynamicMetadata({
         locale: lang,
-        path: `blog/${slug}`,
+        path: `blog/${post.slug || slug}`,
+        alternatePaths,
         title: `${post.title} | Huỳnh Nhật Tân`,
         description: post.summary || 'Technical article on system architecture and software engineering.',
         type: 'article',

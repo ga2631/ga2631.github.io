@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCms } from '@/views/Cms';
@@ -8,7 +8,7 @@ import { CmsPostEditor } from '@/views/Cms/components/CmsPostEditor';
 import { AdminPost, getAllAdminPosts } from '@/services/blogAdminService';
 import { useLanguage } from '@/i18n/LanguageContext';
 
-export default function AdminEditBlogPage() {
+function AdminEditBlogPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { currentLang } = useLanguage();
@@ -139,5 +139,20 @@ export default function AdminEditBlogPage() {
         currentLang={currentLang}
       />
     </div>
+  );
+}
+
+export default function AdminEditBlogPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center min-h-[400px] space-y-3" role="status">
+          <i className="fa-solid fa-circle-notch fa-spin text-2xl text-red-600"></i>
+          <p className="text-xs text-gray-500 font-medium">Đang tải thông tin bài viết...</p>
+        </div>
+      }
+    >
+      <AdminEditBlogPageContent />
+    </Suspense>
   );
 }

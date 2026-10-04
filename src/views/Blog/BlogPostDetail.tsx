@@ -186,7 +186,7 @@ export function BlogPostDetailView({
   post?: BlogPost | null;
   isLoading?: boolean;
 }) {
-  const { dict, currentLang, getLocalizedHref } = useLanguage();
+  const { dict, currentLang, getLocalizedHref, setAlternatePaths } = useLanguage();
   const isEn = currentLang === 'en';
   const [toc, setToc] = useState<TocItem[]>([]);
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState<boolean>(false);
@@ -194,6 +194,31 @@ export function BlogPostDetailView({
   const [categoryTitle, setCategoryTitle] = useState<string>(post?.categoryName || '');
   const [categoryColor, setCategoryColor] = useState<string>(post?.categoryColor || '');
   const headerRef = useRef<HTMLElement>(null);
+
+  // Register localized alternate paths for language switching and SEO
+  useEffect(() => {
+    if (post?.slugs) {
+      const paths: Record<string, string> = {};
+      for (const [l, s] of Object.entries(post.slugs)) {
+        paths[l] = `/${l}/blog/${s}`;
+      }
+      setAlternatePaths(paths);
+    }
+    return () => {
+      setAlternatePaths(null);
+    };
+  }, [post?.slugs, setAlternatePaths]);
+
+  // Canonicalize browser URL if accessed with cross-language slug
+  useEffect(() => {
+    if (typeof window !== 'undefined' && post?.slug) {
+      const currentPath = window.location.pathname;
+      const expectedPath = `/${currentLang}/blog/${post.slug}`;
+      if (currentPath !== expectedPath && currentPath.startsWith(`/${currentLang}/blog/`)) {
+        window.history.replaceState(null, '', expectedPath);
+      }
+    }
+  }, [post?.slug, currentLang]);
 
   useEffect(() => {
     if (post?.categoryName) {

@@ -3,9 +3,10 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 let mockPathname = '/vi/blog';
+const mockPush = vi.fn();
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
-    push: vi.fn(),
+    push: mockPush,
     replace: vi.fn(),
     refresh: vi.fn(),
     back: vi.fn(),
@@ -16,7 +17,7 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-import { LanguageProvider } from '@/i18n/LanguageContext';
+import { LanguageProvider, useLanguage } from '@/i18n/LanguageContext';
 import { BlogView } from '../index';
 import { BlogPostDetailView } from '../BlogPostDetail';
 import { BlogPost } from '@/types';
@@ -472,6 +473,88 @@ describe('Blog Components', () => {
     expect(getAllByText('Thuật toán & Hiệu năng').length).toBeGreaterThanOrEqual(1);
     // KaTeX should render katex html classes
     expect(container.innerHTML).toContain('katex');
+  });
+
+  it('maps raw post to BlogPost with localized slugs dictionary for SEO hreflang and language switching', () => {
+    const rawPostWithTranslations = {
+      id: 'post-seo-1',
+      slug: 'kien-truc-microservices',
+      read_time: 6,
+      published_at: '2026-10-03T00:00:00.000Z',
+      post_translations: [
+        { lang_code: 'vi', slug: 'kien-truc-microservices', title: 'Kiến trúc Microservices', summary: 'Tóm tắt VI' },
+        { lang_code: 'en', slug: 'microservices-architecture', title: 'Microservices Architecture', summary: 'Summary EN' },
+      ],
+      post_tags: [],
+    };
+
+    const postVi = mapDbPostToBlogPost(rawPostWithTranslations, 'vi');
+    expect(postVi.slug).toBe('kien-truc-microservices');
+    expect(postVi.slugs).toEqual({
+      vi: 'kien-truc-microservices',
+      en: 'microservices-architecture',
+    });
+
+    const postEn = mapDbPostToBlogPost(rawPostWithTranslations, 'en');
+    expect(postEn.slug).toBe('microservices-architecture');
+    expect(postEn.slugs).toEqual({
+      vi: 'kien-truc-microservices',
+      en: 'microservices-architecture',
+    });
+  });
+
+  it('updates alternatePaths and navigates to localized slug when switching language on BlogPostDetailView', () => {
+    mockPush.mockClear();
+    mockPathname = '/vi/blog/kien-truc-microservices';
+
+    const post: BlogPost = {
+      id: 'post-seo-1',
+      slug: 'kien-truc-microservices',
+      slugs: {
+        vi: 'kien-truc-microservices',
+        en: 'microservices-architecture',
+      },
+      title: 'Kiến trúc Microservices',
+      summary: 'Tóm tắt VI',
+      category: 'kien-truc-he-thong',
+      publishedAt: '2026-10-03T00:00:00.000Z',
+      date: '2026-10-03',
+      readTime: '6 phút',
+      tags: [],
+      author: 'Huỳnh Nhật Tân',
+      contentHtml: '<p>Nội dung</p>',
+      content: 'Nội dung',
+    };
+
+    function TestLanguageSwitcher() {
+      const { changeLanguage, alternatePaths } = useLanguage();
+      return (
+        <div>
+          <button data-testid="switch-en" onClick={() => changeLanguage('en')}>
+            Switch to EN
+          </button>
+          <span data-testid="alt-en">{alternatePaths?.en}</span>
+        </div>
+      );
+    }
+
+    const { getByTestId } = render(
+      <LanguageProvider initialLang="vi">
+        <BlogPostDetailView post={post} />
+        <TestLanguageSwitcher />
+      </LanguageProvider>
+    );
+
+    // Verify alternatePaths registered
+    expect(getByTestId('alt-en').textContent).toBe('/en/blog/microservices-architecture');
+
+    // Trigger language switch
+    fireEvent.click(getByTestId('switch-en'));
+
+    // router.push should be called with the localized English slug URL
+    expect(mockPush).toHaveBeenCalledWith('/en/blog/microservices-architecture');
+
+    mockPathname = '/vi/blog';
   });
 });
 

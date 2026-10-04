@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { BlogLayout } from '@/components/layouts/BlogLayout';
 import { BlogView } from '@/views/Blog';
@@ -32,7 +33,9 @@ export async function generateMetadata({
 export default function BlogPage() {
   return (
     <BlogLayout fixedHeight={true}>
-      <BlogView initialPosts={[]} initialCategories={[]} />
+      <Suspense fallback={null}>
+        <BlogView initialPosts={[]} initialCategories={[]} />
+      </Suspense>
     </BlogLayout>
   );
 }

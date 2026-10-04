@@ -1,10 +1,13 @@
+import { Suspense } from 'react';
 import { BlogLayout } from '@/components/layouts/BlogLayout';
 import { BlogView } from '@/views/Blog';
 
 export default function BlogLoading() {
   return (
     <BlogLayout fixedHeight={true}>
-      <BlogView initialPosts={[]} initialCategories={[]} />
+      <Suspense fallback={null}>
+        <BlogView initialPosts={[]} initialCategories={[]} />
+      </Suspense>
     </BlogLayout>
   );
 }

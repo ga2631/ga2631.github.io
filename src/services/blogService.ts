@@ -114,9 +114,20 @@ export function mapDbPostToBlogPost(row: any, lang: string): BlogPost {
   const readTimeStr = `${row.read_time || 5} ${lang === 'vi' ? 'phút đọc' : 'min read'}`;
   const postSlug = translation.slug || row.slug || '';
 
+  const slugs: Record<string, string> = {};
+  translations.forEach((t: any) => {
+    if (t.lang_code && t.slug) {
+      slugs[t.lang_code] = t.slug;
+    }
+  });
+  if (row.slug && !slugs.vi) {
+    slugs.vi = row.slug;
+  }
+
   return {
     id: row.id || postSlug,
     slug: postSlug,
+    slugs,
     title: translation.title || 'Untitled',
     summary: translation.summary || '',
     category: categorySlug,

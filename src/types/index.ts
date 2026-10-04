@@ -99,6 +99,7 @@ export interface CertificationItem {
 export interface BlogPost {
   id: string;
   slug: string;
+  slugs?: Record<string, string>;
   title: string;
   summary: string;
   publishedAt: string;

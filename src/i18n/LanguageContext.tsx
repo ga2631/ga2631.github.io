@@ -14,12 +14,14 @@ export interface LanguageContextType {
   languages: Language[];
   dict: Dictionary;
   meta: LocaleMeta;
-  changeLanguage: (newLang: Locale) => void;
+  changeLanguage: (newLang: Locale, customPath?: string) => void;
   getLocalizedHref: (path: string, targetLang?: Locale) => string;
   isLoadingLanguages: boolean;
   isChangingLanguage: boolean;
   setIsChangingLanguage: (val: boolean) => void;
   isInitialized: boolean;
+  alternatePaths: Record<string, string> | null;
+  setAlternatePaths: (paths: Record<string, string> | null) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
@@ -31,8 +33,22 @@ export function LanguageProvider({
   children: React.ReactNode;
   initialLang?: Locale;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
+  let router: ReturnType<typeof useRouter> | null = null;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    router = useRouter();
+  } catch {
+    router = null;
+  }
+
+  let pathname: string | null = null;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    pathname = usePathname();
+  } catch {
+    pathname = null;
+  }
+
   const [, startTransition] = useTransition();
 
   const [currentLang, setCurrentLang] = useState<Locale>(initialLang);
@@ -41,6 +57,7 @@ export function LanguageProvider({
   const [isChangingLanguage, setIsChangingLanguage] = useState<boolean>(false);
   const [targetLoadingLang, setTargetLoadingLang] = useState<Locale | null>(null);
   const [isInitialized, setIsInitialized] = useState<boolean>(() => typeof window === 'undefined' || !!initialLang);
+  const [alternatePaths, setAlternatePaths] = useState<Record<string, string> | null>(null);
 
   // Synchronize language with URL pathname or default to English / saved choice
   useEffect(() => {
@@ -68,7 +85,11 @@ export function LanguageProvider({
       setCurrentLang((prev) => (prev !== detected ? detected : prev));
       const newPath = getLocalizedHref(pathname, detected);
       if (newPath !== pathname) {
-        router.replace(newPath);
+        if (router) {
+          router.replace(newPath);
+        } else if (typeof window !== 'undefined') {
+          window.location.replace(newPath);
+        }
       }
       setIsInitialized(true);
     } else {
@@ -101,6 +122,12 @@ export function LanguageProvider({
   const meta = localeMetadataMap[currentLang] || localeMetadataMap[defaultLocale];
 
   const getLocalizedHref = (path: string, targetLang: Locale = currentLang): string => {
+    // If alternatePaths is registered and path refers to the current page (e.g. blog post), use alternate path
+    if (alternatePaths && alternatePaths[targetLang] && (path === pathname || path === '')) {
+      const alt = alternatePaths[targetLang];
+      return alt.startsWith('/') ? alt : `/${alt}`;
+    }
+
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
     // Strip leading /vi or /en if already present
     const pathWithoutLocale = cleanPath.replace(/^\/(vi|en)(\/|$)/, '/');
@@ -108,7 +135,7 @@ export function LanguageProvider({
     return `/${targetLang}${finalSubPath}`;
   };
 
-  const changeLanguage = (newLang: Locale) => {
+  const changeLanguage = (newLang: Locale, customPath?: string) => {
     if (newLang === currentLang) return;
 
     setIsChangingLanguage(true);
@@ -119,10 +146,23 @@ export function LanguageProvider({
     } catch {}
 
     trackLanguageChange(newLang, currentLang);
-    const newPath = getLocalizedHref(pathname || '', newLang);
+    let newPath = customPath || (alternatePaths && alternatePaths[newLang]) || getLocalizedHref(pathname || '', newLang);
 
-    if (typeof window !== 'undefined' && window.history) {
-      window.history.replaceState(null, '', newPath);
+    if (newPath && !newPath.startsWith('/')) {
+      newPath = `/${newPath.replace(/^\/+/, '')}`;
+    }
+
+    if (typeof window !== 'undefined') {
+      const isBlogDetailPage = pathname ? /\/(vi|en)\/blog\/[^/]+/.test(pathname) : false;
+      if (isBlogDetailPage || (alternatePaths && alternatePaths[newLang])) {
+        if (router) {
+          router.push(newPath);
+        } else {
+          window.location.href = newPath;
+        }
+      } else if (window.history) {
+        window.history.replaceState(null, '', newPath);
+      }
     }
 
     startTransition(() => {
@@ -149,6 +189,8 @@ export function LanguageProvider({
         isChangingLanguage,
         setIsChangingLanguage,
         isInitialized,
+        alternatePaths,
+        setAlternatePaths,
       }}
     >
       {!isInitialized ? (
@@ -196,6 +238,8 @@ export function useLanguage(): LanguageContextType {
       isChangingLanguage: false,
       setIsChangingLanguage: () => {},
       isInitialized: true,
+      alternatePaths: null,
+      setAlternatePaths: () => {},
     };
   }
   return context;

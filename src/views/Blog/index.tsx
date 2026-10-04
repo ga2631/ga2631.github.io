@@ -118,11 +118,21 @@ export function BlogView({
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(initialPosts.length === 0);
-  const searchParams = useSearchParams();
+  let searchParams: ReturnType<typeof useSearchParams> | null = null;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    searchParams = useSearchParams();
+  } catch {
+    searchParams = null;
+  }
   const articlesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const paramCat = searchParams?.get('category') || searchParams?.get('cat');
+    let paramCat = searchParams?.get('category') || searchParams?.get('cat');
+    if (!paramCat && typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      paramCat = urlParams.get('category') || urlParams.get('cat');
+    }
     if (paramCat) {
       setSelectedCategory(paramCat);
     }

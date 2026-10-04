@@ -159,15 +159,17 @@ export function CmsPostEditor({
     };
   }, []);
 
+  const currentSlug = currentTrans.slug || (activeLang === 'vi' ? editingPost.slug : '');
+
   // SEO Analysis
   const seoResult: SeoAnalysisResult = useMemo(() => {
     return analyzePostSeo(
       currentTrans.title,
       currentTrans.summary || '',
       currentTrans.content_md,
-      editingPost.slug
+      currentSlug
     );
-  }, [currentTrans.title, currentTrans.summary, currentTrans.content_md, editingPost.slug]);
+  }, [currentTrans.title, currentTrans.summary, currentTrans.content_md, currentSlug]);
 
   // Selected and unselected tags for clean select dropdown
   const selectedTags = useMemo(() => {
@@ -433,8 +435,11 @@ export function CmsPostEditor({
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-sm font-black text-gray-900 font-mono truncate max-w-[130px] sm:max-w-[200px]">
-              /{editingPost.slug || 'url-slug'}
+            <span
+              className="text-xs sm:text-sm font-black text-gray-900 font-mono truncate max-w-[130px] sm:max-w-[200px]"
+              title={`Slug (${activeLang.toUpperCase()}): /${activeLang}/blog/${currentSlug || 'url-slug'}`}
+            >
+              /{currentSlug || 'url-slug'}
             </span>
             {/* Publication Status Pill */}
             {!editingPost.published_at ? (
@@ -1279,7 +1284,7 @@ export function CmsPostEditor({
                     </span>
                     <div className="truncate">
                       <span className="font-semibold text-gray-900">huynhnhattan.dev</span>
-                      <span className="text-gray-400"> › blog › {editingPost.slug || 'slug'}</span>
+                      <span className="text-gray-400"> › {activeLang} › blog › {currentSlug || 'slug'}</span>
                     </div>
                   </div>
                   <div className="text-base sm:text-lg font-medium text-blue-700 hover:underline cursor-pointer leading-snug pt-0.5 line-clamp-2">

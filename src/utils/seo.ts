@@ -4,6 +4,7 @@ import { getActiveLanguages } from '@/services/languageService';
 export interface DynamicSeoOptions {
   locale: string;
   path?: string; // e.g. "" for home, "blog" for blog
+  alternatePaths?: Record<string, string>; // e.g. { vi: 'blog/slug-vi', en: 'blog/slug-en' }
   title: string;
   description: string;
   siteName?: string;
@@ -22,6 +23,7 @@ export async function buildDynamicMetadata(options: DynamicSeoOptions): Promise<
   const {
     locale,
     path = '',
+    alternatePaths,
     title,
     description,
     siteName = 'Portfolio & Blog',
@@ -34,12 +36,19 @@ export async function buildDynamicMetadata(options: DynamicSeoOptions): Promise<
 
   // Dynamically query all active languages from Supabase
   const activeLanguages = await getActiveLanguages();
+  const defaultPath = alternatePaths?.vi
+    ? `${alternatePaths.vi.replace(/^\/+|\/+$/g, '')}/`
+    : cleanPath;
+
   const languagesMap: Record<string, string> = {
-    'x-default': `${BASE_URL}/vi/${cleanPath}`,
+    'x-default': `${BASE_URL}/vi/${defaultPath}`,
   };
 
   for (const lang of activeLanguages) {
-    languagesMap[lang.code] = `${BASE_URL}/${lang.code}/${cleanPath}`;
+    const langPath = alternatePaths?.[lang.code]
+      ? `${alternatePaths[lang.code].replace(/^\/+|\/+$/g, '')}/`
+      : cleanPath;
+    languagesMap[lang.code] = `${BASE_URL}/${lang.code}/${langPath}`;
   }
 
   return {

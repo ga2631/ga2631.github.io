@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCms } from '@/views/Cms';
 import { CmsPostEditor } from '@/views/Cms/components/CmsPostEditor';
 import { AdminPost } from '@/services/blogAdminService';
 import { useLanguage } from '@/i18n/LanguageContext';
 
-export default function AdminNewBlogPage() {
+function AdminNewBlogPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { currentLang } = useLanguage();
@@ -75,5 +75,20 @@ export default function AdminNewBlogPage() {
         currentLang={currentLang}
       />
     </div>
+  );
+}
+
+export default function AdminNewBlogPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center min-h-[400px] space-y-3" role="status">
+          <i className="fa-solid fa-circle-notch fa-spin text-2xl text-red-600"></i>
+          <p className="text-xs text-gray-500 font-medium">Đang chuẩn bị trình biên soạn bài viết...</p>
+        </div>
+      }
+    >
+      <AdminNewBlogPageContent />
+    </Suspense>
   );
 }
