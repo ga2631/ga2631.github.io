@@ -94,6 +94,56 @@ export async function signInWithGitHub(): Promise<{ error: string | null }> {
 }
 
 /**
+ * Signs in via Supabase Google OAuth
+ */
+export async function signInWithGoogle(): Promise<{ error: string | null }> {
+  if (!isSupabaseConfigured()) {
+    return {
+      error:
+        'Supabase chưa được cấu hình biến môi trường NEXT_PUBLIC_SUPABASE_URL và NEXT_PUBLIC_SUPABASE_ANON_KEY.',
+    };
+  }
+
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    return { error: 'Không thể khởi tạo Supabase client.' };
+  }
+
+  try {
+    const redirectTo =
+      typeof window !== 'undefined'
+        ? `${window.location.origin}${window.location.pathname}`
+        : undefined;
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    if (data?.url && typeof window !== 'undefined') {
+      window.location.href = data.url;
+    }
+
+    return { error: null };
+  } catch (err: any) {
+    return {
+      error:
+        err.message || 'Đã xảy ra lỗi không xác định khi đăng nhập Google OAuth.',
+    };
+  }
+}
+
+/**
  * Signs out the currently authenticated user
  */
 export async function signOut(): Promise<{ error: string | null }> {
