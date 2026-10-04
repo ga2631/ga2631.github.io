@@ -8,10 +8,13 @@ export interface ScheduleDayOption {
   en: string;
   viDay: string;
   enDay: string;
+  viFull: string;
+  enFull: string;
+  dayCode: string;
   color: FlowbiteCategoryColor;
   categoryNameVi?: string;
   categoryNameEn?: string;
-  isAssigned: boolean;
+  isAssigned?: boolean;
 }
 
 export interface CategoryIconOption {
@@ -68,61 +71,68 @@ export function getWeekdayLabel(dayNumber: number): { vi: string; en: string } {
   return { vi: details.viDay, en: details.enName };
 }
 
-/**
- * Builds schedule day options dynamically from categories loaded from the Supabase database.
- * No hardcoded schedule const arrays.
- */
-export function getScheduleDayOptions(categories: AdminCategory[] = []): ScheduleDayOption[] {
-  const categoryScheduleMap = new Map<number, AdminCategory>();
-  categories.forEach((cat) => {
-    if (cat.post_schedule != null) {
-      categoryScheduleMap.set(Number(cat.post_schedule), cat);
-    }
-  });
 
-  // Base weekdays 1..5 plus any extra category schedules in database
-  const slots = new Set<number>([1, 2, 3, 4, 5]);
-  categoryScheduleMap.forEach((_, key) => slots.add(key));
-
-  return Array.from(slots)
-    .sort((a, b) => a - b)
-    .map((slot) => {
-      const weekday = getWeekdayLabel(slot);
-      const matched = categoryScheduleMap.get(slot);
-      if (matched) {
-        const nameVi = matched.translations?.vi?.name?.trim() || matched.slug;
-        const nameEn = matched.translations?.en?.name?.trim() || matched.slug;
-        const normColor = (normalizeCategoryColor(matched.color) || 'blue') as FlowbiteCategoryColor;
-        return {
-          value: slot,
-          vi: `${weekday.vi} (${nameVi})`,
-          en: `${weekday.en} (${nameEn})`,
-          viDay: weekday.vi,
-          enDay: weekday.en,
-          color: normColor,
-          categoryNameVi: nameVi,
-          categoryNameEn: nameEn,
-          isAssigned: true,
-        };
-      }
-      return {
-        value: slot,
-        vi: weekday.vi,
-        en: weekday.en,
-        viDay: weekday.vi,
-        enDay: weekday.en,
-        color: 'gray' as FlowbiteCategoryColor,
-        isAssigned: false,
-      };
-    });
+export interface StandardWeekdayScheduleOption {
+  value: number;
+  label: string;
+  viDay: string;
+  dayCode: string;
 }
 
 /**
- * Loads schedule day options directly from Supabase database.
+ * Provides standard weekday schedule options (1=Thứ 2 .. 7=Chủ Nhật).
+ * Completely independent of categories or database data.
+ */
+export function getScheduleDayOptions(_categories?: AdminCategory[]): ScheduleDayOption[] {
+  return [1, 2, 3, 4, 5, 6, 7].map((slot) => {
+    const details = getWeekdayDetails(slot);
+    return {
+      value: slot,
+      vi: `${details.viDay} (${details.viFull})`,
+      en: `${details.enDay} (${details.enFull})`,
+      viDay: details.viDay,
+      enDay: details.enDay,
+      viFull: details.viFull,
+      enFull: details.enFull,
+      dayCode: details.dayCode,
+      color: 'blue' as FlowbiteCategoryColor,
+      isAssigned: false,
+    };
+  });
+}
+
+/**
+ * Provides standard weekday schedule options for selectors (1=Thứ 2 .. 7=Chủ Nhật).
+ * Completely independent of existing categories in Supabase.
+ */
+export function getStandardWeekdayScheduleOptions(currentValue?: number | null): StandardWeekdayScheduleOption[] {
+  const options = getScheduleDayOptions();
+  const standardDays = options.map((o) => o.value);
+  const result: StandardWeekdayScheduleOption[] = options.map((opt) => ({
+    value: opt.value,
+    label: opt.vi,
+    viDay: opt.viDay,
+    dayCode: opt.dayCode,
+  }));
+
+  if (currentValue != null && !standardDays.includes(currentValue)) {
+    const details = getWeekdayDetails(currentValue);
+    result.push({
+      value: currentValue,
+      label: `${details.viDay} (${details.viFull})`,
+      viDay: details.viDay,
+      dayCode: details.dayCode,
+    });
+  }
+
+  return result;
+}
+
+/**
+ * Loads schedule day options directly (independent of category mutations).
  */
 export async function fetchScheduleDayOptionsFromDb(): Promise<ScheduleDayOption[]> {
-  const categories = await getAllAdminCategories();
-  return getScheduleDayOptions(categories);
+  return getScheduleDayOptions();
 }
 
 /**

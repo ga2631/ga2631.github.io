@@ -7,6 +7,7 @@ import {
   getScheduleDayOptions,
   getCategoryIconOptions,
   getCategoryIconDetails,
+  getWeekdayDetails,
   ScheduleDayOption,
   CategoryIconOption,
 } from '@/services/blogAdminService';
@@ -53,10 +54,10 @@ export function CmsCategories({
   const [activeLangTab, setActiveLangTab] = useState<'vi' | 'en'>('vi');
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Dynamic schedule day options and category icon options loaded directly from database categories
+  // Independent schedule day options (Monday through Sunday)
   const scheduleDayOptions = useMemo<ScheduleDayOption[]>(() => {
-    return getScheduleDayOptions(categories);
-  }, [categories]);
+    return getScheduleDayOptions();
+  }, []);
 
   const iconOptions = useMemo<CategoryIconOption[]>(() => {
     return getCategoryIconOptions(categories);
@@ -109,13 +110,12 @@ export function CmsCategories({
   };
 
   const handleOpenCreateModal = () => {
-    const nextSched = (categories.length % 5) + 1;
-    const defaultColor = scheduleDayOptions.find((s) => s.value === nextSched)?.color || 'blue';
+    const nextSched = ((categories.length) % 7) + 1;
     const initSlug = `chuyen-de-${Date.now().toString().slice(-4)}`;
     setEditingCategory({
       slug: initSlug,
       post_schedule: nextSched,
-      color: defaultColor,
+      color: 'blue',
       icon: 'LayersIcon',
       translations: {
         vi: { lang_code: 'vi', slug: initSlug, name: '', description: '' },
@@ -241,7 +241,7 @@ export function CmsCategories({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {scheduleDayOptions.map((day) => {
+          {scheduleDayOptions.slice(0, 5).map((day) => {
             const matched = categories.find((c) => c.post_schedule === day.value);
             const count = matched ? (postCounts[matched.id || matched.slug] || 0) : 0;
             const displayName = matched
@@ -249,7 +249,7 @@ export function CmsCategories({
               : null;
             const dayColors = matched
               ? getCategoryColorClasses(matched.color)
-              : getCategoryColorClasses(day.color);
+              : getCategoryColorClasses('gray');
 
             return (
               <div
@@ -351,15 +351,7 @@ export function CmsCategories({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCategories.map((cat) => {
             const count = postCounts[cat.id || cat.slug] || 0;
-            const schedInfo = scheduleDayOptions.find((s) => s.value === cat.post_schedule) || {
-              value: cat.post_schedule,
-              vi: `Thứ ${cat.post_schedule + 1}`,
-              en: `Schedule #${cat.post_schedule}`,
-              viDay: `Thứ ${cat.post_schedule + 1}`,
-              enDay: `Schedule #${cat.post_schedule}`,
-              color: 'blue' as FlowbiteCategoryColor,
-              isAssigned: true,
-            };
+            const schedDetails = getWeekdayDetails(cat.post_schedule);
             const catColors = getCategoryColorClasses(cat.color);
             const nameVi = cat.translations?.vi?.name || cat.slug;
             const nameEn = cat.translations?.en?.name || cat.slug;
@@ -381,7 +373,7 @@ export function CmsCategories({
                       </span>
                       <div>
                         <span className={`inline-block text-[11px] font-bold px-2 py-0.5 rounded-md border ${catColors.badge}`}>
-                          {schedInfo.vi}
+                          {schedDetails.viDay}
                         </span>
                         <div className="text-[11px] font-mono text-gray-400 mt-0.5 truncate max-w-[160px]">
                           /{cat.slug}
@@ -700,23 +692,21 @@ export function CmsCategories({
                   value={editingCategory.post_schedule}
                   onChange={(e) => {
                     const sched = Number(e.target.value);
-                    const opt = scheduleDayOptions.find((s) => s.value === sched);
                     setEditingCategory({
                       ...editingCategory,
                       post_schedule: sched,
-                      color: opt?.color || editingCategory.color,
                     });
                   }}
                   className="w-full px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 shadow-2xs hover:border-gray-300 transition-colors cursor-pointer"
                 >
                   {scheduleDayOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>
-                      {opt.vi}
+                      {opt.viDay} ({opt.viFull})
                     </option>
                   ))}
                 </select>
                 <span className="text-[11px] text-gray-400 mt-1 block">
-                  Khớp với luồng đăng bài tự động trên Dashboard
+                  Chọn ngày xuất bản cố định trong tuần cho chuyên đề này (Thứ 2 – Chủ Nhật)
                 </span>
               </div>
 

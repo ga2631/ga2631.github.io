@@ -293,7 +293,7 @@ describe('CMS Phase 2: Categories and Tags Management', () => {
       });
     });
 
-    it('dynamically loads schedule day options and category icons from database categories', () => {
+    it('provides independent standard weekday schedule options for category editing/creation', () => {
       render(
         <LanguageProvider>
           <CmsCategories
@@ -311,11 +311,16 @@ describe('CMS Phase 2: Categories and Tags Management', () => {
       const createButton = screen.getByRole('button', { name: /\+ Thêm Chuyên Mục Mới/i });
       fireEvent.click(createButton);
 
-      // Check that schedule select options and category badges reflect the database category names
+      // Check that schedule select options are standard weekday options independent of existing category names
       const scheduleSelect = screen.getByRole('combobox', { name: /Lịch xuất bản trong tuần/i });
       expect(scheduleSelect).toBeDefined();
-      expect(screen.getAllByText(/Thứ 2 \(Kiến trúc Hệ thống\)/i).length).toBeGreaterThan(0);
-      expect(screen.getAllByText(/Thứ 3 \(Thuật toán & Hiệu năng Core\)/i).length).toBeGreaterThan(0);
+      expect(screen.getByText(/Thứ 2 \(Thứ 2 hàng tuần\)/i)).toBeDefined();
+      expect(screen.getByText(/Thứ 3 \(Thứ 3 hàng tuần\)/i)).toBeDefined();
+      expect(screen.getByText(/Thứ 4 \(Thứ 4 hàng tuần\)/i)).toBeDefined();
+      expect(screen.getByText(/Thứ 5 \(Thứ 5 hàng tuần\)/i)).toBeDefined();
+      expect(screen.getByText(/Thứ 6 \(Thứ 6 hàng tuần\)/i)).toBeDefined();
+      expect(screen.getByText(/Thứ 7 \(Thứ 7 hàng tuần\)/i)).toBeDefined();
+      expect(screen.getByText(/Chủ Nhật \(Chủ nhật hàng tuần\)/i)).toBeDefined();
 
       // Check that icon options include icons
       const iconSelect = screen.getByRole('combobox', { name: /Biểu tượng đại diện/i });

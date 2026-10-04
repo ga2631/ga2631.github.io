@@ -67,10 +67,10 @@ export function CmsDashboard({
 }: CmsDashboardProps) {
   const [testPingStatus, setTestPingStatus] = useState<string | null>(null);
 
-  // Dynamic schedule day options loaded directly from database categories
+  // Independent schedule day options (Monday through Sunday)
   const scheduleDayOptions = useMemo(() => {
-    return getScheduleDayOptions(categories);
-  }, [categories]);
+    return getScheduleDayOptions();
+  }, []);
 
   // 1. Thống kê bài viết (3.1)
   const stats = useMemo(() => {
@@ -390,10 +390,9 @@ export function CmsDashboard({
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {upcomingWeekSlots.map((slot) => {
-            const schedInfo = scheduleDayOptions.find((s) => s.value === slot.daySchedule);
             const catName = slot.category
               ? (slot.category.translations?.vi?.name || slot.category.translations?.en?.name || slot.category.slug)
-              : (schedInfo ? schedInfo.categoryNameVi || 'Chưa gán' : 'Chưa gán');
+              : 'Chưa gán';
             const hasPost = Boolean(slot.scheduledPost);
             const post = slot.scheduledPost;
             const postTitle = post
@@ -402,7 +401,7 @@ export function CmsDashboard({
 
             const catColors = slot.category
               ? getCategoryColorClasses(slot.category.color)
-              : (schedInfo ? getCategoryColorClasses(schedInfo.color) : getCategoryColorClasses('gray'));
+              : getCategoryColorClasses('gray');
             const borderTopClass = catColors.borderTop;
             const badgeClass = catColors.badge;
 
